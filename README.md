@@ -219,5 +219,9 @@ Chatty 让用户通过一次自然对话，调动分布在所有设备、环境�
 
 ## Status
 
-Chatty is currently in the concept-definition stage.
+Chatty is currently in **Stage 1 — Plan** of the AI-native SDLC.
+
+- Current artifact: [`intent.md`](./intent.md)
+- Intent status: Draft — awaiting product-owner acceptance
+- Next artifact after acceptance: `spec.md`
 
