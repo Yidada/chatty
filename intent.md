@@ -30,9 +30,11 @@ Chatty 希望把这个组合变成完整产品：
 
 手机上的 AI 产品已经可以让用户轻松说出需求。豆包的长按输入框、实时语音转文字和可编辑文本体验尤其自然，但表达结束后，任务通常停留在单个 AI 会话中，无法可靠调度其他 Agent、设备和权限环境。
 
-### 2. Agent collaboration lacks a personal daily interface
+### 2. Human attention needs a default focus
 
-Buzz 已经把 Human 与 Agent 放进同一个通信空间，Agent 拥有身份、消息和活动记录。然而它更偏向团队协作空间，仍未提供 Chatty 所追求的个人 Main Agent 关系与日常陪伴式入口。
+Buzz 已经把 Human 与 Agent 放进同一个通信空间，Agent 拥有身份、消息和活动记录。这种团队协作空间本身成立，Chatty 也完整保留团队协作。
+
+当多个 Human、Agent 和 WorkItem 同时活跃时，人的注意力会成为整个系统最稀缺的资源。Chatty 需要一个与用户保持默认关系的 Main Agent，持续聚合、过滤、排序和压缩团队信息，只把需要人类判断的事项带到用户面前。
 
 ### 3. Execution environments are fragmented
 
@@ -171,18 +173,22 @@ Daemon 连接 Runtime 与 Chatty Control Plane，负责注册、心跳、能力�
 
 ### Main Agent
 
-Main Agent 是用户默认交流的 Agent。预计 90% 的用户交互直接发生在这里。
+Main Agent 是用户默认交流的 Agent，也是用户与整个协作网络之间的 Attention Interface。预计 90% 的用户交互直接发生在这里。
 
-Main Agent 负责：
+Main Agent 的最高职责是管理用户注意力，任务路由与团队协调服务于这一目标。它负责：
 
 - 理解用户意图与长期偏好；
 - 判断直接处理或委派；
 - 选择目标 Agent；
 - 协调 Agent、Harness 与 Runtime；
-- 汇总多个任务的状态与结果；
+- 聚合所有 Agent、WorkItem 和 Runtime 的状态；
+- 过滤低价值更新，合并重复信息；
+- 根据紧急度、影响范围和用户偏好排序；
+- 将复杂进展压缩为用户可以快速判断的摘要；
+- 在 Gate 到来时提供上下文、选项、建议与风险；
 - 只在需要用户判断、授权或处理异常时打扰用户。
 
-Main Agent 使用普通 Agent 数据模型，其特殊性来自默认关系与协调职责。用户依然可以直接进入其他 Agent 的 DM。
+Main Agent 使用普通 Agent 数据模型，其特殊性来自默认关系、协调职责与注意力托管职责。用户依然可以直接进入其他 Agent 的 DM，也可以选择绕过 Main Agent 参与具体协作。
 
 ### WorkItem, Artifact, Gate and Evidence
 
@@ -247,7 +253,7 @@ Chatty 保留独立的 AI-native IM 体验，同时调用飞书已有的消息�
 | 飞书 / `larkcli` | 可被 Agent 调度的完整工作能力 |
 | Anthropic AI-native SDLC | Intent、Artifact、Human Gate 与可审计闭环 |
 
-Chatty 的独特产品中心是：个人与 Main Agent 的长期关系，以及从自然表达跨越多个 Runtime 持续执行的完整体验。
+Chatty 的独特产品中心是：个人与 Main Agent 的长期关系、以人的注意力为核心的协作拓扑，以及从自然表达跨越多个 Runtime 持续执行的完整体验。
 
 ## Initial scope
 
