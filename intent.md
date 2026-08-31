@@ -8,7 +8,7 @@
 
 ## Originator's intent
 
-我长期、深度使用豆包、飞书、Buzz、Multica、ChatGPT 和 Codex。它们分别解决了表达、工作能力、Agent 协作、跨环境执行和 AI 过程展示的一部分问题，但这些能力仍然分散，缺少一个真正属于我、符合我日常习惯的统一入口。
+我长期、深度使用豆包、飞书、Buzz、Multica、ChatGPT 和 Codex。它们分别解决了表达、结构化工作空间与工作流、Agent 协作、跨环境执行和 AI 过程展示的一部分问题，但这些能力仍然分散，缺少一个真正属于我、符合我日常习惯的统一入口。
 
 我最深的产品体验判断是：
 
@@ -20,7 +20,7 @@ Chatty 希望把这个组合变成完整产品：
 
 可以将它压缩为一条核心链路：
 
-> **Voice → Conversation → Execution**
+> **Voice → Conversation → Structured Workspace → Execution**
 
 ## Problem
 
@@ -48,9 +48,11 @@ Buzz 已经把 Human 与 Agent 放进同一个通信空间，Agent 拥有身份�
 
 Multica 最重要的价值，是通过 Daemon 将这些环境组织成可发现、可调度、可持续执行的 Runtime Fleet。
 
-### 4. Work tools and AI conversation live in different products
+### 4. AI collaboration needs a structured workspace
 
-飞书通过 `larkcli` 可以调度消息、文档、任务、日程等完整工作能力，这是 Chatty 需要的能力入口。飞书的日常 AI 对话体验和 Agent 一级形态仍有明显空位。
+长对话很难稳定承载复杂工作的全部共享状态。飞书背后的文档、多维表格、群聊、任务和日程构成了一套成熟的结构化工作空间：它们把信息、关系、进度、责任人与时间外化为人和 Agent 都能读取、编辑和操作的图形化 Artifact。
+
+这种结构化与图形化表达可以减少重复说明、降低理解和审阅成本，也是高效率工作流及 Human–AI 沟通的基础。飞书在 Chatty 中同时承担 Structured Workspace 与 Workflow Layer；`larkcli` 是 Agent 操作这套工作空间的控制接口。
 
 ## Proposed outcome
 
@@ -63,9 +65,9 @@ Multica 最重要的价值，是通过 Daemon 将这些环境组织成可发现�
 - 任务离开 App 后继续执行，可暂停、恢复和跨 Session 延续；
 - 进度、询问、审批、证据与结果回到原始对话；
 - Runtime 保留各自的文件、网络、工具、设备、账号和凭证边界；
-- 飞书等外部系统通过 Runtime 上的工具进入 Chatty。
+- 飞书的文档、多维表格、群聊、任务与日程作为结构化 Workspace，Agent 通过 Runtime 上的 `larkcli` 读取、创建、更新并推进工作。
 
-最终用户感受到的是一次自然对话，后台可以完成 Agent 选择、Runtime 路由、Harness Session、持续执行、Artifact 生成和 Approval Gate。
+最终用户从一次自然对话开始；复杂工作状态沉淀为可视、可编辑、可操作的结构化 Artifact；后台完成 Agent 选择、Runtime 路由、Harness Session、持续执行和 Approval Gate。
 
 ## Target user
 
@@ -88,19 +90,20 @@ Multica 最重要的价值，是通过 Daemon 将这些环境组织成可发现�
 
 ## Product thesis
 
-> **Chatty turns spoken intent into persistent work across your agents and runtimes.**
+> **Chatty turns spoken intent into structured, persistent work across your agents and runtimes.**
 
 中文表达：
 
-> **开口说一句，让工作在你的所有 Agent 和 Runtime 中持续发生。**
+> **开口说一句，让意图在结构化 Workspace 中沉淀，并由你的 Agent 和 Runtime 持续推进。**
 
 所有产品选择都应强化至少一项能力：
 
 1. 更容易表达意图；
 2. 更清楚地与 Agent 协作；
-3. 更可靠地跨 Runtime 执行；
-4. 更安全地控制权限；
-5. 更自然地将结果带回对话。
+3. 更有效地用结构化与图形化 Artifact 承载复杂工作；
+4. 更可靠地跨 Runtime 执行；
+5. 更安全地控制权限；
+6. 更自然地将结果带回对话。
 
 ## Core experience
 
@@ -197,7 +200,7 @@ Main Agent 使用普通 Agent 数据模型，其特殊性来自默认关系、�
 - **Gate:** 控制下一阶段的 `allow`、`ask` 或 `block` 决策点；
 - **Evidence:** 支撑完成状态的测试、日志、截图、链接、消息 ID 或其他验证记录。
 
-对话负责探索、协调和补充上下文；Artifact 负责跨阶段传递确定状态。
+对话负责捕获意图、探索、协调和补充上下文；Artifact 负责跨阶段传递确定状态。文档、多维表格、任务和日程等结构化 Artifact 同时充当 Human 与 Agent 的共享外部记忆。
 
 ## Interaction principles
 
@@ -218,29 +221,47 @@ Main Agent 使用普通 Agent 数据模型，其特殊性来自默认关系、�
 
 点击后才展示 WorkItem、Harness、Runtime、Session、事件流、Artifact、Evidence 和历史状态。
 
-### Conversation as the home of work
+### Conversation is the entry; structured workspace carries the work
 
-所有结构化工作都可以从对话中产生，并最终回到对话中：
+对话是最低摩擦的意图入口，也是 Main Agent 管理用户注意力的主要界面。复杂工作通过适合它的结构化载体持续推进：
 
-- 普通交流显示为消息；
+- 普通交流与即时协调显示为消息；
+- 长内容与共同编辑沉淀为文档；
+- 结构化记录、关系和多视图管理进入多维表格；
+- 责任、状态和截止时间进入任务与日程；
+- 多 Participant 的持续协作进入群聊与 Thread；
 - 持续执行显示为状态卡；
 - 关键选择显示为 Decision Card；
-- 敏感操作显示为 Approval Card；
-- 结果显示为文档、代码、表格、图片或可交互产物。
+- 敏感操作显示为 Approval Card。
+
+对话中呈现摘要、通知、预览、操作入口与关键 Gate。完整工作状态保存在对应的结构化 Artifact 中，用户和 Agent 可以在同一对象上查看、编辑和继续执行。
+
+### Structured workspace as shared external memory
+
+图形化与结构化 Artifact 把隐含上下文外化为共享状态。Human 可以快速扫描、比较、筛选和修改；Agent 可以读取 Schema、字段、关系、负责人和状态，并执行精确更新。双方因此减少重复沟通，同时保留可审阅、可追踪的工作记录。
 
 ### Human attention at gates
 
 系统应让 Agent 尽可能持续推进，把 Human 的注意力集中在目标校准、关键取舍、敏感操作、异常处理和最终接受上。
 
-## Lark as a capability provider
+## Lark as the workflow and artifact layer
 
-飞书通过 `larkcli` 向 Chatty 提供工作能力：
+飞书在 Chatty 中提供两层基础能力：
 
-`Main Agent → Target Agent → Harness → larkcli → Lark`
+1. **Structured Workspace:** 文档、多维表格、群聊、任务和日程承载共享上下文、结构化数据、协作关系、责任、状态与时间；
+2. **Agent Control Surface:** `larkcli` 让 Agent 可以搜索、读取、创建、更新和连接这些对象。
 
-`larkcli` 安装并认证在具体 Runtime，例如 Work Mac。相关凭证保留在该 Runtime 中。本地策略决定每项操作是自动允许、请求批准或阻断。
+核心链路：
 
-Chatty 保留独立的 AI-native IM 体验，同时调用飞书已有的消息、文档、任务与日程能力。
+`Voice / Chat → Main Agent → Target Agent → Harness → larkcli → Lark Workspace`
+
+回流链路：
+
+`Lark Artifact / Event → Main Agent → Summary / Card / Gate → Human`
+
+`larkcli` 安装并认证在具体 Runtime，例如 Work Mac。相关凭证保留在该 Runtime 中，本地策略决定每项操作是自动允许、请求批准或阻断。
+
+Chatty 的 V1 可以优先深度连接飞书已经成熟的结构化工作空间，在对话中提供原生卡片、摘要、预览和操作入口。这样既保留 AI-native IM 的低摩擦交流，也让复杂工作拥有高信息密度、可编辑和可执行的图形化载体。
 
 ## Product inspirations and boundaries
 
@@ -250,7 +271,8 @@ Chatty 保留独立的 AI-native IM 体验，同时调用飞书已有的消息�
 | Buzz | Human/Agent 一级身份、消息空间、Activity 与协作关系 |
 | Multica | Daemon、Runtime Fleet、跨设备与跨权限持续执行 |
 | ChatGPT / Codex | AI 过程、工具调用、状态、Artifact 与结果展示 |
-| 飞书 / `larkcli` | 可被 Agent 调度的完整工作能力 |
+| 飞书 | 文档、多维表格、群聊、任务与日程组成的结构化工作空间和图形化协作基础 |
+| `larkcli` | Agent 搜索、读取、创建、更新和连接飞书 Artifact 的控制接口 |
 | Anthropic AI-native SDLC | Intent、Artifact、Human Gate 与可审计闭环 |
 
 Chatty 的独特产品中心是：个人与 Main Agent 的长期关系、以人的注意力为核心的协作拓扑，以及从自然表达跨越多个 Runtime 持续执行的完整体验。
@@ -268,7 +290,7 @@ Stage 1 当前提出的首期范围：
 - 多 Runtime 注册、心跳、能力发现、任务调度与恢复；
 - 手机优先的文字、图片、文件和长按语音转文字；
 - 对话内的 WorkItem 状态、Decision、Approval、Artifact 与 Evidence；
-- 通过 Work Runtime 上的 `larkcli` 调度至少一项真实飞书能力；
+- 通过 Work Runtime 上的 `larkcli` 读写至少一种真实的飞书结构化 Artifact，并在 Chatty 对话中呈现摘要、预览或操作卡片；
 - Runtime 本地执行 `allow / ask / block` 策略。
 
 ## Out of scope for the first release
@@ -290,6 +312,7 @@ Stage 1 当前提出的首期范围：
 - 任务需要支持离线、重连和 Session 恢复；
 - Main Agent 是默认入口，底层复杂度逐步展开；
 - Voice 是输入方式，转写文字进入可搜索上下文；
+- 复杂工作状态优先沉淀为结构化 Artifact，Chatty 对话负责入口、摘要、通知与 Gate；
 - Git 中的 Artifact 构成产品设计与实现决策的审计记录；
 - 首版优先验证个人高频使用价值，控制平台范围。
 
@@ -304,7 +327,7 @@ Stage 1 当前提出的首期范围：
 5. 用户离开客户端后任务继续运行，重连后状态与事件保持连续；
 6. 进度、需要确认的问题和最终结果都回到原始对话；
 7. 完成状态至少包含一种可验证 Evidence；
-8. Work Runtime 可以通过 `larkcli` 完成一项经过策略检查的真实工作操作；
+8. Work Runtime 可以通过 `larkcli` 创建或更新真实的飞书结构化 Artifact，并将可验证结果带回原始对话；
 9. Runtime 凭证不会传入 Chatty Control Plane 或其他 Runtime；
 10. 用户愿意把 Chatty 作为日常调用个人 Agent 的默认入口持续使用。
 
@@ -323,7 +346,9 @@ Stage 1 当前提出的首期范围：
 9. 长按语音的转写服务、隐私边界、流式协议和离线能力如何选择？
 10. 移动端、Control Plane、Daemon 和 Harness Adapter 的首期技术栈如何确定？
 11. 哪些操作可以 `allow`，哪些必须 `ask`，哪些始终 `block`？
-12. Chatty Control Plane 的托管、自托管与数据所有权边界如何设计？
+12. Chatty 原生实现哪些结构化组件，哪些直接复用或嵌入飞书对象？
+13. 对话消息、Chatty WorkItem 与飞书 Artifact 之间如何建立稳定引用与双向状态同步？
+14. Chatty Control Plane 的托管、自托管与数据所有权边界如何设计？
 
 这些问题允许保留到 Stage 2，但会实质改变首期架构或体验的问题需要在 `spec.md` 中明确决策。
 
@@ -335,7 +360,7 @@ Stage 1 当前提出的首期范围：
 - Product thesis 可以指导产品取舍；
 - 核心概念定义没有混淆 Agent、Harness、Runtime 与 Daemon；
 - Main Agent 的默认关系得到确认；
-- 首期范围足以验证 Voice → Conversation → Execution；
+- 首期范围足以验证 Voice → Conversation → Structured Workspace → Execution；
 - Out of scope 可以控制第一版规模；
 - Open questions 已标记为 Stage 2 决策或后续假设。
 
