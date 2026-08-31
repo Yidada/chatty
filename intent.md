@@ -46,7 +46,7 @@ Buzz 已经把 Human 与 Agent 放进同一个通信空间，Agent 拥有身份�
 - Raspberry Pi 连接家庭局域网、传感器和 IoT；
 - Windows PC 可能拥有 GPU、Windows 软件或特定工具。
 
-Multica 最重要的价值，是通过 Daemon 将这些环境组织成可发现、可调度、可持续执行的 Runtime Fleet。
+Multica 最重要的价值，是通过 Daemon 将这些环境组织成可发现、可调度、可持续执行的 Runtime Fleet。Chatty V1 直接复用 Multica 的 Daemon、Runtime Fleet 与连接能力，每台 Runtime 的网络条件以 Multica 当前实现的要求为准。
 
 ### 4. AI collaboration needs a shared Context Layer
 
@@ -73,7 +73,7 @@ Multica 最重要的价值，是通过 Daemon 将这些环境组织成可发现�
 - 用户打开 App 后直接进入 Main Agent；
 - 用户通过文字、长按语音转文字、图片或文件表达意图；
 - Main Agent 理解上下文，自己处理或委派给其他 Agent；
-- Agent 使用稳定绑定的主 Harness 与主 Runtime；主 Runtime 不可用时等待恢复；
+- Agent 使用稳定绑定的主 Harness 与 Multica 管理的主 Runtime；主 Runtime 不可用时等待恢复；
 - 任务离开 App 后继续执行，可暂停、恢复和跨 Session 延续；
 - 进度、询问、审批、证据与结果回到原始对话；
 - Runtime 保留各自的文件、网络、工具、设备、账号和凭证边界；
@@ -126,7 +126,7 @@ Multica 最重要的价值，是通过 Daemon 将这些环境组织成可发现�
 3. Main Agent 结合长期上下文理解意图。
 4. Main Agent 创建持续运行的 WorkItem，并委派给开发 Agent。
 5. 开发 Agent 加载其 Codex + Home Mac mini 主 ExecutionBinding。
-6. Runtime Daemon 启动或恢复 Harness Session。
+6. Multica Runtime Daemon 启动或恢复 Harness Session。
 7. 用户离开 App，任务继续运行。
 8. 原对话中显示轻量状态：
    - 已委派给开发 Agent；
@@ -180,7 +180,7 @@ Harness 负责 Session、模型循环、工具调用和事件输出。Harness �
 
 ### Runtime
 
-Runtime 是任何运行 Chatty Daemon 的执行端点。它同时代表：
+Runtime 是由 Multica Daemon 暴露、并由 Multica Runtime Control Plane 管理的执行端点。Chatty 将每个 Runtime 视为外部执行资源的投影，它同时代表：
 
 - 一个计算环境；
 - 一个文件与网络环境；
@@ -188,13 +188,34 @@ Runtime 是任何运行 Chatty Daemon 的执行端点。它同时代表：
 - 一组凭证和权限边界；
 - 一个可以启动或恢复 Harness Session 的位置。
 
+**Decision:** Chatty V1 直接复用 Multica 的 Runtime 实现与连接能力。
+
+- 每台 Runtime 只需满足 Multica 当前实现所要求的网络条件；
+- Runtime 的发现、注册、身份验证、加密连接、心跳、重连、任务领取与撤销由 Multica 管理；
+- Chatty 消费 Multica 提供的 Runtime ID、在线状态、能力、负载、Session 与事件；
+- Multica 中的主 Runtime 不可用时，WorkItem 保持 `WAITING_FOR_RUNTIME`，等待原 Runtime 恢复。
+
 ### Runtime Fleet
 
-Runtime Fleet 是用户全部可调用 Runtime 的集合，也是 Chatty 的执行网络。每个 Runtime 持续上报身份、在线状态、负载、Harness 与能力声明。
+Chatty 的 Runtime Fleet 直接使用 Multica 已注册并管理的 Runtime 集合。Chatty 根据当前 ContextSpace、Agent 的 RuntimeScope 和权限策略建立可见投影，并在 WorkItem 中引用具体的 Multica Runtime。
+
+Multica 是 V1 的唯一 Runtime Backend。首期不提供其他 Runtime Backend，也不建设自动 Failover。
 
 ### Daemon
 
-Daemon 连接 Runtime 与 Chatty Control Plane，负责注册、心跳、能力发现、任务领取、Session 生命周期、事件同步、断线恢复和本地策略执行。
+Chatty 直接使用 Multica Daemon。Daemon 的安装、启动、身份、认证、安全连接、心跳、重连、任务领取、本地 Session 生命周期、事件上报与撤销均遵循 Multica 的实现和能力。Chatty 将这些能力视为 Multica 管理的基础设施。
+
+### MulticaRuntimeProvider
+
+`MulticaRuntimeProvider` 是 Chatty 与 Multica 之间唯一的 Runtime 适配边界：
+
+- 将 `Agent.PrimaryRuntimeBinding` 解析为 Multica Runtime ID；
+- 将 Chatty WorkItem 与 Run / Step 关联到 Multica 的任务、Session 和执行记录；
+- 从 Multica 状态生成 Chatty 的 `ExecutionBinding`、等待状态和恢复事件；
+- 将 Multica 的 Session、Tool Call、结果与异常事件映射为 Chatty 消息、卡片、Artifact 和 Evidence；
+- 将 ContextSpace、RuntimeScope 与 Gate 决策投影为调用 Multica 前的授权约束。
+
+Chatty 保留 Participant、Main Agent、ContextSpace、WorkItem、Context Layer、Gate 与用户界面的产品语义；Multica 负责 Runtime 网络、Daemon 生命周期和底层执行连接。
 
 ### Main Agent
 
@@ -353,7 +374,7 @@ Chatty 的 V1 可以先验证一个混合闭环：索引一种飞书原生对象
 | --- | --- |
 | 豆包 | 面向 AI 的手机交互、自然对话、长按语音转文字 |
 | Buzz | Human/Agent 一级身份、消息空间、Activity 与协作关系 |
-| Multica | Daemon、Runtime Fleet、跨设备与跨权限持续执行 |
+| Multica | 直接复用 Daemon、Runtime Fleet、连接、认证、心跳、恢复与跨权限执行能力 |
 | ChatGPT / Codex | AI 过程、工具调用、状态、Artifact 与结果展示 |
 | 飞书 | Context Layer：索引所有获得授权的相关内容，并提供关系图、检索路由与原生工作对象 |
 | `larkcli` | Agent 查询和维护 Lark Context Index，并操作飞书原生对象的接口 |
@@ -373,7 +394,7 @@ Stage 1 当前提出的首期范围：
 - 每个 Agent 配置稳定的主 Harness 与主 Runtime；
 - Harness 与 Runtime 独立建模和配置；
 - 至少两个 Harness 的统一 Session 与事件抽象；
-- 多 Runtime 注册、心跳、能力发现、任务调度与恢复；
+- 通过 `MulticaRuntimeProvider` 接入 Multica 管理的多 Runtime，映射在线状态、能力、任务、Session、事件与恢复；
 - 手机优先的文字、图片、文件和长按语音转文字；
 - 所有 Tool Call 都进入用户可见的 WorkItem，同一意图下的调用以 Runs / Steps 展开；
 - 通过 `larkcli` 索引至少一种飞书原生对象与一种外部 Source of Truth，完成查询、按需取回、回写与索引刷新，并在 Chatty 对话中呈现摘要、预览或操作卡片；
@@ -385,6 +406,7 @@ Stage 1 当前提出的首期范围：
 - 企业组织架构、复杂成员管理和计费；
 - 替代飞书现有的文档、日程与任务系统；
 - 自研基础模型或完整复刻各类 Harness；
+- 自研 Runtime 网络协议、Daemon、注册、认证、心跳、重连或撤销系统；
 - 默认自动执行高风险、不可逆或跨权限边界的操作；
 - 同时覆盖所有桌面与移动平台；
 - 在首个可用闭环前建设完整 Project、Issue 或 Board 管理产品。
@@ -393,6 +415,8 @@ Stage 1 当前提出的首期范围：
 
 - Human 与 Agent 的 Participant 模型从第一天保持对等；
 - Harness 与 Runtime 必须独立建模；
+- Multica 是 V1 唯一的 Runtime Backend，所有 Runtime 网络与 Daemon 生命周期能力直接遵循 Multica；
+- Chatty 只通过 `MulticaRuntimeProvider` 引用与映射 Multica Runtime；
 - WorkItem 创建后固定 ExecutionBinding，主 Runtime 不可用时等待恢复；
 - 系统禁止自动 Failover，手动改绑需要显式 Gate 与审计记录；
 - 凭证和敏感数据默认保留在目标 Runtime；
@@ -418,7 +442,7 @@ Stage 1 当前提出的首期范围：
 3. 每个触发 Tool Call 的用户意图都会在第一次调用前创建一个可见 WorkItem，所有调用都能在 Runs / Steps 中追踪；
 4. Main Agent 可以将任务委派给另一个 Agent；
 5. Agent 使用固定的主 Harness 与主 Runtime 启动 Session；主 Runtime 离线或繁忙时，WorkItem 进入等待状态，并在原绑定恢复可用后继续；
-6. 用户离开客户端后任务继续运行，重连后状态与事件保持连续；
+6. 用户离开客户端后任务继续运行；Multica Daemon 重连后，Chatty 经 `MulticaRuntimeProvider` 恢复连续的状态与事件；
 7. 进度、需要确认的问题和最终结果都回到原始对话；
 8. 完成状态至少包含一种可验证 Evidence；
 9. Main Agent 可以从 Lark Context Index 找到一个外部 Artifact，经 Source Resolver 在授权环境中取回，完成操作后回写 Source of Truth 并刷新索引；
@@ -430,22 +454,20 @@ Stage 1 当前提出的首期范围：
 
 ## Open questions
 
-1. Runtime 发现、身份验证、加密连接和撤销机制采用什么协议？
-2. Daemon 与 Multica 的关系是直接复用、兼容协议、扩展，还是独立实现？
-3. Buzz 的事件、Agent 身份或 Activity 模型可以复用到什么粒度？
-4. Harness 之间需要统一哪些 Session、Tool Call、Permission 与 Artifact 事件？
-5. Main Agent 的长期记忆如何按 ContextSpace 存储，GlobalAgentProfile 允许包含哪些非上下文设置？
-6. 长按语音的转写服务、隐私边界、流式协议和离线能力如何选择？
-7. 移动端、Control Plane、Daemon 和 Harness Adapter 的首期技术栈如何确定？
-8. 哪些操作可以 `allow`，哪些必须 `ask`，哪些始终 `block`？
-9. ContextRef 的最小 Schema、关系类型和生命周期如何定义？
-10. 全文、关键词、结构化过滤、语义向量和关系图检索如何组合与排序？
-11. Source Resolver 如何把 ContextRef 映射到正确的 Runtime、Connector 与凭证环境？
-12. 源内容变化后，通过 Webhook、事件、轮询或按需校验中的哪些机制刷新索引？
-13. 如何镜像源系统权限，并处理权限变化、索引泄露和过期摘要？
-14. Chatty 原生实现哪些 Context 展示与交互组件，哪些直接复用或嵌入飞书对象？
-15. 对话消息、Chatty WorkItem 与 ContextRef 之间如何建立稳定引用与双向状态同步？
-16. Chatty Control Plane 的托管、自托管与数据所有权边界如何设计？
+1. Buzz 的事件、Agent 身份或 Activity 模型可以复用到什么粒度？
+2. Harness 之间需要统一哪些 Session、Tool Call、Permission 与 Artifact 事件？
+3. Main Agent 的长期记忆如何按 ContextSpace 存储，GlobalAgentProfile 允许包含哪些非上下文设置？
+4. 长按语音的转写服务、隐私边界、流式协议和离线能力如何选择？
+5. 移动端、Control Plane、Daemon 和 Harness Adapter 的首期技术栈如何确定？
+6. 哪些操作可以 `allow`，哪些必须 `ask`，哪些始终 `block`？
+7. ContextRef 的最小 Schema、关系类型和生命周期如何定义？
+8. 全文、关键词、结构化过滤、语义向量和关系图检索如何组合与排序？
+9. Source Resolver 如何把 ContextRef 映射到正确的 Runtime、Connector 与凭证环境？
+10. 源内容变化后，通过 Webhook、事件、轮询或按需校验中的哪些机制刷新索引？
+11. 如何镜像源系统权限，并处理权限变化、索引泄露和过期摘要？
+12. Chatty 原生实现哪些 Context 展示与交互组件，哪些直接复用或嵌入飞书对象？
+13. 对话消息、Chatty WorkItem 与 ContextRef 之间如何建立稳定引用与双向状态同步？
+14. Chatty Control Plane 的托管、自托管与数据所有权边界如何设计？
 
 这些问题允许保留到 Stage 2，但会实质改变首期架构或体验的问题需要在 `spec.md` 中明确决策。
 
