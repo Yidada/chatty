@@ -113,9 +113,9 @@ Multica 最重要的价值，是通过 Daemon 将这些环境组织成可发现�
 1. 更容易表达意图；
 2. 更清楚地与 Agent 协作；
 3. 更有效地用结构化与图形化 Artifact 承载复杂工作；
-4. 更可靠地跨 Runtime 执行；
-5. 更安全地控制权限；
-6. 更自然地将结果带回对话。
+5. 更可靠地跨 Runtime 执行；
+6. 更安全地控制权限；
+7. 更自然地将结果带回对话。
 
 ## Core experience
 
@@ -124,16 +124,16 @@ Multica 最重要的价值，是通过 Daemon 将这些环境组织成可发现�
 1. 用户长按输入框说：“让家里 Mac mini 上的开发 Agent 看一下 Chatty，按照 intent 生成第一版技术方案。”
 2. 语音实时转成文字，并允许用户编辑后发送。
 3. Main Agent 结合长期上下文理解意图。
-4. Main Agent 创建持续运行的 WorkItem，并委派给开发 Agent。
-5. 开发 Agent 加载其 Codex + Home Mac mini 主 ExecutionBinding。
-6. Runtime Daemon 启动或恢复 Harness Session。
-7. 用户离开 App，任务继续运行。
-8. 原对话中显示轻量状态：
+5. Main Agent 创建持续运行的 WorkItem，并委派给开发 Agent。
+6. 开发 Agent 加载其 Codex + Home Mac mini 主 ExecutionBinding。
+7. Runtime Daemon 启动或恢复 Harness Session。
+8. 用户离开 App，任务继续运行。
+9. 原对话中显示轻量状态：
    - 已委派给开发 Agent；
    - Codex · Home Mac mini · Running；
    - 已生成 `spec.md` · 等待确认。
-9. 用户在需要判断时通过消息或 Approval Card 继续推进。
-10. 完成状态附带 Artifact、测试、日志、截图或链接等 Evidence。
+10. 用户在需要判断时通过消息或 Approval Card 继续推进。
+11. 完成状态附带 Artifact、测试、日志、截图或链接等 Evidence。
 
 ## Core concept decisions
 
@@ -247,14 +247,27 @@ Main Agent 查询 Context Index 来理解用户、过滤信息和组织 Gate；�
 
 `larkcli` 是 Context Index 的 Query / Read / Write Interface。Context 的搜索结果与实际取回过程都受 Agent 权限、RuntimeScope、源系统权限和本地策略约束。
 
-### WorkItem, Artifact, Gate and Evidence
+### WorkItem, Run, Artifact, Gate and Evidence
 
-- **WorkItem:** 一次需要持续推进、可暂停与恢复的工作；
+- **WorkItem:** 一个用户意图触发的可见执行单元；
+- **Run / Step:** WorkItem 内的一次 Agent、Harness 或 Tool 执行；
 - **Artifact:** 在 Human、Agent、Harness 和 Runtime 之间传递的可审阅结果；
 - **Gate:** 控制下一阶段的 `allow`、`ask` 或 `block` 决策点；
 - **Evidence:** 支撑完成状态的测试、日志、截图、链接、消息 ID 或其他验证记录。
 
-对话负责捕获意图、探索、协调和补充上下文；Artifact 负责跨阶段传递确定状态。Lark Context Layer 通过索引与关系图连接飞书原生对象及外部 Source of Truth，形成 Human 与 Agent 的共享工作地图。
+**Decision:** 所有 Tool Call 都必须存在于一个用户可见的 WorkItem 中。
+
+- 纯文本回复继续作为普通消息，不创建 WorkItem；
+- Main Agent 在第一次 Tool Call 前创建 WorkItem；
+- 同一个用户意图中的多个 Tool Calls 归入同一个顶层 WorkItem；
+- 每次 Tool Call 形成可展开的 Run / Step，记录 Agent、Tool、Runtime、输入摘要、状态、耗时、输出与 Evidence；
+- 委派、读取、搜索和其他只读 Tool Call 同样触发 WorkItem；
+- 快速完成的 WorkItem 可以默认折叠，但始终保留在对话与历史记录中；
+- WorkItem 至少支持 `CREATED`、`RUNNING`、`WAITING`、`BLOCKED`、`COMPLETED`、`FAILED` 和 `CANCELED` 状态。
+
+`WorkItem = User Intent + ContextSpace + ExecutionBinding + Runs + Artifacts + Gates + Evidence`
+
+对话负责捕获意图、探索、协调和补充上下文；WorkItem 负责承载所有工具执行的可见生命周期；Artifact 负责跨阶段传递确定状态。Lark Context Layer 通过索引与关系图连接飞书原生对象及外部 Source of Truth，形成 Human 与 Agent 的共享工作地图。
 
 ## Interaction principles
 
@@ -362,7 +375,7 @@ Stage 1 当前提出的首期范围：
 - 至少两个 Harness 的统一 Session 与事件抽象；
 - 多 Runtime 注册、心跳、能力发现、任务调度与恢复；
 - 手机优先的文字、图片、文件和长按语音转文字；
-- 对话内的 WorkItem 状态、Decision、Approval、Artifact 与 Evidence；
+- 所有 Tool Call 都进入用户可见的 WorkItem，同一意图下的调用以 Runs / Steps 展开；
 - 通过 `larkcli` 索引至少一种飞书原生对象与一种外部 Source of Truth，完成查询、按需取回、回写与索引刷新，并在 Chatty 对话中呈现摘要、预览或操作卡片；
 - Runtime 本地执行 `allow / ask / block` 策略。
 
@@ -391,6 +404,8 @@ Stage 1 当前提出的首期范围：
 - 每项内容保留明确的 Source of Truth，Lark Context Layer 负责索引、关联和检索路由；
 - Context Index 只保存发现、理解、协调和取回所需的信息；
 - Chatty 对话负责入口、摘要、通知与 Gate；
+- 任何 Tool Call 必须先创建或加入当前用户可见的 WorkItem；
+- 同一用户意图只创建一个顶层 WorkItem，工具调用以 Runs / Steps 组织；
 - Git 中的 Artifact 构成产品设计与实现决策的审计记录；
 - 首版优先验证个人高频使用价值，控制平台范围。
 
@@ -400,37 +415,37 @@ Stage 1 当前提出的首期范围：
 
 1. 用户可以通过一次长按语音输入创建明确请求，并在发送前编辑转写文本；
 2. 用户无需先配置 Project、Issue 或 Board，就能从 Main Agent 对话发起持续任务；
-3. Main Agent 可以将任务委派给另一个 Agent；
-4. Agent 使用固定的主 Harness 与主 Runtime 启动 Session；主 Runtime 离线或繁忙时，WorkItem 进入等待状态，并在原绑定恢复可用后继续；
-5. 用户离开客户端后任务继续运行，重连后状态与事件保持连续；
-6. 进度、需要确认的问题和最终结果都回到原始对话；
-7. 完成状态至少包含一种可验证 Evidence；
-8. Main Agent 可以从 Lark Context Index 找到一个外部 Artifact，经 Source Resolver 在授权环境中取回，完成操作后回写 Source of Truth 并刷新索引；
-9. Runtime 凭证不会传入 Chatty Control Plane 或其他 Runtime；
-10. Life 空间内的请求无法发现、读取或调用 Work 空间中的 Context、Agent、Runtime 和 Tool；
-11. 用户愿意把 Chatty 作为日常调用个人 Agent 的默认入口持续使用。
+3. 每个触发 Tool Call 的用户意图都会在第一次调用前创建一个可见 WorkItem，所有调用都能在 Runs / Steps 中追踪；
+5. Main Agent 可以将任务委派给另一个 Agent；
+5. Agent 使用固定的主 Harness 与主 Runtime 启动 Session；主 Runtime 离线或繁忙时，WorkItem 进入等待状态，并在原绑定恢复可用后继续；
+6. 用户离开客户端后任务继续运行，重连后状态与事件保持连续；
+7. 进度、需要确认的问题和最终结果都回到原始对话；
+8. 完成状态至少包含一种可验证 Evidence；
+9. Main Agent 可以从 Lark Context Index 找到一个外部 Artifact，经 Source Resolver 在授权环境中取回，完成操作后回写 Source of Truth 并刷新索引；
+10. Runtime 凭证不会传入 Chatty Control Plane 或其他 Runtime；
+11. Life 空间内的请求无法发现、读取或调用 Work 空间中的 Context、Agent、Runtime 和 Tool；
+12. 用户愿意把 Chatty 作为日常调用个人 Agent 的默认入口持续使用。
 
-第 11 项需要在首个 Dogfood 周期中通过真实使用频率、Main Agent 入口占比、任务完成率和用户主动回访进行验证。
+第 12 项需要在首个 Dogfood 周期中通过真实使用频率、Main Agent 入口占比、任务完成率和用户主动回访进行验证。
 
 ## Open questions
 
-1. WorkItem 在什么条件下从普通对话中自动产生？
-2. Runtime 发现、身份验证、加密连接和撤销机制采用什么协议？
-3. Daemon 与 Multica 的关系是直接复用、兼容协议、扩展，还是独立实现？
-4. Buzz 的事件、Agent 身份或 Activity 模型可以复用到什么粒度？
-5. Harness 之间需要统一哪些 Session、Tool Call、Permission 与 Artifact 事件？
-6. Main Agent 的长期记忆如何按 ContextSpace 存储，GlobalAgentProfile 允许包含哪些非上下文设置？
-7. 长按语音的转写服务、隐私边界、流式协议和离线能力如何选择？
-8. 移动端、Control Plane、Daemon 和 Harness Adapter 的首期技术栈如何确定？
-9. 哪些操作可以 `allow`，哪些必须 `ask`，哪些始终 `block`？
-10. ContextRef 的最小 Schema、关系类型和生命周期如何定义？
-11. 全文、关键词、结构化过滤、语义向量和关系图检索如何组合与排序？
-12. Source Resolver 如何把 ContextRef 映射到正确的 Runtime、Connector 与凭证环境？
-13. 源内容变化后，通过 Webhook、事件、轮询或按需校验中的哪些机制刷新索引？
-14. 如何镜像源系统权限，并处理权限变化、索引泄露和过期摘要？
-15. Chatty 原生实现哪些 Context 展示与交互组件，哪些直接复用或嵌入飞书对象？
-16. 对话消息、Chatty WorkItem 与 ContextRef 之间如何建立稳定引用与双向状态同步？
-17. Chatty Control Plane 的托管、自托管与数据所有权边界如何设计？
+1. Runtime 发现、身份验证、加密连接和撤销机制采用什么协议？
+2. Daemon 与 Multica 的关系是直接复用、兼容协议、扩展，还是独立实现？
+3. Buzz 的事件、Agent 身份或 Activity 模型可以复用到什么粒度？
+4. Harness 之间需要统一哪些 Session、Tool Call、Permission 与 Artifact 事件？
+5. Main Agent 的长期记忆如何按 ContextSpace 存储，GlobalAgentProfile 允许包含哪些非上下文设置？
+6. 长按语音的转写服务、隐私边界、流式协议和离线能力如何选择？
+7. 移动端、Control Plane、Daemon 和 Harness Adapter 的首期技术栈如何确定？
+8. 哪些操作可以 `allow`，哪些必须 `ask`，哪些始终 `block`？
+9. ContextRef 的最小 Schema、关系类型和生命周期如何定义？
+10. 全文、关键词、结构化过滤、语义向量和关系图检索如何组合与排序？
+11. Source Resolver 如何把 ContextRef 映射到正确的 Runtime、Connector 与凭证环境？
+12. 源内容变化后，通过 Webhook、事件、轮询或按需校验中的哪些机制刷新索引？
+13. 如何镜像源系统权限，并处理权限变化、索引泄露和过期摘要？
+14. Chatty 原生实现哪些 Context 展示与交互组件，哪些直接复用或嵌入飞书对象？
+15. 对话消息、Chatty WorkItem 与 ContextRef 之间如何建立稳定引用与双向状态同步？
+16. Chatty Control Plane 的托管、自托管与数据所有权边界如何设计？
 
 这些问题允许保留到 Stage 2，但会实质改变首期架构或体验的问题需要在 `spec.md` 中明确决策。
 
