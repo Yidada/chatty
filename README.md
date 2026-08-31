@@ -1,10 +1,10 @@
 # Chatty
 
-> 一个以 Main Agent 管理人的注意力、以 Lark Context Layer 索引全部相关内容、以 Runtime Fleet 为执行网络的 AI-native 个人计算系统。
+> 一个以 Main Agent 管理人的注意力、以 Lark Context Layer 索引全部相关内容、以 Multica Runtime Fleet 为执行网络的 AI-native 个人计算系统。
 
 Chatty 希望提供一种真正属于个人的 AI 协作体验：像使用豆包一样自然地表达需求，通过与 Main Agent 的持续对话调度不同 Agent，并让这些 Agent 在分布于不同设备、权限和网络环境中的 Runtime 上可靠执行任务。
 
-Chatty 参考 Multica 的 Runtime 与 Daemon 架构，也吸收豆包面向 AI 的交互体验。Lark Context Layer 为飞书原生对象和外部内容建立统一索引；`larkcli` 是 Agent 查询和维护这层 Context Index 的接口。
+Chatty 直接复用 Multica 的 Runtime、Daemon 与连接能力，也吸收豆包面向 AI 的交互体验。Lark Context Layer 为飞书原生对象和外部内容建立统一索引；`larkcli` 是 Agent 查询和维护这层 Context Index 的接口。
 
 ## Why Chatty
 
@@ -14,7 +14,7 @@ Chatty 参考 Multica 的 Runtime 与 Daemon 架构，也吸收豆包面向 AI �
 - ChatGPT 与 Codex 擅长呈现推理、工具调用、执行过程和最终产物。
 - 飞书提供 Context Index、Context Graph、Retrieval Routing 与原生工作对象，`larkcli` 让 Agent 可以查询和维护这套索引。
 - Buzz 让 Human 与 Agent 进入同一个通信空间。
-- Multica 将分散在不同环境中的 Runtime 连接起来，并可靠调度本地 Agent Harness。
+- Multica 提供 Chatty V1 的 Runtime Backend，直接承担 Daemon、连接、认证、心跳、恢复与本地 Agent Harness 调度。
 
 Chatty 将这些能力组织成一个以个人为中心的系统。用户无需持续守着 Terminal，也无需从 Project、Issue 或 Runtime 管理页面开始工作。任务可以从自然对话中产生，Lark Context Layer 索引相关内容并路由到对应 Source of Truth，摘要、通知和关键 Gate 回到对话中。
 
@@ -76,35 +76,30 @@ Harness 与 Runtime 是两个独立概念。
 
 从执行角度看：
 
-`AgentExecution = HarnessBinding + RuntimeBinding`
+`AgentExecution = PrimaryHarnessBinding + PrimaryRuntimeBinding`
 
 从产品角度看：
 
-`Agent = Identity + HarnessProfile + RuntimeScope`
+`Agent = Identity + PrimaryHarnessBinding + PrimaryRuntimeBinding + RuntimeScope`
 
 - **Identity**：名称、头像、角色、记忆、权限和关系；
-- **HarnessProfile**：使用的 Agent 执行框架、模型和参数；
-- **RuntimeScope**：允许调用的 Runtime 集合及路由策略。
+- **PrimaryHarnessBinding**：默认 Harness、模型和参数；
+- **PrimaryRuntimeBinding**：Agent 持续工作的主 Multica Runtime；
+- **RuntimeScope**：用户可以通过显式 Gate 手动改绑的 Runtime 边界。
+
+WorkItem 创建时会快照固定的 ExecutionBinding。主 Runtime 离线或繁忙时，WorkItem 等待原 Runtime 恢复，系统不执行自动 Failover。
 
 ### 6. Runtime is an environment and permission boundary
 
-Runtime 是任何运行 Chatty Daemon 的执行端点。它可以位于 Mac、Windows PC、Linux Server、Cloud VM 或 Raspberry Pi，也可以存在于不同网络与账号环境中。
+Runtime 是由 Multica Daemon 暴露并由 Multica 管理的执行端点。它可以位于 Mac、Windows PC、Linux Server、Cloud VM 或 Raspberry Pi，也可以存在于不同网络与账号环境中。
 
-每个 Runtime 负责：
+每台 Runtime 只需满足 Multica 当前实现所要求的网络条件。Runtime 的发现、注册、身份验证、安全连接、心跳、重连、任务领取、Session 执行、事件回传与撤销全部由 Multica 负责。
 
-- 注册身份和环境信息；
-- 持续上报在线状态与负载；
-- 声明已安装的 Harness；
-- 声明可用工具、目录、网络、设备和凭证；
-- 接收任务并启动或恢复 Harness Session；
-- 流式回传 reasoning、message、tool call、tool result 和异常；
-- 在断线或进程重启后恢复任务状态。
+Runtime 同时定义权限边界。凭证和本地能力保留在对应环境中，不会因为 Main Agent 可以调用多个 Runtime 而被合并。
 
-Runtime 同时定义权限边界。凭证和本地能力保留在对应环境中，不会因为 Main Agent 可以调度多个 Runtime 而被合并。
+### 7. Multica Runtime Fleet is the execution network
 
-### 7. Runtime Fleet is the execution network
-
-Chatty 将用户可以调用的所有 Runtime 组织成一个持续在线的 Runtime Fleet。
+Chatty 直接使用 Multica 已注册和管理的 Runtime Fleet。
 
 典型示例：
 
@@ -116,7 +111,7 @@ Chatty 将用户可以调用的所有 Runtime 组织成一个持续在线的 Run
 | Raspberry Pi | 家庭局域网、传感器、IoT 控制 |
 | Windows PC | Windows 软件、GPU、特定开发环境 |
 
-Agent 可以拥有一个或多个允许使用的 Runtime。每项任务在权限范围内选择具体执行端点。
+Chatty 通过 `MulticaRuntimeProvider` 将 Agent、ExecutionBinding、WorkItem、Run / Step 与 Multica 的 Runtime、任务、Session 和事件关联。当前 ContextSpace 和 RuntimeScope 决定可见范围；Agent 使用稳定的主 Runtime，离线或繁忙时等待恢复。
 
 ## Concept Model
 
@@ -124,9 +119,9 @@ Agent 可以拥有一个或多个允许使用的 Runtime。每项任务在权限
 flowchart TD
     P[Participant] --> H[Human]
     P --> A[Agent]
-    A --> X[Harness Profile]
-    A --> R[Runtime Scope]
-    R --> D[Daemon Endpoint]
+    A --> X[Primary Harness]
+    A --> R[Primary Runtime]
+    R --> D[Multica Daemon]
 ```
 
 ### Context Layer
@@ -154,15 +149,15 @@ Harness 负责 Session、模型循环、工具调用和事件输出。同一种 
 
 ### Runtime
 
-Runtime 是由 Daemon 暴露的可调度执行环境。Runtime 管理本地 Harness、文件系统、工具、网络、凭证和设备能力。
+Runtime 是由 Multica Daemon 暴露的可调度执行环境。Chatty 通过 `MulticaRuntimeProvider` 引用 Runtime；Multica 管理其连接、状态、Harness、文件系统、工具、网络、凭证和设备能力。
 
 ### Agent
 
-Agent 是一级 Participant，也是 Harness 与 Runtime 的执行聚合。Agent 拥有稳定身份和长期关系，并在其 `RuntimeScope` 内选择执行环境。
+Agent 是一级 Participant，也是 Harness 与 Runtime 的执行聚合。Agent 拥有稳定身份、主 Harness 与主 Runtime；`RuntimeScope` 约束用户可以显式改绑的范围。
 
 ### Daemon
 
-Daemon 是 Runtime 与 Chatty Control Plane 之间的连接层，负责能力发现、任务领取、Session 生命周期、事件同步、心跳和恢复。
+Daemon 直接使用 Multica Daemon，负责能力发现、任务领取、Session 生命周期、事件同步、心跳和恢复。Chatty 通过 `MulticaRuntimeProvider` 接收并映射这些状态与事件。
 
 ## Execution Flow
 
@@ -172,7 +167,7 @@ flowchart TD
     M --> C[Lark Context Index]
     C --> R[Source Resolver]
     R --> A[Target Agent]
-    A --> B[Harness + Runtime Binding]
+    A --> B[Harness + Multica Runtime]
     B --> S[Source of Truth]
     S --> C
     C --> M
@@ -185,8 +180,8 @@ flowchart TD
 3. Lark Context Index 返回经过权限过滤和排序的 ContextRefs；
 4. Source Resolver 定位相关 Source of Truth 与可访问它的 Runtime 或 Connector；
 5. Main Agent 决定直接处理或选择目标 Agent；
-6. 目标 Agent 解析 Harness Profile 与允许的 Runtime；
-7. Daemon 启动或恢复 Harness Session，并按需读取原始内容；
+6. 目标 Agent 加载固定的主 Harness 与主 Multica Runtime；
+7. Multica Daemon 启动或恢复 Harness Session，并按需读取原始内容；
 8. Agent 更新 Source of Truth；
 9. ContextRef 的摘要、关系、状态和更新时间得到刷新；
 10. Main Agent 将结果映射为摘要、卡片或 Gate，并在需要时请求用户决策。
@@ -259,7 +254,7 @@ GitHub、外部文档、本地文件、Runtime Session 和其他服务保留各�
 - 一个默认 Main Agent；
 - 多个可直接对话和被委派的 Agent；
 - Harness 与 Runtime 独立配置；
-- 多 Runtime 注册、心跳、能力发现和任务调度；
+- 通过 `MulticaRuntimeProvider` 接入 Multica Runtime Fleet，并映射状态、任务、Session、事件与恢复；
 - 豆包式文字与长按语音转写交互；
 - 对话内的任务状态、审批和结果展示；
 - 通过 `larkcli` 索引一种飞书原生对象与一种外部 Source of Truth，完成查询、按需取回、回写和索引刷新，并在对话中呈现摘要、预览和操作卡片。
@@ -268,7 +263,7 @@ Human 与 Agent 的统一 Participant 模型从第一天建立。多人邀请、
 
 ## Product Statement
 
-> Chatty is a personal AI-native IM where humans and agents are equal participants, a Main Agent stewards human attention, Lark indexes and routes shared context, and a fleet of permission-scoped runtimes executes work through interchangeable agent harnesses.
+> Chatty is a personal AI-native IM where humans and agents are equal participants, a Main Agent stewards human attention, Lark indexes and routes shared context, and Multica-managed, permission-scoped runtimes execute work through interchangeable agent harnesses.
 
 Chatty 让用户通过一次自然对话表达意图，经由 Lark Context Layer 找到所有相关内容，并调动分布在不同设备、环境和权限边界中的个人计算能力。
 
