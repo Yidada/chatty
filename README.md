@@ -1,10 +1,10 @@
 # Chatty
 
-> 一个以 Main Agent 管理人的注意力、以 Lark Context Layer 承载共享状态、以 Runtime Fleet 为执行网络的 AI-native 个人计算系统。
+> 一个以 Main Agent 管理人的注意力、以 Lark Context Layer 索引全部相关内容、以 Runtime Fleet 为执行网络的 AI-native 个人计算系统。
 
 Chatty 希望提供一种真正属于个人的 AI 协作体验：像使用豆包一样自然地表达需求，通过与 Main Agent 的持续对话调度不同 Agent，并让这些 Agent 在分布于不同设备、权限和网络环境中的 Runtime 上可靠执行任务。
 
-Chatty 参考 Multica 的 Runtime 与 Daemon 架构，也吸收豆包面向 AI 的交互体验。飞书的文档、多维表格、群聊、任务与日程共同构成 Context Layer；`larkcli` 是 Agent 对这层 Context 的读写接口。
+Chatty 参考 Multica 的 Runtime 与 Daemon 架构，也吸收豆包面向 AI 的交互体验。Lark Context Layer 为飞书原生对象和外部内容建立统一索引；`larkcli` 是 Agent 查询和维护这层 Context Index 的接口。
 
 ## Why Chatty
 
@@ -12,11 +12,11 @@ Chatty 参考 Multica 的 Runtime 与 Daemon 架构，也吸收豆包面向 AI �
 
 - 豆包拥有自然、低门槛、面向 AI 的日常交互体验，尤其适合手机端使用。
 - ChatGPT 与 Codex 擅长呈现推理、工具调用、执行过程和最终产物。
-- 飞书提供由文档、多维表格、群聊、任务与日程组成的 Context Layer，`larkcli` 让 Agent 可以读取和更新其中的共享状态。
+- 飞书提供 Context Index、Context Graph、Retrieval Routing 与原生工作对象，`larkcli` 让 Agent 可以查询和维护这套索引。
 - Buzz 让 Human 与 Agent 进入同一个通信空间。
 - Multica 将分散在不同环境中的 Runtime 连接起来，并可靠调度本地 Agent Harness。
 
-Chatty 将这些能力组织成一个以个人为中心的系统。用户无需持续守着 Terminal，也无需从 Project、Issue 或 Runtime 管理页面开始工作。任务可以从自然对话中产生，复杂状态沉淀到 Lark Context Layer，摘要、通知和关键 Gate 回到对话中。
+Chatty 将这些能力组织成一个以个人为中心的系统。用户无需持续守着 Terminal，也无需从 Project、Issue 或 Runtime 管理页面开始工作。任务可以从自然对话中产生，Lark Context Layer 索引相关内容并路由到对应 Source of Truth，摘要、通知和关键 Gate 回到对话中。
 
 ## Core Principles
 
@@ -33,11 +33,11 @@ Chatty 将这些能力组织成一个以个人为中心的系统。用户无需�
 
 ### 2. Context Layer carries shared state
 
-`Lark = Context Layer`。
+`Lark = Context Index + Context Graph + Retrieval Routing + Native Work Objects`
 
-复杂工作需要高信息密度、可扫描、可编辑、可执行的图形化载体。文档、多维表格、群聊、任务和日程将知识、数据、讨论、关系、责任、状态与时间外化为 Human 和 Agent 的实时共享 Context。
+Lark Context Layer 为所有获得授权的相关内容建立统一索引。原始内容可以保留在 GitHub、外部文档、本地文件、Runtime Session、其他服务或飞书原生对象中。
 
-Context Layer 构成双方的共享外部记忆与持续工作状态。Human 可以浏览、筛选、比较和修改；Agent 可以读取 Schema、关系、参与者、任务和时间，并进行精确更新。Chatty 在对话中提供摘要、预览、操作入口和关键 Gate，完整状态保存在 Lark Context Layer。
+索引保存稳定引用、来源、摘要、关系、负责人、状态、更新时间、权限范围与检索路由。Human 可以通过图形化视图浏览、筛选、比较和定位；Agent 可以按语义、Schema、来源、关系、状态与时间检索，再从对应 Source of Truth 按需取回完整内容。
 
 ### 3. Human and Agent are equal participants
 
@@ -131,11 +131,15 @@ flowchart TD
 
 ### Context Layer
 
-Context Layer 是 Human、Main Agent 与其他 Agent 共同读取和写入的实时共享状态：
+Context Layer 为 Human、Main Agent 与其他 Agent 提供统一、可检索的上下文视图：
 
-`Context Layer = Knowledge + Data + Conversation + Work State + Time + Relationships`
+`Context Layer = Index + Graph + Retrieval Routing + Native Work Objects`
 
-Chatty 首期以 Lark 作为 Context Layer 的 Source of Truth。文档、多维表格、群聊、任务和日程分别承载不同维度的 Context，`larkcli` 向 Agent 提供读写接口。
+每个 ContextRef 指向一个真实内容源：
+
+`ContextRef = Source + External ID + Canonical URL + Type + Owner + Scope + Updated At + Summary + Relations + Permission Projection`
+
+每项内容保留明确的 Source of Truth。飞书原生对象可以同时充当 ContextRef 与内容源；外部内容在 Lark 中注册索引节点，使用时由 Source Resolver 路由到具备相应连接和权限的 Runtime 或工具。
 
 ### Harness
 
@@ -165,23 +169,27 @@ Daemon 是 Runtime 与 Chatty Control Plane 之间的连接层，负责能力发
 ```mermaid
 flowchart TD
     U[Human] --> M[Main Agent]
-    M --> A[Target Agent]
+    M --> C[Lark Context Index]
+    C --> R[Source Resolver]
+    R --> A[Target Agent]
     A --> B[Harness + Runtime Binding]
-    B --> D[Runtime Daemon]
-    D --> E[Session Events and Artifacts]
-    E --> M
+    B --> S[Source of Truth]
+    S --> C
+    C --> M
 ```
 
 典型链路：
 
 1. Human 向 Main Agent 发送文字、语音转写、图片或文件；
-2. Main Agent 理解意图并决定直接处理或委派；
-3. 系统选择目标 Agent；
-4. 目标 Agent 解析 Harness Profile 与允许的 Runtime；
-5. 任务发送到对应 Runtime Daemon；
-6. Daemon 启动或恢复本地 Harness Session；
-7. 执行事件持续回传，并映射为 Chatty 消息或状态卡；
-8. Main Agent 汇总结果，并在需要时请求用户决策。
+2. Main Agent 将意图转换为 Context Query；
+3. Lark Context Index 返回经过权限过滤和排序的 ContextRefs；
+4. Source Resolver 定位相关 Source of Truth 与可访问它的 Runtime 或 Connector；
+5. Main Agent 决定直接处理或选择目标 Agent；
+6. 目标 Agent 解析 Harness Profile 与允许的 Runtime；
+7. Daemon 启动或恢复 Harness Session，并按需读取原始内容；
+8. Agent 更新 Source of Truth；
+9. ContextRef 的摘要、关系、状态和更新时间得到刷新；
+10. Main Agent 将结果映射为摘要、卡片或 Gate，并在需要时请求用户决策。
 
 ## AI-native Interaction
 
@@ -201,13 +209,21 @@ Chatty 的整体交互以豆包式 AI 对话体验为主要参考。
 
 > 磁盘管家 · Codex · Home Mac mini · Running
 
-用户点击后再查看 Agent、Harness、Runtime、执行日志、产物和历史状态。Lark Context 对象可以在对话中显示为摘要、预览或可交互卡片，并继续在飞书中编辑。
+用户点击后再查看 Agent、Harness、Runtime、执行日志、产物和历史状态。Lark ContextRef 可以在对话中显示为摘要、预览或可交互卡片；用户随后进入对应 Source of Truth 查看或编辑完整内容。
 
 ## Lark Context Layer
 
-`Lark = Context Layer`
+`Lark = Context Index + Context Graph + Retrieval Routing + Native Work Objects`
 
-飞书通过不同对象保存持续变化的共享 Context：
+Lark Context Layer 重点保存：
+
+- 稳定 ID、来源类型和 Canonical URL；
+- 标题、摘要、标签、负责人和更新时间；
+- 项目、任务、对话、Artifact、Agent 与 Human 之间的关系；
+- 当前状态与必要的结构化投影；
+- 权限范围及取回原始内容所需的路由信息。
+
+飞书原生对象继续提供高效率工作载体：
 
 | Context dimension | Lark primitive |
 | --- | --- |
@@ -217,23 +233,23 @@ Chatty 的整体交互以豆包式 AI 对话体验为主要参考。
 | Ownership and work state | 任务 |
 | Time and commitments | 日程 |
 
-`larkcli = Context Read / Write Interface`。它让 Agent 可以在权限允许的 Runtime 上搜索、读取、创建、更新和连接这些 Context 对象。
+GitHub、外部文档、本地文件、Runtime Session 和其他服务保留各自的 Source of Truth，并在 Lark 中注册 ContextRef。
 
-输入链路：
+`larkcli = Context Index Query / Read / Write Interface`
 
-`Voice / Chat → Main Agent → Read Context`
+检索链路：
 
-执行链路：
+`User Intent → Main Agent → Query Lark Index → Ranked ContextRefs`
 
-`Main Agent → Target Agent → Harness + Runtime → Read / Write Context via larkcli`
+取回链路：
 
-回流链路：
+`ContextRef → Source Resolver → Authorized Runtime / Connector → Source of Truth`
 
-`Context Change / Artifact → Main Agent → Summary / Card / Gate → Human`
+执行与刷新链路：
 
-`larkcli` 安装并认证在具体 Runtime 上，例如 Work Mac。飞书凭证保留在该 Runtime 的权限边界内，Agent 只有在自身权限与 `RuntimeScope` 同时允许时才能使用相关能力。
+`Target Agent → Update Source → Refresh ContextRef → Main Agent`
 
-Chatty 提供低摩擦交流和注意力管理；Lark Context Layer 提供高信息密度、持续更新、可编辑和可执行的共享状态。
+索引查询与源内容访问都执行权限检查。索引只向当前 Human 或 Agent 暴露其有权发现和取回的内容。
 
 ## Initial Product Scope
 
@@ -246,15 +262,15 @@ Chatty 提供低摩擦交流和注意力管理；Lark Context Layer 提供高信
 - 多 Runtime 注册、心跳、能力发现和任务调度；
 - 豆包式文字与长按语音转写交互；
 - 对话内的任务状态、审批和结果展示；
-- 通过 Runtime 中的 `larkcli` 读写 Lark Context 对象，并在对话中呈现摘要、预览和操作卡片。
+- 通过 `larkcli` 索引一种飞书原生对象与一种外部 Source of Truth，完成查询、按需取回、回写和索引刷新，并在对话中呈现摘要、预览和操作卡片。
 
 Human 与 Agent 的统一 Participant 模型从第一天建立。多人邀请、群聊与组织协作可以在这一模型上逐步开放。
 
 ## Product Statement
 
-> Chatty is a personal AI-native IM where humans and agents are equal participants, a Main Agent stewards human attention, Lark provides the shared context layer, and a fleet of permission-scoped runtimes executes work through interchangeable agent harnesses.
+> Chatty is a personal AI-native IM where humans and agents are equal participants, a Main Agent stewards human attention, Lark indexes and routes shared context, and a fleet of permission-scoped runtimes executes work through interchangeable agent harnesses.
 
-Chatty 让用户通过一次自然对话表达意图，在 Lark Context Layer 中沉淀共享状态，并调动分布在所有设备、环境和权限边界中的个人计算能力。
+Chatty 让用户通过一次自然对话表达意图，经由 Lark Context Layer 找到所有相关内容，并调动分布在不同设备、环境和权限边界中的个人计算能力。
 
 ## Status
 
