@@ -73,7 +73,7 @@ Multica 最重要的价值，是通过 Daemon 将这些环境组织成可发现�
 - 用户打开 App 后直接进入 Main Agent；
 - 用户通过文字、长按语音转文字、图片或文件表达意图；
 - Main Agent 理解上下文，自己处理或委派给其他 Agent；
-- Agent 在权限允许的 Runtime 上调用合适的 Harness；
+- Agent 使用稳定绑定的主 Harness 与主 Runtime；主 Runtime 不可用时等待恢复；
 - 任务离开 App 后继续执行，可暂停、恢复和跨 Session 延续；
 - 进度、询问、审批、证据与结果回到原始对话；
 - Runtime 保留各自的文件、网络、工具、设备、账号和凭证边界；
@@ -125,7 +125,7 @@ Multica 最重要的价值，是通过 Daemon 将这些环境组织成可发现�
 2. 语音实时转成文字，并允许用户编辑后发送。
 3. Main Agent 结合长期上下文理解意图。
 4. Main Agent 创建持续运行的 WorkItem，并委派给开发 Agent。
-5. 开发 Agent 选择 Codex Harness 与 Home Mac mini Runtime。
+5. 开发 Agent 加载其 Codex + Home Mac mini 主 ExecutionBinding。
 6. Runtime Daemon 启动或恢复 Harness Session。
 7. 用户离开 App，任务继续运行。
 8. 原对话中显示轻量状态：
@@ -145,17 +145,27 @@ Human 与 Agent 都是 IM 中的一级 `Participant`，共享消息、Thread、C
 
 ### Agent
 
-Agent 是稳定身份与执行能力的聚合：
+Agent 是稳定身份与主执行环境的聚合：
 
-`Agent = Identity + HarnessProfile + RuntimeScope`
+`Agent = Identity + PrimaryHarnessBinding + PrimaryRuntimeBinding + RuntimeScope`
 
 - **Identity:** 名称、头像、角色、记忆、权限和长期关系；
-- **HarnessProfile:** 允许使用的 Harness、模型与参数；
-- **RuntimeScope:** 允许调用的 Runtime 集合与路由策略。
+- **PrimaryHarnessBinding:** 默认 Harness、模型与参数；
+- **PrimaryRuntimeBinding:** Agent 持续工作的主 Runtime；
+- **RuntimeScope:** Agent 允许被手动改绑到的 Runtime 边界。
 
-每次具体执行解析为：
+**Decision:** Agent 使用稳定的主 Harness 与主 Runtime，系统不执行自动 Failover 或负载均衡。
 
-`AgentExecution = HarnessBinding + RuntimeBinding`
+创建 WorkItem 时，系统从 Agent 的 PrimaryBinding 生成一次不可变的 ExecutionBinding：
+
+`WorkItem.ExecutionBinding = snapshot(Agent.PrimaryHarness + Agent.PrimaryRuntime)`
+
+- 同一 WorkItem 和 Harness Session 始终使用该 ExecutionBinding；
+- 主 Runtime 离线时，WorkItem 进入 `WAITING_FOR_RUNTIME`；
+- 主 Runtime 繁忙时，WorkItem 在同一 Runtime 排队；
+- Runtime 恢复后，WorkItem 使用原 ExecutionBinding 自动继续；
+- Chatty 不会因为离线、繁忙、成本或速度自动选择备用 Runtime；
+- 用户可以通过显式 Gate 手动改绑，改绑会创建新的 ExecutionBinding、Session 记录和审计事件。
 
 ### Harness
 
@@ -347,7 +357,8 @@ Stage 1 当前提出的首期范围：
 - Work / Life 两个硬隔离的 Context Spaces；
 - 多个拥有独立身份的 Agent；
 - Agent 可被直接对话，也可被 Main Agent 委派；
-- Harness 与 Runtime 独立配置；
+- 每个 Agent 配置稳定的主 Harness 与主 Runtime；
+- Harness 与 Runtime 独立建模和配置；
 - 至少两个 Harness 的统一 Session 与事件抽象；
 - 多 Runtime 注册、心跳、能力发现、任务调度与恢复；
 - 手机优先的文字、图片、文件和长按语音转文字；
@@ -369,6 +380,8 @@ Stage 1 当前提出的首期范围：
 
 - Human 与 Agent 的 Participant 模型从第一天保持对等；
 - Harness 与 Runtime 必须独立建模；
+- WorkItem 创建后固定 ExecutionBinding，主 Runtime 不可用时等待恢复；
+- 系统禁止自动 Failover，手动改绑需要显式 Gate 与审计记录；
 - 凭证和敏感数据默认保留在目标 Runtime；
 - Runtime 本地策略拥有最终阻断权；
 - 任务需要支持离线、重连和 Session 恢复；
@@ -388,7 +401,7 @@ Stage 1 当前提出的首期范围：
 1. 用户可以通过一次长按语音输入创建明确请求，并在发送前编辑转写文本；
 2. 用户无需先配置 Project、Issue 或 Board，就能从 Main Agent 对话发起持续任务；
 3. Main Agent 可以将任务委派给另一个 Agent；
-4. Agent 可以在权限允许的 Runtime 上选择并启动 Harness Session；
+4. Agent 使用固定的主 Harness 与主 Runtime 启动 Session；主 Runtime 离线或繁忙时，WorkItem 进入等待状态，并在原绑定恢复可用后继续；
 5. 用户离开客户端后任务继续运行，重连后状态与事件保持连续；
 6. 进度、需要确认的问题和最终结果都回到原始对话；
 7. 完成状态至少包含一种可验证 Evidence；
@@ -401,24 +414,23 @@ Stage 1 当前提出的首期范围：
 
 ## Open questions
 
-1. 一个 Agent 固定绑定 Harness 与 Runtime，还是在允许集合中动态路由？
-2. WorkItem 在什么条件下从普通对话中自动产生？
-3. Runtime 发现、身份验证、加密连接和撤销机制采用什么协议？
-4. Daemon 与 Multica 的关系是直接复用、兼容协议、扩展，还是独立实现？
-5. Buzz 的事件、Agent 身份或 Activity 模型可以复用到什么粒度？
-6. Harness 之间需要统一哪些 Session、Tool Call、Permission 与 Artifact 事件？
-7. Main Agent 的长期记忆如何按 ContextSpace 存储，GlobalAgentProfile 允许包含哪些非上下文设置？
-8. 长按语音的转写服务、隐私边界、流式协议和离线能力如何选择？
-9. 移动端、Control Plane、Daemon 和 Harness Adapter 的首期技术栈如何确定？
-10. 哪些操作可以 `allow`，哪些必须 `ask`，哪些始终 `block`？
-11. ContextRef 的最小 Schema、关系类型和生命周期如何定义？
-12. 全文、关键词、结构化过滤、语义向量和关系图检索如何组合与排序？
-13. Source Resolver 如何把 ContextRef 映射到正确的 Runtime、Connector 与凭证环境？
-14. 源内容变化后，通过 Webhook、事件、轮询或按需校验中的哪些机制刷新索引？
-15. 如何镜像源系统权限，并处理权限变化、索引泄露和过期摘要？
-16. Chatty 原生实现哪些 Context 展示与交互组件，哪些直接复用或嵌入飞书对象？
-17. 对话消息、Chatty WorkItem 与 ContextRef 之间如何建立稳定引用与双向状态同步？
-18. Chatty Control Plane 的托管、自托管与数据所有权边界如何设计？
+1. WorkItem 在什么条件下从普通对话中自动产生？
+2. Runtime 发现、身份验证、加密连接和撤销机制采用什么协议？
+3. Daemon 与 Multica 的关系是直接复用、兼容协议、扩展，还是独立实现？
+4. Buzz 的事件、Agent 身份或 Activity 模型可以复用到什么粒度？
+5. Harness 之间需要统一哪些 Session、Tool Call、Permission 与 Artifact 事件？
+6. Main Agent 的长期记忆如何按 ContextSpace 存储，GlobalAgentProfile 允许包含哪些非上下文设置？
+7. 长按语音的转写服务、隐私边界、流式协议和离线能力如何选择？
+8. 移动端、Control Plane、Daemon 和 Harness Adapter 的首期技术栈如何确定？
+9. 哪些操作可以 `allow`，哪些必须 `ask`，哪些始终 `block`？
+10. ContextRef 的最小 Schema、关系类型和生命周期如何定义？
+11. 全文、关键词、结构化过滤、语义向量和关系图检索如何组合与排序？
+12. Source Resolver 如何把 ContextRef 映射到正确的 Runtime、Connector 与凭证环境？
+13. 源内容变化后，通过 Webhook、事件、轮询或按需校验中的哪些机制刷新索引？
+14. 如何镜像源系统权限，并处理权限变化、索引泄露和过期摘要？
+15. Chatty 原生实现哪些 Context 展示与交互组件，哪些直接复用或嵌入飞书对象？
+16. 对话消息、Chatty WorkItem 与 ContextRef 之间如何建立稳定引用与双向状态同步？
+17. Chatty Control Plane 的托管、自托管与数据所有权边界如何设计？
 
 这些问题允许保留到 Stage 2，但会实质改变首期架构或体验的问题需要在 `spec.md` 中明确决策。
 
