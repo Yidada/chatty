@@ -58,9 +58,13 @@ Multica 最重要的价值，是通过 Daemon 将这些环境组织成可发现�
 - **Work Context:** 任务承载责任人、状态、优先级与依赖；
 - **Temporal Context:** 日程承载时间、会议与承诺。
 
-这些对象把信息、关系、进度、责任与时间外化为 Human 和 Agent 都能读取、编辑和操作的实时共享 Context。结构化与图形化表达可以减少重复说明、降低理解和审阅成本，也是高效率工作流及 Human–AI 沟通的基础。
+这些飞书原生对象提供高效率的结构化界面，同时也可以成为外部内容的索引载体。Context Layer 采用 index-first 模型：原始内容保留在各自的 Source of Truth，例如 GitHub、外部文档、本地文件、Runtime Session 或其他服务；Lark 保存可搜索的引用、元数据、摘要、关系、状态与权限范围。
 
-`Lark = Context Layer`。飞书承载持续变化的共享状态，`larkcli` 是 Agent 对这层 Context 进行搜索、读取、创建、更新和连接的读写接口。
+`Lark = Context Index + Context Graph + Retrieval Routing + Native Work Objects`
+
+它让 Human 和 Agent 能够发现“有哪些相关内容、位于哪里、彼此如何关联、由谁负责、何时更新，以及如何在权限允许时取回”。结构化与图形化表达减少重复说明，也降低理解、检索和审阅成本。
+
+`larkcli` 是 Agent 查询和维护 Context Index 的接口。命中 Lark 原生对象时可以直接读取或更新；命中外部引用时，由 Source Resolver 路由到具备相应连接与权限的 Runtime 或工具读取原始内容。
 
 ## Proposed outcome
 
@@ -73,7 +77,7 @@ Multica 最重要的价值，是通过 Daemon 将这些环境组织成可发现�
 - 任务离开 App 后继续执行，可暂停、恢复和跨 Session 延续；
 - 进度、询问、审批、证据与结果回到原始对话；
 - Runtime 保留各自的文件、网络、工具、设备、账号和凭证边界；
-- 飞书作为 Context Layer，通过文档、多维表格、群聊、任务与日程保存实时共享状态；Agent 经由 Runtime 上的 `larkcli` 读取、创建、更新并推进工作。
+- 飞书作为 Context Layer，索引用户有权访问的相关内容，并通过文档、多维表格、群聊、任务与日程提供原生工作对象；Agent 经由 `larkcli` 查询索引，再从对应 Source of Truth 读取或更新内容。
 
 最终用户从一次自然对话开始；复杂工作状态沉淀为可视、可编辑、可操作的结构化 Artifact；后台完成 Agent 选择、Runtime 路由、Harness Session、持续执行和 Approval Gate。
 
@@ -203,13 +207,19 @@ Main Agent 使用普通 Agent 数据模型，其特殊性来自默认关系、�
 
 ### Context Layer
 
-Context Layer 是 Human、Main Agent 与其他 Agent 共同读取和写入的实时共享状态：
+Context Layer 为 Human、Main Agent 与其他 Agent 提供统一、可检索的上下文视图：
 
-`Context Layer = Knowledge + Data + Conversation + Work State + Time + Relationships`
+`Context Layer = Index + Graph + Retrieval Routing + Native Work Objects`
 
-Chatty 首期以 Lark 作为 Context Layer 的 Source of Truth。Main Agent 使用 Context 理解用户、过滤信息和组织 Gate；其他 Agent 使用 Context 获取任务背景、协作状态与已有 Artifact，并将执行结果写回相同对象。
+每个 ContextRef 指向一个真实内容源，并携带足够的检索与理解信息：
 
-`larkcli` 是 Context Layer 的 Read / Write Interface。它在具备相应权限的 Runtime 中运行，Context 的访问仍受 Agent 权限、RuntimeScope 与本地策略共同约束。
+`ContextRef = Source + External ID + Canonical URL + Type + Owner + Scope + Updated At + Summary + Relations + Permission Projection`
+
+每项内容保留一个明确的 Source of Truth。Lark 原生文档、群聊、多维表格、任务与日程可以同时充当 ContextRef 与内容源；GitHub、外部文档、本地文件和 Runtime Session 等内容在 Lark 中保留索引节点，使用时按需取回。
+
+Main Agent 查询 Context Index 来理解用户、过滤信息和组织 Gate；其他 Agent 使用同一索引发现任务背景、协作状态与已有 Artifact。Source Resolver 根据 ContextRef 将读取或写入操作路由到具备相应连接、凭证和权限的 Runtime 或工具。
+
+`larkcli` 是 Context Index 的 Query / Read / Write Interface。Context 的搜索结果与实际取回过程都受 Agent 权限、RuntimeScope、源系统权限和本地策略约束。
 
 ### WorkItem, Artifact, Gate and Evidence
 
@@ -218,7 +228,7 @@ Chatty 首期以 Lark 作为 Context Layer 的 Source of Truth。Main Agent 使�
 - **Gate:** 控制下一阶段的 `allow`、`ask` 或 `block` 决策点；
 - **Evidence:** 支撑完成状态的测试、日志、截图、链接、消息 ID 或其他验证记录。
 
-对话负责捕获意图、探索、协调和补充上下文；Artifact 负责跨阶段传递确定状态。Lark Context Layer 将文档、多维表格、群聊、任务和日程连接成 Human 与 Agent 的共享外部记忆与实时工作状态。
+对话负责捕获意图、探索、协调和补充上下文；Artifact 负责跨阶段传递确定状态。Lark Context Layer 通过索引与关系图连接飞书原生对象及外部 Source of Truth，形成 Human 与 Agent 的共享工作地图。
 
 ## Interaction principles
 
@@ -252,11 +262,11 @@ Chatty 首期以 Lark 作为 Context Layer 的 Source of Truth。Main Agent 使�
 - 关键选择显示为 Decision Card；
 - 敏感操作显示为 Approval Card。
 
-对话中呈现摘要、通知、预览、操作入口与关键 Gate。完整工作状态保存在对应的结构化 Artifact 中，用户和 Agent 可以在同一对象上查看、编辑和继续执行。
+对话中呈现摘要、通知、预览、操作入口与关键 Gate。完整内容保留在对应的 Source of Truth；Context Layer 保存索引、关系和必要投影，用户与 Agent 可以从同一个 ContextRef 定位并继续工作。
 
 ### Context Layer as shared external memory
 
-图形化与结构化 Artifact 把隐含上下文外化为共享状态。Human 可以快速扫描、比较、筛选和修改；Agent 可以读取 Schema、字段、关系、负责人和状态，并执行精确更新。双方因此减少重复沟通，同时保留可审阅、可追踪的工作记录。
+Context Index 把分散内容组织成可搜索、可关联的共享工作地图。Human 可以通过图形化视图扫描、比较、筛选和定位；Agent 可以按语义、Schema、来源、关系、负责人、状态和时间检索，并在需要时取回原始内容。索引记录只保存检索和协调所需的信息，完整内容继续由对应 Source of Truth 管理。
 
 ### Human attention at gates
 
@@ -264,33 +274,39 @@ Chatty 首期以 Lark 作为 Context Layer 的 Source of Truth。Main Agent 使�
 
 ## Lark as the Context Layer
 
-`Lark = Context Layer`
+`Lark = Context Index + Context Graph + Retrieval Routing + Native Work Objects`
 
-飞书为 Human 与 Agent 提供可视、可编辑、可操作的实时共享 Context：
+Lark Context Layer 为所有获得授权的相关内容建立统一索引。它重点保存：
 
-1. 文档保存知识、决策与长内容；
-2. 多维表格保存结构化数据、关系和多种视图；
-3. 群聊与 Thread 保存参与者、讨论和事件；
-4. 任务保存责任、状态、优先级与依赖；
-5. 日程保存时间、会议与承诺。
+- 稳定 ID、来源类型和 Canonical URL；
+- 标题、摘要、标签、负责人和更新时间；
+- 项目、任务、对话、Artifact、Agent 与 Human 之间的关系；
+- 当前状态与必要的结构化投影；
+- 权限范围及获取原始内容所需的路由信息。
 
-`larkcli = Context Read / Write Interface`。它让 Agent 可以在权限允许的 Runtime 上搜索、读取、创建、更新和连接这些 Context 对象。
+飞书文档、多维表格、群聊、任务和日程继续提供原生工作对象。GitHub、外部文档、本地文件、Runtime Session 及其他系统保留各自的 Source of Truth，并在 Lark 中注册 ContextRef。
 
-输入链路：
+`larkcli = Context Index Query / Read / Write Interface`
 
-`Voice / Chat → Main Agent → Read Context`
+检索链路：
 
-执行链路：
+`User Intent → Main Agent → Query Lark Index → Ranked ContextRefs`
 
-`Main Agent → Target Agent → Harness + Runtime → Read / Write Context via larkcli`
+取回链路：
+
+`ContextRef → Source Resolver → Authorized Runtime / Connector → Source of Truth`
+
+执行与回写链路：
+
+`Target Agent → Harness + Runtime → Update Source → Refresh ContextRef → Main Agent`
 
 回流链路：
 
 `Context Change / Artifact → Main Agent → Summary / Card / Gate → Human`
 
-`larkcli` 安装并认证在具体 Runtime，例如 Work Mac。相关凭证保留在该 Runtime 中，本地策略决定每项操作是自动允许、请求批准或阻断。
+命中飞书原生对象时，`larkcli` 可以直接读取或更新。命中外部内容时，Source Resolver 根据 ContextRef 选择具备相应连接、凭证和网络环境的 Runtime 或工具。索引查询与源内容访问都执行权限检查，避免索引元数据泄露无权访问的信息。
 
-Chatty 的 V1 可以优先深度连接 Lark Context Layer，在对话中提供原生卡片、摘要、预览和操作入口。AI-native IM 提供低摩擦交流与注意力管理，Lark Context Layer 为复杂工作提供高信息密度、持续更新和可执行的共享状态。
+Chatty 的 V1 可以先验证一个混合闭环：索引一种飞书原生对象与一种外部 Source of Truth，通过 Main Agent 完成检索、按需取回、执行、回写和索引刷新。
 
 ## Product inspirations and boundaries
 
@@ -300,8 +316,8 @@ Chatty 的 V1 可以优先深度连接 Lark Context Layer，在对话中提供�
 | Buzz | Human/Agent 一级身份、消息空间、Activity 与协作关系 |
 | Multica | Daemon、Runtime Fleet、跨设备与跨权限持续执行 |
 | ChatGPT / Codex | AI 过程、工具调用、状态、Artifact 与结果展示 |
-| 飞书 | Context Layer：由文档、多维表格、群聊、任务与日程组成的实时共享状态 |
-| `larkcli` | Agent 对 Lark Context Layer 进行搜索、读取、创建、更新和连接的读写接口 |
+| 飞书 | Context Layer：索引所有获得授权的相关内容，并提供关系图、检索路由与原生工作对象 |
+| `larkcli` | Agent 查询和维护 Lark Context Index，并操作飞书原生对象的接口 |
 | Anthropic AI-native SDLC | Intent、Artifact、Human Gate 与可审计闭环 |
 
 Chatty 的独特产品中心是：个人与 Main Agent 的长期关系、以人的注意力为核心的协作拓扑，以及从自然表达跨越多个 Runtime 持续执行的完整体验。
@@ -319,7 +335,7 @@ Stage 1 当前提出的首期范围：
 - 多 Runtime 注册、心跳、能力发现、任务调度与恢复；
 - 手机优先的文字、图片、文件和长按语音转文字；
 - 对话内的 WorkItem 状态、Decision、Approval、Artifact 与 Evidence；
-- 通过 Work Runtime 上的 `larkcli` 读写 Lark Context Layer 中至少一种真实对象，并在 Chatty 对话中呈现摘要、预览或操作卡片；
+- 通过 `larkcli` 索引至少一种飞书原生对象与一种外部 Source of Truth，完成查询、按需取回、回写与索引刷新，并在 Chatty 对话中呈现摘要、预览或操作卡片；
 - Runtime 本地执行 `allow / ask / block` 策略。
 
 ## Out of scope for the first release
@@ -341,7 +357,9 @@ Stage 1 当前提出的首期范围：
 - 任务需要支持离线、重连和 Session 恢复；
 - Main Agent 是默认入口，底层复杂度逐步展开；
 - Voice 是输入方式，转写文字进入可搜索上下文；
-- 复杂工作状态优先沉淀到 Lark Context Layer，Chatty 对话负责入口、摘要、通知与 Gate；
+- 每项内容保留明确的 Source of Truth，Lark Context Layer 负责索引、关联和检索路由；
+- Context Index 只保存发现、理解、协调和取回所需的信息；
+- Chatty 对话负责入口、摘要、通知与 Gate；
 - Git 中的 Artifact 构成产品设计与实现决策的审计记录；
 - 首版优先验证个人高频使用价值，控制平台范围。
 
@@ -356,7 +374,7 @@ Stage 1 当前提出的首期范围：
 5. 用户离开客户端后任务继续运行，重连后状态与事件保持连续；
 6. 进度、需要确认的问题和最终结果都回到原始对话；
 7. 完成状态至少包含一种可验证 Evidence；
-8. Work Runtime 可以通过 `larkcli` 读取并更新真实的 Lark Context 对象，并将可验证结果带回原始对话；
+8. Main Agent 可以从 Lark Context Index 找到一个外部 Artifact，经 Source Resolver 在授权环境中取回，完成操作后回写 Source of Truth 并刷新索引；
 9. Runtime 凭证不会传入 Chatty Control Plane 或其他 Runtime；
 10. 用户愿意把 Chatty 作为日常调用个人 Agent 的默认入口持续使用。
 
@@ -375,9 +393,14 @@ Stage 1 当前提出的首期范围：
 9. 长按语音的转写服务、隐私边界、流式协议和离线能力如何选择？
 10. 移动端、Control Plane、Daemon 和 Harness Adapter 的首期技术栈如何确定？
 11. 哪些操作可以 `allow`，哪些必须 `ask`，哪些始终 `block`？
-12. Chatty 原生实现哪些 Context 展示与交互组件，哪些直接复用或嵌入飞书对象？
-13. 对话消息、Chatty WorkItem 与 Lark Context 对象之间如何建立稳定引用、检索与双向状态同步？
-14. Chatty Control Plane 的托管、自托管与数据所有权边界如何设计？
+12. ContextRef 的最小 Schema、关系类型和生命周期如何定义？
+13. 全文、关键词、结构化过滤、语义向量和关系图检索如何组合与排序？
+14. Source Resolver 如何把 ContextRef 映射到正确的 Runtime、Connector 与凭证环境？
+15. 源内容变化后，通过 Webhook、事件、轮询或按需校验中的哪些机制刷新索引？
+16. 如何镜像源系统权限，并处理权限变化、索引泄露和过期摘要？
+17. Chatty 原生实现哪些 Context 展示与交互组件，哪些直接复用或嵌入飞书对象？
+18. 对话消息、Chatty WorkItem 与 ContextRef 之间如何建立稳定引用与双向状态同步？
+19. Chatty Control Plane 的托管、自托管与数据所有权边界如何设计？
 
 这些问题允许保留到 Stage 2，但会实质改变首期架构或体验的问题需要在 `spec.md` 中明确决策。
 
