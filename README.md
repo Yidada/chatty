@@ -1,10 +1,10 @@
 # Chatty
 
-> 一个以 Main Agent 为入口、以 Runtime Fleet 为执行网络、以 AI-native IM 为交互界面的个人计算系统。
+> 一个以 Main Agent 管理人的注意力、以结构化 Workspace 承载工作、以 Runtime Fleet 为执行网络的 AI-native 个人计算系统。
 
 Chatty 希望提供一种真正属于个人的 AI 协作体验：像使用豆包一样自然地表达需求，通过与 Main Agent 的持续对话调度不同 Agent，并让这些 Agent 在分布于不同设备、权限和网络环境中的 Runtime 上可靠执行任务。
 
-Chatty 参考 Multica 的 Runtime 与 Daemon 架构，也吸收豆包面向 AI 的交互体验。飞书在系统中主要作为能力提供方，通过 `larkcli` 暴露文档、任务、日程、消息等工具。
+Chatty 参考 Multica 的 Runtime 与 Daemon 架构，也吸收豆包面向 AI 的交互体验。飞书的文档、多维表格、群聊、任务与日程构成结构化工作空间；`larkcli` 让 Agent 可以操作这套工作空间。
 
 ## Why Chatty
 
@@ -12,11 +12,11 @@ Chatty 参考 Multica 的 Runtime 与 Daemon 架构，也吸收豆包面向 AI �
 
 - 豆包拥有自然、低门槛、面向 AI 的日常交互体验，尤其适合手机端使用。
 - ChatGPT 与 Codex 擅长呈现推理、工具调用、执行过程和最终产物。
-- 飞书通过 `larkcli` 提供了覆盖工作场景的完整能力入口。
+- 飞书提供文档、多维表格、群聊、任务与日程组成的高效率结构化工作空间，`larkcli` 进一步将它开放给 Agent。
 - Buzz 让 Human 与 Agent 进入同一个通信空间。
 - Multica 将分散在不同环境中的 Runtime 连接起来，并可靠调度本地 Agent Harness。
 
-Chatty 将这些能力组织成一个以个人为中心的系统。用户无需持续守着 Terminal，也无需从 Project、Issue 或 Runtime 管理页面开始工作。所有任务都可以从自然对话中产生，并最终回到对话中。
+Chatty 将这些能力组织成一个以个人为中心的系统。用户无需持续守着 Terminal，也无需从 Project、Issue 或 Runtime 管理页面开始工作。任务可以从自然对话中产生，复杂状态沉淀为结构化 Artifact，摘要、通知和关键 Gate 回到对话中。
 
 ## Core Principles
 
@@ -24,14 +24,20 @@ Chatty 将这些能力组织成一个以个人为中心的系统。用户无需�
 
 用户 90% 的时间直接与 Main Agent 对话。项目、任务、Agent、Harness、Runtime 和执行日志根据需要逐步展开。
 
-所有结构化工作都可以从对话中产生，并最终回到对话中：
+对话承担低摩擦入口、注意力聚焦和关键 Gate：
 
 - 普通交流显示为消息；
 - 运行中的工作显示为任务状态卡；
 - 高风险操作显示为审批卡；
-- 结果显示为文档、代码、表格、图片或其他可交互产物。
+- 文档、代码、表格、任务和日程以摘要、预览或可交互卡片进入对话。
 
-### 2. Human and Agent are equal participants
+### 2. Structured workspace carries complex work
+
+复杂工作需要高信息密度、可扫描、可编辑、可执行的图形化载体。文档、多维表格、群聊、任务和日程将上下文、数据、关系、责任、状态与时间外化为 Human 和 Agent 的共享状态。
+
+这些结构化 Artifact 构成双方的共享外部记忆。Human 可以浏览、筛选、比较和修改；Agent 可以读取 Schema 与关系，并进行精确更新。Chatty 在对话中提供摘要、预览、操作入口和关键 Gate，完整工作状态保存在对应 Workspace 中。
+
+### 3. Human and Agent are equal participants
 
 Human 与 Agent 都是 IM 中的一级 `Participant`，共享相同的身份与协作模型。
 
@@ -46,20 +52,23 @@ Human 与 Agent 都是 IM 中的一级 `Participant`，共享相同的身份与�
 
 底层可以保留 `participant_type: human | agent`。Participant 层保持对等，差异由角色、权限与能力声明决定。
 
-### 3. Main Agent is the default relationship
+### 4. Main Agent is the attention interface
 
-Main Agent 是用户默认交流的 Agent，承担长期上下文与注意力调度职责：
+Main Agent 是用户默认交流的 Agent，也是用户与整个协作网络之间的 Attention Interface：
 
 - 理解用户意图和长期偏好；
 - 判断自己处理或委派给其他 Agent；
 - 选择适合的 Agent；
-- 汇总多个 Agent 的进度与结果；
-- 管理需要用户注意的询问、审批和异常；
+- 聚合 Agent、WorkItem、Runtime 与 Workspace 的状态；
+- 过滤低价值更新并合并重复信息；
+- 根据紧急度、影响和用户偏好排序；
+- 将复杂进展压缩为可快速判断的摘要；
+- 在 Gate 到来时提供上下文、选项、建议与风险；
 - 保持连续、轻量、接近日常 IM 的交互体验。
 
-Main Agent 使用普通 Agent 数据模型。它的特殊性来自用户关系与调度职责。其他 Agent 仍可被直接打开并进行 DM 对话。
+Main Agent 使用普通 Agent 数据模型。它的特殊性来自默认关系、协调职责与注意力托管职责。其他 Agent 仍可被直接打开并进行 DM 对话。
 
-### 4. Agent aggregates Harness and Runtime
+### 5. Agent aggregates Harness and Runtime
 
 Harness 与 Runtime 是两个独立概念。
 
@@ -75,7 +84,7 @@ Harness 与 Runtime 是两个独立概念。
 - **HarnessProfile**：使用的 Agent 执行框架、模型和参数；
 - **RuntimeScope**：允许调用的 Runtime 集合及路由策略。
 
-### 5. Runtime is an environment and permission boundary
+### 6. Runtime is an environment and permission boundary
 
 Runtime 是任何运行 Chatty Daemon 的执行端点。它可以位于 Mac、Windows PC、Linux Server、Cloud VM 或 Raspberry Pi，也可以存在于不同网络与账号环境中。
 
@@ -91,7 +100,7 @@ Runtime 是任何运行 Chatty Daemon 的执行端点。它可以位于 Mac、Wi
 
 Runtime 同时定义权限边界。凭证和本地能力保留在对应环境中，不会因为 Main Agent 可以调度多个 Runtime 而被合并。
 
-### 6. Runtime Fleet is the execution network
+### 7. Runtime Fleet is the execution network
 
 Chatty 将用户可以调用的所有 Runtime 组织成一个持续在线的 Runtime Fleet。
 
@@ -117,6 +126,10 @@ flowchart TD
     A --> R[Runtime Scope]
     R --> D[Daemon Endpoint]
 ```
+
+### Structured Workspace
+
+Structured Workspace 承载 Human 与 Agent 共同工作的持久状态，包括文档、多维表格、群聊、任务、日程及其关系。首期可以由飞书提供成熟实现，并通过 `larkcli` 向 Agent 开放读写与操作能力。
 
 ### Harness
 
@@ -182,19 +195,26 @@ Chatty 的整体交互以豆包式 AI 对话体验为主要参考。
 
 > 磁盘管家 · Codex · Home Mac mini · Running
 
-用户点击后再查看 Agent、Harness、Runtime、执行日志、产物和历史状态。
+用户点击后再查看 Agent、Harness、Runtime、执行日志、产物和历史状态。飞书文档、多维表格、任务与日程可以在对话中显示为摘要、预览或可交互卡片，并继续在原有 Workspace 中编辑。
 
-## Lark Integration
+## Lark Workspace Integration
 
-飞书能力通过 `larkcli` 进入 Chatty。
+飞书在 Chatty 中提供两层基础能力：
 
-调用链：
+1. **Structured Workspace**：文档、多维表格、群聊、任务和日程承载共享上下文、结构化数据、协作关系、责任、状态与时间；
+2. **Agent Control Surface**：`larkcli` 让 Agent 可以搜索、读取、创建、更新和连接这些对象。
 
-`Main Agent → Target Agent → Harness → larkcli Tool → Lark`
+执行链路：
 
-`larkcli` 安装并认证在具体 Runtime 上，例如 Work Mac。飞书凭证保留在该 Runtime 的权限边界内。Agent 只有在自身权限与 `RuntimeScope` 同时允许时才能使用相关能力。
+`Voice / Chat → Main Agent → Target Agent → Harness → larkcli → Lark Workspace`
 
-通过这一方式，Chatty 可以调度飞书文档、任务、日程、消息等能力，同时保持面向 AI 的独立 IM 体验。
+回流链路：
+
+`Lark Artifact / Event → Main Agent → Summary / Card / Gate → Human`
+
+`larkcli` 安装并认证在具体 Runtime 上，例如 Work Mac。飞书凭证保留在该 Runtime 的权限边界内，Agent 只有在自身权限与 `RuntimeScope` 同时允许时才能使用相关能力。
+
+Chatty 在对话中提供低摩擦交流和注意力管理，飞书 Workspace 为复杂工作提供高信息密度、可编辑和可执行的图形化载体。
 
 ## Initial Product Scope
 
@@ -207,15 +227,15 @@ Chatty 的整体交互以豆包式 AI 对话体验为主要参考。
 - 多 Runtime 注册、心跳、能力发现和任务调度；
 - 豆包式文字与长按语音转写交互；
 - 对话内的任务状态、审批和结果展示；
-- 通过 Runtime 中的 `larkcli` 调度飞书能力。
+- 通过 Runtime 中的 `larkcli` 读写飞书结构化 Artifact，并在对话中呈现摘要、预览和操作卡片。
 
 Human 与 Agent 的统一 Participant 模型从第一天建立。多人邀请、群聊与组织协作可以在这一模型上逐步开放。
 
 ## Product Statement
 
-> Chatty is a personal AI-native IM where humans and agents are equal participants, a Main Agent coordinates most interactions, and a fleet of permission-scoped runtimes executes work through interchangeable agent harnesses.
+> Chatty is a personal AI-native IM where humans and agents are equal participants, a Main Agent stewards human attention, structured workspaces carry shared state, and a fleet of permission-scoped runtimes executes work through interchangeable agent harnesses.
 
-Chatty 让用户通过一次自然对话，调动分布在所有设备、环境和权限边界中的个人计算能力。
+Chatty 让用户通过一次自然对话表达意图，在结构化 Workspace 中沉淀共享状态，并调动分布在所有设备、环境和权限边界中的个人计算能力。
 
 ## Status
 
