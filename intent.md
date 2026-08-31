@@ -113,9 +113,9 @@ Multica 最重要的价值，是通过 Daemon 将这些环境组织成可发现�
 1. 更容易表达意图；
 2. 更清楚地与 Agent 协作；
 3. 更有效地用结构化与图形化 Artifact 承载复杂工作；
-5. 更可靠地跨 Runtime 执行；
-6. 更安全地控制权限；
-7. 更自然地将结果带回对话。
+4. 更可靠地跨 Runtime 执行；
+5. 更安全地控制权限；
+6. 更自然地将结果带回对话。
 
 ## Core experience
 
@@ -124,16 +124,16 @@ Multica 最重要的价值，是通过 Daemon 将这些环境组织成可发现�
 1. 用户长按输入框说：“让家里 Mac mini 上的开发 Agent 看一下 Chatty，按照 intent 生成第一版技术方案。”
 2. 语音实时转成文字，并允许用户编辑后发送。
 3. Main Agent 结合长期上下文理解意图。
-5. Main Agent 创建持续运行的 WorkItem，并委派给开发 Agent。
-6. 开发 Agent 加载其 Codex + Home Mac mini 主 ExecutionBinding。
-7. Runtime Daemon 启动或恢复 Harness Session。
-8. 用户离开 App，任务继续运行。
-9. 原对话中显示轻量状态：
+4. Main Agent 创建持续运行的 WorkItem，并委派给开发 Agent。
+5. 开发 Agent 加载其 Codex + Home Mac mini 主 ExecutionBinding。
+6. Runtime Daemon 启动或恢复 Harness Session。
+7. 用户离开 App，任务继续运行。
+8. 原对话中显示轻量状态：
    - 已委派给开发 Agent；
    - Codex · Home Mac mini · Running；
    - 已生成 `spec.md` · 等待确认。
-10. 用户在需要判断时通过消息或 Approval Card 继续推进。
-11. 完成状态附带 Artifact、测试、日志、截图或链接等 Evidence。
+9. 用户在需要判断时通过消息或 Approval Card 继续推进。
+10. 完成状态附带 Artifact、测试、日志、截图或链接等 Evidence。
 
 ## Core concept decisions
 
@@ -416,7 +416,7 @@ Stage 1 当前提出的首期范围：
 1. 用户可以通过一次长按语音输入创建明确请求，并在发送前编辑转写文本；
 2. 用户无需先配置 Project、Issue 或 Board，就能从 Main Agent 对话发起持续任务；
 3. 每个触发 Tool Call 的用户意图都会在第一次调用前创建一个可见 WorkItem，所有调用都能在 Runs / Steps 中追踪；
-5. Main Agent 可以将任务委派给另一个 Agent；
+4. Main Agent 可以将任务委派给另一个 Agent；
 5. Agent 使用固定的主 Harness 与主 Runtime 启动 Session；主 Runtime 离线或繁忙时，WorkItem 进入等待状态，并在原绑定恢复可用后继续；
 6. 用户离开客户端后任务继续运行，重连后状态与事件保持连续；
 7. 进度、需要确认的问题和最终结果都回到原始对话；
