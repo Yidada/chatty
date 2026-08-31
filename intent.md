@@ -205,6 +205,22 @@ Main Agent 的最高职责是管理用户注意力，任务路由与团队协调
 
 Main Agent 使用普通 Agent 数据模型，其特殊性来自默认关系、协调职责与注意力托管职责。用户依然可以直接进入其他 Agent 的 DM，也可以选择绕过 Main Agent 参与具体协作。
 
+### Context Spaces and isolation
+
+**Decision:** 一个用户拥有一个全局 Main Agent 身份；Work 与 Life 是硬隔离的 Context Spaces。
+
+- Main Agent 的名称、头像和关系身份保持全局一致；
+- 每个 Conversation 必须绑定唯一的 `context_space_id`；
+- Session、Memory、Context Index、Agent、WorkItem、Artifact、RuntimeScope、Tool 与 Credential 都继承当前 ContextSpace；
+- Main Agent 的注意力管理只覆盖当前空间；
+- 当前空间禁止读取、搜索、总结、通知、委派或执行另一个空间的任何内容；
+- 跨空间限制由服务端授权与 Runtime 本地策略共同执行，不能只依赖 Prompt；
+- 用户在 Life 空间提出 Work 请求时，系统展示边界提示，不自动转发或携带内容；
+- 用户需要手动切换到 Work 空间，并在目标空间重新发起请求；
+- 全局层仅保存 Agent 身份和不包含 Work / Life 内容的产品设置。
+
+这一选择提供最强的工作与生活隔离，同时取消跨空间统一 Inbox、全局优先级排序和自动汇总。用户分别查看每个空间的 Main Agent 会话。
+
 ### Context Layer
 
 Context Layer 为 Human、Main Agent 与其他 Agent 提供统一、可检索的上下文视图：
@@ -327,7 +343,8 @@ Chatty 的独特产品中心是：个人与 Main Agent 的长期关系、以人�
 Stage 1 当前提出的首期范围：
 
 - 单个 Human；
-- 一个默认 Main Agent；
+- 一个全局 Main Agent 身份；
+- Work / Life 两个硬隔离的 Context Spaces；
 - 多个拥有独立身份的 Agent；
 - Agent 可被直接对话，也可被 Main Agent 委派；
 - Harness 与 Runtime 独立配置；
@@ -356,6 +373,7 @@ Stage 1 当前提出的首期范围：
 - Runtime 本地策略拥有最终阻断权；
 - 任务需要支持离线、重连和 Session 恢复；
 - Main Agent 是默认入口，底层复杂度逐步展开；
+- Work / Life 跨空间访问在服务端与 Runtime 策略层直接阻断；
 - Voice 是输入方式，转写文字进入可搜索上下文；
 - 每项内容保留明确的 Source of Truth，Lark Context Layer 负责索引、关联和检索路由；
 - Context Index 只保存发现、理解、协调和取回所需的信息；
@@ -376,31 +394,31 @@ Stage 1 当前提出的首期范围：
 7. 完成状态至少包含一种可验证 Evidence；
 8. Main Agent 可以从 Lark Context Index 找到一个外部 Artifact，经 Source Resolver 在授权环境中取回，完成操作后回写 Source of Truth 并刷新索引；
 9. Runtime 凭证不会传入 Chatty Control Plane 或其他 Runtime；
-10. 用户愿意把 Chatty 作为日常调用个人 Agent 的默认入口持续使用。
+10. Life 空间内的请求无法发现、读取或调用 Work 空间中的 Context、Agent、Runtime 和 Tool；
+11. 用户愿意把 Chatty 作为日常调用个人 Agent 的默认入口持续使用。
 
-第 10 项需要在首个 Dogfood 周期中通过真实使用频率、Main Agent 入口占比、任务完成率和用户主动回访进行验证。
+第 11 项需要在首个 Dogfood 周期中通过真实使用频率、Main Agent 入口占比、任务完成率和用户主动回访进行验证。
 
 ## Open questions
 
-1. 一个用户拥有全局 Main Agent，还是 Work / Life 各自拥有 Main Agent？
-2. 一个 Agent 固定绑定 Harness 与 Runtime，还是在允许集合中动态路由？
-3. WorkItem 在什么条件下从普通对话中自动产生？
-4. Runtime 发现、身份验证、加密连接和撤销机制采用什么协议？
-5. Daemon 与 Multica 的关系是直接复用、兼容协议、扩展，还是独立实现？
-6. Buzz 的事件、Agent 身份或 Activity 模型可以复用到什么粒度？
-7. Harness 之间需要统一哪些 Session、Tool Call、Permission 与 Artifact 事件？
-8. Main Agent 的长期记忆如何分隔 Work、Life 与具体 Runtime？
-9. 长按语音的转写服务、隐私边界、流式协议和离线能力如何选择？
-10. 移动端、Control Plane、Daemon 和 Harness Adapter 的首期技术栈如何确定？
-11. 哪些操作可以 `allow`，哪些必须 `ask`，哪些始终 `block`？
-12. ContextRef 的最小 Schema、关系类型和生命周期如何定义？
-13. 全文、关键词、结构化过滤、语义向量和关系图检索如何组合与排序？
-14. Source Resolver 如何把 ContextRef 映射到正确的 Runtime、Connector 与凭证环境？
-15. 源内容变化后，通过 Webhook、事件、轮询或按需校验中的哪些机制刷新索引？
-16. 如何镜像源系统权限，并处理权限变化、索引泄露和过期摘要？
-17. Chatty 原生实现哪些 Context 展示与交互组件，哪些直接复用或嵌入飞书对象？
-18. 对话消息、Chatty WorkItem 与 ContextRef 之间如何建立稳定引用与双向状态同步？
-19. Chatty Control Plane 的托管、自托管与数据所有权边界如何设计？
+1. 一个 Agent 固定绑定 Harness 与 Runtime，还是在允许集合中动态路由？
+2. WorkItem 在什么条件下从普通对话中自动产生？
+3. Runtime 发现、身份验证、加密连接和撤销机制采用什么协议？
+4. Daemon 与 Multica 的关系是直接复用、兼容协议、扩展，还是独立实现？
+5. Buzz 的事件、Agent 身份或 Activity 模型可以复用到什么粒度？
+6. Harness 之间需要统一哪些 Session、Tool Call、Permission 与 Artifact 事件？
+7. Main Agent 的长期记忆如何按 ContextSpace 存储，GlobalAgentProfile 允许包含哪些非上下文设置？
+8. 长按语音的转写服务、隐私边界、流式协议和离线能力如何选择？
+9. 移动端、Control Plane、Daemon 和 Harness Adapter 的首期技术栈如何确定？
+10. 哪些操作可以 `allow`，哪些必须 `ask`，哪些始终 `block`？
+11. ContextRef 的最小 Schema、关系类型和生命周期如何定义？
+12. 全文、关键词、结构化过滤、语义向量和关系图检索如何组合与排序？
+13. Source Resolver 如何把 ContextRef 映射到正确的 Runtime、Connector 与凭证环境？
+14. 源内容变化后，通过 Webhook、事件、轮询或按需校验中的哪些机制刷新索引？
+15. 如何镜像源系统权限，并处理权限变化、索引泄露和过期摘要？
+16. Chatty 原生实现哪些 Context 展示与交互组件，哪些直接复用或嵌入飞书对象？
+17. 对话消息、Chatty WorkItem 与 ContextRef 之间如何建立稳定引用与双向状态同步？
+18. Chatty Control Plane 的托管、自托管与数据所有权边界如何设计？
 
 这些问题允许保留到 Stage 2，但会实质改变首期架构或体验的问题需要在 `spec.md` 中明确决策。
 
