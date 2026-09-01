@@ -13,7 +13,7 @@ Chatty 直接复用 Multica 的 Runtime、Daemon 与连接能力，也吸收豆�
 - 豆包拥有自然、低门槛、面向 AI 的日常交互体验，尤其适合手机端使用。
 - ChatGPT 与 Codex 擅长呈现推理、工具调用、执行过程和最终产物。
 - 飞书提供 Context Index、Context Graph、Retrieval Routing 与原生工作对象，`larkcli` 让 Agent 可以查询和维护这套索引。
-- Buzz 让 Human 与 Agent 进入同一个通信空间。
+- Buzz 提供产品设计参考：Human/Agent 对等、团队通信空间、Activity 语义与渐进展开；Chatty 自建通信协议、数据模型与客户端。
 - Multica 提供 Chatty V1 的 Runtime Backend，直接承担 Daemon、连接、认证、心跳、恢复与本地 Agent Harness 调度。
 
 Chatty 将这些能力组织成一个以个人为中心的系统。用户无需持续守着 Terminal，也无需从 Project、Issue 或 Runtime 管理页面开始工作。任务可以从自然对话中产生，Lark Context Layer 索引相关内容并路由到对应 Source of Truth，摘要、通知和关键 Gate 回到对话中。
@@ -53,6 +53,8 @@ Human 与 Agent 都是 IM 中的一级 `Participant`，共享相同的身份与�
 - 作为消息作者、任务负责人和项目成员出现。
 
 底层可以保留 `participant_type: human | agent`。Participant 层保持对等，差异由角色、权限与能力声明决定。
+
+**Decision:** Chatty 独立实现 Communication Core。Participant 身份、Channel、DM、Thread、Message、Activity、Presence、Search、Audit 与实时订阅均由 Chatty 自主管理。Buzz 只提供产品设计启发，V1 不依赖 Buzz Relay、Nostr 协议或 Buzz 代码。
 
 ### 4. Main Agent is the attention interface
 
@@ -119,10 +121,23 @@ Chatty 通过 `MulticaRuntimeProvider` 将 Agent、ExecutionBinding、WorkItem�
 flowchart TD
     P[Participant] --> H[Human]
     P --> A[Agent]
+    P --> C[Communication Core]
     A --> X[Primary Harness]
     A --> R[Primary Runtime]
     R --> D[Multica Daemon]
 ```
+
+### Communication Core
+
+Chatty Communication Core 是消息、身份与 Activity 的事实源：
+
+- Human 与 Agent 共用 Participant、成员关系和协作能力；
+- Channel、DM、Thread、Message、Reaction 与 Mention 使用统一模型；
+- Activity Event 支持语义化展示、渐进展开、搜索与审计；
+- Main Agent 在事件流之上维护 Inbox、Attention Queue、摘要与 Gate；
+- Work / Life ContextSpace 在存储、授权和查询层硬隔离。
+
+Buzz 的团队协作、Agent 一级身份和 Activity Feed 作为体验参考。Chatty 自主定义协议、Schema、服务端和客户端，不承担 Buzz 或 Nostr 兼容目标。
 
 ### Context Layer
 
@@ -251,7 +266,9 @@ GitHub、外部文档、本地文件、Runtime Session 和其他服务保留各�
 第一阶段聚焦：
 
 - 单个 Human；
-- 一个默认 Main Agent；
+- 一个全局 Main Agent 身份；
+- Work / Life 两个硬隔离的 Context Spaces；
+- 自建 Chatty Communication Core，覆盖 Participant、Channel、DM、Thread、Message、Activity、Search、Audit 与实时订阅；
 - 多个可直接对话和被委派的 Agent；
 - Harness 与 Runtime 独立配置；
 - 通过 `MulticaRuntimeProvider` 接入 Multica Runtime Fleet，并映射状态、任务、Session、事件与恢复；
@@ -263,7 +280,7 @@ Human 与 Agent 的统一 Participant 模型从第一天建立。多人邀请、
 
 ## Product Statement
 
-> Chatty is a personal AI-native IM where humans and agents are equal participants, a Main Agent stewards human attention, Lark indexes and routes shared context, and Multica-managed, permission-scoped runtimes execute work through interchangeable agent harnesses.
+> Chatty is a personal AI-native IM where humans and agents are equal participants in a Chatty-owned communication core, a Main Agent stewards human attention, Lark indexes and routes shared context, and Multica-managed, permission-scoped runtimes execute work through interchangeable agent harnesses.
 
 Chatty 让用户通过一次自然对话表达意图，经由 Lark Context Layer 找到所有相关内容，并调动分布在不同设备、环境和权限边界中的个人计算能力。
 
