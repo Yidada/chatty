@@ -34,6 +34,8 @@ Chatty 希望把这个组合变成完整产品：
 
 Buzz 已经把 Human 与 Agent 放进同一个通信空间，Agent 拥有身份、消息和活动记录。这种团队协作空间本身成立，Chatty 也完整保留团队协作。
 
+Buzz 在 Chatty 中作为产品设计参考。Chatty 自建完整通信系统，自主管理 Participant 身份、Conversation、Channel、DM、Thread、Message、Activity、Presence、Search 与 Audit，不依赖 Buzz Relay、Nostr 协议或 Buzz 代码。
+
 当多个 Human、Agent 和 WorkItem 同时活跃时，人的注意力会成为整个系统最稀缺的资源。Chatty 需要一个与用户保持默认关系的 Main Agent，持续聚合、过滤、排序和压缩团队信息，只把需要人类判断的事项带到用户面前。
 
 ### 3. Execution environments are fragmented
@@ -142,6 +144,29 @@ Multica 最重要的价值，是通过 Daemon 将这些环境组织成可发现�
 Human 与 Agent 都是 IM 中的一级 `Participant`，共享消息、Thread、Channel、Inbox、Profile、在线状态、任务与权限模型。
 
 `participant_type: human | agent` 用于表达类型差异。产品层级与协作能力保持对等，具体差异来自角色、权限与能力声明。
+
+### Communication Core
+
+**Decision:** Chatty 独立实现完整通信系统，Buzz 只作为产品设计参考。
+
+Chatty Communication Core 是消息、身份与 Activity 的事实源，负责：
+
+- Participant 身份、Profile、Presence 与成员关系；
+- Conversation、Channel、DM、Thread 与 Message；
+- Reaction、Mention、Inbox、Notification 与 Attention Queue；
+- Activity Event、搜索索引、审计记录与实时订阅；
+- Work / Life ContextSpace 的存储、授权和查询隔离；
+- Human 与 Agent 共用的发布、读取、搜索和协作能力。
+
+V1 不依赖 Buzz Relay、Nostr Wire Protocol、Buzz Event Kind、`buzz-core`、`buzz-sdk`、`buzz-cli`、`buzz-acp` 或 Buzz Remote Agent。Chatty 可以借鉴 Buzz 的以下产品设计：
+
+- Human 与 Agent 处于同一 Participant 层级；
+- 团队空间、Channel、Thread、DM 和 Activity 的协作体验；
+- 语义化 Activity、结果优先与渐进展开；
+- 事件可追踪、可搜索、可审计；
+- Agent 具有独立身份、成员关系和活动历史。
+
+Chatty 的 Main Agent 在自建通信系统上实现 Attention Interface：团队协作完整保留，Main Agent 聚合、过滤、排序和压缩信息，帮助用户聚焦需要判断的事项。
 
 ### Agent
 
@@ -373,7 +398,7 @@ Chatty 的 V1 可以先验证一个混合闭环：索引一种飞书原生对象
 | Source | What Chatty carries forward |
 | --- | --- |
 | 豆包 | 面向 AI 的手机交互、自然对话、长按语音转文字 |
-| Buzz | Human/Agent 一级身份、消息空间、Activity 与协作关系 |
+| Buzz | 产品设计参考：Human/Agent 对等、团队通信空间、Activity 语义与渐进展开；不引入代码或协议依赖 |
 | Multica | 直接复用 Daemon、Runtime Fleet、连接、认证、心跳、恢复与跨权限执行能力 |
 | ChatGPT / Codex | AI 过程、工具调用、状态、Artifact 与结果展示 |
 | 飞书 | Context Layer：索引所有获得授权的相关内容，并提供关系图、检索路由与原生工作对象 |
@@ -389,6 +414,7 @@ Stage 1 当前提出的首期范围：
 - 单个 Human；
 - 一个全局 Main Agent 身份；
 - Work / Life 两个硬隔离的 Context Spaces；
+- 自建 Chatty Communication Core，覆盖 Participant、Channel、DM、Thread、Message、Activity、Search、Audit 与实时订阅；
 - 多个拥有独立身份的 Agent；
 - Agent 可被直接对话，也可被 Main Agent 委派；
 - 每个 Agent 配置稳定的主 Harness 与主 Runtime；
@@ -407,6 +433,7 @@ Stage 1 当前提出的首期范围：
 - 替代飞书现有的文档、日程与任务系统；
 - 自研基础模型或完整复刻各类 Harness；
 - 自研 Runtime 网络协议、Daemon、注册、认证、心跳、重连或撤销系统；
+- 与 Buzz Relay、Nostr Wire Protocol 或 Buzz 客户端保持协议兼容；
 - 默认自动执行高风险、不可逆或跨权限边界的操作；
 - 同时覆盖所有桌面与移动平台；
 - 在首个可用闭环前建设完整 Project、Issue 或 Board 管理产品。
@@ -414,6 +441,8 @@ Stage 1 当前提出的首期范围：
 ## Constraints
 
 - Human 与 Agent 的 Participant 模型从第一天保持对等；
+- 消息、身份与 Activity 的事实源由 Chatty Communication Core 自主管理；
+- Buzz 仅作为产品设计参考，V1 不引入 Buzz 代码、协议或运行时依赖；
 - Harness 与 Runtime 必须独立建模；
 - Multica 是 V1 唯一的 Runtime Backend，所有 Runtime 网络与 Daemon 生命周期能力直接遵循 Multica；
 - Chatty 只通过 `MulticaRuntimeProvider` 引用与映射 Multica Runtime；
@@ -454,20 +483,19 @@ Stage 1 当前提出的首期范围：
 
 ## Open questions
 
-1. Buzz 的事件、Agent 身份或 Activity 模型可以复用到什么粒度？
-2. Harness 之间需要统一哪些 Session、Tool Call、Permission 与 Artifact 事件？
-3. Main Agent 的长期记忆如何按 ContextSpace 存储，GlobalAgentProfile 允许包含哪些非上下文设置？
-4. 长按语音的转写服务、隐私边界、流式协议和离线能力如何选择？
-5. 移动端、Control Plane、Daemon 和 Harness Adapter 的首期技术栈如何确定？
-6. 哪些操作可以 `allow`，哪些必须 `ask`，哪些始终 `block`？
-7. ContextRef 的最小 Schema、关系类型和生命周期如何定义？
-8. 全文、关键词、结构化过滤、语义向量和关系图检索如何组合与排序？
-9. Source Resolver 如何把 ContextRef 映射到正确的 Runtime、Connector 与凭证环境？
-10. 源内容变化后，通过 Webhook、事件、轮询或按需校验中的哪些机制刷新索引？
-11. 如何镜像源系统权限，并处理权限变化、索引泄露和过期摘要？
-12. Chatty 原生实现哪些 Context 展示与交互组件，哪些直接复用或嵌入飞书对象？
-13. 对话消息、Chatty WorkItem 与 ContextRef 之间如何建立稳定引用与双向状态同步？
-14. Chatty Control Plane 的托管、自托管与数据所有权边界如何设计？
+1. Harness 之间需要统一哪些 Session、Tool Call、Permission 与 Artifact 事件？
+2. Main Agent 的长期记忆如何按 ContextSpace 存储，GlobalAgentProfile 允许包含哪些非上下文设置？
+3. 长按语音的转写服务、隐私边界、流式协议和离线能力如何选择？
+4. 移动端、Control Plane、Daemon 和 Harness Adapter 的首期技术栈如何确定？
+5. 哪些操作可以 `allow`，哪些必须 `ask`，哪些始终 `block`？
+6. ContextRef 的最小 Schema、关系类型和生命周期如何定义？
+7. 全文、关键词、结构化过滤、语义向量和关系图检索如何组合与排序？
+8. Source Resolver 如何把 ContextRef 映射到正确的 Runtime、Connector 与凭证环境？
+9. 源内容变化后，通过 Webhook、事件、轮询或按需校验中的哪些机制刷新索引？
+10. 如何镜像源系统权限，并处理权限变化、索引泄露和过期摘要？
+11. Chatty 原生实现哪些 Context 展示与交互组件，哪些直接复用或嵌入飞书对象？
+12. 对话消息、Chatty WorkItem 与 ContextRef 之间如何建立稳定引用与双向状态同步？
+13. Chatty Control Plane 的托管、自托管与数据所有权边界如何设计？
 
 这些问题允许保留到 Stage 2，但会实质改变首期架构或体验的问题需要在 `spec.md` 中明确决策。
 
