@@ -1,8 +1,8 @@
 # Intent: Chatty — Multica 手机端应用
 
 - **Author:** Benjamin Zhang
-- **Status:** Draft — awaiting product-owner acceptance
-- **Stage:** 1 of 6 — Plan
+- **Status:** Accepted — 2026-09-04 (Benjamin Zhang)
+- **Stage:** 1 of 6 — Plan (complete; see `iterations/v2/spec.md` for Stage 2)
 - **Last updated:** 2026-09-04
 - **Forked from:** `iterations/v1/`（v1 未验收即关闭，本文件基于其后的新方向撰写）
 - **Source of truth:** This file and its Git history
@@ -226,6 +226,8 @@ V1（Android）范围：
 - Open questions 已标记为 Stage 2 决策。
 
 接受后，下一项 Artifact 是 `iterations/v2/spec.md`。
+
+**验收记录：** Benjamin Zhang 于 2026-09-04 确认接受，进入 Stage 2 — Spec。Spec 见 [`iterations/v2/spec.md`](./spec.md)。
 
 ## References
 
