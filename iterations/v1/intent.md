@@ -12,11 +12,11 @@
 
 我最深的产品体验判断是：
 
-> **Buzz + Multica + 豆包式长按语音输入，是一个非常好的组合。**
+> **ChatGPT 式的设计、UI 与手机应用体验 + Multica 的 Mika 与 Agent Fleet 作为背后灵魂，是一个非常好的组合。**
 
 Chatty 希望把这个组合变成完整产品：
 
-> **用户开口表达意图，Main Agent 在 AI-native IM 中组织协作，Agent 在合适的 Runtime 上持续完成工作。**
+> **用户开口表达意图，Mika 在 Multica 中组织协作与委派，专业 Agent 在合适的 Runtime 上持续完成工作。**
 
 可以将它压缩为一条核心链路：
 
@@ -32,11 +32,11 @@ Chatty 希望把这个组合变成完整产品：
 
 ### 2. Human attention needs a default focus
 
-Buzz 已经把 Human 与 Agent 放进同一个通信空间，Agent 拥有身份、消息和活动记录。这种团队协作空间本身成立，Chatty 也完整保留团队协作。
+Multica workspace 已经构成 Human 与 Agent 共用的协作空间：Mika、专业 Agent 与用户共享身份、任务和协作记录。这种 Agent 协作网络本身成立，Chatty 完整复用。
 
-Buzz 在 Chatty 中作为产品设计参考。Chatty 自建完整通信系统，自主管理 Participant 身份、Conversation、Channel、DM、Thread、Message、Activity、Presence、Search 与 Audit，不依赖 Buzz Relay、Nostr 协议或 Buzz 代码。
+Chatty 不自建通信系统，而是把 Multica 的协作网络装进 ChatGPT 式手机体验：降低表达与阅读成本，让 Agent 网络的执行能力随时触手可及。
 
-当多个 Human、Agent 和 WorkItem 同时活跃时，人的注意力会成为整个系统最稀缺的资源。Chatty 需要一个与用户保持默认关系的 Main Agent，持续聚合、过滤、排序和压缩团队信息，只把需要人类判断的事项带到用户面前。
+当多个 Human、Agent 与任务同时活跃时，人的注意力会成为整个系统最稀缺的资源。Mika 是用户默认关系的 Main Agent，持续聚合、过滤、排序和压缩团队信息，只把需要人类判断的事项带到用户面前。
 
 ### 3. Execution environments are fragmented
 
@@ -70,12 +70,12 @@ Multica 最重要的价值，是通过 Daemon 将这些环境组织成可发现�
 
 ## Proposed outcome
 
-构建一个属于个人的 AI-native IM：
+构建一个属于个人的 AI-native IM（ChatGPT 式移动体验 + Multica 灵魂）：
 
-- 用户打开 App 后直接进入 Main Agent；
+- 用户打开 App 后直接进入 Main Agent（Mika）；
 - 用户通过文字、长按语音转文字、图片或文件表达意图；
-- Main Agent 理解上下文，自己处理或委派给其他 Agent；
-- Agent 使用稳定绑定的主 Harness 与 Multica 管理的主 Runtime；主 Runtime 不可用时等待恢复；
+- Mika 理解上下文，自己处理或委派给其他 Agent；
+- Agent 使用 Multica 中稳定绑定的主 Harness 与主 Runtime；主 Runtime 不可用时由 Multica 管理等待与恢复；
 - 任务离开 App 后继续执行，可暂停、恢复和跨 Session 延续；
 - 进度、询问、审批、证据与结果回到原始对话；
 - Runtime 保留各自的文件、网络、工具、设备、账号和凭证边界；
@@ -125,9 +125,9 @@ Multica 最重要的价值，是通过 Daemon 将这些环境组织成可发现�
 
 1. 用户长按输入框说：“让家里 Mac mini 上的开发 Agent 看一下 Chatty，按照 intent 生成第一版技术方案。”
 2. 语音实时转成文字，并允许用户编辑后发送。
-3. Main Agent 结合长期上下文理解意图。
-4. Main Agent 创建持续运行的 WorkItem，并委派给开发 Agent。
-5. 开发 Agent 加载其 Codex + Home Mac mini 主 ExecutionBinding。
+3. Mika（Multica 核心管理人）结合长期上下文理解意图。
+4. Mika 在 Multica 中创建持续运行的任务，并委派给开发 Agent。
+5. 开发 Agent 加载其 Codex + Home Mac mini 主 ExecutionBinding。此绑定在 Multica 侧配置和管理。
 6. Multica Runtime Daemon 启动或恢复 Harness Session。
 7. 用户离开 App，任务继续运行。
 8. 原对话中显示轻量状态：
@@ -141,56 +141,38 @@ Multica 最重要的价值，是通过 Daemon 将这些环境组织成可发现�
 
 ### Participant
 
-Human 与 Agent 都是 IM 中的一级 `Participant`，共享消息、Thread、Channel、Inbox、Profile、在线状态、任务与权限模型。
+Human 与 Agent 都是 Multica workspace 中的一级参与者，拥有身份、消息、任务与权限模型。
 
-`participant_type: human | agent` 用于表达类型差异。产品层级与协作能力保持对等，具体差异来自角色、权限与能力声明。
+`participant_type: human | agent` 等类型信息保留在 Multica 侧，Chatty 客户端只渲染其为对话对象。Human 与 Agent 的产品层级与协作能力由 Multica 决定。
 
-### Communication Core
+### Communication Core — Chatty as the client experience layer
 
-**Decision:** Chatty 独立实现完整通信系统，Buzz 只作为产品设计参考。
+**Decision:** Chatty 不自建通信与协调平台。灵魂层是 Multica workspace：Mika（核心管理人）+ 专业 Agent Fleet + Runtime Fleet，任务的产生、理解、委派、执行与跟踪都由 Multica 承担。
 
-Chatty Communication Core 是消息、身份与 Activity 的事实源，负责：
+Chatty 客户端（手机优先）实现 ChatGPT 式的体验层，负责：
 
-- Participant 身份、Profile、Presence 与成员关系；
-- Conversation、Channel、DM、Thread 与 Message；
-- Reaction、Mention、Inbox、Notification 与 Attention Queue；
-- Activity Event、搜索索引、审计记录与实时订阅；
-- Work / Life ContextSpace 的存储、授权和查询隔离；
-- Human 与 Agent 共用的发布、读取、搜索和协作能力。
+- 沉浸式对话：消息流、文本输入、长按语音转写与可编辑转写、图片与附件；
+- 呈现层语义：任务状态卡、Decision / Approval Card、渐进展开（Agent · Harness · Runtime · 事件 · Evidence）；
+- 订阅并渲染 Multica 状态（Mika、Agent、Issue、Task、Runtime、Session、事件流）；
+- 将用户表达提交给 Multica，并让 Mika、Agent 与执行进度回到同一对话流。
 
-V1 不依赖 Buzz Relay、Nostr Wire Protocol、Buzz Event Kind、`buzz-core`、`buzz-sdk`、`buzz-cli`、`buzz-acp` 或 Buzz Remote Agent。Chatty 可以借鉴 Buzz 的以下产品设计：
+Chatty 不持有独立的身份、授权或任务真值：事实源在 Multica workspace。客户端通过 ApiAdapter 把 Multica 的 Agent / Issue / Task / Run / Event 映射为消息、卡片、Artifact 与 Evidence，供用户以 ChatGPT 式的方式阅读与操作。
 
-- Human 与 Agent 处于同一 Participant 层级；
-- 团队空间、Channel、Thread、DM 和 Activity 的协作体验；
-- 语义化 Activity、结果优先与渐进展开；
-- 事件可追踪、可搜索、可审计；
-- Agent 具有独立身份、成员关系和活动历史。
-
-Chatty 的 Main Agent 在自建通信系统上实现 Attention Interface：团队协作完整保留，Main Agent 聚合、过滤、排序和压缩信息，帮助用户聚焦需要判断的事项。
+Chatty 的 Main Agent = Mika：用户默认对话对象与 Attention Interface。客户端不重复实现协调逻辑，只呈现 Mika 的摘要、通知与 Gate。用户依然可以直接与某个专业 Agent 对话（对应 Multica 中的 Agent DM）。
 
 ### Agent
 
-Agent 是稳定身份与主执行环境的聚合：
+Agent 在 Multica workspace 中已有一级建模：
 
-`Agent = Identity + PrimaryHarnessBinding + PrimaryRuntimeBinding + RuntimeScope`
+`Agent = Identity + PrimaryHarnessBinding + PrimaryRuntimeBinding`
 
-- **Identity:** 名称、头像、角色、记忆、权限和长期关系；
-- **PrimaryHarnessBinding:** 默认 Harness、模型与参数；
-- **PrimaryRuntimeBinding:** Agent 持续工作的主 Runtime；
-- **RuntimeScope:** Agent 允许被手动改绑到的 Runtime 边界。
+包括名称、头像、角色、记忆、权限、长期关系、默认 Harness、模型参数与主 Runtime。Mika 是核心管理人，其余为专业 Agent（例如 Android 开发助手、iPad 应用工程师、Vercel 部署工程师、家居智能管家），共同构成 Agent Fleet。
 
-**Decision:** Agent 使用稳定的主 Harness 与主 Runtime，系统不执行自动 Failover 或负载均衡。
+Chatty 客户端只渲染 Agent 的身份与状态；Task、Session 与事件直接映射 Multica 数据，不重复定义。
 
-创建 WorkItem 时，系统从 Agent 的 PrimaryBinding 生成一次不可变的 ExecutionBinding：
+**Decision:** Agent 使用 Multica 中各 Agent 配置的稳定主 Harness 与主 Runtime，调度、排队与恢复策略由 Multica 执行。
 
-`WorkItem.ExecutionBinding = snapshot(Agent.PrimaryHarness + Agent.PrimaryRuntime)`
-
-- 同一 WorkItem 和 Harness Session 始终使用该 ExecutionBinding；
-- 主 Runtime 离线时，WorkItem 进入 `WAITING_FOR_RUNTIME`；
-- 主 Runtime 繁忙时，WorkItem 在同一 Runtime 排队；
-- Runtime 恢复后，WorkItem 使用原 ExecutionBinding 自动继续；
-- Chatty 不会因为离线、繁忙、成本或速度自动选择备用 Runtime；
-- 用户可以通过显式 Gate 手动改绑，改绑会创建新的 ExecutionBinding、Session 记录和审计事件。
+创建任务时，Chatty 客户端（或 Mika）引用 Multica Agent 的稳定 PrimaryBinding；主 Runtime 离线/繁忙/恢复等生命周期状态由 Multica 管理，客户端只映射显示。用户显式改装 Agent 的 Runtime 更改发生在 Multica 侧，并保留审计记录。
 
 ### Harness
 
@@ -203,11 +185,11 @@ Harness 是运行 Agent 循环的执行框架，例如：
 
 Harness 负责 Session、模型循环、工具调用和事件输出。Harness 与 Runtime 必须作为独立概念建模。
 
-### Harness Event Model
+### Harness Event Model — client-side event mapping
 
-**Decision:** Harness Adapter 采用“核心语义事件 + Provider 扩展 + 原始 Payload”的统一模型。
+**Decision:** Chatty 客户端把 Multica 的 Runtime、Session、Turn、Tool Call、Permission、Artifact、Progress 与 Error 事件，统一映射为“核心语义事件 + Provider 扩展 + 原始 Payload”的呈现模型。
 
-V1 统一以下核心事件族：
+V1 客户端统一以下核心事件族（展示语义）：
 
 - **Session:** `session.started`、`session.resumed`、`session.completed`、`session.failed`、`session.canceled`；
 - **Turn:** `turn.started`、`turn.completed`、`turn.failed`、`turn.canceled`；
@@ -218,18 +200,15 @@ V1 统一以下核心事件族：
 - **Evidence:** `evidence.attached`；
 - **State:** `progress.updated`、`usage.updated`、`error.reported`。
 
-每个 Canonical Event 至少包含 `event_id`、`schema_version`、`event_type`、`timestamp`、`harness_id`、`runtime_id`、`session_id`、`work_item_id`、`run_id`、`step_id`、语义化摘要和 `raw_payload`。
+映射后的每个事件保留 Multica 事件 ID、Schema 版本、时间戳、Harness、Runtime、Session、Task 与原始 Payload。
 
-当 Harness 发出 Chatty 尚未识别的事件时：
+当收到尚未映射的事件类型时：
 
-- Adapter 生成 `activity.generic`；
-- 完整保存 Provider Event Name 与原始 Payload；
-- Generic Activity 进入所属 WorkItem、Run / Step 与审计记录；
-- 日常界面显示语义化摘要，并允许授权用户按需展开原始数据；
-- 当前 Run 继续执行；
-- 只有已识别的终止事件、传输失败或 Runtime 明确报告失败时，Run 才进入失败状态。
+- 显示为 `activity.generic`（可展开的摘要卡片）；
+- 完整保留事件名与原始 Payload，可供授权用户按需查看；
+- 当前 Task 继续执行，只在 Multica 报告失败或终止时切换失败/完成状态。
 
-该模型让不同 Harness 获得一致的 Chatty 展示和生命周期，同时保留 Codex、Claude Code、OpenCode、Pi 等 Harness 的独特能力。Adapter 可以逐步把高频 Generic Activity 升级为新的 Canonical Event，无需丢失历史数据。
+该映射让不同 Harness（Codex、Claude Code、OpenCode、Pi、Hermes…）在 Chatty 客户端获得一致的展示与生命周期，同时最大限度复用 Multica 已有的状态与事件流。
 
 ### Runtime
 
@@ -260,19 +239,18 @@ Chatty 直接使用 Multica Daemon。Daemon 的安装、启动、身份、认证
 
 ### MulticaRuntimeProvider
 
-`MulticaRuntimeProvider` 是 Chatty 与 Multica 之间唯一的 Runtime 适配边界：
+`MulticaRuntimeProvider` 是 Chatty 客户端与 Multica 之间唯一的 Runtime 适配边界：
 
-- 将 `Agent.PrimaryRuntimeBinding` 解析为 Multica Runtime ID；
-- 将 Chatty WorkItem 与 Run / Step 关联到 Multica 的任务、Session 和执行记录；
-- 从 Multica 状态生成 Chatty 的 `ExecutionBinding`、等待状态和恢复事件；
+- 将 Multica Agent 的 PrimaryRuntimeBinding 解析为 Runtime ID 与在线状态；
+- 将客户端可见的执行单元关联到 Multica 的 Task、Session 和执行记录；
 - 将 Multica 的 Session、Tool Call、结果与异常事件映射为 Chatty 消息、卡片、Artifact 和 Evidence；
-- 将 ContextSpace、RuntimeScope 与 Gate 决策投影为调用 Multica 前的授权约束。
+- 将 ContextSpace、权限与 Gate 决策投影为调用 Multica 前的授权约束。
 
-Chatty 保留 Participant、Main Agent、ContextSpace、WorkItem、Context Layer、Gate 与用户界面的产品语义；Multica 负责 Runtime 网络、Daemon 生命周期和底层执行连接。
+Chatty 客户端保留呈现层语义（Main Agent = Mika、ContextSpace、执行卡片、Gate 与用户界面）；Multica 承担 Agent 网络、Runtime 网络、Daemon 生命周期和底层执行。
 
-### Main Agent
+### Main Agent (Mika)
 
-Main Agent 是用户默认交流的 Agent，也是用户与整个协作网络之间的 Attention Interface。预计 90% 的用户交互直接发生在这里。
+Main Agent = **Mika**，Multica workspace 的核心管理人，也是用户默认交流的 Agent 与整个协作网络之间的 Attention Interface。预计 90% 的用户交互直接发生在这里。
 
 Main Agent 的最高职责是管理用户注意力，任务路由与团队协调服务于这一目标。它负责：
 
@@ -287,23 +265,19 @@ Main Agent 的最高职责是管理用户注意力，任务路由与团队协调
 - 在 Gate 到来时提供上下文、选项、建议与风险；
 - 只在需要用户判断、授权或处理异常时打扰用户。
 
-Main Agent 使用普通 Agent 数据模型，其特殊性来自默认关系、协调职责与注意力托管职责。用户依然可以直接进入其他 Agent 的 DM，也可以选择绕过 Main Agent 参与具体协作。
+Main Agent（Mika）使用普通 Agent 数据模型，其特殊性来自默认关系、协调职责与注意力托管职责。用户依然可以直接进入其他 Agent 的 DM，也可以选择绕过 Main Agent 参与具体协作。
 
-### Context Spaces and isolation
+### Context Space / Project 映射
 
-**Decision:** 一个用户拥有一个全局 Main Agent 身份；Work 与 Life 是硬隔离的 Context Spaces。
+**Decision:** Chatty 客户端把 Multica 的 workspace / project 映射为客户端可见的 Context Space 视图；Mika 在 Multica 中负责空间与权限管理。
 
-- Main Agent 的名称、头像和关系身份保持全局一致；
-- 每个 Conversation 必须绑定唯一的 `context_space_id`；
-- Session、Memory、Context Index、Agent、WorkItem、Artifact、RuntimeScope、Tool 与 Credential 都继承当前 ContextSpace；
-- Main Agent 的注意力管理只覆盖当前空间；
-- 当前空间禁止读取、搜索、总结、通知、委派或执行另一个空间的任何内容；
-- 跨空间限制由服务端授权与 Runtime 本地策略共同执行，不能只依赖 Prompt；
-- 用户在 Life 空间提出 Work 请求时，系统展示边界提示，不自动转发或携带内容；
-- 用户需要手动切换到 Work 空间，并在目标空间重新发起请求；
-- 全局层仅保存 Agent 身份和不包含 Work / Life 内容的产品设置。
+- 客户端显示唯一真值（Multica workspace）的皮肤；不复制空间、成员或权限；
+- 用户切换 Context Space = 切换 Multica workspace 视图或筛选；
+- 会话、记忆、Agent、任务、Artifact 与权限继承 Multica 的空间隔离规则；
+- 跨空间限制由 Multica 服务端授权与 Runtime 本地策略共同执行，客户端不做第二真值；
+- 全局层仅保留客户端产品设置。
 
-这一选择提供最强的工作与生活隔离，同时取消跨空间统一 Inbox、全局优先级排序和自动汇总。用户分别查看每个空间的 Main Agent 会话。
+V1 面向单个 Human 的单一 workspace，Work / Life 隔离作为空间概念保留在客户端视图与 Mika 的任务约束中。
 
 ### Context Layer
 
@@ -323,25 +297,23 @@ Main Agent 查询 Context Index 来理解用户、过滤信息和组织 Gate；�
 
 ### WorkItem, Run, Artifact, Gate and Evidence
 
-- **WorkItem:** 一个用户意图触发的可见执行单元；
-- **Run / Step:** WorkItem 内的一次 Agent、Harness 或 Tool 执行；
+- **WorkItem:** 一个用户意图触发的可见执行单元（对应 Multica 的 Task / Issue）；
+- **Run / Step:** WorkItem 内的一次 Agent、Harness 或 Tool 执行（对应 Multica Session 内阶段）；
 - **Artifact:** 在 Human、Agent、Harness 和 Runtime 之间传递的可审阅结果；
 - **Gate:** 控制下一阶段的 `allow`、`ask` 或 `block` 决策点；
 - **Evidence:** 支撑完成状态的测试、日志、截图、链接、消息 ID 或其他验证记录。
 
-**Decision:** 所有 Tool Call 都必须存在于一个用户可见的 WorkItem 中。
+**Decision:** 所有 Tool Call 都存在于一个用户可见的 WorkItem（Multica Task）中。
 
-- 纯文本回复继续作为普通消息，不创建 WorkItem；
-- Main Agent 在第一次 Tool Call 前创建 WorkItem；
-- 同一个用户意图中的多个 Tool Calls 归入同一个顶层 WorkItem；
-- 每次 Tool Call 形成可展开的 Run / Step，记录 Agent、Tool、Runtime、输入摘要、状态、耗时、输出与 Evidence；
-- 委派、读取、搜索和其他只读 Tool Call 同样触发 WorkItem；
-- 快速完成的 WorkItem 可以默认折叠，但始终保留在对话与历史记录中；
-- WorkItem 至少支持 `CREATED`、`RUNNING`、`WAITING`、`BLOCKED`、`COMPLETED`、`FAILED` 和 `CANCELED` 状态。
+- 纯文本回复继续作为普通消息，不创建任务；
+- Mika 在第一次 Tool Call 前创建 Multica Task；
+- 同一个用户意图中的多个 Tool Calls 归入同一个顶层 Task；
+- 每次 Tool Call 形成可展开的运行记录，展示 Agent、Tool、Runtime、输入摘要、状态、耗时、输出与 Evidence；
+- 委派、读取、搜索和其他只读调用同样产生任务记录；
+- 快速完成的任务可以默认折叠，但始终保留在对话与历史记录中；
+- 客户端展示的状态对应 Multica 任务状态：`CREATED`、`RUNNING`、`WAITING`、`BLOCKED`、`COMPLETED`、`FAILED`、`CANCELED`，由 Multica 作为事实源。
 
-`WorkItem = User Intent + ContextSpace + ExecutionBinding + Runs + Artifacts + Gates + Evidence`
-
-对话负责捕获意图、探索、协调和补充上下文；WorkItem 负责承载所有工具执行的可见生命周期；Artifact 负责跨阶段传递确定状态。Lark Context Layer 通过索引与关系图连接飞书原生对象及外部 Source of Truth，形成 Human 与 Agent 的共享工作地图。
+对话负责捕获意图、探索、协调和补充上下文；执行单元负责承载所有工具执行的可见生命周期；Artifact 负责跨阶段传递确定状态。Lark Context Layer 通过索引与关系图连接飞书原生对象及外部 Source of Truth，形成 Human 与 Agent 的共享工作地图。
 
 ## Interaction principles
 
@@ -425,32 +397,30 @@ Chatty 的 V1 可以先验证一个混合闭环：索引一种飞书原生对象
 
 | Source | What Chatty carries forward |
 | --- | --- |
-| 豆包 | 面向 AI 的手机交互、自然对话、长按语音转文字 |
-| Buzz | 产品设计参考：Human/Agent 对等、团队通信空间、Activity 语义与渐进展开；不引入代码或协议依赖 |
-| Multica | 直接复用 Daemon、Runtime Fleet、连接、认证、心跳、恢复与跨权限执行能力 |
+| ChatGPT 手机应用 | 设计语言与 UI 基准：沉浸式对话、消息流、输入与语音入口、低门槛移动体验 |
+| Multi-Agent 宇宙中的豆包 | 面向 AI 的手机交互与长按语音转文字（语音输入方式参考） |
+| Multica | 灵魂层：Mika 协调 + Agent Fleet + Runtime Fleet + Project / Issue / Task 跟踪，直接复用 |
 | ChatGPT / Codex | AI 过程、工具调用、状态、Artifact 与结果展示 |
 | 飞书 | Context Layer：索引所有获得授权的相关内容，并提供关系图、检索路由与原生工作对象 |
 | `larkcli` | Agent 查询和维护 Lark Context Index，并操作飞书原生对象的接口 |
 | Anthropic AI-native SDLC | Intent、Artifact、Human Gate 与可审计闭环 |
 
-Chatty 的独特产品中心是：个人与 Main Agent 的长期关系、以人的注意力为核心的协作拓扑，以及从自然表达跨越多个 Runtime 持续执行的完整体验。
+Chatty 的独特产品中心是：个人与 Mika（Main Agent）的长期关系、以人的注意力为核心的协作拓扑，以及从自然表达跨越多个 Runtime 持续执行的完整体验。
 
 ## Initial scope
 
 Stage 1 当前提出的首期范围：
 
 - 单个 Human；
-- 一个全局 Main Agent 身份；
-- Work / Life 两个硬隔离的 Context Spaces；
-- 自建 Chatty Communication Core，覆盖 Participant、Channel、DM、Thread、Message、Activity、Search、Audit 与实时订阅；
-- 多个拥有独立身份的 Agent；
-- Agent 可被直接对话，也可被 Main Agent 委派；
-- 每个 Agent 配置稳定的主 Harness 与主 Runtime；
-- Harness 与 Runtime 独立建模和配置；
-- 至少两个 Harness 通过 Canonical Event Model 统一 Session、Turn、Tool Call、Permission、Artifact、Evidence 与状态事件；
-- 通过 `MulticaRuntimeProvider` 接入 Multica 管理的多 Runtime，映射在线状态、能力、任务、Session、事件与恢复；
+- 一个全局 Main Agent 身份（Mika，Multica 核心管理人）；
+- Chatty 客户端：ChatGPT 式沉浸对话、消息流、长按语音转写、状态卡、渐进展开与 Approval / Decision Cards；
+- 复用 Multica Agent Fleet：多个拥有独立身份的专业 Agent；
+- 客户端可直接对话 Mika，也可被委托 / 直接进入专业 Agent；
+- 每个 Agent 使用 Multica 配置的稳定主 Harness 与主 Runtime；
+- 客户端通过 ApiAdapter 映射 Multica 的事件（Session、Turn、Tool Call、Permission、Artifact、Evidence、Progress、Error），统一展示与生命周期；
+- 通过 Multica Runtime Fleet 运行任务，客户端映射在线状态、能力、Session、事件与恢复；
 - 手机优先的文字、图片、文件和长按语音转文字；
-- 所有 Tool Call 都进入用户可见的 WorkItem，同一意图下的调用以 Runs / Steps 展开；
+- 触发 Tool Call 的用户意图进入可见执行单元（Multica Task），同一意图下的调用以运行记录展开；
 - 通过 `larkcli` 索引至少一种飞书原生对象与一种外部 Source of Truth，完成查询、按需取回、回写与索引刷新，并在 Chatty 对话中呈现摘要、预览或操作卡片；
 - Runtime 本地执行 `allow / ask / block` 策略。
 
@@ -461,33 +431,33 @@ Stage 1 当前提出的首期范围：
 - 替代飞书现有的文档、日程与任务系统；
 - 自研基础模型或完整复刻各类 Harness；
 - 自研 Runtime 网络协议、Daemon、注册、认证、心跳、重连或撤销系统；
-- 与 Buzz Relay、Nostr Wire Protocol 或 Buzz 客户端保持协议兼容；
+- 与 Buzz Relay、Nostr Wire Protocol 或 Buzz 客户端保持协议兼容（V1 不涉及 Buzz）；
 - 默认自动执行高风险、不可逆或跨权限边界的操作；
 - 同时覆盖所有桌面与移动平台；
 - 在首个可用闭环前建设完整 Project、Issue 或 Board 管理产品。
 
 ## Constraints
 
-- Human 与 Agent 的 Participant 模型从第一天保持对等；
-- 消息、身份与 Activity 的事实源由 Chatty Communication Core 自主管理；
-- Buzz 仅作为产品设计参考，V1 不引入 Buzz 代码、协议或运行时依赖；
-- Harness 与 Runtime 必须独立建模；
-- 未识别的 Harness 事件必须保存原始 Payload、显示 Generic Activity，并允许当前 Run 继续执行；
-- Multica 是 V1 唯一的 Runtime Backend，所有 Runtime 网络与 Daemon 生命周期能力直接遵循 Multica；
-- Chatty 只通过 `MulticaRuntimeProvider` 引用与映射 Multica Runtime；
-- WorkItem 创建后固定 ExecutionBinding，主 Runtime 不可用时等待恢复；
-- 系统禁止自动 Failover，手动改绑需要显式 Gate 与审计记录；
+- Human 与 Agent 的 Participant 模型对等关系沿用 Multica workspace；
+- 消息、身份、任务与 Activity 的事实源在 Multica；Chatty 客户端不做第二真值；
+- Buzz 不再作为 V1 依赖或参考来源（V1 只复用 Multica 的协作能力）；
+- Harness 与 Runtime 独立建模（由 Multica 管理）；
+- 未映射的 Multica 事件保留原始 Payload、显示 Generic Activity，并允许当前 Task 继续执行；
+- Multica 是 V1 唯一的 Runtime Backend 与灵魂层，所有 Runtime 网络与 Daemon 生命周期能力直接遵循 Multica；
+- Chatty 通过 `MulticaRuntimeProvider` 引用与映射 Multica Runtime；
+- 任务创建后固定 Multica Agent 的 ExecutionBinding，主 Runtime 不可用时由 Multica 调度等待；
+- 系统禁止自动 Failover，手动改绑在 Multica 侧执行并保留审计记录；
 - 凭证和敏感数据默认保留在目标 Runtime；
 - Runtime 本地策略拥有最终阻断权；
 - 任务需要支持离线、重连和 Session 恢复；
-- Main Agent 是默认入口，底层复杂度逐步展开；
-- Work / Life 跨空间访问在服务端与 Runtime 策略层直接阻断；
+- Mika 是默认入口，底层复杂度逐步展开；
+- 跨空间访问由 Multica 服务端与 Runtime 策略层直接阻断；
 - Voice 是输入方式，转写文字进入可搜索上下文；
 - 每项内容保留明确的 Source of Truth，Lark Context Layer 负责索引、关联和检索路由；
 - Context Index 只保存发现、理解、协调和取回所需的信息；
 - Chatty 对话负责入口、摘要、通知与 Gate；
-- 任何 Tool Call 必须先创建或加入当前用户可见的 WorkItem；
-- 同一用户意图只创建一个顶层 WorkItem，工具调用以 Runs / Steps 组织；
+- 任何 Tool Call 必须先创建或加入当前用户可见的执行单元（Multica Task）；
+- 同一用户意图只创建一个顶层执行单元，调用以运行记录组织；
 - Git 中的 Artifact 构成产品设计与实现决策的审计记录；
 - 首版优先验证个人高频使用价值，控制平台范围。
 
@@ -496,19 +466,19 @@ Stage 1 当前提出的首期范围：
 首个可用闭环需要证明：
 
 1. 用户可以通过一次长按语音输入创建明确请求，并在发送前编辑转写文本；
-2. 用户无需先配置 Project、Issue 或 Board，就能从 Main Agent 对话发起持续任务；
+2. 用户无需先配置 Project、Issue 或 Board，就能从 Mika 对话发起持续任务；
 3. 每个触发 Tool Call 的用户意图都会在第一次调用前创建一个可见 WorkItem，所有调用都能在 Runs / Steps 中追踪；
-4. Main Agent 可以将任务委派给另一个 Agent；
+4. Mika 可以将任务委派给另一个 Agent；
 5. Agent 使用固定的主 Harness 与主 Runtime 启动 Session；主 Runtime 离线或繁忙时，WorkItem 进入等待状态，并在原绑定恢复可用后继续；
 6. 用户离开客户端后任务继续运行；Multica Daemon 重连后，Chatty 经 `MulticaRuntimeProvider` 恢复连续的状态与事件；
 7. 进度、需要确认的问题和最终结果都回到原始对话；
 8. 完成状态至少包含一种可验证 Evidence；
-9. Main Agent 可以从 Lark Context Index 找到一个外部 Artifact，经 Source Resolver 在授权环境中取回，完成操作后回写 Source of Truth 并刷新索引；
+9. Mika 可以从 Lark Context Index 找到一个外部 Artifact，经 Source Resolver 在授权环境中取回，完成操作后回写 Source of Truth 并刷新索引；
 10. Runtime 凭证不会传入 Chatty Control Plane 或其他 Runtime；
 11. Life 空间内的请求无法发现、读取或调用 Work 空间中的 Context、Agent、Runtime 和 Tool；
 12. 用户愿意把 Chatty 作为日常调用个人 Agent 的默认入口持续使用。
 
-第 12 项需要在首个 Dogfood 周期中通过真实使用频率、Main Agent 入口占比、任务完成率和用户主动回访进行验证。
+第 12 项需要在首个 Dogfood 周期中通过真实使用频率、Mika 入口占比、任务完成率和用户主动回访进行验证。
 
 ## Open questions
 

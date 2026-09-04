@@ -1,20 +1,19 @@
 # Chatty
 
-> 一个以 Main Agent 管理人的注意力、以 Lark Context Layer 索引全部相关内容、以 Multica Runtime Fleet 为执行网络的 AI-native 个人计算系统。
+> 一个 ChatGPT 式设计语言与手机体验、以 Mika（Main Agent）管理人的注意力、以 Lark Context Layer 索引全部相关内容、以 Multica Agent Fleet + Runtime Fleet 为背后灵魂的 AI-native 个人计算系统。
 
-Chatty 希望提供一种真正属于个人的 AI 协作体验：像使用豆包一样自然地表达需求，通过与 Main Agent 的持续对话调度不同 Agent，并让这些 Agent 在分布于不同设备、权限和网络环境中的 Runtime 上可靠执行任务。
+Chatty 希望提供一种真正属于个人的 AI 协作体验：像使用 ChatGPT 手机应用一样自然地表达需求，通过 Mika（Multica 核心管理人）调度不同 Agent，并让这些 Agent 在分布于不同设备、权限和网络环境中的 Runtime 上可靠执行任务。
 
-Chatty 直接复用 Multica 的 Runtime、Daemon 与连接能力，也吸收豆包面向 AI 的交互体验。Lark Context Layer 为飞书原生对象和外部内容建立统一索引；`larkcli` 是 Agent 查询和维护这层 Context Index 的接口。
+Chatty 直接复用 Multica 的 Runtime、Daemon 与连接能力，也吸收 ChatGPT 手机应用的设计语言与面向 AI 的交互体验。Lark Context Layer 为飞书原生对象和外部内容建立统一索引；`larkcli` 是 Agent 查询和维护这层 Context Index 的接口。
 
 ## Why Chatty
 
 现有产品分别解决了部分问题：
 
-- 豆包拥有自然、低门槛、面向 AI 的日常交互体验，尤其适合手机端使用。
+- ChatGPT 手机应用拥有自然、低门槛、面向 AI 的日常交互体验与成熟的设计语言，是 Chatty 客户端的基准；豆包式长按语音转文字作为移动输入方式参考。
 - ChatGPT 与 Codex 擅长呈现推理、工具调用、执行过程和最终产物。
 - 飞书提供 Context Index、Context Graph、Retrieval Routing 与原生工作对象，`larkcli` 让 Agent 可以查询和维护这套索引。
-- Buzz 提供产品设计参考：Human/Agent 对等、团队通信空间、Activity 语义与渐进展开；Chatty 自建通信协议、数据模型与客户端。
-- Multica 提供 Chatty V1 的 Runtime Backend，直接承担 Daemon、连接、认证、心跳、恢复与本地 Agent Harness 调度。
+- Multica 提供 Chatty 的灵魂层：Mika（核心管理人）+ Agent Fleet + Runtime Fleet + Project / Issue / Task，直接承担协调、Daemon、连接、认证、心跳、恢复与本地 Agent Harness 调度。
 
 Chatty 将这些能力组织成一个以个人为中心的系统。用户无需持续守着 Terminal，也无需从 Project、Issue 或 Runtime 管理页面开始工作。任务可以从自然对话中产生，Lark Context Layer 索引相关内容并路由到对应 Source of Truth，摘要、通知和关键 Gate 回到对话中。
 
@@ -54,11 +53,11 @@ Human 与 Agent 都是 IM 中的一级 `Participant`，共享相同的身份与�
 
 底层可以保留 `participant_type: human | agent`。Participant 层保持对等，差异由角色、权限与能力声明决定。
 
-**Decision:** Chatty 独立实现 Communication Core。Participant 身份、Channel、DM、Thread、Message、Activity、Presence、Search、Audit 与实时订阅均由 Chatty 自主管理。Buzz 只提供产品设计启发，V1 不依赖 Buzz Relay、Nostr 协议或 Buzz 代码。
+**Decision:** Chatty 不自建 Communication Core。身份、对话、任务与状态的事实源在 Multica workspace（Mika + Agent Fleet + Runtime Fleet）；客户端只做 ChatGPT 式体验层投影。
 
 ### 4. Main Agent is the attention interface
 
-Main Agent 是用户默认交流的 Agent，也是用户与整个协作网络之间的 Attention Interface：
+Main Agent（Mika，Multica 核心管理人）是用户默认交流的 Agent，也是用户与整个协作网络之间的 Attention Interface：
 
 - 理解用户意图和长期偏好；
 - 判断自己处理或委派给其他 Agent；
@@ -121,23 +120,21 @@ Chatty 通过 `MulticaRuntimeProvider` 将 Agent、ExecutionBinding、WorkItem�
 flowchart TD
     P[Participant] --> H[Human]
     P --> A[Agent]
-    P --> C[Communication Core]
+    P --> C[Chatty Client — Multica Soul]
     A --> X[Primary Harness]
     A --> R[Primary Runtime]
     R --> D[Multica Daemon]
 ```
 
-### Communication Core
+### Client Experience Layer
 
-Chatty Communication Core 是消息、身份与 Activity 的事实源：
+Chatty 客户端是 ChatGPT 式的体验层，不持有第二真值：身份、对话、任务与状态的事实源在 Multica workspace。
 
-- Human 与 Agent 共用 Participant、成员关系和协作能力；
-- Channel、DM、Thread、Message、Reaction 与 Mention 使用统一模型；
-- Activity Event 支持语义化展示、渐进展开、搜索与审计；
-- Main Agent 在事件流之上维护 Inbox、Attention Queue、摘要与 Gate；
-- Work / Life ContextSpace 在存储、授权和查询层硬隔离。
-
-Buzz 的团队协作、Agent 一级身份和 Activity Feed 作为体验参考。Chatty 自主定义协议、Schema、服务端和客户端，不承担 Buzz 或 Nostr 兼容目标。
+- Mika（Main Agent）与专业 Agent 直接来自 Multica Agent Fleet；
+- 客户端映射 Multica 的 Agent / Issue / Task / Run / Event 为消息、状态卡、Artifact 与 Evidence；
+- 渐进展开、Approval / Decision Card、搜索与 Activity 展示是 Multica 状态的客户端投影；
+- Work / Life 等空间概念映射为 Multica workspace / project 的视图；
+- 对话负责入口、摘要、通知与 Gate；完整内容保留在各自的 Source of Truth。
 
 ### Context Layer
 
@@ -213,7 +210,7 @@ flowchart TD
 
 ## AI-native Interaction
 
-Chatty 的整体交互以豆包式 AI 对话体验为主要参考。
+Chatty 的整体交互以 ChatGPT 手机应用的设计语言为主要参考（语音输入采纳豆包式长按转写）。
 
 ### Main composer
 
@@ -276,14 +273,13 @@ GitHub、外部文档、本地文件、Runtime Session 和其他服务保留各�
 第一阶段聚焦：
 
 - 单个 Human；
-- 一个全局 Main Agent 身份；
-- Work / Life 两个硬隔离的 Context Spaces；
-- 自建 Chatty Communication Core，覆盖 Participant、Channel、DM、Thread、Message、Activity、Search、Audit 与实时订阅；
-- 多个可直接对话和被委派的 Agent；
-- Harness 与 Runtime 独立配置；
-- Harness Adapter 统一核心语义事件，未知事件显示 Generic Activity、保留原始 Payload并继续执行；
+- 一个全局 Main Agent 身份（Mika，Multica 核心管理人）；
+- Chatty 客户端：ChatGPT 式沉浸对话、消息流、长按语音转写、状态卡、渐进展开与 Approval / Decision Cards；
+- 复用 Multica Agent Fleet：多个可直接对话和被委派的 Agent；
+- Harness 与 Runtime 配置由 Multica 管理；
+- 客户端映射核心事件语义，未知事件显示 Generic Activity、保留原始 Payload并继续执行；
 - 通过 `MulticaRuntimeProvider` 接入 Multica Runtime Fleet，并映射状态、任务、Session、事件与恢复；
-- 豆包式文字与长按语音转写交互；
+- 手机优先的文字与长按语音转写交互；
 - 对话内的任务状态、审批和结果展示；
 - 通过 `larkcli` 索引一种飞书原生对象与一种外部 Source of Truth，完成查询、按需取回、回写和索引刷新，并在对话中呈现摘要、预览和操作卡片。
 
