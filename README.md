@@ -2,9 +2,11 @@
 
 > 一个 ChatGPT 式手机体验的 Multica 客户端：以 Mika（Main Agent）管理人的注意力，以 Multica Agent Fleet + Runtime Fleet 为背后灵魂。
 
-Chatty 希望提供一种真正属于个人的 AI 协作体验：像使用 ChatGPT 手机应用一样自然地表达需求，通过 Mika（Multica 核心管理人）调度不同 Agent，并让这些 Agent 在分布于不同设备、权限和网络环境中的 Runtime 上可靠执行任务。Chatty 是 Multica 的移动端 thin client：身份、任务、协调与执行的事实源全部在 Multica。
+Chatty 是 **Multica 的移动端 thin client**：身份、任务、协调与执行的事实源全部在 Multica，不重新实现、不建立第二真值。Chatty 提供一种真正属于个人的 AI 协作体验——像使用 ChatGPT 手机应用一样自然地表达需求，通过 Mika（Multica 核心管理人）调度不同 Agent，并让这些 Agent 在分布于不同设备、权限和网络环境中的 Runtime 上可靠执行任务。
 
-Chatty 直接复用 Multica 的 Runtime、Daemon 与连接能力，也吸收 ChatGPT 手机应用的设计语言与面向 AI 的交互体验。Lark Context Layer 为飞书原生对象和外部内容建立统一索引；`larkcli` 是 Agent 查询和维护这层 Context Index 的接口。
+Chatty 直接复用 Multica 的 Runtime、Daemon 与连接能力，也吸收 ChatGPT 手机应用的设计语言与面向 AI 的交互体验。
+
+> **Lark Context Layer 定位说明：** 本文档下文保留的 Lark Context Layer / Context Index / `larkcli` 描述，是 v1 探索阶段留下的长期概念设想，**不属于 v2 V1 范围**。`iterations/v2/intent.md` 已明确将「飞书 / Lark Context Layer 深度集成」列为 Out of scope（候选后续增强）。v2 当前轮次以 [`iterations/v2/spec.md`](./iterations/v2/spec.md) 为准；下文涉及 Lark 的章节仅作为未来候选方向保留，读者应以 Stage 状态指针（见文末 `Status`）判断当前轮次的真实范围。
 
 ## Why Chatty
 
@@ -12,10 +14,10 @@ Chatty 直接复用 Multica 的 Runtime、Daemon 与连接能力，也吸收 Cha
 
 - ChatGPT 手机应用拥有自然、低门槛、面向 AI 的日常交互体验与成熟的设计语言，是 Chatty 客户端的基准；豆包式长按语音转文字作为移动输入方式参考。
 - ChatGPT 与 Codex 擅长呈现推理、工具调用、执行过程和最终产物。
-- 飞书提供 Context Index、Context Graph、Retrieval Routing 与原生工作对象，`larkcli` 让 Agent 可以查询和维护这套索引。
 - Multica 提供 Chatty 的灵魂层：Mika（核心管理人）+ Agent Fleet + Runtime Fleet + Project / Issue / Task，直接承担协调、Daemon、连接、认证、心跳、恢复与本地 Agent Harness 调度。
+- （候选后续增强，不在 V1 范围）飞书可提供 Context Index、Context Graph、Retrieval Routing 与原生工作对象，`larkcli` 让 Agent 可以查询和维护这套索引——见上方定位说明。
 
-Chatty 将这些能力组织成一个以个人为中心的系统。用户无需持续守着 Terminal，也无需从 Project、Issue 或 Runtime 管理页面开始工作。任务可以从自然对话中产生，Lark Context Layer 索引相关内容并路由到对应 Source of Truth，摘要、通知和关键 Gate 回到对话中。
+Chatty 将这些能力组织成一个以个人为中心的系统。用户无需持续守着 Terminal，也无需从 Project、Issue 或 Runtime 管理页面开始工作。V1 的任务闭环从对话直接产生，摘要、通知和关键 Gate 回到对话中；Lark Context Layer 索引与路由是候选的后续增强，不是 V1 依赖。
 
 ## Core Principles
 
@@ -30,7 +32,9 @@ Chatty 将这些能力组织成一个以个人为中心的系统。用户无需�
 - 高风险操作显示为审批卡；
 - 文档、代码、表格、任务和日程以摘要、预览或可交互卡片进入对话。
 
-### 2. Context Layer carries shared state
+### 2. Context Layer carries shared state (候选后续能力，V1 范围外)
+
+> 本节描述的 Lark Context Layer 是长期概念设想，未包含在 v2 V1 范围（见文首定位说明与 `iterations/v2/intent.md` Out of scope）。V1 不依赖此层。
 
 `Lark = Context Index + Context Graph + Retrieval Routing + Native Work Objects`
 
@@ -62,7 +66,7 @@ Main Agent（Mika，Multica 核心管理人）是用户默认交流的 Agent，�
 - 理解用户意图和长期偏好；
 - 判断自己处理或委派给其他 Agent；
 - 选择适合的 Agent；
-- 聚合 Agent、WorkItem、Runtime 与 Context Layer 的状态；
+- 聚合 Agent、WorkItem 与 Runtime 的状态（跨 Context Layer 的聚合是候选后续能力，不在 V1 范围）；
 - 过滤低价值更新并合并重复信息；
 - 根据紧急度、影响和用户偏好排序；
 - 将复杂进展压缩为可快速判断的摘要；
@@ -106,7 +110,7 @@ Chatty 直接使用 Multica 已注册和管理的 Runtime Fleet。
 
 | Runtime | Environment and capabilities |
 | --- | --- |
-| Work Mac | 公司网络、内部仓库、工作账号、`larkcli` |
+| Work Mac | 公司网络、内部仓库、工作账号 |
 | Home Mac mini | 个人文件、家庭设备、本地模型 |
 | Cloud Server | 公网服务、定时任务、长时间运行 |
 | Raspberry Pi | 家庭局域网、传感器、IoT 控制 |
@@ -136,7 +140,9 @@ Chatty 客户端是 ChatGPT 式的体验层，不持有第二真值：身份、�
 - Work / Life 等空间概念映射为 Multica workspace / project 的视图；
 - 对话负责入口、摘要、通知与 Gate；完整内容保留在各自的 Source of Truth。
 
-### Context Layer
+### Context Layer（候选后续能力，V1 范围外）
+
+> 未包含在 v2 V1 范围，见文首定位说明。
 
 Context Layer 为 Human、Main Agent 与其他 Agent 提供统一、可检索的上下文视图：
 
@@ -183,6 +189,8 @@ Daemon 直接使用 Multica Daemon，负责能力发现、任务领取、Session
 
 ## Execution Flow
 
+> 下图与 10 步链路是长期概念设想（含 Lark Context Index / Source Resolver 步骤），**不是 v2 V1 的实现范围**。V1 实际链路见下方「V1 简化链路」，并以 [`iterations/v2/spec.md`](./iterations/v2/spec.md) §1 为准。
+
 ```mermaid
 flowchart TD
     U[Human] --> M[Main Agent]
@@ -195,7 +203,7 @@ flowchart TD
     C --> M
 ```
 
-典型链路：
+概念链路（含候选后续能力）：
 
 1. Human 向 Main Agent 发送文字、语音转写、图片或文件；
 2. Main Agent 将意图转换为 Context Query；
@@ -207,6 +215,15 @@ flowchart TD
 8. Agent 更新 Source of Truth；
 9. ContextRef 的摘要、关系、状态和更新时间得到刷新；
 10. Main Agent 将结果映射为摘要、卡片或 Gate，并在需要时请求用户决策。
+
+**V1 简化链路**（无 Lark Context Index / Source Resolver 步骤）：
+
+1. Human 向 Mika 发送文字或语音转写文字；
+2. Mika 决定直接处理或委派给目标 Agent；
+3. 目标 Agent 加载固定的主 Harness 与主 Multica Runtime；
+4. Multica Daemon 启动或恢复 Harness Session；
+5. Agent 执行并产出结果（含附件/Evidence）；
+6. Mika 将结果映射为摘要、状态卡或需要人工确认的卡片，回到同一段对话。
 
 ## AI-native Interaction
 
@@ -226,9 +243,11 @@ Chatty 的整体交互以 ChatGPT 手机应用的设计语言为主要参考（�
 
 > 磁盘管家 · Codex · Home Mac mini · Running
 
-用户点击后再查看 Agent、Harness、Runtime、执行日志、产物和历史状态。Lark ContextRef 可以在对话中显示为摘要、预览或可交互卡片；用户随后进入对应 Source of Truth 查看或编辑完整内容。
+用户点击后再查看 Agent、Harness、Runtime、执行日志、产物和历史状态。（候选后续能力，V1 范围外）Lark ContextRef 可以在对话中显示为摘要、预览或可交互卡片；用户随后进入对应 Source of Truth 查看或编辑完整内容。
 
-## Lark Context Layer
+## Lark Context Layer（候选后续能力，V1 范围外）
+
+> 本节未包含在 v2 V1 范围，见文首定位说明与 `iterations/v2/intent.md` Out of scope。
 
 `Lark = Context Index + Context Graph + Retrieval Routing + Native Work Objects`
 
@@ -268,9 +287,11 @@ GitHub、外部文档、本地文件、Runtime Session 和其他服务保留各�
 
 索引查询与源内容访问都执行权限检查。索引只向当前 Human 或 Agent 暴露其有权发现和取回的内容。
 
-## Initial Product Scope
+## Product Scope（跨轮次概念，非本轮 V1 清单）
 
-第一阶段聚焦：
+> 本节是产品长期概念范围，不是本轮 V1 的权威范围声明。**v2 V1 的实际范围以 `iterations/v2/intent.md` 「Initial scope」/「Out of scope」与 `iterations/v2/spec.md` 为准**——两者都明确排除飞书 / Lark Context Layer 深度集成。
+
+概念范围（跨轮次）：
 
 - 单个 Human；
 - 一个全局 Main Agent 身份（Mika，Multica 核心管理人）；
@@ -280,8 +301,11 @@ GitHub、外部文档、本地文件、Runtime Session 和其他服务保留各�
 - 客户端映射核心事件语义，未知事件显示 Generic Activity、保留原始 Payload并继续执行；
 - 通过 `MulticaRuntimeProvider` 接入 Multica Runtime Fleet，并映射状态、任务、Session、事件与恢复；
 - 手机优先的文字与长按语音转写交互；
-- 对话内的任务状态、审批和结果展示；
-- 通过 `larkcli` 索引一种飞书原生对象与一种外部 Source of Truth，完成查询、按需取回、回写和索引刷新，并在对话中呈现摘要、预览和操作卡片。
+- 对话内的任务状态、审批和结果展示。
+
+候选后续能力（不在 v2 V1 范围）：
+
+- 通过 `larkcli` 索引飞书原生对象与外部 Source of Truth，完成查询、按需取回、回写和索引刷新，并在对话中呈现摘要、预览和操作卡片。
 
 Human 与 Agent 的统一 Participant 模型从第一天建立。多人邀请、群聊与组织协作可以在这一模型上逐步开放。
 
@@ -289,7 +313,7 @@ Human 与 Agent 的统一 Participant 模型从第一天建立。多人邀请、
 
 > Chatty is a ChatGPT-style mobile client for Multica: Mika stewards human attention, the Multica Agent Fleet and Runtime Fleet execute work, and the client is a thin projection over the Multica workspace — no second source of truth.
 
-Chatty 让用户通过一次自然对话表达意图，经由 Lark Context Layer 找到所有相关内容，并调动分布在不同设备、环境和权限边界中的个人计算能力。
+Chatty 让用户通过一次自然对话表达意图，调动分布在不同设备、环境和权限边界中的个人计算能力；Lark Context Layer 索引与路由是候选的后续增强，不是当前轮次的依赖（见文首定位说明）。
 
 ## Status
 
