@@ -1,10 +1,11 @@
-# Intent: Chatty
+# Intent: Chatty (v1 — closed)
 
 - **Author:** Benjamin Zhang
-- **Status:** Draft — awaiting product-owner acceptance
-- **Stage:** 1 of 6 — Plan
+- **Status:** Closed — superseded by [`iterations/v2/intent.md`](../v2/intent.md)
+- **Closed reason:** 方向收敛为「Multica 手机端应用」，未进入验收即被 v2 取代（2026-09-04）
+- **Stage:** 1 of 6 — Plan (superseded before acceptance)
 - **Last updated:** 2026-08-31
-- **Source of truth:** This file and its Git history
+- **Source of truth:** This file and its Git history (kept for audit trail)
 
 ## Originator's intent
 

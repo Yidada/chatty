@@ -1,8 +1,8 @@
 # Chatty
 
-> 一个 ChatGPT 式设计语言与手机体验、以 Mika（Main Agent）管理人的注意力、以 Lark Context Layer 索引全部相关内容、以 Multica Agent Fleet + Runtime Fleet 为背后灵魂的 AI-native 个人计算系统。
+> 一个 ChatGPT 式手机体验的 Multica 客户端：以 Mika（Main Agent）管理人的注意力，以 Multica Agent Fleet + Runtime Fleet 为背后灵魂。
 
-Chatty 希望提供一种真正属于个人的 AI 协作体验：像使用 ChatGPT 手机应用一样自然地表达需求，通过 Mika（Multica 核心管理人）调度不同 Agent，并让这些 Agent 在分布于不同设备、权限和网络环境中的 Runtime 上可靠执行任务。
+Chatty 希望提供一种真正属于个人的 AI 协作体验：像使用 ChatGPT 手机应用一样自然地表达需求，通过 Mika（Multica 核心管理人）调度不同 Agent，并让这些 Agent 在分布于不同设备、权限和网络环境中的 Runtime 上可靠执行任务。Chatty 是 Multica 的移动端 thin client：身份、任务、协调与执行的事实源全部在 Multica。
 
 Chatty 直接复用 Multica 的 Runtime、Daemon 与连接能力，也吸收 ChatGPT 手机应用的设计语言与面向 AI 的交互体验。Lark Context Layer 为飞书原生对象和外部内容建立统一索引；`larkcli` 是 Agent 查询和维护这层 Context Index 的接口。
 
@@ -287,7 +287,7 @@ Human 与 Agent 的统一 Participant 模型从第一天建立。多人邀请、
 
 ## Product Statement
 
-> Chatty is a personal AI-native IM where humans and agents are equal participants in a Chatty-owned communication core, a Main Agent stewards human attention, Lark indexes and routes shared context, and Multica-managed, permission-scoped runtimes execute work through interchangeable agent harnesses.
+> Chatty is a ChatGPT-style mobile client for Multica: Mika stewards human attention, the Multica Agent Fleet and Runtime Fleet execute work, and the client is a thin projection over the Multica workspace — no second source of truth.
 
 Chatty 让用户通过一次自然对话表达意图，经由 Lark Context Layer 找到所有相关内容，并调动分布在不同设备、环境和权限边界中的个人计算能力。
 
@@ -295,10 +295,11 @@ Chatty 让用户通过一次自然对话表达意图，经由 Lark Context Layer
 
 Chatty is currently in **Stage 1 — Plan** of the AI-native SDLC（Anthropic Agentic SDLC 模具：intent → spec → ISSUES → 实现 → EVAL → Hardening）。
 
-- 当前轮次：**v1**（迭代产物见 [`iterations/v1/`](./iterations/v1/)）
-- Current artifact: [`iterations/v1/intent.md`](./iterations/v1/intent.md)
+- 当前轮次：**v2**（迭代产物见 [`iterations/v2/`](./iterations/v2/)）
+- Current artifact: [`iterations/v2/intent.md`](./iterations/v2/intent.md)
 - Intent status: Draft — awaiting product-owner acceptance
-- Next artifact after acceptance: `iterations/v1/spec.md`
+- Next artifact after acceptance: `iterations/v2/spec.md`
+- v1 已关闭（方向收敛为 Multica 手机端应用）：[`iterations/v1/`](./iterations/v1/)
 - 模具与轮次规则：[`docs/sdlc-workflow.md`](./docs/sdlc-workflow.md)
 - 工程闭环（adb + Appium）：[`docs/android-dev-loop.md`](./docs/android-dev-loop.md)
 
