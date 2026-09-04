@@ -297,9 +297,12 @@ Chatty 让用户通过一次自然对话表达意图，经由 Lark Context Layer
 
 ## Status
 
-Chatty is currently in **Stage 1 — Plan** of the AI-native SDLC.
+Chatty is currently in **Stage 1 — Plan** of the AI-native SDLC（Anthropic Agentic SDLC 模具：intent → spec → ISSUES → 实现 → EVAL → Hardening）。
 
-- Current artifact: [`intent.md`](./intent.md)
+- 当前轮次：**v1**（迭代产物见 [`iterations/v1/`](./iterations/v1/)）
+- Current artifact: [`iterations/v1/intent.md`](./iterations/v1/intent.md)
 - Intent status: Draft — awaiting product-owner acceptance
-- Next artifact after acceptance: `spec.md`
+- Next artifact after acceptance: `iterations/v1/spec.md`
+- 模具与轮次规则：[`docs/sdlc-workflow.md`](./docs/sdlc-workflow.md)
+- 工程闭环（adb + Appium）：[`docs/android-dev-loop.md`](./docs/android-dev-loop.md)
 
