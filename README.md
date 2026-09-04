@@ -162,6 +162,16 @@ Harness 是执行 Agent 循环的框架，例如：
 
 Harness 负责 Session、模型循环、工具调用和事件输出。同一种 Harness 可以安装在多个 Runtime 中，并因为环境、网络、目录和凭证不同而拥有不同的有效能力。
 
+Harness Adapter 将各 Provider 的输出映射到统一的 Canonical Event Model：
+
+- Session 与 Turn 生命周期；
+- Message 与 Reasoning Summary；
+- Tool Call 与 Permission；
+- Artifact 与 Evidence；
+- Progress、Usage 与 Error。
+
+每个事件保留 Provider 原始 Payload。遇到尚未识别的事件时，Chatty 生成 `activity.generic`，将它关联到对应 WorkItem 和 Run / Step，在界面中提供可展开的原始数据，并继续当前 Run。高频 Generic Activity 可以在后续 Schema 版本中升级为正式 Canonical Event。
+
 ### Runtime
 
 Runtime 是由 Multica Daemon 暴露的可调度执行环境。Chatty 通过 `MulticaRuntimeProvider` 引用 Runtime；Multica 管理其连接、状态、Harness、文件系统、工具、网络、凭证和设备能力。
@@ -271,6 +281,7 @@ GitHub、外部文档、本地文件、Runtime Session 和其他服务保留各�
 - 自建 Chatty Communication Core，覆盖 Participant、Channel、DM、Thread、Message、Activity、Search、Audit 与实时订阅；
 - 多个可直接对话和被委派的 Agent；
 - Harness 与 Runtime 独立配置；
+- Harness Adapter 统一核心语义事件，未知事件显示 Generic Activity、保留原始 Payload并继续执行；
 - 通过 `MulticaRuntimeProvider` 接入 Multica Runtime Fleet，并映射状态、任务、Session、事件与恢复；
 - 豆包式文字与长按语音转写交互；
 - 对话内的任务状态、审批和结果展示；
