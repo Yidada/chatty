@@ -203,6 +203,34 @@ Harness 是运行 Agent 循环的执行框架，例如：
 
 Harness 负责 Session、模型循环、工具调用和事件输出。Harness 与 Runtime 必须作为独立概念建模。
 
+### Harness Event Model
+
+**Decision:** Harness Adapter 采用“核心语义事件 + Provider 扩展 + 原始 Payload”的统一模型。
+
+V1 统一以下核心事件族：
+
+- **Session:** `session.started`、`session.resumed`、`session.completed`、`session.failed`、`session.canceled`；
+- **Turn:** `turn.started`、`turn.completed`、`turn.failed`、`turn.canceled`；
+- **Output:** `message.delta`、`message.completed`、`reasoning.summary`；
+- **Tool Call:** `tool.requested`、`tool.started`、`tool.completed`、`tool.failed`；
+- **Permission:** `permission.requested`、`permission.resolved`；
+- **Artifact:** `artifact.created`、`artifact.updated`；
+- **Evidence:** `evidence.attached`；
+- **State:** `progress.updated`、`usage.updated`、`error.reported`。
+
+每个 Canonical Event 至少包含 `event_id`、`schema_version`、`event_type`、`timestamp`、`harness_id`、`runtime_id`、`session_id`、`work_item_id`、`run_id`、`step_id`、语义化摘要和 `raw_payload`。
+
+当 Harness 发出 Chatty 尚未识别的事件时：
+
+- Adapter 生成 `activity.generic`；
+- 完整保存 Provider Event Name 与原始 Payload；
+- Generic Activity 进入所属 WorkItem、Run / Step 与审计记录；
+- 日常界面显示语义化摘要，并允许授权用户按需展开原始数据；
+- 当前 Run 继续执行；
+- 只有已识别的终止事件、传输失败或 Runtime 明确报告失败时，Run 才进入失败状态。
+
+该模型让不同 Harness 获得一致的 Chatty 展示和生命周期，同时保留 Codex、Claude Code、OpenCode、Pi 等 Harness 的独特能力。Adapter 可以逐步把高频 Generic Activity 升级为新的 Canonical Event，无需丢失历史数据。
+
 ### Runtime
 
 Runtime 是由 Multica Daemon 暴露、并由 Multica Runtime Control Plane 管理的执行端点。Chatty 将每个 Runtime 视为外部执行资源的投影，它同时代表：
@@ -419,7 +447,7 @@ Stage 1 当前提出的首期范围：
 - Agent 可被直接对话，也可被 Main Agent 委派；
 - 每个 Agent 配置稳定的主 Harness 与主 Runtime；
 - Harness 与 Runtime 独立建模和配置；
-- 至少两个 Harness 的统一 Session 与事件抽象；
+- 至少两个 Harness 通过 Canonical Event Model 统一 Session、Turn、Tool Call、Permission、Artifact、Evidence 与状态事件；
 - 通过 `MulticaRuntimeProvider` 接入 Multica 管理的多 Runtime，映射在线状态、能力、任务、Session、事件与恢复；
 - 手机优先的文字、图片、文件和长按语音转文字；
 - 所有 Tool Call 都进入用户可见的 WorkItem，同一意图下的调用以 Runs / Steps 展开；
@@ -444,6 +472,7 @@ Stage 1 当前提出的首期范围：
 - 消息、身份与 Activity 的事实源由 Chatty Communication Core 自主管理；
 - Buzz 仅作为产品设计参考，V1 不引入 Buzz 代码、协议或运行时依赖；
 - Harness 与 Runtime 必须独立建模；
+- 未识别的 Harness 事件必须保存原始 Payload、显示 Generic Activity，并允许当前 Run 继续执行；
 - Multica 是 V1 唯一的 Runtime Backend，所有 Runtime 网络与 Daemon 生命周期能力直接遵循 Multica；
 - Chatty 只通过 `MulticaRuntimeProvider` 引用与映射 Multica Runtime；
 - WorkItem 创建后固定 ExecutionBinding，主 Runtime 不可用时等待恢复；
@@ -483,19 +512,18 @@ Stage 1 当前提出的首期范围：
 
 ## Open questions
 
-1. Harness 之间需要统一哪些 Session、Tool Call、Permission 与 Artifact 事件？
-2. Main Agent 的长期记忆如何按 ContextSpace 存储，GlobalAgentProfile 允许包含哪些非上下文设置？
-3. 长按语音的转写服务、隐私边界、流式协议和离线能力如何选择？
-4. 移动端、Control Plane、Daemon 和 Harness Adapter 的首期技术栈如何确定？
-5. 哪些操作可以 `allow`，哪些必须 `ask`，哪些始终 `block`？
-6. ContextRef 的最小 Schema、关系类型和生命周期如何定义？
-7. 全文、关键词、结构化过滤、语义向量和关系图检索如何组合与排序？
-8. Source Resolver 如何把 ContextRef 映射到正确的 Runtime、Connector 与凭证环境？
-9. 源内容变化后，通过 Webhook、事件、轮询或按需校验中的哪些机制刷新索引？
-10. 如何镜像源系统权限，并处理权限变化、索引泄露和过期摘要？
-11. Chatty 原生实现哪些 Context 展示与交互组件，哪些直接复用或嵌入飞书对象？
-12. 对话消息、Chatty WorkItem 与 ContextRef 之间如何建立稳定引用与双向状态同步？
-13. Chatty Control Plane 的托管、自托管与数据所有权边界如何设计？
+1. Main Agent 的长期记忆如何按 ContextSpace 存储，GlobalAgentProfile 允许包含哪些非上下文设置？
+2. 长按语音的转写服务、隐私边界、流式协议和离线能力如何选择？
+3. 移动端、Control Plane、Daemon 和 Harness Adapter 的首期技术栈如何确定？
+4. 哪些操作可以 `allow`，哪些必须 `ask`，哪些始终 `block`？
+5. ContextRef 的最小 Schema、关系类型和生命周期如何定义？
+6. 全文、关键词、结构化过滤、语义向量和关系图检索如何组合与排序？
+7. Source Resolver 如何把 ContextRef 映射到正确的 Runtime、Connector 与凭证环境？
+8. 源内容变化后，通过 Webhook、事件、轮询或按需校验中的哪些机制刷新索引？
+9. 如何镜像源系统权限，并处理权限变化、索引泄露和过期摘要？
+10. Chatty 原生实现哪些 Context 展示与交互组件，哪些直接复用或嵌入飞书对象？
+11. 对话消息、Chatty WorkItem 与 ContextRef 之间如何建立稳定引用与双向状态同步？
+12. Chatty Control Plane 的托管、自托管与数据所有权边界如何设计？
 
 这些问题允许保留到 Stage 2，但会实质改变首期架构或体验的问题需要在 `spec.md` 中明确决策。
 
