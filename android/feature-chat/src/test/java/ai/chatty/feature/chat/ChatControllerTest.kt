@@ -19,9 +19,16 @@ class ChatControllerTest {
         var pendingTask = PendingTask(); var cursor: String? = null
         override suspend fun sessions() = listOf(session)
         var agentRows = listOf(ChatAgent("mika", "Renamed", system_key = "mika", owner_id = "u1", runtime_id = "r1"))
-        override suspend fun agents() = agentRows
+        var agentGate: CompletableDeferred<Unit>? = null
+        var agentFailure = false
+        var memberRows = listOf(ChatMember("u1", "member"))
+        override suspend fun agents(): List<ChatAgent> {
+            agentGate?.await()
+            if (agentFailure) throw java.io.IOException("context unavailable")
+            return agentRows
+        }
         override suspend fun me() = ChatUser("u1")
-        override suspend fun members(id: String) = listOf(ChatMember("u1", "member"))
+        override suspend fun members(id: String) = memberRows
         override suspend fun create(body: NewChat) = session
         override suspend fun messages(id: String, limit: Int, beforeTime: String?, beforeId: String?): MessagePage {
             cursor = beforeId
@@ -114,6 +121,67 @@ class ChatControllerTest {
         api.rows = api.rows + ChatMessage("a2", "s1", "assistant", "Done", "t1", "2026-01-04"); api.pendingTask = PendingTask()
         repeat(2) { event("chat:done", """{"chat_session_id":"s1","task_id":"t1","message_id":"a2"}""") }; advanceUntilIdle()
         assertNull(c.state.value.pending.task_id); assertEquals(1, c.state.value.messages.count { it.id == "a2" })
+    }
+    @Test fun returningToChatRefreshesBindingWithoutLosingComposerOrHistory() = runTest {
+        val api = Fake(); api.agentRows = api.agentRows.map { it.copy(runtime_id = "", runtime_bound = false) }
+        val c = ChatController(api, Drafts(), Workspace("w", "slug", "Test"), this)
+        c.initialize(); advanceUntilIdle(); c.older(); advanceUntilIdle()
+        c.draft("keep this draft"); c.upload(MultipartBody.Part.createFormData("file", "synthetic")); advanceUntilIdle()
+        val before = c.state.value
+        assertFalse(before.canSend)
+        api.agentRows = api.agentRows.map { it.copy(runtime_id = "r2", runtime_bound = true) }
+        c.start(); runCurrent(); c.stop(); advanceUntilIdle()
+        val after = c.state.value
+        assertTrue(after.canSend); assertEquals("r2", after.agent?.runtime_id)
+        assertEquals(before.session?.id, after.session?.id); assertEquals(before.draft, after.draft)
+        assertEquals(before.attachments, after.attachments); assertEquals(before.messages, after.messages)
+        assertEquals(before.cursor, after.cursor); assertEquals(before.hasMore, after.hasMore)
+    }
+    @Test fun refreshRecognizesUnbindingAndMembershipRevocation() = runTest {
+        val api = Fake(); api.agentRows = api.agentRows.map { it.copy(owner_id = "other", permission_mode = "public_to",
+            invocation_targets = listOf(InvocationTarget("workspace", "w"))) }
+        val c = ChatController(api, Drafts(), Workspace("w", "slug", "Test"), this)
+        c.initialize(); advanceUntilIdle(); c.draft("keep"); assertTrue(c.state.value.canSend)
+        api.agentRows = api.agentRows.map { it.copy(runtime_id = "", runtime_bound = false) }
+        c.refresh(); advanceUntilIdle(); c.send(); advanceUntilIdle(); assertFalse(c.state.value.canSend)
+        api.agentRows = api.agentRows.map { it.copy(runtime_id = "r1", runtime_bound = true) }
+        api.memberRows = emptyList(); c.refresh(); advanceUntilIdle(); c.send(); advanceUntilIdle()
+        assertFalse(c.state.value.canSend); assertNull(c.state.value.role); assertEquals(0, api.sends)
+        api.memberRows = listOf(ChatMember("u1", "member")); c.refresh(); advanceUntilIdle()
+        assertTrue(c.state.value.canSend); assertEquals("keep", c.state.value.draft)
+    }
+    @Test fun slowOrFailedContextRefreshBlocksStaleSendAndCanRecover() = runTest {
+        val api = Fake(); val c = ChatController(api, Drafts(), Workspace("w", "slug", "Test"), this)
+        c.initialize(); advanceUntilIdle(); c.draft("keep"); val before = c.state.value
+        api.agentGate = CompletableDeferred(); c.refresh(); c.send(); runCurrent()
+        assertFalse(c.state.value.canSend); assertEquals(0, api.sends)
+        api.agentFailure = true; api.agentGate!!.complete(Unit); advanceUntilIdle()
+        assertFalse(c.state.value.canSend); assertNotNull(c.state.value.error)
+        assertEquals(before.draft, c.state.value.draft); assertEquals(before.messages, c.state.value.messages)
+        api.agentFailure = false; c.refresh(); advanceUntilIdle()
+        assertTrue(c.state.value.canSend); assertNull(c.state.value.error)
+    }
+    @Test fun disappearingAgentNeverRetargetsDraftAndRestoresItsStorageKey() = runTest {
+        val api = Fake(); val drafts = Drafts(); val c = ChatController(api, drafts, Workspace("w", "slug", "Test"), this)
+        c.initialize(); advanceUntilIdle(); val original = api.agentRows.single()
+        c.newChat(original); advanceUntilIdle(); c.draft("keep")
+        api.agentRows = listOf(original.copy(id = "different")); c.refresh(); advanceUntilIdle()
+        assertNull(c.state.value.agent); assertFalse(c.state.value.canSend)
+        c.draft("edited while missing"); advanceUntilIdle()
+        assertEquals("edited while missing", drafts.data["w:new:mika"])
+        api.agentRows = listOf(original.copy(archived_at = "2026-09-05")); c.refresh(); advanceUntilIdle()
+        assertFalse(c.state.value.canSend); assertEquals("mika", c.state.value.agent?.id)
+        api.agentRows = listOf(original); c.refresh(); advanceUntilIdle()
+        assertTrue(c.state.value.canSend); assertEquals("edited while missing", c.state.value.draft)
+    }
+    @Test fun bindingRefreshPreservesAnInFlightSend() = runTest {
+        val api = Fake(); val c = ChatController(api, Drafts(), Workspace("w", "slug", "Test"), this)
+        c.initialize(); advanceUntilIdle(); c.draft("one send"); api.gate = CompletableDeferred()
+        c.send(); runCurrent(); c.stop(); c.refresh(); runCurrent(); c.send()
+        assertTrue(c.state.value.sending); assertEquals(1, api.sends)
+        api.gate!!.complete(Unit); advanceUntilIdle()
+        assertEquals(1, api.sends); assertEquals("t1", c.state.value.pending.task_id)
+        assertEquals("", c.state.value.draft)
     }
     @Test fun sourcePermissionAndTimelineRules() {
         val privateAgent = ChatAgent("a", "A", owner_id = "owner")

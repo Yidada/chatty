@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ai.chatty.feature.workspace.ProjectsControllerTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-09-05T14:26:26" hostname="Benjamins-Mac-mini.local" time="0.076">
+  <properties/>
+  <testcase name="leavingProjectRejectsLateDetailResponse" classname="ai.chatty.feature.workspace.ProjectsControllerTest" time="0.063"/>
+  <testcase name="returningToDetailRefreshesItsRevisionWithoutLeavingPage" classname="ai.chatty.feature.workspace.ProjectsControllerTest" time="0.001"/>
+  <testcase name="returningToPagedListKeepsLoadedRowsQueryAndFilter" classname="ai.chatty.feature.workspace.ProjectsControllerTest" time="0.003"/>
+  <testcase name="catalogFailureDoesNotHideProjectsOrEnableEdits" classname="ai.chatty.feature.workspace.ProjectsControllerTest" time="0.001"/>
+  <testcase name="customStatusSingleFlightSuppressesExecution" classname="ai.chatty.feature.workspace.ProjectsControllerTest" time="0.002"/>
+  <testcase name="projectSwitchRejectsStaleResponse" classname="ai.chatty.feature.workspace.ProjectsControllerTest" time="0.002"/>
+  <testcase name="unknownStatusCannotBeSubmitted" classname="ai.chatty.feature.workspace.ProjectsControllerTest" time="0.0"/>
+  <testcase name="countsAreServerOwnedAndPagingDeduplicates" classname="ai.chatty.feature.workspace.ProjectsControllerTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

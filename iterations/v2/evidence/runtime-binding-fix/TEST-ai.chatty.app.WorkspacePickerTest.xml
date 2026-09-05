@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ai.chatty.app.WorkspacePickerTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-09-05T14:57:09" hostname="Benjamins-Mac-mini.local" time="0.069">
+  <properties/>
+  <testcase name="selectingSameWorkspaceOnlyDismissesPicker" classname="ai.chatty.app.WorkspacePickerTest" time="0.062"/>
+  <testcase name="switchingCommitsSelectedWorkspaceAndDismissesPicker" classname="ai.chatty.app.WorkspacePickerTest" time="0.004"/>
+  <testcase name="cancellingDuringReloadKeepsCurrentWorkspace" classname="ai.chatty.app.WorkspacePickerTest" time="0.003"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

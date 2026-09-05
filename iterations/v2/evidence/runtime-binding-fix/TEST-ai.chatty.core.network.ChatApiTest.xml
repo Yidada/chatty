@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ai.chatty.core.network.ChatApiTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-09-05T14:26:25" hostname="Benjamins-Mac-mini.local" time="0.189">
+  <properties/>
+  <testcase name="socketAuthenticatesInFirstFrameWithoutUrlCredential" classname="ai.chatty.core.network.ChatApiTest" time="0.163"/>
+  <testcase name="sendReceiptAndBodyUseWireNames" classname="ai.chatty.core.network.ChatApiTest" time="0.018"/>
+  <testcase name="cursorScopeAndNullableAttachments" classname="ai.chatty.core.network.ChatApiTest" time="0.008"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

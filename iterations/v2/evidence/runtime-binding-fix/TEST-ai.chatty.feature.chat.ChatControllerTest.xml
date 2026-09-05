@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ai.chatty.feature.chat.ChatControllerTest" tests="14" skipped="0" failures="0" errors="0" timestamp="2026-09-05T14:59:41" hostname="Benjamins-Mac-mini.local" time="0.156">
+  <properties/>
+  <testcase name="slowOrFailedContextRefreshBlocksStaleSendAndCanRecover" classname="ai.chatty.feature.chat.ChatControllerTest" time="0.101"/>
+  <testcase name="bindingRefreshPreservesAnInFlightSend" classname="ai.chatty.feature.chat.ChatControllerTest" time="0.006"/>
+  <testcase name="returningToChatRefreshesBindingWithoutLosingComposerOrHistory" classname="ai.chatty.feature.chat.ChatControllerTest" time="0.016"/>
+  <testcase name="missingMikaCannotSendToAnotherAgent" classname="ai.chatty.feature.chat.ChatControllerTest" time="0.001"/>
+  <testcase name="lostReceiptPreservesDraftAndRequiresReview" classname="ai.chatty.feature.chat.ChatControllerTest" time="0.001"/>
+  <testcase name="paginationDeduplicatesAndRefreshKeepsOlderRows" classname="ai.chatty.feature.chat.ChatControllerTest" time="0.002"/>
+  <testcase name="sendIsSingleFlightAndUsesServerTask" classname="ai.chatty.feature.chat.ChatControllerTest" time="0.002"/>
+  <testcase name="acceptedSendRemainsPendingIfLocalStorageFails" classname="ai.chatty.feature.chat.ChatControllerTest" time="0.002"/>
+  <testcase name="sourcePermissionAndTimelineRules" classname="ai.chatty.feature.chat.ChatControllerTest" time="0.004"/>
+  <testcase name="rejectedAttachmentRemainsVisibleForRetry" classname="ai.chatty.feature.chat.ChatControllerTest" time="0.001"/>
+  <testcase name="refreshRecognizesUnbindingAndMembershipRevocation" classname="ai.chatty.feature.chat.ChatControllerTest" time="0.002"/>
+  <testcase name="scopedEventsAndFinalMessageConverge" classname="ai.chatty.feature.chat.ChatControllerTest" time="0.013"/>
+  <testcase name="sameTimestampCursorSurvivesRefresh" classname="ai.chatty.feature.chat.ChatControllerTest" time="0.001"/>
+  <testcase name="disappearingAgentNeverRetargetsDraftAndRestoresItsStorageKey" classname="ai.chatty.feature.chat.ChatControllerTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

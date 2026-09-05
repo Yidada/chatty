@@ -87,7 +87,7 @@
 
 ## 2026-09-05 Android 导航连续性
 
-> 后续 `sdlc-test` 发现 NAV-TEST-01：Mika 新绑定 Runtime 后，保留的对话仍不可发送。JVM 与 Pixel 均复现，当前需修复后再验收。详见 [复核记录](evidence/navigation-sdlc-test/review.md)。下列通过结果保留其原有测试范围。
+> 后续 `sdlc-test` 发现 NAV-TEST-01：Mika 新绑定 Runtime 后，保留的对话仍不可发送。JVM 与 Pixel 均复现。后续本地修复及验证见 [NAV-TEST-01 修复记录](evidence/runtime-binding-fix/review.md)。详见 [复核记录](evidence/navigation-sdlc-test/review.md)。下列通过结果保留其原有测试范围。
 
 - 41 项 JVM 测试、构建与 Lint 通过。
 - `evidence/navigation-continuity-loop/`：详情、搜索/筛选、55 条分页和聊天阅读位置保留；系统逐级返回；工作区取消/同项选择/503 恢复/跨工作区隔离；一次合成发送跨 Tab 完成。
@@ -98,3 +98,11 @@
 
 - 最终真实服务 APK 已安装至 Pixel 6 Pro；真实工作区选择取消和三个资源列表的跨 Tab 保留验证通过，当前进程无 AndroidRuntime FATAL。
 - 测试包与本次端口转发已移除，系统夜间模式 auto / 字号 1.0 已恢复；未发送真实消息或修改真实 Issues。
+
+## 2026-09-05 NAV-TEST-01 修复
+
+- 保留的 Chat 重新同步 Runtime 绑定及权限，绑定后返回对话即可发送；失败时保留草稿并暂停发送。
+- 46 项正式 JVM 测试、2 项原始 Chat 边界测试、构建与 Lint 通过。
+- Pixel Runtime 状态切换、原有聊天和导航回归全部通过；合计 4 次合成发送，真实工作区无消息和 Issue 写入。
+- 真实服务修复包已安装，APK 哈希一致，原生导航检查通过；测试包、端口转发与测试服务已清理。
+- [修复记录及证据](evidence/runtime-binding-fix/review.md)。修复随本次代码提交保存；已发布的预览包保持原样。

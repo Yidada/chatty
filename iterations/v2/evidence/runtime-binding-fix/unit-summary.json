@@ -1,0 +1,58 @@
+[
+  {
+    "name": "ai.chatty.app.WorkspacePickerTest",
+    "tests": "3",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0"
+  },
+  {
+    "name": "ai.chatty.core.auth.AuthRepositoryTest",
+    "tests": "3",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0"
+  },
+  {
+    "name": "ai.chatty.core.network.ChatApiTest",
+    "tests": "3",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0"
+  },
+  {
+    "name": "ai.chatty.core.network.MulticaApiTest",
+    "tests": "9",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0"
+  },
+  {
+    "name": "ai.chatty.core.network.WorkspaceApiTest",
+    "tests": "3",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0"
+  },
+  {
+    "name": "ai.chatty.feature.chat.ChatControllerTest",
+    "tests": "14",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0"
+  },
+  {
+    "name": "ai.chatty.feature.chat.NativeNavigationTest",
+    "tests": "3",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0"
+  },
+  {
+    "name": "ai.chatty.feature.workspace.ProjectsControllerTest",
+    "tests": "8",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0"
+  }
+]

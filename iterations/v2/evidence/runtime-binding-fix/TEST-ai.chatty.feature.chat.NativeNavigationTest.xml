@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ai.chatty.feature.chat.NativeNavigationTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-09-05T14:59:41" hostname="Benjamins-Mac-mini.local" time="0.009">
+  <properties/>
+  <testcase name="ordinaryReferencesRemainAvailableButInvalidSchemesDoNot" classname="ai.chatty.feature.chat.NativeNavigationTest" time="0.0"/>
+  <testcase name="multicaAndApiLinksNeverLeaveTheApp" classname="ai.chatty.feature.chat.NativeNavigationTest" time="0.0"/>
+  <testcase name="markdownKeepsLabelsFormattingAndImagesWithoutInternalClickTargets" classname="ai.chatty.feature.chat.NativeNavigationTest" time="0.009"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

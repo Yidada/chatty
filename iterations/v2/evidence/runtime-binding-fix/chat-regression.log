@@ -1,0 +1,34 @@
+PASS: 对话
+PASS: 已连接
+PASS: Mika
+PASS: fixture-note.txt
+PASS: Chatty attachment preview OK
+PASS: 关闭
+PASS: 继续测试
+PASS: 发送
+PASS: CHATTY_CHAT_OK · loop-round-1
+PASS: ▸ 任务过程 · 2 项
+PASS: 工具 · fixture_check
+PASS: ▾ 任务过程 · 2 项
+PASS: 已连接
+PASS: 发送
+PASS: CHATTY_CHAT_OK · loop-round-2
+PASS: 设置
+PASS: Runtimes
+PASS: 对话
+PASS: Mika
+PASS: Mika
+PASS: CHATTY_CHAT_OK · loop-round-2
+PASS: 加载更早消息
+PASS: 历史消息 00
+PASS: CHATTY_CHAT_OK · loop-round-2
+PASS: 连接模型服务失败，请检查网络后重试。
+PASS: ▸ 错误详情
+PASS: synthetic provider error
+PASS: 任务已结束，没有生成回复。
+PASS: 刷新对话
+PASS: 暂时无法连接，请重试。草稿已保留。
+PASS: 刷新对话
+PASS: 连接模型服务失败，请检查网络后重试。
+PASS: rich content, fresh attachment preview, quick action, two sends, traces, reconnect, drafts, cold start, cursor, Mika-only navigation
+/Users/benjamin/Workspace/chatty/.tools/worktrees/android-navigation-continuity/iterations/v2/evidence/runtime-binding-fix/chat-regression

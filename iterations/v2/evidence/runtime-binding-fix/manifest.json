@@ -1,0 +1,29 @@
+{
+  "base_commit": "8345bb31d0f0b2eb179dda1e75ac576d617b8f48",
+  "working_tree_fix": true,
+  "source_sha256": {
+    "android/feature-chat/src/main/java/ai/chatty/feature/chat/ChatController.kt": "9ed2ab05f42013a35c444ff5b99014b6d8919aee320cf392764f183bac6d9761",
+    "android/feature-chat/src/test/java/ai/chatty/feature/chat/ChatControllerTest.kt": "8f2d0aef5da7c4fe8c4af1eec6659980f332625bdf6d63ee4b76263cfcd297d6"
+  },
+  "apk": "/Users/benjamin/Workspace/chatty/.tools/deliverables/runtime-binding-fix/chatty-runtime-binding-fix-debug.apk",
+  "apk_sha256": "05207de166295360283f4f32ace542b562951e69a32f358dcaef935d80d32aaa",
+  "package": "ai.chatty.app.debug",
+  "versionName": "0.2.0-dev",
+  "unit_tests": 46,
+  "unit_failures": 0,
+  "original_chat_boundary_tests": 2,
+  "original_chat_boundary_failures": 0,
+  "github_release_updated": false,
+  "status": "fixed_and_installed_locally",
+  "installed_verification": "installed.json",
+  "device_scenarios": {
+    "runtime_transitions": 31,
+    "chat_regression": 33,
+    "navigation_regression": 96
+  },
+  "cleanup": {
+    "fixture_package_removed": true,
+    "adb_reverse_removed": true,
+    "test_services_stopped": true
+  }
+}

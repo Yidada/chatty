@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ai.chatty.core.network.MulticaApiTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-09-05T14:26:25" hostname="Benjamins-Mac-mini.local" time="0.025">
+  <properties/>
+  <testcase name="malformedResponseDoesNotBecomeSuccessfulEmptyWorkspace" classname="ai.chatty.core.network.MulticaApiTest" time="0.005"/>
+  <testcase name="staleUnauthorizedDoesNotEraseReplacementToken" classname="ai.chatty.core.network.MulticaApiTest" time="0.003"/>
+  <testcase name="serverFailurePreservesCredentialAndDoesNotRetry" classname="ai.chatty.core.network.MulticaApiTest" time="0.002"/>
+  <testcase name="forbiddenPreservesCredential" classname="ai.chatty.core.network.MulticaApiTest" time="0.002"/>
+  <testcase name="connectionFailurePreservesCredential" classname="ai.chatty.core.network.MulticaApiTest" time="0.003"/>
+  <testcase name="authRequestsDoNotSendExistingCredential" classname="ai.chatty.core.network.MulticaApiTest" time="0.002"/>
+  <testcase name="redirectIsNotFollowedWithCredentials" classname="ai.chatty.core.network.MulticaApiTest" time="0.002"/>
+  <testcase name="unauthorizedClearsCredential" classname="ai.chatty.core.network.MulticaApiTest" time="0.002"/>
+  <testcase name="typedWorkspaceAndScopedHeaders" classname="ai.chatty.core.network.MulticaApiTest" time="0.003"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

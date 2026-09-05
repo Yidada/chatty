@@ -19,9 +19,10 @@ data class ChatState(
     val pending: PendingTask = PendingTask(), val traces: Map<String, List<TaskTrace>> = emptyMap(),
     val generic: List<String> = emptyList(), val draft: String = "", val attachments: List<Attachment> = emptyList(),
     val loading: Boolean = true, val loadingOlder: Boolean = false, val sending: Boolean = false,
-    val uncertain: Boolean = false, val connected: Boolean = false, val notice: String? = null, val error: String? = null
+    val uncertain: Boolean = false, val connected: Boolean = false, val notice: String? = null, val error: String? = null,
+    val capabilitiesCurrent: Boolean = false
 ) {
-    val canSend get() = !loading && !sending && !uncertain && pending.task_id == null && session?.status != "archived" &&
+    val canSend get() = capabilitiesCurrent && !loading && !sending && !uncertain && pending.task_id == null && session?.status != "archived" &&
         agent?.let { it.archived_at == null && it.runtime_bound != false && it.runtime_id.isNotBlank() && canChat(it, userId, role) } == true &&
         (draft.isNotBlank() || attachments.isNotEmpty())
 }
@@ -36,26 +37,28 @@ class ChatController(private val api: ChatApi, private val drafts: ChatDrafts, p
     private var fallback: Job? = null
     private var refreshJob: Job? = null
     private var refreshAgain = false
+    private var selectedAgentId: String? = null
     private val json = Json { ignoreUnknownKeys = true }
-    private fun draftKey() = "${workspace.id}:${state.value.session?.id ?: "new:" + state.value.agent?.id}"
+    private fun draftKey() = "${workspace.id}:${state.value.session?.id ?: "new:" + selectedAgentId}"
     private fun launch(block: suspend () -> Unit) = scope.launch {
         try { block() } catch (e: CancellationException) { throw e } catch (e: Exception) { mutable.update { it.copy(error = errorText(e), loading = false) } }
     }
     suspend fun initialize() {
         try {
-            val (sessions, agents, user, members) = coroutineScope {
-                val s = async { api.sessions() }; val a = async { api.agents() }; val u = async { api.me() }; val m = async { api.members(workspace.id) }
-                Bootstrap(s.await(), a.await(), u.await(), m.await())
-            }
+            val (sessions, agents, user, members) = readContext()
             val role = members.find { it.user_id == user.id }?.role
             val available = agents.filter { it.archived_at == null && canChat(it, user.id, role) }
             val mika = available.find { it.system_key == "mika" } ?: available.find { it.system_key == null && it.name.equals("Mika", true) }
-            mutable.update { it.copy(sessions = orderedSessions(sessions), agents = agents, userId = user.id, role = role, agent = mika, loading = false, error = if (mika == null) "此工作区尚未配置可用的 Mika，请在设置中检查 Agents。" else null) }
+            mutable.update { it.copy(sessions = orderedSessions(sessions), agents = agents, userId = user.id, role = role, agent = mika, capabilitiesCurrent = true, loading = false, error = if (mika == null) "此工作区尚未配置可用的 Mika，请在设置中检查 Agents。" else null) }
             val initial = sessions.filter { it.status != "archived" && it.agent_id == mika?.id }.maxByOrNull { it.updated_at }
             if (initial != null) open(initial) else newChat(state.value.agent)
         } catch (e: CancellationException) { throw e } catch (e: Exception) { mutable.update { it.copy(loading = false, error = errorText(e)) } }
     }
     private data class Bootstrap(val sessions: List<ChatSession>, val agents: List<ChatAgent>, val user: ChatUser, val members: List<ChatMember>)
+    private suspend fun readContext() = coroutineScope {
+        val s = async { api.sessions() }; val a = async { api.agents() }; val u = async { api.me() }; val m = async { api.members(workspace.id) }
+        Bootstrap(s.await(), a.await(), u.await(), m.await())
+    }
     fun start() {
         if (stream?.isActive == true || fallback?.isActive == true) return
         stream = scope.launch {
@@ -77,6 +80,7 @@ class ChatController(private val api: ChatApi, private val drafts: ChatDrafts, p
     fun stop() { stream?.cancel(); fallback?.cancel(); stream = null; fallback = null; mutable.update { it.copy(connected = false) } }
     fun open(session: ChatSession) {
         if (state.value.sending) return
+        selectedAgentId = session.agent_id
         generation++; val g = generation
         mutable.update { it.copy(session = session, agent = it.agents.find { a -> a.id == session.agent_id }, messages = emptyList(), pending = PendingTask(), cursor = null, hasMore = false, generic = emptyList(), draft = "", attachments = emptyList(), loading = true, loadingOlder = false, traces = emptyMap(), uncertain = false, notice = null, error = null) }
         launch {
@@ -91,6 +95,7 @@ class ChatController(private val api: ChatApi, private val drafts: ChatDrafts, p
     }
     fun newChat(agent: ChatAgent?) {
         if (state.value.sending || agent == null) return
+        selectedAgentId = agent.id
         generation++; val g = generation
         mutable.update { it.copy(session = null, agent = agent, messages = emptyList(), pending = PendingTask(), generic = emptyList(), cursor = null, hasMore = false, loading = false, loadingOlder = false, traces = emptyMap(), draft = "", attachments = emptyList(), uncertain = false, notice = null, error = null) }
         launch { val text = drafts.read(draftKey()); if (g == generation) mutable.update { it.copy(draft = text) } }
@@ -108,16 +113,29 @@ class ChatController(private val api: ChatApi, private val drafts: ChatDrafts, p
     fun acknowledgeUncertain() { mutable.update { it.copy(uncertain = false, notice = null, error = null) } }
     fun refresh() {
         refreshAgain = true
+        mutable.update { it.copy(capabilitiesCurrent = false) }
         if (refreshJob?.isActive == true) return
         refreshJob = launch {
             while (refreshAgain) {
                 refreshAgain = false
-                if (state.value.agents.isEmpty()) initialize() else {
+                if (state.value.userId == null) initialize() else {
                     val g = generation
-                    val sessions = api.sessions()
-                    if (g != generation) continue
-                    mutable.update { it.copy(sessions = orderedSessions(sessions), session = sessions.find { s -> s.id == it.session?.id } ?: it.session) }
+                    mutable.update { it.copy(capabilitiesCurrent = false) }
+                    val (sessions, agents, user, members) = readContext()
+                    if (g != generation) { refreshAgain = true; continue }
+                    val role = members.find { it.user_id == user.id }?.role
+                    // Retain the conversation identity even if its Agent temporarily disappears.
+                    val id = state.value.session?.agent_id ?: selectedAgentId
+                    val available = agents.filter { it.archived_at == null && canChat(it, user.id, role) }
+                    val agent = if (id != null) agents.find { it.id == id } else
+                        available.find { it.system_key == "mika" } ?: available.find { it.system_key == null && it.name.equals("Mika", true) }
+                    if (selectedAgentId == null) selectedAgentId = agent?.id
+                    mutable.update { it.copy(sessions = orderedSessions(sessions), session = sessions.find { s -> s.id == it.session?.id } ?: it.session,
+                        agents = agents, agent = agent, userId = user.id, role = role) }
                     refreshNow(g)
+                    if (g == generation) mutable.update { it.copy(capabilitiesCurrent = true,
+                        error = if (it.uncertain) it.error else if (agent == null) "此工作区尚未配置可用的 Mika，请在设置中检查 Agents。" else null) }
+                    else refreshAgain = true
                 }
             }
         }
