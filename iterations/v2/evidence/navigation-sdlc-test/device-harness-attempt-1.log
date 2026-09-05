@@ -1,0 +1,10 @@
+PASS: 获取验证码
+PASS: 登录并连接
+PASS: 选择工作区
+PASS: Loop Test Workspace
+PASS: Mika
+PASS: 此 Agent 尚未绑定 Runtime
+Traceback (most recent call last):
+  File "/Users/benjamin/Workspace/chatty/.tools/worktrees/android-navigation-continuity/iterations/v2/evidence/navigation-sdlc-test/repro/device-runtime-refresh.py", line 24, in <module>
+    assert not enabled('发送')
+AssertionError

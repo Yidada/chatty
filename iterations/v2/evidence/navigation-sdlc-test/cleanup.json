@@ -1,0 +1,9 @@
+{
+  "fixture_removed": true,
+  "reverse_empty": true,
+  "own_test_ports_closed": [
+    8875,
+    4725
+  ],
+  "real_app_pid": "25269"
+}

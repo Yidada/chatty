@@ -67,7 +67,7 @@ class AndroidChatDrafts(private val context: Context, private val account: Strin
 }
 
 @Composable
-fun ChatRoute(workspace: Workspace, credentials: CredentialStore, baseUrl: String) {
+fun ChatRoute(workspace: Workspace, credentials: CredentialStore, baseUrl: String, active: Boolean = true) {
     val context = LocalContext.current.applicationContext
     val scope = rememberCoroutineScope()
     // Credentials are never written to draft keys; a one-way digest separates accounts on this device.
@@ -78,8 +78,10 @@ fun ChatRoute(workspace: Workspace, credentials: CredentialStore, baseUrl: Strin
         ChatController(createChatApi(baseUrl, credentials, workspace.slug), AndroidChatDrafts(context, account), workspace, scope, socket::events)
     }
     val lifecycle = LocalLifecycleOwner.current.lifecycle
-    LaunchedEffect(controller, lifecycle) {
-        controller.initialize()
+    var initialized by remember(controller) { mutableStateOf(false) }
+    LaunchedEffect(controller, lifecycle, active) {
+        if (!active) return@LaunchedEffect
+        if (!initialized) { controller.initialize(); initialized = true }
         lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
             controller.start()
             try { awaitCancellation() } finally { controller.stop() }
@@ -87,8 +89,11 @@ fun ChatRoute(workspace: Workspace, credentials: CredentialStore, baseUrl: Strin
     }
     val state by controller.state.collectAsStateWithLifecycle()
     val resources = remember(workspace.id, token) { ChatResources(createChatApi(baseUrl, credentials, workspace.slug), baseUrl, token, workspace.slug) }
-    CompositionLocalProvider(LocalChatResources provides resources) {
-        ChatScreen(state, controller, baseUrl)
+    val savedUi = androidx.compose.runtime.saveable.rememberSaveableStateHolder()
+    if (active) savedUi.SaveableStateProvider("chat") {
+        CompositionLocalProvider(LocalChatResources provides resources) {
+            ChatScreen(state, controller, baseUrl)
+        }
     }
 }
 
@@ -99,7 +104,7 @@ private fun ChatScreen(state: ChatState, controller: ChatController, baseUrl: St
     val context = LocalContext.current
     val keyboard = LocalSoftwareKeyboardController.current
     val list = rememberLazyListState()
-    var followLatest by remember(state.session?.id) { mutableStateOf(true) }
+    var followLatest by androidx.compose.runtime.saveable.rememberSaveable(state.session?.id) { mutableStateOf(true) }
     LaunchedEffect(list) {
         snapshotFlow { list.isScrollInProgress to ((list.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0) >= list.layoutInfo.totalItemsCount - 2) }
             .collect { (scrolling, nearEnd) -> if (scrolling) followLatest = nearEnd }
@@ -107,7 +112,6 @@ private fun ChatScreen(state: ChatState, controller: ChatController, baseUrl: St
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) runCatching { controller.upload(uploadPart(context, uri)) }.onFailure { localError = it.message ?: "无法读取附件" }
     }
-    LaunchedEffect(state.session?.id) { if (state.messages.isNotEmpty()) list.scrollToItem(state.messages.size - 1) }
     LaunchedEffect(state.messages.lastOrNull()?.id, state.pending.task_id) {
         if (followLatest && !state.loadingOlder && state.messages.isNotEmpty()) list.animateScrollToItem((list.layoutInfo.totalItemsCount - 1).coerceAtLeast(0))
     }

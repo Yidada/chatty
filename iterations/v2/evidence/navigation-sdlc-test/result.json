@@ -1,0 +1,36 @@
+{
+  "verdict": "needs_fix",
+  "self_review": true,
+  "baseline": {
+    "tests": 41,
+    "failures": 0,
+    "errors": 0
+  },
+  "build": "passed",
+  "lint": "passed",
+  "additional_boundary_tests": {
+    "tests": 4,
+    "passed": 3,
+    "failed": 1
+  },
+  "findings": [
+    {
+      "id": "NAV-TEST-01",
+      "severity": "P2",
+      "title": "Retained Chat does not refresh Mika Runtime binding",
+      "unit_reproduced": true,
+      "pixel_reproduced": true,
+      "application_fix_applied": false
+    }
+  ],
+  "device": {
+    "model": "Pixel 6 Pro",
+    "android": "16",
+    "synthetic_send_count": 0,
+    "synthetic_issue_writes": 0,
+    "fixture_uninstalled": true,
+    "reverse_removed": true,
+    "real_app_restored": true,
+    "own_fixture_and_appium_stopped": true
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "session": "cd8a97e6-1f50-44aa-8595-15ccb0777ba7",
+  "checks": [
+    "PASS: 获取验证码",
+    "PASS: 登录并连接",
+    "PASS: 选择工作区",
+    "PASS: Loop Test Workspace",
+    "PASS: Mika",
+    "PASS: 此 Agent 尚未绑定 Runtime"
+  ]
+}

@@ -21,9 +21,17 @@ data class ProjectsState(val projects: List<Project> = emptyList(), val statuses
 class ProjectsController(private val api: WorkspaceApi, private val scope: CoroutineScope) {
     private val mutable = MutableStateFlow(ProjectsState()); val state = mutable.asStateFlow()
     private var generation = 0; private var load: Job? = null; private var detailGeneration = 0
-    fun refresh() { if (state.value.selected == null) overview() else select(state.value.selected, state.value.query, state.value.filter) }
+    fun refresh() {
+        val s = state.value
+        if (s.saving) return
+        when {
+            s.detail != null -> detail(s.detail)
+            s.selected == null -> overview()
+            else -> loadIssues(s.selected, s.query, s.filter, retain = true)
+        }
+    }
     fun overview() {
-        load?.cancel(); generation++
+        load?.cancel(); generation++; detailGeneration++
         mutable.update { it.copy(selected = null, issues = emptyList(), total = 0, loading = true, error = null, detail = null) }
         load = scope.launch {
             try {
@@ -34,11 +42,26 @@ class ProjectsController(private val api: WorkspaceApi, private val scope: Corou
     }
     fun select(id: String?, query: String = "", status: String? = null) {
         if (id == null) { overview(); return }
+        detailGeneration++
+        mutable.update { it.copy(detail = null, detailLoading = false, detailError = null) }
+        loadIssues(id, query, status, retain = false)
+    }
+    private fun loadIssues(id: String, query: String, status: String?, retain: Boolean) {
         load?.cancel(); generation++; val g = generation
-        mutable.update { it.copy(selected = id, issues = emptyList(), total = 0, offset = 0, query = query, filter = status, loading = true, loadingMore = false, error = null) }
+        val targetOffset = if (retain) state.value.offset else 0
+        mutable.update { it.copy(selected = id, issues = if (retain) it.issues else emptyList(), total = if (retain) it.total else 0, offset = if (retain) it.offset else 0, query = query, filter = status, loading = true, loadingMore = false, error = null) }
         load = scope.launch {
-            try { val page = api.issues(project = id.takeUnless { it == NO_PROJECT }, noProject = true.takeIf { id == NO_PROJECT }, query = query.trim().takeIf { it.isNotEmpty() }, status = status)
-                if (g == generation) mutable.update { it.copy(issues = page.issues.distinctBy { i -> i.id }, total = page.total, offset = page.issues.size, loading = false) }
+            try {
+                val rows = mutableListOf<Issue>()
+                var offset = 0
+                var total: Int
+                do {
+                    val page = api.issues(project = id.takeUnless { it == NO_PROJECT }, noProject = true.takeIf { id == NO_PROJECT }, offset = offset, query = query.trim().takeIf { it.isNotEmpty() }, status = status)
+                    rows.addAll(page.issues)
+                    total = page.total
+                    offset = if (page.issues.isEmpty()) total else offset + page.issues.size
+                } while (offset < targetOffset && offset < total)
+                if (g == generation) mutable.update { it.copy(issues = rows.distinctBy { i -> i.id }, total = total, offset = offset, loading = false) }
             } catch (e: CancellationException) { throw e } catch (e: Exception) { if (g == generation) mutable.update { it.copy(loading = false, error = requestError(e)) } }
         }
     }
@@ -61,7 +84,7 @@ class ProjectsController(private val api: WorkspaceApi, private val scope: Corou
             finally { if (g == detailGeneration) mutable.update { it.copy(detailLoading = false) } }
         }
     }
-    fun closeDetail() { if (state.value.saving) return; detailGeneration++; mutable.update { it.copy(detail = null, detailError = null) } }
+    fun closeDetail() { if (state.value.saving) return; detailGeneration++; mutable.update { it.copy(detail = null, detailLoading = false, detailError = null) } }
     fun changeStatus(key: String) {
         val s = state.value; val issue = s.detail ?: return
         if (s.saving || s.detailLoading || s.detailError != null || key == issue.status || s.statuses.none { it.key == key }) return
@@ -72,7 +95,7 @@ class ProjectsController(private val api: WorkspaceApi, private val scope: Corou
                 mutable.update { it.copy(detail = updated, issues = it.issues.map { row -> if (row.id == updated.id) updated else row }.filter { row -> it.filter == null || row.status == it.filter }) }
                 // Aggregate counts are server-owned. A failed count refresh doesn't retry the write.
                 runCatching { api.projects() }.getOrNull()?.let { page -> mutable.update { it.copy(projects = page.projects) } }
-                select(state.value.selected, state.value.query, state.value.filter)
+                state.value.selected?.let { loadIssues(it, state.value.query, state.value.filter, retain = true) }
             } catch (e: CancellationException) { throw e } catch (e: Exception) { mutable.update { it.copy(detailError = requestError(e) + " 请重新读取状态核对，避免重复提交。") } }
             finally { mutable.update { it.copy(saving = false) } }
         }

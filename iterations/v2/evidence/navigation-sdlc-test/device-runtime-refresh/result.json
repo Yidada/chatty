@@ -1,0 +1,19 @@
+{
+  "session": "d472afd5-9a93-4873-bee1-365e89c4fad7",
+  "checks": [
+    "PASS: Mika",
+    "PASS: 此 Agent 尚未绑定 Runtime",
+    "PASS: 设置",
+    "PASS: Agents",
+    "PASS: Mika Renamed",
+    "PASS: Loop Runtime",
+    "PASS: 对话",
+    "PASS: Mika",
+    "PASS: 刷新对话",
+    "FAIL: Chat recognizes the newly bound Runtime after tab return and refresh",
+    "PASS: Mika",
+    "PASS: 已连接",
+    "PASS: retained runtime check",
+    "PASS: process restart reloads the Runtime binding and preserves the draft; no send"
+  ]
+}

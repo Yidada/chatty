@@ -324,6 +324,7 @@ Chatty 当前处于 **Stage 4 — Implementation（进行中）**。
 - 执行清单：[`iterations/v2/ISSUES.md`](./iterations/v2/ISSUES.md)，对应 Multica CLE-57 下 M0–M10。
 - 本轮：2026-09-05，按用户指示在 Mac + USB Pixel 6 Pro 上完成工程、登录和 Chat 核心开发；真实历史可读，合成收发闭环通过，真实新消息收发仍待验收。
 - 一级导航：**对话（Mika） / 项目（Issues 进度） / 设置**，见 [`NAVIGATION.md`](./iterations/v2/NAVIGATION.md)。
+- 导航连续性：Tab 保留详情、搜索与阅读位置，工作区切换支持取消，见 [Android 导航连续性](./docs/android-navigation-continuity.md)。
 - 视觉规范：已应用统一的暖白 / 石墨 / 低饱和绿主题、Material 线性图标和分组布局；支持系统深色模式，见 [Android 视觉规范](./docs/android-visual-design.md)。
 - 原生体验收敛：删除 Multica 网页流程和菜单；设置保留已有原生资源查看，图片使用应用内预览。本次记录位于 [SDLC 变更](./.sdlc/changes/20260905-native-experience-without-multica-web-exits/intent.md)。
 - Chat 源码覆盖：[`iterations/v2/CHAT_SOURCE_PARITY.md`](./iterations/v2/CHAT_SOURCE_PARITY.md)。

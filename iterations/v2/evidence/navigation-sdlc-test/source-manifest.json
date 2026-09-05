@@ -1,0 +1,22 @@
+{
+  "recorded_at": "2026-09-05T22:28:23.979267+08:00",
+  "branch": "codex/android-navigation-continuity",
+  "base_commit": "3c003f978dc7bb4058713d1bb47b6d5d5786dbc3",
+  "application_code_changed_during_test": false,
+  "files": {
+    "android/app/build.gradle.kts": "4dac0f5eae69770034cda8dc43b1f588b074ba2eda4e6e45e9fd6ac14ae4a465",
+    "android/app/src/main/java/ai/chatty/app/AuthViewModel.kt": "65fffb60a748871122dbfac99fd0decdb97cecafd098d2085a48bb2f6da69114",
+    "android/app/src/main/java/ai/chatty/app/MainActivity.kt": "ca706fe774919a9301e4f8a9727e22673a5aa60b9f22cf8e1ca3802723bef9c5",
+    "android/app/src/test/java/ai/chatty/app/WorkspacePickerTest.kt": "465e63c045d209277fb2b02aa02e996cd30db68b25cd3cc9a540ff80ae00f443",
+    "android/feature-chat/src/main/java/ai/chatty/feature/chat/ChatScreen.kt": "14cad53415186349cea39db87409d79a7321c61567d9e4cde5f3d5207003fd80",
+    "android/feature-workspace/src/main/java/ai/chatty/feature/workspace/ProjectsController.kt": "bea584520d0de851577fb7bcbb7d5ce3e815885c4e63235fdd31eed4dc8e4739",
+    "android/feature-workspace/src/main/java/ai/chatty/feature/workspace/WorkspaceScreens.kt": "02972d00292b4fa2649c42424acaf767c78c9432ccbc1497c50988a71b73b5ac",
+    "android/feature-workspace/src/test/java/ai/chatty/feature/workspace/ProjectsControllerTest.kt": "559a4bf704b26d9250f95d4c2920ce53c01cf1220ca9c11117403b9bf907d863",
+    "scripts/chat-device-test.py": "d63ab4f9da17cc2451ae172543bbf677c3e14bf86f6521d51dd0efa3598ce9db",
+    "scripts/chat-fixture.py": "3c46bcfed5cb1da0855772266a07e0ee74aa24b5a7b53daf9229279a70fff2c8",
+    "scripts/navigation-device-test.py": "1d2635c4450302aeac676d379848d2f8be172d6dedcc5df98e7085d2dc53e089",
+    "scripts/navigation-visual-test.py": "e91f2e32f8083c95fed67868b80e6538e61f1e9148932602daa99a9335227773",
+    "scripts/tabs-device-test.py": "79e69ad62fe556e7ac7192fd4964da3fbfa9bd6e3c54cfcbe74ed9bca4604ef1"
+  },
+  "real_apk_sha256": "1376f65370fa474ae5ed93bc8797f400be49551a750ad782c8af709e5da74de8"
+}

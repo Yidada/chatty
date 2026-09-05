@@ -1,0 +1,414 @@
+{
+  "calls": [
+    {
+      "method": "GET",
+      "path": "/api/workspaces",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/agents",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/workspaces/w1/members",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/me",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/messages/page",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/pending-task",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/messages/page",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat/sessions/s1/read",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/pending-task",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/attachments/file1",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/attachments/file1/content",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat/sessions/s1/messages",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/messages/page",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/pending-task",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tasks/t1/messages",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/messages/page",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/pending-task",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tasks/t1/messages",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/pending-task",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/messages/page",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat/sessions/s1/messages",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/messages/page",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/pending-task",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tasks/t2/messages",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/messages/page",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/pending-task",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tasks/t2/messages",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tasks/t1/messages",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tasks/t2/messages",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/pending-task",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/messages/page",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/messages/page",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/pending-task",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/workspaces",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/agents",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/me",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/workspaces/w1/members",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/messages/page",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/pending-task",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat/sessions/s1/read",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/pending-task",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/messages/page",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tasks/t1/messages",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tasks/t2/messages",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/messages/page",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tasks/t1/messages",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tasks/t2/messages",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/pending-task",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/messages/page",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tasks/empty/messages",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tasks/failed/messages",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/messages/page",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/pending-task",
+      "authenticated": true,
+      "workspace": "fixture"
+    }
+  ],
+  "send_count": 2,
+  "issue_writes": []
+}

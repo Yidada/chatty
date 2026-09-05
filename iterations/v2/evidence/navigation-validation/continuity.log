@@ -1,0 +1,100 @@
+PASS: 获取验证码
+PASS: 登录并连接
+PASS: 选择工作区
+PASS: Loop Test Workspace
+PASS: Mika
+PASS: 已连接
+PASS: 项目
+PASS: Loop Project
+PASS: Loop Project
+PASS: 共 55 个 · 已加载 50 个
+PASS: 全部状态
+PASS: 待开始
+PASS: 共 30 个 · 已加载 30 个
+PASS: 搜索
+PASS: 共 9 个 · 已加载 9 个
+PASS: Issue 01
+PASS: 返回 Issues
+PASS: Synthetic issue description
+PASS: 设置
+PASS: Runtimes
+PASS: Loop Runtime
+PASS: 返回 Runtimes
+PASS: Synthetic Mac
+PASS: 对话
+PASS: 项目
+PASS: 返回 Issues
+PASS: Issue 01
+PASS: 共 9 个 · 已加载 9 个
+PASS: 待开始
+PASS: 设置
+PASS: 返回 Runtimes
+PASS: 项目
+PASS: 搜索
+PASS: 共 30 个 · 已加载 30 个
+PASS: 待开始
+PASS: 全部状态
+PASS: 共 55 个 · 已加载 50 个
+PASS: 加载更多 Issues
+PASS: 共 55 个 · 已加载 55 个
+PASS: Issue 55
+PASS: Issue 55
+PASS: 返回 Issues
+PASS: 对话
+PASS: 项目
+PASS: 返回 Issues
+PASS: Issue 55
+PASS: 共 55 个 · 已加载 55 个
+PASS: Issue 55
+PASS: 设置
+PASS: 返回 Runtimes
+PASS: 项目
+PASS: 共 55 个 · 已加载 55 个
+PASS: Issue 55
+PASS: 对话
+PASS: 设置
+PASS: 对话
+PASS: 历史消息 40
+PASS: 发送
+PASS: 项目
+PASS: Issue 55
+PASS: 对话
+PASS: CHATTY_CHAT_OK · navigation-loop-send
+PASS: 设置
+PASS: 返回 Runtimes
+PASS: Loop Runtime
+PASS: 切换工作区
+PASS: 切换工作区
+PASS: 当前工作区
+PASS: Second Workspace
+PASS: 取消
+PASS: Runtimes
+PASS: 项目
+PASS: Issue 55
+PASS: 设置
+PASS: 切换工作区
+PASS: Runtimes
+PASS: 切换工作区
+PASS: Loop Test Workspace
+PASS: Runtimes
+PASS: 项目
+PASS: Issue 55
+PASS: 设置
+PASS: 切换工作区
+PASS: 重新加载
+PASS: 暂时无法连接，请重试。已有登录信息会保留。
+PASS: 取消
+PASS: Runtimes
+PASS: 切换工作区
+PASS: Second Workspace
+PASS: Second Workspace
+PASS: Mika
+PASS: 项目
+PASS: Second Project
+PASS: 设置
+PASS: 切换工作区
+PASS: Loop Test Workspace
+PASS: Mika
+PASS: 项目
+PASS: Loop Project
+/Users/benjamin/Workspace/chatty/.tools/worktrees/android-navigation-continuity/iterations/v2/evidence/navigation-continuity-loop

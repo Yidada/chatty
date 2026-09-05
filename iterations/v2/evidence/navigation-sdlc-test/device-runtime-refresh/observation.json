@@ -1,0 +1,67 @@
+{
+  "result": "confirmed_defect",
+  "new_runtime": {
+    "runtime_id": "r1",
+    "runtime_bound": true
+  },
+  "stale_runtime_warning": true,
+  "send_enabled_after_refresh": false,
+  "requests_after_chat_return": [
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/messages/page",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/pending-task",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/pending-task",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/messages/page",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/messages/page",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/pending-task",
+      "authenticated": true,
+      "workspace": "fixture"
+    }
+  ],
+  "send_count": 0,
+  "issue_writes": []
+}

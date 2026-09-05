@@ -2,6 +2,7 @@
 """Pixel loop against isolated synthetic API; no external messages."""
 import importlib.util,json,os,time,urllib.request
 from pathlib import Path
+FIXTURE=os.environ.get('CHATTY_FIXTURE_URL','http://127.0.0.1:8765')
 spec=importlib.util.spec_from_file_location('ui',Path(__file__).with_name('appium-ui.py'));u=importlib.util.module_from_spec(spec);spec.loader.exec_module(u)
 os.environ['PKG']='ai.chatty.app.fixture';s=u.Session()
 def fill(id,value):
@@ -9,7 +10,7 @@ def fill(id,value):
 def hide():
  if s.call('/appium/device/is_keyboard_shown'):s.call('/appium/device/hide_keyboard',{})
 def control(**kwargs):
- urllib.request.urlopen(urllib.request.Request('http://127.0.0.1:8765/__control',data=json.dumps(kwargs).encode(),headers={'Content-Type':'application/json'})).close()
+ urllib.request.urlopen(urllib.request.Request(FIXTURE+'/__control',data=json.dumps(kwargs).encode(),headers={'Content-Type':'application/json'})).close()
 def scroll(direction,percent=.9):s.call('/execute/sync',{'script':'mobile: scrollGesture','args':[{'left':30,'top':600,'width':1300,'height':1700,'direction':direction,'percent':percent}]})
 try:
  time.sleep(2)
@@ -39,13 +40,16 @@ try:
   scroll('up',1.0)
  s.tap('加载更早消息');s.expect('历史消息 00');s.shot('cursor-page')
  # Return to the bottom before new fixture messages arrive.
- s.tap('设置');s.tap('对话');s.expect('Mika');s.expect('CHATTY_CHAT_OK · loop-round-2')
+ for _ in range(30):
+  if s.find('CHATTY_CHAT_OK · loop-round-2'):break
+  scroll('down',1.0)
+ s.expect('CHATTY_CHAT_OK · loop-round-2')
  control(cases=True);s.expect('连接模型服务失败，请检查网络后重试。');s.tap('▸ 错误详情');s.expect('synthetic provider error');s.shot('failure-detail')
  s.expect('任务已结束，没有生成回复。')
  control(status=503);s.tap('刷新对话');time.sleep(1)
  s.expect('暂时无法连接，请重试。草稿已保留。');s.shot('rest-error')
  control(status=200);s.tap('刷新对话');s.expect('连接模型服务失败，请检查网络后重试。')
- calls=json.load(urllib.request.urlopen('http://127.0.0.1:8765/__calls'))
+ calls=json.load(urllib.request.urlopen(FIXTURE+'/__calls'))
  assert calls['send_count']==2,calls['send_count']
  assert all(c['authenticated'] for c in calls['calls'])
  (s.evidence/'fixture-calls.json').write_text(json.dumps(calls,ensure_ascii=False,indent=2))

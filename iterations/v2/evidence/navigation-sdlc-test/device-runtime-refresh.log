@@ -1,0 +1,16 @@
+PASS: Mika
+PASS: 此 Agent 尚未绑定 Runtime
+PASS: 设置
+PASS: Agents
+PASS: Mika Renamed
+PASS: Loop Runtime
+PASS: 对话
+PASS: Mika
+PASS: 刷新对话
+PASS: Mika
+PASS: 已连接
+PASS: retained runtime check
+Traceback (most recent call last):
+  File "/Users/benjamin/Workspace/chatty/.tools/worktrees/android-navigation-continuity/iterations/v2/evidence/navigation-sdlc-test/repro/device-runtime-refresh.py", line 47, in <module>
+    if bug: raise AssertionError('Chat keeps stale runtime binding after tab return and manual refresh')
+AssertionError: Chat keeps stale runtime binding after tab return and manual refresh

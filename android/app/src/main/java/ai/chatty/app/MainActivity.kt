@@ -12,6 +12,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.clickable
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.platform.testTag
@@ -53,26 +54,26 @@ fun ChattyShell(workspace: ai.chatty.core.model.Workspace, credentials: ai.chatt
         }
     }) { padding ->
         Box(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding)) {
-            key(workspace.id, tab) {
-                when (tab) {
-                    "对话" -> ai.chatty.feature.chat.ChatRoute(workspace, credentials, BuildConfig.API_BASE_URL)
-                    "项目" -> ai.chatty.feature.workspace.ProjectsRoute(workspace, credentials, BuildConfig.API_BASE_URL)
-                    "设置" -> ai.chatty.feature.workspace.SettingsRoute(workspace, credentials, BuildConfig.API_BASE_URL, switchWorkspace, signOut)
-                }
-            }
+            // Keep each flow's owner in composition; only the active flow renders UI.
+            ai.chatty.feature.chat.ChatRoute(workspace, credentials, BuildConfig.API_BASE_URL, active = tab == "对话")
+            ai.chatty.feature.workspace.ProjectsRoute(workspace, credentials, BuildConfig.API_BASE_URL, active = tab == "项目")
+            ai.chatty.feature.workspace.SettingsRoute(workspace, credentials, BuildConfig.API_BASE_URL, switchWorkspace, signOut, active = tab == "设置")
         }
     }
 }
 
-@OptIn(androidx.compose.ui.ExperimentalComposeUiApi::class)
+@OptIn(androidx.compose.ui.ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun AuthRoot(credentials: ai.chatty.core.network.CredentialStore, vm: AuthViewModel = viewModel()) {
     val state by vm.state.collectAsStateWithLifecycle()
+    val token by credentials.token.collectAsStateWithLifecycle()
     Surface(Modifier.fillMaxSize().semantics { testTagsAsResourceId = true }, color = MaterialTheme.colorScheme.background) {
         when {
             state.restoring -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
             !state.loggedIn -> LoginScreen(state, vm)
-            state.selected != null -> ChattyShell(state.selected!!, credentials, vm::switchWorkspace, vm::signOut)
+            state.selected != null -> key(token, state.selected!!.id) {
+                ChattyShell(state.selected!!, credentials, vm::switchWorkspace, vm::signOut)
+            }
             else -> Column(Modifier.fillMaxSize().safeDrawingPadding().padding(24.dp).verticalScroll(rememberScrollState())) {
                 Spacer(Modifier.height(32.dp))
                 Text("选择工作区", style = MaterialTheme.typography.headlineLarge)
@@ -85,6 +86,32 @@ fun AuthRoot(credentials: ai.chatty.core.network.CredentialStore, vm: AuthViewMo
                 if (!state.busy && state.error == null && state.workspaces.isEmpty()) Text("此账号暂无可用工作区。")
                 TextButton(onClick = vm::refresh, enabled = !state.busy) { Text("重新加载") }
                 TextButton(onClick = vm::signOut, enabled = !state.busy) { Text("退出登录") }
+            }
+        }
+        if (state.workspacePicker && state.selected != null) {
+            ModalBottomSheet(onDismissRequest = vm::dismissWorkspacePicker, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
+                Column(Modifier.fillMaxWidth().padding(horizontal = 24.dp).padding(bottom = 24.dp).testTag("workspace-picker")) {
+                    Text("切换工作区", style = MaterialTheme.typography.titleLarge)
+                    Text("选择要继续工作的空间", Modifier.padding(top = 8.dp, bottom = 16.dp), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    if (state.busy) LinearProgressIndicator(Modifier.fillMaxWidth())
+                    Column(Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState())) {
+                        state.workspaces.forEach { workspace ->
+                            val current = workspace.id == state.selected?.id
+                            Row(Modifier.fillMaxWidth().clickable(enabled = !state.busy) { vm.select(workspace) }.padding(vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+                                RadioButton(selected = current, onClick = null)
+                                Column(Modifier.padding(start = 12.dp)) {
+                                    Text(workspace.name, style = MaterialTheme.typography.titleMedium)
+                                    if (current) Text("当前工作区", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
+                                }
+                            }
+                        }
+                    }
+                    state.error?.let { Text(it, Modifier.padding(vertical = 12.dp), color = MaterialTheme.colorScheme.error) }
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                        TextButton(onClick = vm::refresh, enabled = !state.busy) { Text("重新加载") }
+                        TextButton(onClick = vm::dismissWorkspacePicker) { Text("取消") }
+                    }
+                }
             }
         }
     }

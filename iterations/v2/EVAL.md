@@ -84,3 +84,17 @@
 - 手工检查发现键盘上方留白偏大，已修正 Scaffold inset consumption；构建与测试通过。USB 重连后，`evidence/design-keyboard-loop/` 确认留白消除、合成消息收发与三 Tab 切换通过。
 - 最终真实服务包已安装至 Pixel 6 Pro，Mika 与原生设置资源导航验证通过；当前进程无 AndroidRuntime FATAL。测试包和端口转发已清理，主题及字号已恢复。真实工作区无消息发送和 Issue 写入。
 - 日志及边界：`evidence/design-refresh/`。本轮未新增 Multica 网页入口。
+
+## 2026-09-05 Android 导航连续性
+
+> 后续 `sdlc-test` 发现 NAV-TEST-01：Mika 新绑定 Runtime 后，保留的对话仍不可发送。JVM 与 Pixel 均复现，当前需修复后再验收。详见 [复核记录](evidence/navigation-sdlc-test/review.md)。下列通过结果保留其原有测试范围。
+
+- 41 项 JVM 测试、构建与 Lint 通过。
+- `evidence/navigation-continuity-loop/`：详情、搜索/筛选、55 条分页和聊天阅读位置保留；系统逐级返回；工作区取消/同项选择/503 恢复/跨工作区隔离；一次合成发送跨 Tab 完成。
+- `evidence/navigation-tabs-regression/`：原有项目状态单次写入、搜索/筛选/分页/未归属项目与 Runtime / Agent / Squad 完整详情回归通过。
+- `evidence/navigation-chat-regression/`：两轮合成收发、附件文本、任务过程、草稿/冷启动、分页、重连和错误恢复通过。
+- `evidence/navigation-visual-loop/`：新详情与面板的深色和 1.3 倍字体检查通过，系统设置已恢复。
+- 说明及当前运行/冷启动边界：`docs/android-navigation-continuity.md`；综合证据：`evidence/navigation-validation/`。
+
+- 最终真实服务 APK 已安装至 Pixel 6 Pro；真实工作区选择取消和三个资源列表的跨 Tab 保留验证通过，当前进程无 AndroidRuntime FATAL。
+- 测试包与本次端口转发已移除，系统夜间模式 auto / 字号 1.0 已恢复；未发送真实消息或修改真实 Issues。

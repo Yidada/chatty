@@ -1,0 +1,18 @@
+{
+  "navigation-continuity-loop": {
+    "checks": 100,
+    "result": "passed"
+  },
+  "navigation-tabs-regression": {
+    "checks": 77,
+    "result": "passed"
+  },
+  "navigation-visual-loop": {
+    "checks": 37,
+    "result": "passed"
+  },
+  "navigation-chat-regression": {
+    "checks": 33,
+    "result": "passed"
+  }
+}

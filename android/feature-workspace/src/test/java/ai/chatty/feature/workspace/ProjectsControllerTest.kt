@@ -13,14 +13,17 @@ class ProjectsControllerTest {
         var issue = row; var writes = 0; var update: IssueUpdate? = null; var offset = -1; var noProject: Boolean? = null
         var gate: CompletableDeferred<Unit>? = null
         var catalogFails = false
+        var pages: List<Issue>? = null
+        var detailGate: CompletableDeferred<Unit>? = null
         override suspend fun projects() = ProjectPage(listOf(Project("p1", "Project", issue_count=125, done_count=25)), 1)
         override suspend fun statuses(): StatusCatalog { if (catalogFails) throw java.io.IOException("catalog unavailable"); return StatusCatalog(listOf(IssueStatusEntry("todo", "待开始", "todo"), IssueStatusEntry("qa_custom", "内部验收", "in_review"))) }
         override suspend fun issues(project: String?, noProject: Boolean?, limit: Int, offset: Int, query: String?, status: String?): IssuePage {
             this.offset = offset; this.noProject = noProject
+            pages?.let { return IssuePage(it.drop(offset).take(limit), it.size) }
             if (project == "slow") gate?.await()
             return if (offset == 0) IssuePage(listOf(issue.copy(project_id = project)), 2) else IssuePage(listOf(issue, issue.copy(id="i2")), 2)
         }
-        override suspend fun issue(id: String) = issue
+        override suspend fun issue(id: String): Issue { detailGate?.await(); return pages?.find { it.id == id } ?: issue }
         override suspend fun updateIssue(id: String, body: IssueUpdate): Issue { writes++; update = body; gate?.await(); issue = issue.copy(status=body.status); return issue }
         override suspend fun runtimes() = emptyList<RuntimeDevice>()
         override suspend fun agents() = emptyList<ChatAgent>()
@@ -51,5 +54,35 @@ class ProjectsControllerTest {
     }
     @Test fun unknownStatusCannotBeSubmitted() = runTest {
         val api=Fake();val c=ProjectsController(api,this);c.overview();advanceUntilIdle();c.detail(api.row);advanceUntilIdle();c.changeStatus("invented");advanceUntilIdle();assertEquals(0,api.writes)
+    }
+    @Test fun returningToPagedListKeepsLoadedRowsQueryAndFilter() = runTest {
+        val api = Fake(); api.pages = (1..55).map { api.row.copy(id = "i$it") }
+        val c = ProjectsController(api, this)
+        c.select("p1", "draft query", "todo"); advanceUntilIdle(); c.more(); advanceUntilIdle()
+        assertEquals(55, c.state.value.issues.size)
+        c.refresh(); runCurrent()
+        assertEquals(55, c.state.value.issues.size)
+        advanceUntilIdle()
+        assertEquals(55, c.state.value.offset)
+        assertEquals(55, c.state.value.issues.size)
+        assertEquals("draft query", c.state.value.query)
+        assertEquals("todo", c.state.value.filter)
+    }
+    @Test fun returningToDetailRefreshesItsRevisionWithoutLeavingPage() = runTest {
+        val api = Fake(); val c = ProjectsController(api, this)
+        c.select("p1"); advanceUntilIdle(); c.detail(api.row); advanceUntilIdle()
+        api.issue = api.row.copy(revision = 9)
+        c.refresh(); advanceUntilIdle()
+        assertEquals("p1", c.state.value.selected)
+        assertEquals("i1", c.state.value.detail?.id)
+        assertEquals(9L, c.state.value.detail?.revision)
+    }
+    @Test fun leavingProjectRejectsLateDetailResponse() = runTest {
+        val api = Fake(); val c = ProjectsController(api, this)
+        api.detailGate = CompletableDeferred()
+        c.detail(api.row); runCurrent(); c.overview(); runCurrent()
+        api.detailGate!!.complete(Unit); advanceUntilIdle()
+        assertNull(c.state.value.selected)
+        assertNull(c.state.value.detail)
     }
 }

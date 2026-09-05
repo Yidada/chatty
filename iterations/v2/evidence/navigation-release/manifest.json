@@ -1,0 +1,49 @@
+{
+  "status": "authorized_publish_pending",
+  "delivery_target": "GitHub prerelease and connected Pixel 6 Pro",
+  "repository": "git@github.com:Yidada/chatty.git",
+  "branch": "codex/android-navigation-continuity",
+  "base_commit": "3c003f978dc7bb4058713d1bb47b6d5d5786dbc3",
+  "source_committed": false,
+  "external_delivery_executed": false,
+  "artifacts": {
+    "candidate": {
+      "path": "/Users/benjamin/Workspace/chatty/.tools/worktrees/android-navigation-continuity/android/app/build/outputs/apk/debug/app-debug.apk",
+      "sha256": "1376f65370fa474ae5ed93bc8797f400be49551a750ad782c8af709e5da74de8",
+      "signer_sha256": "fa44e9107c715e557c9d276d3e507ce8589f214a335abddb9d2c41728502c7b0",
+      "signature_verified": true,
+      "handoff_filename": "chatty-navigation-debug.apk"
+    },
+    "rollback": {
+      "path": "/Users/benjamin/Workspace/chatty/.tools/deliverables/chatty-design-debug.apk",
+      "sha256": "728b243d3a44d9f141c4ef6ea872bceedf4e6b9abc9c28c329b2a31105123b7d",
+      "signer_sha256": "fa44e9107c715e557c9d276d3e507ce8589f214a335abddb9d2c41728502c7b0",
+      "signature_verified": true,
+      "handoff_filename": "chatty-previous-debug.apk"
+    }
+  },
+  "open_findings": [
+    "NAV-TEST-01"
+  ],
+  "checks": {
+    "existing_unit_tests": 41,
+    "existing_unit_failures": 0,
+    "additional_boundary_tests": 4,
+    "additional_boundary_failures": 1,
+    "build": "passed",
+    "lint": "passed",
+    "source_matches_test_manifest": true
+  },
+  "rollback": {
+    "package_and_version_match": true,
+    "signatures_match": true,
+    "device_rehearsed_this_turn": false
+  },
+  "remote_check": {
+    "checked_at": "2026-09-05T22:33:56.774498+08:00",
+    "origin_main": "3c003f978dc7bb4058713d1bb47b6d5d5786dbc3",
+    "feature_branch_exists_on_origin": false
+  },
+  "release_tag": "v0.2.0-android.20260905",
+  "authorization": "User requested 发布，并安装最新包 after NAV-TEST-01 disclosure; publish current build with known-issue note."
+}

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Loopback-only synthetic Chat API + RFC6455 WebSocket; never contacts Multica."""
-import base64, hashlib, json, re, socket, struct, threading, time
+import os, base64, hashlib, json, re, socket, struct, threading, time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlsplit, parse_qs
 TOKEN='synthetic-device-fixture-token'
@@ -16,6 +16,7 @@ ISSUES=[{'id':'i'+str(i),'identifier':'LOOP-'+str(i+1),'title':f'Issue {i+1:02}'
 ISSUES.append({'id':'orphan','identifier':'LOOP-56','title':'Unassigned project issue','status':'todo','project_id':None,'revision':1})
 STATUSES=[{'key':'todo','name':'待开始','category':'todo'},{'key':'qa_custom','name':'内部验收','category':'in_review'},{'key':'done','name':'已完成','category':'done'}]
 WRITES=[]
+NAVIGATION=False
 
 def broadcast(kind,payload):
     data=json.dumps({'type':kind,'payload':payload}).encode()
@@ -61,7 +62,7 @@ class API(BaseHTTPRequestHandler):
         if not valid:self.reply(401,{'error':'unauthorized'});return False
         return True
     def do_POST(self):
-        global STATUS,SEND_COUNT
+        global STATUS,SEND_COUNT,NAVIGATION
         raw=self.raw()
         if self.path=='/api/upload-file':
             if not self.auth():return
@@ -69,6 +70,7 @@ class API(BaseHTTPRequestHandler):
         body=json.loads(raw or '{}')
         if self.path=='/__control':
             STATUS=body.get('status',200)
+            NAVIGATION=body.get('navigation',NAVIGATION)
             if body.get('design'):
                 MESSAGES.extend([
                     {'id':'design-user','chat_session_id':'s1','role':'user','content':'帮我梳理一下项目进度。','created_at':'2026-09-05T08:32:00Z'},
@@ -126,7 +128,13 @@ class API(BaseHTTPRequestHandler):
         if not self.auth():return
         if STATUS!=200:return self.reply(STATUS,{'error':'synthetic failure'})
         if path=='/api/native-image':return self.reply(200,base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAKAAAABkCAIAAACO1KzYAAABB0lEQVR4nO3RAQnAMBDAwPc3GbNYERUxMVNRCuHgBAQy77MIm+sFHGVwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHDfr24QZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHPcDQPd7TSyKeuEAAAAASUVORK5CYII='),'image/png')
-        if path=='/api/workspaces':return self.reply(200,[{'id':'w1','slug':'fixture','name':'Loop Test Workspace'}])
+        if path=='/api/workspaces':return self.reply(200,[{'id':'w1','slug':'fixture','name':'Loop Test Workspace'}]+([{'id':'w2','slug':'second','name':'Second Workspace'}] if NAVIGATION else []))
+        if NAVIGATION and self.headers.get('X-Workspace-Slug')=='second':
+            if path=='/api/projects':return self.reply(200,{'projects':[{'id':'second-project','title':'Second Project','issue_count':0,'done_count':0}],'total':1})
+            if path=='/api/chat/sessions':return self.reply(200,[])
+            if path=='/api/issues':return self.reply(200,{'issues':[],'total':0})
+            if path.startswith('/api/issues/'):return self.reply(404,{'error':'missing'})
+        if path=='/api/workspaces/w2/members':return self.reply(200,[{'user_id':'u1','role':'member'}])
         if path=='/api/projects':return self.reply(200,{'projects':[{'id':'p1','title':'Loop Project','status':'in_progress','issue_count':55,'done_count':sum(i['status']=='done' for i in ISSUES if i['project_id']=='p1')},{'id':'p2','title':'Empty Project','issue_count':0,'done_count':0}], 'total':2})
         if path=='/api/issue-statuses':return self.reply(200,{'statuses':STATUSES})
         if path=='/api/issues':
@@ -184,4 +192,6 @@ class API(BaseHTTPRequestHandler):
             with LOCK:
                 if self.connection in CLIENTS:CLIENTS.remove(self.connection)
 
-if __name__=='__main__':ThreadingHTTPServer(('127.0.0.1',8765),API).serve_forever()
+if __name__=='__main__':
+    port=int(os.environ.get('CHATTY_FIXTURE_PORT','8765'))
+    ThreadingHTTPServer(('127.0.0.1',port),API).serve_forever()

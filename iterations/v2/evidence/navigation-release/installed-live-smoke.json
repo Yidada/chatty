@@ -1,0 +1,15 @@
+{
+  "package": "ai.chatty.app.debug",
+  "device": "Pixel 6 Pro",
+  "checks": [
+    "Runtimes list preserved across tab switch",
+    "Agents list preserved across tab switch",
+    "Squads list preserved across tab switch",
+    "Mika connected",
+    "workspace picker cancelled without losing workspace",
+    "native-only navigation",
+    "returned to Mika"
+  ],
+  "real_chat_sends": 0,
+  "real_issue_writes": 0
+}

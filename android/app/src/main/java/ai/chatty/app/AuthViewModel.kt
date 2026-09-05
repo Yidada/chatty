@@ -17,6 +17,7 @@ data class AuthState(
     val restoring: Boolean = true, val loggedIn: Boolean = false,
     val busy: Boolean = false, val codeSent: Boolean = false,
     val workspaces: List<Workspace> = emptyList(), val selected: Workspace? = null,
+    val workspacePicker: Boolean = false,
     val error: String? = null
 )
 
@@ -69,10 +70,14 @@ class AuthViewModel @Inject constructor(private val auth: AuthRepository) : View
         }
     }
     fun select(workspace: Workspace) = action {
-        auth.select(workspace)
-        mutable.update { it.copy(selected = workspace) }
+        if (workspace.id != state.value.selected?.id) auth.select(workspace)
+        mutable.update { it.copy(selected = workspace, workspacePicker = false) }
     }
-    fun switchWorkspace() { mutable.update { it.copy(selected = null) } }
+    fun switchWorkspace() {
+        mutable.update { it.copy(workspacePicker = true) }
+        refresh()
+    }
+    fun dismissWorkspacePicker() { mutable.update { it.copy(workspacePicker = false) } }
     fun signOut() = action { auth.signOut() }
     private fun errorText(e: Exception): String {
         android.util.Log.w("ChattyAuth", "Request failed: " + e.javaClass.simpleName + if (e is HttpException) " HTTP " + e.code() else "")

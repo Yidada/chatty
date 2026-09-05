@@ -1,0 +1,14 @@
+{
+  "installed_at_check": "2026-09-05T22:43:30.261329+08:00",
+  "package": "ai.chatty.app.debug",
+  "device": "Pixel 6 Pro",
+  "serial": "1A021FDEE004VC",
+  "installed_apk_sha256": "1376f65370fa474ae5ed93bc8797f400be49551a750ad782c8af709e5da74de8",
+  "published_candidate_sha256": "1376f65370fa474ae5ed93bc8797f400be49551a750ad782c8af709e5da74de8",
+  "hash_matches": true,
+  "pid": "27755",
+  "current_process_fatal_exception": false,
+  "live_smoke": "passed",
+  "real_chat_sends": 0,
+  "real_issue_writes": 0
+}
