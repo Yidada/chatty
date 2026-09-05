@@ -1,0 +1,12 @@
+{
+  "package": "ai.chatty.app.debug",
+  "device": "Pixel 6 Pro",
+  "checks": [
+    "Mika visible",
+    "native settings without web menus",
+    "Runtimes/Agents/Squads visited without web exits",
+    "returned to Mika"
+  ],
+  "real_chat_sends": 0,
+  "real_issue_writes": 0
+}

@@ -7,6 +7,7 @@ TOKEN='synthetic-device-fixture-token'
 S={'id':'s1','agent_id':'mika','title':'格式与资源验证','status':'active','pinned':True,'has_unread':True,'unread_count':2,'created_at':'2026-09-05T01:00:00Z','updated_at':'2026-09-05T02:00:00Z'}
 AGENT={'id':'mika','name':'Mika Renamed','system_key':'mika','owner_id':'u1','runtime_id':'r1','runtime_bound':True,'status':'online'}
 A={'id':'file1','filename':'fixture-note.txt','content_type':'text/plain','size_bytes':32,'markdown_url':'/api/attachments/file1/download','download_url':'http://127.0.0.1:8765/files/note.txt'}
+IMAGE_A={'id':'native-image-file','filename':'native-preview.png','content_type':'image/png','size_bytes':320,'download_url':'http://127.0.0.1:8765/api/native-image'}
 MESSAGES=[{'id':f'm{i:03}','chat_session_id':'s1','role':'user' if i%2 else 'assistant','content':f'历史消息 {i:02}','created_at':f'2026-09-05T01:{i:02}:00Z'} for i in range(55)]
 MESSAGES += [{'id':'rich','chat_session_id':'s1','role':'assistant','content':'## 格式验证\n\n**粗体**与[链接](https://multica.ai)\n\n| 项目 | 状态 |\n| --- | --- |\n| 对话 | OK |\n\n- [x] 游标分页\n- [ ] 待办事项\n\n```python\nprint("Chatty")\n```','created_at':'2026-09-05T02:00:00Z','attachments':[A],'quick_actions':[{'label':'继续测试','prompt':'继续测试格式'}]}]
 SESSIONS=[S,dict(S,id='s2',title='第二个会话',pinned=False,has_unread=False,unread_count=0),dict(S,id='s3',title='归档会话',status='archived',pinned=False)]
@@ -68,6 +69,18 @@ class API(BaseHTTPRequestHandler):
         body=json.loads(raw or '{}')
         if self.path=='/__control':
             STATUS=body.get('status',200)
+            if body.get('design'):
+                MESSAGES.extend([
+                    {'id':'design-user','chat_session_id':'s1','role':'user','content':'帮我梳理一下项目进度。','created_at':'2026-09-05T08:32:00Z'},
+                    {'id':'design-reply','chat_session_id':'s1','role':'assistant','content':'### 进展清晰，继续向前\n\nLoop Project 已完成 **25 / 55** 项工作。\n\n- 核心对话流程已验证\n- 项目进度可以直接在手机上更新\n- 资源状态统一收在设置中\n\n你可以在「项目」中查看待完成的工作。','created_at':'2026-09-05T08:32:01Z'}
+                ])
+                broadcast('chat:message',{'chat_session_id':'s1'})
+            if body.get('native'):
+                MESSAGES.extend([
+                    {'id':'native-link','chat_session_id':'s1','role':'assistant','content':'[Multica 项目](https://multica.ai/fixture/projects)','created_at':'2026-09-05T08:02:00Z'},
+                    {'id':'native-rich','chat_session_id':'s1','role':'assistant','attachments':[IMAGE_A],'content':'```mermaid\ngraph LR\nA-->B\n```\n\n![原生图片](/api/native-image)','created_at':'2026-09-05T08:02:01Z'}
+                ])
+                broadcast('chat:message',{'chat_session_id':'s1'})
             if body.get('cases'):
                 MESSAGES.extend([
                     {'id':'no-response','chat_session_id':'s1','role':'assistant','content':'','task_id':'empty','message_kind':'no_response','created_at':'2026-09-05T08:00:00Z'},
@@ -112,6 +125,7 @@ class API(BaseHTTPRequestHandler):
         if path=='/files/note.txt':return self.reply(200,b'Chatty attachment preview OK','text/plain')
         if not self.auth():return
         if STATUS!=200:return self.reply(STATUS,{'error':'synthetic failure'})
+        if path=='/api/native-image':return self.reply(200,base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAKAAAABkCAIAAACO1KzYAAABB0lEQVR4nO3RAQnAMBDAwPc3GbNYERUxMVNRCuHgBAQy77MIm+sFHGVwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHDfr24QZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHGdwnMFxBscZHPcDQPd7TSyKeuEAAAAASUVORK5CYII='),'image/png')
         if path=='/api/workspaces':return self.reply(200,[{'id':'w1','slug':'fixture','name':'Loop Test Workspace'}])
         if path=='/api/projects':return self.reply(200,{'projects':[{'id':'p1','title':'Loop Project','status':'in_progress','issue_count':55,'done_count':sum(i['status']=='done' for i in ISSUES if i['project_id']=='p1')},{'id':'p2','title':'Empty Project','issue_count':0,'done_count':0}], 'total':2})
         if path=='/api/issue-statuses':return self.reply(200,{'statuses':STATUSES})
@@ -128,6 +142,7 @@ class API(BaseHTTPRequestHandler):
         if path=='/api/agents':return self.reply(200,[AGENT,dict(AGENT,id='private',name='Private Agent',owner_id='someone-else',system_key=None,permission_mode='private')])
         if path=='/api/workspaces/w1/members':return self.reply(200,[{'user_id':'u1','role':'member'}])
         if path=='/api/chat/sessions':return self.reply(200,[dict(s,last_message=next((m for m in reversed(MESSAGES) if m['chat_session_id']==s['id']),None)) for s in SESSIONS])
+        if path=='/api/attachments/native-image-file':return self.reply(200,IMAGE_A)
         if path=='/api/attachments/file1':return self.reply(200,A)
         if path=='/api/attachments/file1/content':return self.reply(200,b'Chatty attachment preview OK','text/plain')
         if path=='/api/attachments/file1/download':return self.reply(200,b'Chatty attachment preview OK','text/plain')

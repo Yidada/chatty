@@ -32,7 +32,7 @@ class Session:
     def find(self,text):
         # JSON serialization and XPath literal handle quotes without shell interpolation.
         literal='"'+text+'"' if '"' not in text else "'"+text+"'"
-        return self.call('/elements',{'using':'xpath','value':'//*[@text='+literal+']'})
+        return self.call('/elements',{'using':'xpath','value':'//*[@text='+literal+' or @content-desc='+literal+']'})
     def expect(self,text):
         for _ in range(20):
             if self.find(text):

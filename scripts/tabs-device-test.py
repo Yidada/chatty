@@ -4,6 +4,14 @@ import importlib.util,os,time,json,urllib.request
 from pathlib import Path
 spec=importlib.util.spec_from_file_location('u',Path(__file__).with_name('appium-ui.py'));u=importlib.util.module_from_spec(spec);spec.loader.exec_module(u)
 os.environ['PKG']='ai.chatty.app.fixture';s=u.Session()
+original_shot=s.shot
+def native_shot(name):
+ source=s.call('/source')
+ for forbidden in ['在 Multica', '详细配置在 Multica', '账号设置', '工作区设置', '访问令牌', '偏好设置', '账单', '插件']:
+  assert forbidden not in source, 'Unexpected web entry: '+forbidden
+ assert s.call('/appium/device/current_package')==os.environ['PKG'], 'Left native app'
+ original_shot(name)
+s.shot=native_shot
 def fill(tag,text):
  e=s.call('/element',{'using':'id','value':tag})[u.KEY];s.call('/element/'+e+'/clear',{});s.call('/element/'+e+'/value',{'text':text})
  if s.call('/appium/device/is_keyboard_shown'):s.call('/appium/device/hide_keyboard',{})

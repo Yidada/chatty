@@ -1,10 +1,14 @@
 package ai.chatty.app
 
+import ai.chatty.core.ui.ChattyTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ChatBubbleOutline
+import androidx.compose.material.icons.outlined.FolderOpen
+import androidx.compose.material.icons.outlined.Settings
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.SystemBarStyle
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.text.KeyboardOptions
@@ -32,30 +36,23 @@ class MainActivity : ComponentActivity() {
     @javax.inject.Inject lateinit var credentials: ai.chatty.core.network.CredentialStore
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge(statusBarStyle = SystemBarStyle.light(android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT))
+        enableEdgeToEdge()
         setContent { ChattyTheme { AuthRoot(credentials = credentials) } }
     }
-}
-
-@Composable
-fun ChattyTheme(content: @Composable () -> Unit) {
-    MaterialTheme(colorScheme = lightColorScheme(
-        primary = Color(0xFF153D36), background = Color(0xFFFAF9F6), surface = Color(0xFFFAF9F6),
-        surfaceVariant = Color(0xFFF0EEE8), onSurface = Color(0xFF202420)
-    ), content = content)
 }
 
 @Composable
 fun ChattyShell(workspace: ai.chatty.core.model.Workspace, credentials: ai.chatty.core.network.CredentialStore, switchWorkspace: () -> Unit, signOut: () -> Unit) {
     var tab by rememberSaveable { mutableStateOf("对话") }
     Scaffold(bottomBar = {
-        NavigationBar(containerColor = MaterialTheme.colorScheme.background) {
+        NavigationBar(containerColor = MaterialTheme.colorScheme.surface, tonalElevation = 0.dp) {
             listOf("对话", "项目", "设置").forEach { title ->
-                NavigationBarItem(selected = tab == title, onClick = { tab = title }, icon = { Text(when (title) { "对话" -> "◌"; "项目" -> "▦"; else -> "⚙" }) }, label = { Text(title) })
+                NavigationBarItem(selected = tab == title, onClick = { tab = title }, icon = { Icon(when (title) { "对话" -> Icons.Outlined.ChatBubbleOutline; "项目" -> Icons.Outlined.FolderOpen; else -> Icons.Outlined.Settings }, null, Modifier.size(23.dp)) }, label = { Text(title, style = MaterialTheme.typography.labelMedium) },
+                    colors = NavigationBarItemDefaults.colors(selectedIconColor = MaterialTheme.colorScheme.primary, selectedTextColor = MaterialTheme.colorScheme.primary, indicatorColor = MaterialTheme.colorScheme.primaryContainer, unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant, unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant))
             }
         }
     }) { padding ->
-        Box(Modifier.fillMaxSize().padding(padding)) {
+        Box(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding)) {
             key(workspace.id, tab) {
                 when (tab) {
                     "对话" -> ai.chatty.feature.chat.ChatRoute(workspace, credentials, BuildConfig.API_BASE_URL)
@@ -71,7 +68,7 @@ fun ChattyShell(workspace: ai.chatty.core.model.Workspace, credentials: ai.chatt
 @Composable
 fun AuthRoot(credentials: ai.chatty.core.network.CredentialStore, vm: AuthViewModel = viewModel()) {
     val state by vm.state.collectAsStateWithLifecycle()
-    Surface(Modifier.fillMaxSize().semantics { testTagsAsResourceId = true }) {
+    Surface(Modifier.fillMaxSize().semantics { testTagsAsResourceId = true }, color = MaterialTheme.colorScheme.background) {
         when {
             state.restoring -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
             !state.loggedIn -> LoginScreen(state, vm)
@@ -85,7 +82,7 @@ fun AuthRoot(credentials: ai.chatty.core.network.CredentialStore, vm: AuthViewMo
                 state.workspaces.forEach { workspace ->
                     OutlinedButton(onClick = { vm.select(workspace) }, enabled = !state.busy, modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) { Text(workspace.name) }
                 }
-                if (!state.busy && state.error == null && state.workspaces.isEmpty()) Text("此账号暂无工作区。请在 Multica 网页端创建。")
+                if (!state.busy && state.error == null && state.workspaces.isEmpty()) Text("此账号暂无可用工作区。")
                 TextButton(onClick = vm::refresh, enabled = !state.busy) { Text("重新加载") }
                 TextButton(onClick = vm::signOut, enabled = !state.busy) { Text("退出登录") }
             }

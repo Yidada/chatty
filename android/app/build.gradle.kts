@@ -34,6 +34,7 @@ android {
 }
 kapt { correctErrorTypes = true }
 dependencies {
+    implementation(project(":core-ui"))
     implementation(project(":core-model"))
     implementation(project(":core-network"))
     implementation(project(":core-auth"))

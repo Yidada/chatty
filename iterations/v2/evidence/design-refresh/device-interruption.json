@@ -1,0 +1,12 @@
+{
+  "step": "install fixture APK after inset fix",
+  "adb": "no devices/emulators found",
+  "usb_filter": "no Pixel/Android/Google match in system_profiler SPUSBDataType",
+  "previous_completed": [
+    "three-tab regression",
+    "chat regression",
+    "light/dark/1.3x font visual checks"
+  ],
+  "remaining": [],
+  "resolution": "Pixel reconnected and authorized; all previously remaining steps completed"
+}

@@ -88,3 +88,24 @@ fun failureLabel(reason: String): String = when (reason) {
     else -> "这次任务未能完成，可以查看详情后重试。"
 }
 fun fileSize(bytes: Long): String = when { bytes < 1024 -> "$bytes B"; bytes < 1024 * 1024 -> "${bytes / 1024} KB"; else -> "${bytes / (1024 * 1024)} MB" }
+
+// Navigation policy is separate from URLs used to fetch images and attachments.
+fun externalContentLink(value: String, base: String): String? {
+    val safe = safeWebLink(value, base) ?: return null
+    val host = URI(safe).host.lowercase(java.util.Locale.ROOT).trimEnd('.')
+    val apiHost = runCatching { URI(base).host?.lowercase(java.util.Locale.ROOT)?.trimEnd('.') }.getOrNull()
+    return safe.takeUnless { host == "multica.ai" || host.endsWith(".multica.ai") || host == apiHost }
+}
+
+// Keep labels and their children (including emphasis); remove only navigation semantics.
+fun removeAppLinks(node: org.commonmark.node.Node, base: String) {
+    node.accept(object : org.commonmark.node.AbstractVisitor() {
+        override fun visit(link: org.commonmark.node.Link) {
+            visitChildren(link)
+            if (externalContentLink(link.destination, base) == null) {
+                while (link.firstChild != null) link.insertBefore(link.firstChild)
+                link.unlink()
+            }
+        }
+    })
+}

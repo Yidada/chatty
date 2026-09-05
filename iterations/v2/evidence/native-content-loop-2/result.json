@@ -1,0 +1,20 @@
+{
+  "session": "7b152ca1-cd2c-4522-bec0-b8837819b685",
+  "checks": [
+    "PASS: 对话",
+    "PASS: 已连接",
+    "PASS: 设置",
+    "PASS: 对话",
+    "PASS: Multica 项目",
+    "PASS: Multica 项目",
+    "PASS: 图片",
+    "PASS: 关闭",
+    "PASS: 关闭",
+    "PASS: Mika",
+    "PASS: native-preview.png",
+    "PASS: 关闭",
+    "PASS: 关闭",
+    "PASS: Mika",
+    "PASS: Multica label does not launch browser; Mermaid has no web fallback; native image opens and closes in app"
+  ]
+}

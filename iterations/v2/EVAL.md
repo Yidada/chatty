@@ -65,3 +65,22 @@
 
 - 三 Tab 真实只读验证通过：项目进度正常显示，Runtime / Agents 列表正常，当前 Squads 返回空态，Mika 保持单一入口并连上真实 WebSocket。未修改真实 Issues。
 - 真实项目内 Issue 列表另行只读验证通过；未触发状态修改。
+
+## 2026-09-05 原生体验收敛
+
+- 验证结果：35 项 JVM 测试、构建和 lint 通过。
+- `evidence/native-tabs-loop/`：三 Tab、项目管理及资源详情，网页入口负向断言通过。
+- `evidence/native-chat-loop/`：合成收发、草稿、重连、分页及错误恢复通过。
+- `evidence/native-content-loop/` 保留首次测试滚动定位失败；修正测试后 `evidence/native-content-loop-2/` 原生链接、消息图片及附件图片预览通过。
+- `evidence/native-validation/`：命令日志、测试汇总、真实包安装导航检查及无崩溃摘要。
+- 完整说明见 `.sdlc/changes/20260905-native-experience-without-multica-web-exits/evidence.md`；本次是 local 交付，不表示 V2 全部完成。
+
+## 2026-09-05 Android 视觉设计应用
+
+- 参考与设计规则：`docs/android-visual-design.md`。
+- 构建、Lint、35 项 JVM 测试通过。
+- 项目/设置及聊天回归：`evidence/design-tabs-loop/`、`evidence/design-chat-loop/`。
+- 明暗主题与字号验证：`evidence/design-visual-loop/`。
+- 手工检查发现键盘上方留白偏大，已修正 Scaffold inset consumption；构建与测试通过。USB 重连后，`evidence/design-keyboard-loop/` 确认留白消除、合成消息收发与三 Tab 切换通过。
+- 最终真实服务包已安装至 Pixel 6 Pro，Mika 与原生设置资源导航验证通过；当前进程无 AndroidRuntime FATAL。测试包和端口转发已清理，主题及字号已恢复。真实工作区无消息发送和 Issue 写入。
+- 日志及边界：`evidence/design-refresh/`。本轮未新增 Multica 网页入口。

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "artifact_policy": "tracked",
+  "change_root": ".sdlc/changes",
+  "commands": {
+    "build": [
+      "source scripts/android-env.sh && cd android && ./gradlew assembleDebug"
+    ],
+    "lint": [
+      "source scripts/android-env.sh && cd android && ./gradlew lintDebug"
+    ],
+    "test": [
+      "source scripts/android-env.sh && cd android && ./gradlew testDebugUnitTest"
+    ],
+    "typecheck": []
+  },
+  "protected_paths": [],
+  "production_environments": [
+    "production",
+    "prod"
+  ]
+}

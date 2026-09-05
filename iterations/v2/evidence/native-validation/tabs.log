@@ -1,0 +1,80 @@
+PASS: 获取验证码
+PASS: 登录并连接
+PASS: 选择工作区
+PASS: Loop Test Workspace
+PASS: 对话
+PASS: Mika
+PASS: 已连接
+PASS: 项目
+PASS: Loop Project
+PASS: 25 / 55 已完成
+PASS: Loop Project
+PASS: 共 55 个 · 已加载 50 个
+PASS: Issue 01
+PASS: Synthetic issue description
+PASS: 状态：待开始
+PASS: 内部验收
+PASS: 状态：内部验收
+PASS: 关闭
+PASS: 搜索
+PASS: 共 1 个 · 已加载 1 个
+PASS: Issue 55
+PASS: 搜索
+PASS: 共 55 个 · 已加载 50 个
+PASS: 全部状态
+PASS: 内部验收
+PASS: 共 1 个 · 已加载 1 个
+PASS: Issue 01
+PASS: 内部验收
+PASS: 全部状态
+PASS: 共 55 个 · 已加载 50 个
+PASS: 加载更多 Issues
+PASS: 共 55 个 · 已加载 55 个
+PASS: 返回项目
+PASS: Empty Project
+PASS: 没有符合条件的 Issue。
+PASS: 返回项目
+PASS: 未归属项目的 Issues
+PASS: Unassigned project issue
+PASS: 设置
+PASS: 切换工作区
+PASS: 退出登录
+PASS: Runtimes
+PASS: Agents
+PASS: Squads
+PASS: Runtimes
+PASS: Loop Runtime
+PASS: Loop Runtime
+PASS: 在线
+PASS: 关闭
+PASS: 返回设置
+PASS: Agents
+PASS: Mika Renamed
+PASS: Mika Renamed
+PASS: 关闭
+PASS: 返回设置
+PASS: Squads
+PASS: Loop Squad
+PASS: Loop Squad
+PASS: 3 位成员
+PASS: 关闭
+PASS: 返回设置
+PASS: 对话
+PASS: Mika
+PASS: 项目
+PASS: Loop Project
+PASS: 设置
+PASS: Runtimes
+PASS: 对话
+PASS: Mika
+PASS: 项目
+PASS: Loop Project
+PASS: 设置
+PASS: Runtimes
+PASS: 对话
+PASS: Mika
+PASS: 项目
+PASS: Loop Project
+PASS: 设置
+PASS: Runtimes
+/Users/benjamin/Workspace/chatty/iterations/v2/evidence/native-tabs-loop

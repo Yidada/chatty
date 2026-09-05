@@ -1,0 +1,8 @@
+PASS: 对话
+PASS: 已连接
+Traceback (most recent call last):
+  File "/Users/benjamin/Workspace/chatty/scripts/native-device-test.py", line 13, in <module>
+    s.expect('Multica 项目')
+  File "/Users/benjamin/Workspace/chatty/scripts/appium-ui.py", line 41, in expect
+    raise AssertionError('Not visible: '+text)
+AssertionError: Not visible: Multica 项目

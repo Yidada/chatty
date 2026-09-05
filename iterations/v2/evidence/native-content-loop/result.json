@@ -1,0 +1,8 @@
+{
+  "session": "63154d09-d999-4297-8d96-722e484b9f42",
+  "checks": [
+    "PASS: 对话",
+    "PASS: 已连接",
+    "FAIL: native navigation"
+  ]
+}

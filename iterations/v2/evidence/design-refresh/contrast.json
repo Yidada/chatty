@@ -1,0 +1,10 @@
+{
+  "light_body": 14.49,
+  "light_secondary": 5.35,
+  "light_accent_on_container": 5.99,
+  "dark_body": 14.68,
+  "dark_secondary": 7.47,
+  "dark_accent_on_container": 6.34,
+  "method": "sRGB relative luminance (L1+0.05)/(L2+0.05)",
+  "scope": "selected text token pairs, not a full accessibility audit"
+}

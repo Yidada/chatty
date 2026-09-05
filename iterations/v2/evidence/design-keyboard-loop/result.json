@@ -1,0 +1,17 @@
+{
+  "session": "d6226eb9-d7d3-4a49-bc5b-5835c2c7402e",
+  "checks": [
+    "PASS: Mika",
+    "PASS: Mika",
+    "PASS: 发送",
+    "PASS: 发送",
+    "PASS: CHATTY_CHAT_OK · 帮我整理下一步计划",
+    "PASS: 项目",
+    "PASS: Loop Project",
+    "PASS: 设置",
+    "PASS: Runtimes",
+    "PASS: 对话",
+    "PASS: Mika",
+    "PASS: keyboard composer, one synthetic send and tab navigation after inset correction"
+  ]
+}
