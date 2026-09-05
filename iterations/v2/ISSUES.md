@@ -4,6 +4,13 @@
 
 用户本轮要求参考 V2 开发并在连接的 Android 手机上闭环调试。CLE-56 已在 Multica 验收；仓库 spec 的 Draft 标签滞后，按已验收规格执行。
 
+## 2026-09-05 Chat 开发增量
+
+- M3 对话核心已实现；23 个独立单测、构建和 lint 通过，Pixel 合成闭环两轮通过。
+- M4 的 Chat WebSocket 与 M6 附件基础已接入。真实历史读取及 WebSocket 认证通过。
+- 真实 Mika 新消息收发尚未执行；M3/M4 完整验收继续保持进行中。未将本地实现状态回写为外部任务 Done。
+- 源码格式覆盖与差异见 [CHAT_SOURCE_PARITY.md](CHAT_SOURCE_PARITY.md)，证据见 [EVAL.md](EVAL.md)。
+
 ## 执行规则
 
 - 严格按阶段推进，同一仓库仅由当前 Codex 会话实现，不启动其他 Agent。

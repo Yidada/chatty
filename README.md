@@ -322,7 +322,8 @@ Chatty 当前处于 **Stage 4 — Implementation（进行中）**。
 - 当前轮次：**v2**。
 - 规格：[`iterations/v2/spec.md`](./iterations/v2/spec.md)，CLE-56 已验收。
 - 执行清单：[`iterations/v2/ISSUES.md`](./iterations/v2/ISSUES.md)，对应 Multica CLE-57 下 M0–M10。
-- 本轮：2026-09-05，按用户指示在 Mac + USB Pixel 6 Pro 上推进工程基础与登录闭环。
+- 本轮：2026-09-05，按用户指示在 Mac + USB Pixel 6 Pro 上完成工程、登录和 Chat 核心开发；真实历史可读，合成收发闭环通过，真实新消息收发仍待验收。
+- Chat 源码覆盖：[`iterations/v2/CHAT_SOURCE_PARITY.md`](./iterations/v2/CHAT_SOURCE_PARITY.md)。
 - 验收记录：[`iterations/v2/EVAL.md`](./iterations/v2/EVAL.md)，仅通过有实际证据的项目。
 - 源码：[`android/`](./android/)。
 - 工程闭环：[`docs/android-dev-loop.md`](./docs/android-dev-loop.md)。

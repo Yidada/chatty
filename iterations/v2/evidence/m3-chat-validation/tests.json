@@ -1,0 +1,29 @@
+{
+  "independent_tests": 23,
+  "suites": [
+    {
+      "name": "ai.chatty.core.network.MulticaApiTest",
+      "tests": "9",
+      "failures": "0",
+      "errors": "0"
+    },
+    {
+      "name": "ai.chatty.core.network.ChatApiTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0"
+    },
+    {
+      "name": "ai.chatty.core.auth.AuthRepositoryTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0"
+    },
+    {
+      "name": "ai.chatty.feature.chat.ChatControllerTest",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0"
+    }
+  ]
+}

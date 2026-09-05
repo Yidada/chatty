@@ -1,0 +1,8 @@
+{
+  "session": "354e2a60-7532-47c6-8da1-1838a049d8bd",
+  "checks": [
+    "PASS: 获取验证码",
+    "PASS: 登录并连接",
+    "FAIL: chat loop incomplete"
+  ]
+}

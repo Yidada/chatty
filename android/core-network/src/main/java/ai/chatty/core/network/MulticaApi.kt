@@ -43,7 +43,7 @@ class SessionInterceptor(private val store: CredentialStore) : Interceptor {
     }
 }
 
-fun createApi(baseUrl: String, store: CredentialStore): MulticaApi {
+fun createRetrofit(baseUrl: String, store: CredentialStore): Retrofit {
     val client = OkHttpClient.Builder()
         .addInterceptor(SessionInterceptor(store))
         .followRedirects(false).followSslRedirects(false)
@@ -51,5 +51,7 @@ fun createApi(baseUrl: String, store: CredentialStore): MulticaApi {
         .callTimeout(25, TimeUnit.SECONDS).build()
     return Retrofit.Builder().baseUrl(baseUrl).client(client)
         .addConverterFactory(Json { ignoreUnknownKeys = true }.asConverterFactory("application/json".toMediaType()))
-        .build().create(MulticaApi::class.java)
+        .build()
 }
+
+fun createApi(baseUrl: String, store: CredentialStore): MulticaApi = createRetrofit(baseUrl, store).create(MulticaApi::class.java)

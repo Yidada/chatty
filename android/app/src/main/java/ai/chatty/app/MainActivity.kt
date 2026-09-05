@@ -29,10 +29,11 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @javax.inject.Inject lateinit var credentials: ai.chatty.core.network.CredentialStore
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge(statusBarStyle = SystemBarStyle.light(android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT))
-        setContent { ChattyTheme { AuthRoot() } }
+        setContent { ChattyTheme { AuthRoot(credentials = credentials) } }
     }
 }
 
@@ -45,39 +46,25 @@ fun ChattyTheme(content: @Composable () -> Unit) {
 }
 
 @Composable
-fun ChattyShell(workspaceName: String, switchWorkspace: () -> Unit, signOut: () -> Unit) {
+fun ChattyShell(workspace: ai.chatty.core.model.Workspace, credentials: ai.chatty.core.network.CredentialStore, switchWorkspace: () -> Unit, signOut: () -> Unit) {
     var tab by rememberSaveable { mutableStateOf("对话") }
-    var draft by rememberSaveable { mutableStateOf("") }
     Scaffold(bottomBar = {
         NavigationBar(containerColor = MaterialTheme.colorScheme.background) {
             listOf("对话", "Agent", "动态").forEach { title ->
-                NavigationBarItem(selected = tab == title, onClick = { tab = title },
-                    icon = { Text(when (title) { "对话" -> "◌"; "Agent" -> "◇"; else -> "≋" }) }, label = { Text(title) })
+                NavigationBarItem(selected = tab == title, onClick = { tab = title }, icon = { Text(when (title) { "对话" -> "◌"; "Agent" -> "◇"; else -> "≋" }) }, label = { Text(title) })
             }
         }
     }) { padding ->
-        Column(Modifier.fillMaxSize().padding(padding).padding(horizontal = 24.dp)) {
-            Row(Modifier.fillMaxWidth().padding(vertical = 20.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                Text("Chatty", style = MaterialTheme.typography.headlineSmall)
-                TextButton(onClick = switchWorkspace) { Text(workspaceName) }
+        Column(Modifier.fillMaxSize().padding(padding)) {
+            Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Text("Chatty", style = MaterialTheme.typography.titleLarge)
+                TextButton(onClick = switchWorkspace) { Text(workspace.name) }
+                TextButton(onClick = signOut) { Text("退出") }
             }
-            Column(Modifier.weight(1f).fillMaxWidth(), verticalArrangement = Arrangement.Center) {
-                Text(when (tab) { "对话" -> "把 Multica 装进口袋。"; "Agent" -> "你的 Agent 团队"; else -> "需要你关注的进展" }, style = MaterialTheme.typography.headlineMedium)
-                Spacer(Modifier.height(16.dp))
-                Text(when (tab) { "对话" -> "向 Mika 表达想法，查看任务进展。"; "Agent" -> "Agent 列表将在后续阶段接入。"; else -> "任务状态和需要回复的事项将在这里汇总。" }, style = MaterialTheme.typography.bodyLarge)
-                Spacer(Modifier.height(24.dp))
-                Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surfaceVariant) {
-                    Column(Modifier.padding(20.dp)) {
-                        Text("工作区已连接", style = MaterialTheme.typography.titleMedium)
-                        Spacer(Modifier.height(8.dp))
-                        Text("Mika 对话将在下一阶段接入。当前已完成登录与工作区选择。")
-                        TextButton(onClick = signOut) { Text("退出登录") }
-                    }
-                }
-            }
-            if (tab == "对话") {
-                OutlinedTextField(value = draft, onValueChange = { draft = it }, modifier = Modifier.fillMaxWidth(), label = { Text("给 Mika 的草稿") }, shape = RoundedCornerShape(24.dp), maxLines = 4)
-                Text("对话功能开发中；当前内容仅为草稿", Modifier.padding(vertical = 12.dp), style = MaterialTheme.typography.labelMedium)
+            if (tab == "对话") key(workspace.id) { ai.chatty.feature.chat.ChatRoute(workspace, credentials, BuildConfig.API_BASE_URL) }
+            else Column(Modifier.padding(24.dp)) {
+                Text(if (tab == "Agent") "你的 Agent 团队" else "需要你关注的进展", style = MaterialTheme.typography.headlineMedium)
+                Text("此页面将在后续阶段接入。")
             }
         }
     }
@@ -85,13 +72,13 @@ fun ChattyShell(workspaceName: String, switchWorkspace: () -> Unit, signOut: () 
 
 @OptIn(androidx.compose.ui.ExperimentalComposeUiApi::class)
 @Composable
-fun AuthRoot(vm: AuthViewModel = viewModel()) {
+fun AuthRoot(credentials: ai.chatty.core.network.CredentialStore, vm: AuthViewModel = viewModel()) {
     val state by vm.state.collectAsStateWithLifecycle()
     Surface(Modifier.fillMaxSize().semantics { testTagsAsResourceId = true }) {
         when {
             state.restoring -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
             !state.loggedIn -> LoginScreen(state, vm)
-            state.selected != null -> ChattyShell(state.selected!!.name, vm::switchWorkspace, vm::signOut)
+            state.selected != null -> ChattyShell(state.selected!!, credentials, vm::switchWorkspace, vm::signOut)
             else -> Column(Modifier.fillMaxSize().safeDrawingPadding().padding(24.dp).verticalScroll(rememberScrollState())) {
                 Spacer(Modifier.height(32.dp))
                 Text("选择工作区", style = MaterialTheme.typography.headlineLarge)

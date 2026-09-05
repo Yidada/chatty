@@ -1,0 +1,10 @@
+{
+  "package": "ai.chatty.app.fixture",
+  "checks": [
+    "PASS: Downloads",
+    "PASS: chatty-loop-upload.txt",
+    "PASS: 移除",
+    "PASS: 移除",
+    "PASS: selected only generated fixture file; multipart upload completed; unsent attachment removable"
+  ]
+}

@@ -41,3 +41,14 @@
 - 三轮页面切换记录属于 M1；M2 增加了登录入口，不能用旧截图说明当前账号已连接。
 - 初期失败与修复见 `HARDENING.md`；旧截图与日志保留。
 - 当前无发布、无 Git 推送、无远端合并；不将本地代码等同已上线。
+
+## 2026-09-05 M3 Chat / M4 Chat 实时切片
+
+- **最终静态验证通过**：`assembleDebug test lint`。23 个独立测试（Auth 3、Network 12、ChatController 8），Debug/Release 均运行；lint 0 errors，依赖新版本提示保留。
+- **Pixel 完整合成闭环通过两轮**：第一次验证收发/资源/状态；第二次加入无回复、错误详情和 503 恢复。每轮发送两条合成消息，服务端计数证明无重复 POST。
+- **行为覆盖**：Markdown 表格、代码、任务列表；附件点击时刷新并预览文本；快捷操作填草稿；task_id 收敛；工具过程；socket 断开重连；跨会话草稿；冷启动；游标最早页；private Agent 过滤。
+- **附件系统选择与上传通过**：仅选择本轮生成的 `chatty-loop-upload.txt`，上传后展示并可移除；结果见 `m3-chat-validation/attachment-upload.json`。
+- **真实只读验证通过**：用户原登录恢复，真实工作区会话、Markdown、任务过程可读，WebSocket 已认证。真实内容截图只保存在本机 `/tmp`，不进入 Git。
+- **真实发送未验收**：尚未取得本轮明确测试消息授权，没有向真实 Mika 发送新消息。M3/M4 不标记为完整 Done。
+- **证据**：`evidence/m3-chat-validation/`；完整成功 UI 目录 `evidence/20260905-141208-612015-ui/`、`evidence/20260905-141627-717037-ui/`。首次脚本等待失败另保留，原因见 HARDENING。
+- **覆盖边界**：见 `CHAT_SOURCE_PARITY.md`；完整 V2 gate 仍未通过。

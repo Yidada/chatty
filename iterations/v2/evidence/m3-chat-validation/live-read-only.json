@@ -1,0 +1,13 @@
+{
+  "date": "2026-09-05",
+  "device": "Pixel 6 Pro",
+  "package": "ai.chatty.app.debug",
+  "existing_login_restored": true,
+  "real_session_history_visible": true,
+  "real_markdown_and_task_timeline_visible": true,
+  "websocket_authenticated": true,
+  "new_message_sent": false,
+  "private_screenshots_in_git": false,
+  "three_tab_switch_rounds_passed": true,
+  "final_reconnect_passed": true
+}
