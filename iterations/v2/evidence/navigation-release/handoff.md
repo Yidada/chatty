@@ -1,6 +1,6 @@
 # Android 导航连续性交付候选包
 
-状态：用户已要求发布并安装当前包；将交付至 GitHub 开发预览版和 Pixel。NAV-TEST-01 未修复并随版本披露。
+状态：GitHub 开发预览版已发布，Pixel 最新包已安装并验证。NAV-TEST-01 未修复并随版本披露。
 
 ## 内容
 
@@ -39,3 +39,11 @@ adb -s 1A021FDEE004VC shell am start -n ai.chatty.app.debug/ai.chatty.app.MainAc
 安装后应重新检查登录、Mika 连接以及三 Tab 导航。
 
 本地候选包：`/Users/benjamin/Workspace/chatty/.tools/deliverables/navigation-continuity-1376f653-candidate`。
+
+## 发布结果
+
+- [GitHub 开发预览版](https://github.com/Yidada/chatty/releases/tag/v0.2.0-android.20260905)
+- 发布提交：`2274df239d1a1775ae400340c1b82a3f49288924`。
+- 源码已推送至 `codex/android-navigation-continuity`；本次未合入 `main`。
+- 安装检查见 `installed.json` 与 `installed-live-smoke.json`；实际安装包与发布候选包 SHA-256 一致。
+- 原有 41 项测试、构建与 Lint 通过；NAV-TEST-01 对应补充测试仍失败。

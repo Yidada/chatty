@@ -1,0 +1,39 @@
+{
+  "id": 383274101,
+  "url": "https://github.com/Yidada/chatty/releases/tag/v0.2.0-android.20260905",
+  "tag": "v0.2.0-android.20260905",
+  "published_at": "2026-09-05T14:47:28Z",
+  "draft": false,
+  "prerelease": true,
+  "release_commit": "2274df239d1a1775ae400340c1b82a3f49288924",
+  "assets": [
+    {
+      "id": 545930105,
+      "name": "chatty-android-v0.2.0-android.20260905.apk",
+      "state": "uploaded",
+      "size": 18752446,
+      "digest": "sha256:1376f65370fa474ae5ed93bc8797f400be49551a750ad782c8af709e5da74de8",
+      "url": "https://github.com/Yidada/chatty/releases/download/v0.2.0-android.20260905/chatty-android-v0.2.0-android.20260905.apk"
+    },
+    {
+      "id": 545930153,
+      "name": "chatty-previous-debug.apk",
+      "state": "uploaded",
+      "size": 18736062,
+      "digest": "sha256:728b243d3a44d9f141c4ef6ea872bceedf4e6b9abc9c28c329b2a31105123b7d",
+      "url": "https://github.com/Yidada/chatty/releases/download/v0.2.0-android.20260905/chatty-previous-debug.apk"
+    },
+    {
+      "id": 545930192,
+      "name": "SHA256SUMS.txt",
+      "state": "uploaded",
+      "size": 201,
+      "digest": "sha256:d8c84bac586a2cfb5b1c53a0553228e8eb50441c5edd2110968bb42b785dc788",
+      "url": "https://github.com/Yidada/chatty/releases/download/v0.2.0-android.20260905/SHA256SUMS.txt"
+    }
+  ],
+  "verification_method": "GitHub release API asset digests compared with local files and installed Pixel base.apk",
+  "open_findings": [
+    "NAV-TEST-01"
+  ]
+}

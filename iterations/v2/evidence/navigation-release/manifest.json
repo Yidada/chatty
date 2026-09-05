@@ -1,11 +1,11 @@
 {
-  "status": "authorized_publish_pending",
+  "status": "published_and_installed",
   "delivery_target": "GitHub prerelease and connected Pixel 6 Pro",
   "repository": "git@github.com:Yidada/chatty.git",
   "branch": "codex/android-navigation-continuity",
   "base_commit": "3c003f978dc7bb4058713d1bb47b6d5d5786dbc3",
-  "source_committed": false,
-  "external_delivery_executed": false,
+  "source_committed": true,
+  "external_delivery_executed": true,
   "artifacts": {
     "candidate": {
       "path": "/Users/benjamin/Workspace/chatty/.tools/worktrees/android-navigation-continuity/android/app/build/outputs/apk/debug/app-debug.apk",
@@ -45,5 +45,17 @@
     "feature_branch_exists_on_origin": false
   },
   "release_tag": "v0.2.0-android.20260905",
-  "authorization": "User requested 发布，并安装最新包 after NAV-TEST-01 disclosure; publish current build with known-issue note."
+  "authorization": "User requested 发布，并安装最新包 after NAV-TEST-01 disclosure; publish current build with known-issue note.",
+  "release_commit": "2274df239d1a1775ae400340c1b82a3f49288924",
+  "release_url": "https://github.com/Yidada/chatty/releases/tag/v0.2.0-android.20260905",
+  "prerelease": true,
+  "installed_verification": "installed.json",
+  "published_at_observed": "2026-09-05T14:47:28Z",
+  "delivery_notes": [
+    "Published from feature branch tag; main was not merged in this delivery.",
+    "NAV-TEST-01 remains open and is disclosed in release notes.",
+    "No App Store or Play Store publication."
+  ],
+  "release_id": 383274101,
+  "all_asset_digests_verified": true
 }
