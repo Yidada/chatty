@@ -1,7 +1,7 @@
 ## Spec: Chatty v2 — Android Client Spec (based on Multica source)
 
 - **Author:** Android 开发助手 (agent)
-- **Status:** Draft — for review
+- **Status:** Reviewed — CLE-56 已完成；2026-09-05 按用户指示进入实现
 - **Stage:** 2 of 6 — Spec
 - **Last updated:** 2026-09-04
 - **Based on:** `iterations/v2/intent.md` (Accepted 2026-09-04)

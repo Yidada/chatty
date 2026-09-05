@@ -317,13 +317,14 @@ Chatty 让用户通过一次自然对话表达意图，调动分布在不同设�
 
 ## Status
 
-Chatty is currently in **Stage 2 — Spec** of the AI-native SDLC（Anthropic Agentic SDLC 模具：intent → spec → ISSUES → 实现 → EVAL → Hardening）。
+Chatty 当前处于 **Stage 4 — Implementation（进行中）**。
 
-- 当前轮次：**v2**（迭代产物见 [`iterations/v2/`](./iterations/v2/)）
-- Current artifact: [`iterations/v2/spec.md`](./iterations/v2/spec.md)
-- Intent status: Accepted — 2026-09-04 ([`iterations/v2/intent.md`](./iterations/v2/intent.md))
-- Next artifact after spec review: `iterations/v2/ISSUES.md`
-- v1 已关闭（方向收敛为 Multica 手机端应用）：[`iterations/v1/`](./iterations/v1/)
-- 模具与轮次规则：[`docs/sdlc-workflow.md`](./docs/sdlc-workflow.md)
-- 工程闭环（adb + Appium）：[`docs/android-dev-loop.md`](./docs/android-dev-loop.md)
-
+- 当前轮次：**v2**。
+- 规格：[`iterations/v2/spec.md`](./iterations/v2/spec.md)，CLE-56 已验收。
+- 执行清单：[`iterations/v2/ISSUES.md`](./iterations/v2/ISSUES.md)，对应 Multica CLE-57 下 M0–M10。
+- 本轮：2026-09-05，按用户指示在 Mac + USB Pixel 6 Pro 上推进工程基础与登录闭环。
+- 验收记录：[`iterations/v2/EVAL.md`](./iterations/v2/EVAL.md)，仅通过有实际证据的项目。
+- 源码：[`android/`](./android/)。
+- 工程闭环：[`docs/android-dev-loop.md`](./docs/android-dev-loop.md)。
+- 生命周期规则：[`docs/sdlc-workflow.md`](./docs/sdlc-workflow.md)。
+- 全部 V2 功能完成前，不进入 Stage 5 正式总体评估或声明 V2 发布完成。

@@ -1,0 +1,3 @@
+*.bat text eol=crlf
+# Preserve raw command and UI evidence, including its original whitespace.
+iterations/v2/evidence/** -whitespace

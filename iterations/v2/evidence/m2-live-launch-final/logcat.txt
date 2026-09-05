@@ -1,0 +1,35 @@
+--------- beginning of main
+09-05 13:42:13.244 15757 15757 I Zygote  : Process 15757 created for ai.chatty.app.debug
+09-05 13:42:13.245 15757 15757 I hatty.app.debug: Late-enabling -Xcheck:jni
+09-05 13:42:13.260 15757 15757 I hatty.app.debug: Using generational CollectorTypeCMC GC.
+09-05 13:42:13.265 15757 15757 D nativeloader: Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+09-05 13:42:13.464 15757 15757 D nativeloader: Configuring clns-9 for other apk /data/app/~~MqBGeTrvu8qwRVTXX_qtUQ==/ai.chatty.app.debug-U6iAErpqJ3fo8TSlWMZGwQ==/base.apk. target_sdk_version=35, uses_libraries=, library_path=/data/app/~~MqBGeTrvu8qwRVTXX_qtUQ==/ai.chatty.app.debug-U6iAErpqJ3fo8TSlWMZGwQ==/lib/arm64:/data/app/~~MqBGeTrvu8qwRVTXX_qtUQ==/ai.chatty.app.debug-U6iAErpqJ3fo8TSlWMZGwQ==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/ai.chatty.app.debug
+09-05 13:42:13.465 15757 15757 D CompatChangeReporter: Compat change id reported: 202956589; UID 10329; state: ENABLED
+09-05 13:42:13.469 15757 15757 V GraphicsEnvironment: Currently set values for:
+09-05 13:42:13.469 15757 15757 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[com.android.angle]
+09-05 13:42:13.469 15757 15757 V GraphicsEnvironment:   angle_gl_driver_selection_values=[angle]
+09-05 13:42:13.469 15757 15757 V GraphicsEnvironment: ai.chatty.app.debug is not listed in per-application setting
+09-05 13:42:13.469 15757 15757 V GraphicsEnvironment: No special selections for ANGLE, returning default driver choice
+09-05 13:42:13.469 15757 15757 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+--------- beginning of system
+09-05 13:42:13.489 15757 15775 I DisplayManager: Choreographer implicitly registered for the refresh rate.
+09-05 13:42:13.490 15757 15775 D vulkan  : searching for layers in '/data/app/~~MqBGeTrvu8qwRVTXX_qtUQ==/ai.chatty.app.debug-U6iAErpqJ3fo8TSlWMZGwQ==/lib/arm64'
+09-05 13:42:13.490 15757 15775 D vulkan  : searching for layers in '/data/app/~~MqBGeTrvu8qwRVTXX_qtUQ==/ai.chatty.app.debug-U6iAErpqJ3fo8TSlWMZGwQ==/base.apk!/lib/arm64-v8a'
+09-05 13:42:13.496 15757 15757 D DesktopExperienceFlags: Toggle override initialized to: false
+09-05 13:42:13.512 15757 15757 D CompatChangeReporter: Compat change id reported: 309578419; UID 10329; state: ENABLED
+09-05 13:42:13.513 15757 15757 D DesktopModeFlags: Toggle override initialized to: OVERRIDE_UNSET
+09-05 13:42:13.533 15757 15757 D CompatChangeReporter: Compat change id reported: 349153669; UID 10329; state: ENABLED
+09-05 13:42:13.748 15757 15757 W hatty.app.debug: Method boolean androidx.compose.runtime.snapshots.SnapshotStateList.conditionalUpdate(boolean, kotlin.jvm.functions.Function1) failed lock verification and will run slower.
+09-05 13:42:13.748 15757 15757 W hatty.app.debug: Common causes for lock verification issues are non-optimized dex code
+09-05 13:42:13.748 15757 15757 W hatty.app.debug: and incorrect proguard optimizations.
+09-05 13:42:13.748 15757 15757 W hatty.app.debug: Method boolean androidx.compose.runtime.snapshots.SnapshotStateList.conditionalUpdate$default(androidx.compose.runtime.snapshots.SnapshotStateList, boolean, kotlin.jvm.functions.Function1, int, java.lang.Object) failed lock verification and will run slower.
+09-05 13:42:13.748 15757 15757 W hatty.app.debug: Method java.lang.Object androidx.compose.runtime.snapshots.SnapshotStateList.mutate(kotlin.jvm.functions.Function1) failed lock verification and will run slower.
+09-05 13:42:13.748 15757 15757 W hatty.app.debug: Method void androidx.compose.runtime.snapshots.SnapshotStateList.update(boolean, kotlin.jvm.functions.Function1) failed lock verification and will run slower.
+09-05 13:42:13.748 15757 15757 W hatty.app.debug: Method void androidx.compose.runtime.snapshots.SnapshotStateList.update$default(androidx.compose.runtime.snapshots.SnapshotStateList, boolean, kotlin.jvm.functions.Function1, int, java.lang.Object) failed lock verification and will run slower.
+09-05 13:42:13.755 15757 15762 I hatty.app.debug: Compiler allocated 5127KB to compile void android.view.ViewRootImpl.performTraversals()
+09-05 13:42:13.765 15757 15757 I HWUI    : Using FreeType backend (prop=Auto)
+09-05 13:42:13.801 15757 15757 D VRI[MainActivity]: WindowInsets changed: 1440x3120 statusBars:[0,145,0,0] navigationBars:[0,0,0,84] mandatorySystemGestures:[0,187,0,112] 
+09-05 13:42:13.802 15757 15757 D WindowOnBackDispatcher: setTopOnBackInvokedCallback (unwrapped): android.view.ViewRootImpl$$ExternalSyntheticLambda25@33cb3de
+09-05 13:42:13.852 15757 15757 I Choreographer: Skipped 34 frames!  The application may be doing too much work on its main thread.
+09-05 13:42:13.877 15757 15757 D InsetsController: hide(ime())
+09-05 13:42:13.877 15757 15757 I ImeTracker: ai.chatty.app.debug:e4938e7: onCancelled at PHASE_CLIENT_ALREADY_HIDDEN

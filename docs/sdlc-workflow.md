@@ -65,4 +65,4 @@ chatty/
 intent.md(Draft) → intent.md(Accepted) → spec.md → ISSUES.md → 实现(逐 Issue) → EVAL.md(绿) → HARDENING.md(清空)
 ```
 
-当前指针：**Stage 1 — Plan**（`README.md · Status` 同步，只允许一个版本为真）。
+当前阶段以 `README.md · Status` 为唯一指针，本文件只定义流程规则。

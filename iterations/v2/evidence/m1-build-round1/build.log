@@ -1,0 +1,923 @@
+Downloading https://services.gradle.org/distributions/gradle-8.7-bin.zip
+............10%.............20%.............30%.............40%............50%.............60%.............70%.............80%.............90%............100%
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :app:generateDebugBuildConfig
+> Task :core-auth:preBuild UP-TO-DATE
+> Task :core-auth:preDebugBuild UP-TO-DATE
+> Task :core-model:preBuild UP-TO-DATE
+> Task :core-model:preDebugBuild UP-TO-DATE
+> Task :core-network:preBuild UP-TO-DATE
+> Task :core-network:preDebugBuild UP-TO-DATE
+> Task :feature-agents:preBuild UP-TO-DATE
+> Task :feature-agents:preDebugBuild UP-TO-DATE
+> Task :core-model:writeDebugAarMetadata
+> Task :core-auth:writeDebugAarMetadata
+> Task :feature-agents:writeDebugAarMetadata
+> Task :core-network:writeDebugAarMetadata
+> Task :feature-approval:preBuild UP-TO-DATE
+> Task :feature-approval:preDebugBuild UP-TO-DATE
+> Task :feature-chat:preBuild UP-TO-DATE
+> Task :feature-chat:preDebugBuild UP-TO-DATE
+> Task :feature-approval:writeDebugAarMetadata
+> Task :feature-inbox:preBuild UP-TO-DATE
+> Task :feature-chat:writeDebugAarMetadata
+> Task :feature-inbox:preDebugBuild UP-TO-DATE
+> Task :feature-issue-link:preBuild UP-TO-DATE
+> Task :feature-issue-link:preDebugBuild UP-TO-DATE
+> Task :feature-inbox:writeDebugAarMetadata
+> Task :feature-status:preBuild UP-TO-DATE
+> Task :feature-issue-link:writeDebugAarMetadata
+> Task :feature-status:preDebugBuild UP-TO-DATE
+> Task :feature-status:writeDebugAarMetadata
+> Task :app:generateDebugResValues
+> Task :core-auth:generateDebugResValues
+> Task :core-auth:generateDebugResources
+> Task :app:checkDebugAarMetadata
+> Task :core-auth:packageDebugResources
+> Task :core-model:generateDebugResValues
+> Task :core-model:generateDebugResources
+> Task :core-model:packageDebugResources
+> Task :core-network:generateDebugResValues
+> Task :core-network:generateDebugResources
+> Task :core-network:packageDebugResources
+> Task :feature-agents:generateDebugResValues
+> Task :feature-agents:generateDebugResources
+> Task :feature-agents:packageDebugResources
+> Task :feature-approval:generateDebugResValues
+> Task :feature-approval:generateDebugResources
+> Task :feature-approval:packageDebugResources
+> Task :feature-chat:generateDebugResValues
+> Task :feature-chat:generateDebugResources
+> Task :feature-chat:packageDebugResources
+> Task :feature-inbox:generateDebugResValues
+> Task :feature-inbox:generateDebugResources
+> Task :feature-inbox:packageDebugResources
+> Task :feature-issue-link:generateDebugResValues
+> Task :feature-issue-link:generateDebugResources
+> Task :feature-issue-link:packageDebugResources
+> Task :feature-status:generateDebugResValues
+> Task :feature-status:generateDebugResources
+> Task :feature-status:packageDebugResources
+> Task :app:mapDebugSourceSetPaths
+> Task :app:generateDebugResources
+> Task :app:packageDebugResources
+> Task :app:mergeDebugResources
+> Task :app:createDebugCompatibleScreenManifests
+> Task :app:extractDeepLinksDebug
+> Task :core-auth:extractDeepLinksDebug
+> Task :core-model:extractDeepLinksDebug
+> Task :core-network:extractDeepLinksDebug
+> Task :app:parseDebugLocalResources
+> Task :feature-agents:extractDeepLinksDebug
+> Task :feature-agents:processDebugManifest
+> Task :core-auth:processDebugManifest
+> Task :core-network:processDebugManifest
+> Task :core-model:processDebugManifest
+> Task :feature-approval:extractDeepLinksDebug
+> Task :feature-chat:extractDeepLinksDebug
+> Task :feature-approval:processDebugManifest
+> Task :feature-inbox:extractDeepLinksDebug
+> Task :feature-chat:processDebugManifest
+> Task :feature-issue-link:extractDeepLinksDebug
+> Task :feature-inbox:processDebugManifest
+> Task :feature-status:extractDeepLinksDebug
+> Task :feature-issue-link:processDebugManifest
+> Task :feature-status:processDebugManifest
+> Task :core-auth:compileDebugLibraryResources
+> Task :app:processDebugMainManifest
+> Task :app:processDebugManifest
+> Task :core-model:compileDebugLibraryResources
+> Task :app:processDebugManifestForPackage
+> Task :core-auth:parseDebugLocalResources
+> Task :core-model:parseDebugLocalResources
+> Task :core-network:compileDebugLibraryResources
+> Task :core-network:parseDebugLocalResources
+> Task :feature-agents:compileDebugLibraryResources
+> Task :feature-agents:parseDebugLocalResources
+> Task :core-model:generateDebugRFile
+> Task :core-network:generateDebugRFile
+> Task :core-auth:generateDebugRFile
+> Task :feature-agents:generateDebugRFile
+> Task :feature-approval:compileDebugLibraryResources
+> Task :feature-approval:parseDebugLocalResources
+> Task :feature-chat:compileDebugLibraryResources
+> Task :feature-approval:generateDebugRFile
+> Task :feature-chat:parseDebugLocalResources
+> Task :feature-inbox:compileDebugLibraryResources
+> Task :feature-chat:generateDebugRFile
+> Task :feature-issue-link:compileDebugLibraryResources
+> Task :feature-inbox:parseDebugLocalResources
+> Task :feature-issue-link:parseDebugLocalResources
+> Task :feature-status:compileDebugLibraryResources
+> Task :feature-inbox:generateDebugRFile
+> Task :core-auth:checkKotlinGradlePluginConfigurationErrors
+> Task :core-model:checkKotlinGradlePluginConfigurationErrors
+> Task :feature-issue-link:generateDebugRFile
+> Task :feature-status:parseDebugLocalResources
+> Task :core-model:compileDebugKotlin NO-SOURCE
+> Task :core-network:checkKotlinGradlePluginConfigurationErrors
+> Task :feature-status:generateDebugRFile
+> Task :core-model:javaPreCompileDebug
+> Task :core-network:javaPreCompileDebug
+> Task :core-model:compileDebugJavaWithJavac NO-SOURCE
+> Task :feature-agents:checkKotlinGradlePluginConfigurationErrors
+> Task :core-auth:javaPreCompileDebug
+> Task :feature-approval:checkKotlinGradlePluginConfigurationErrors
+> Task :feature-agents:javaPreCompileDebug
+> Task :core-model:bundleLibCompileToJarDebug
+> Task :feature-chat:checkKotlinGradlePluginConfigurationErrors
+> Task :feature-approval:javaPreCompileDebug
+> Task :core-network:compileDebugKotlin NO-SOURCE
+> Task :core-network:compileDebugJavaWithJavac NO-SOURCE
+> Task :feature-agents:compileDebugKotlin NO-SOURCE
+> Task :core-network:bundleLibCompileToJarDebug
+> Task :core-auth:compileDebugKotlin NO-SOURCE
+> Task :core-auth:compileDebugJavaWithJavac NO-SOURCE
+> Task :feature-agents:compileDebugJavaWithJavac NO-SOURCE
+> Task :core-auth:bundleLibCompileToJarDebug
+> Task :feature-agents:bundleLibCompileToJarDebug
+> Task :feature-approval:compileDebugKotlin NO-SOURCE
+> Task :feature-approval:compileDebugJavaWithJavac NO-SOURCE
+> Task :feature-chat:compileDebugKotlin NO-SOURCE
+> Task :feature-approval:bundleLibCompileToJarDebug
+> Task :feature-inbox:checkKotlinGradlePluginConfigurationErrors
+> Task :feature-chat:javaPreCompileDebug
+> Task :feature-chat:compileDebugJavaWithJavac NO-SOURCE
+> Task :feature-inbox:compileDebugKotlin NO-SOURCE
+> Task :feature-chat:bundleLibCompileToJarDebug
+> Task :feature-issue-link:checkKotlinGradlePluginConfigurationErrors
+> Task :feature-inbox:javaPreCompileDebug
+> Task :feature-issue-link:compileDebugKotlin NO-SOURCE
+> Task :feature-inbox:compileDebugJavaWithJavac NO-SOURCE
+> Task :feature-inbox:bundleLibCompileToJarDebug
+> Task :feature-status:checkKotlinGradlePluginConfigurationErrors
+> Task :feature-issue-link:javaPreCompileDebug
+> Task :feature-issue-link:compileDebugJavaWithJavac NO-SOURCE
+> Task :feature-issue-link:bundleLibCompileToJarDebug
+> Task :feature-status:compileDebugKotlin NO-SOURCE
+> Task :feature-status:javaPreCompileDebug
+> Task :app:processDebugResources
+> Task :feature-status:compileDebugJavaWithJavac NO-SOURCE
+> Task :app:javaPreCompileDebug
+> Task :feature-status:bundleLibCompileToJarDebug
+> Task :app:mergeDebugShaders
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :core-auth:mergeDebugShaders
+> Task :core-auth:compileDebugShaders NO-SOURCE
+> Task :core-auth:generateDebugAssets UP-TO-DATE
+> Task :core-auth:packageDebugAssets
+> Task :core-model:mergeDebugShaders
+> Task :core-model:compileDebugShaders NO-SOURCE
+> Task :core-model:generateDebugAssets UP-TO-DATE
+> Task :core-model:packageDebugAssets
+> Task :core-network:mergeDebugShaders
+> Task :core-network:compileDebugShaders NO-SOURCE
+> Task :core-network:generateDebugAssets UP-TO-DATE
+> Task :core-network:packageDebugAssets
+> Task :feature-agents:mergeDebugShaders
+> Task :feature-agents:compileDebugShaders NO-SOURCE
+> Task :feature-agents:generateDebugAssets UP-TO-DATE
+> Task :feature-agents:packageDebugAssets
+> Task :feature-approval:mergeDebugShaders
+> Task :feature-approval:compileDebugShaders NO-SOURCE
+> Task :feature-approval:generateDebugAssets UP-TO-DATE
+> Task :feature-approval:packageDebugAssets
+> Task :feature-chat:mergeDebugShaders
+> Task :feature-chat:compileDebugShaders NO-SOURCE
+> Task :feature-chat:generateDebugAssets UP-TO-DATE
+> Task :feature-chat:packageDebugAssets
+> Task :feature-inbox:mergeDebugShaders
+> Task :feature-inbox:compileDebugShaders NO-SOURCE
+> Task :feature-inbox:generateDebugAssets UP-TO-DATE
+> Task :feature-inbox:packageDebugAssets
+> Task :feature-issue-link:mergeDebugShaders
+> Task :feature-issue-link:compileDebugShaders NO-SOURCE
+> Task :feature-issue-link:generateDebugAssets UP-TO-DATE
+> Task :feature-issue-link:packageDebugAssets
+> Task :feature-status:mergeDebugShaders
+> Task :feature-status:compileDebugShaders NO-SOURCE
+> Task :feature-status:generateDebugAssets UP-TO-DATE
+> Task :feature-status:packageDebugAssets
+> Task :app:mergeDebugAssets
+> Task :app:compressDebugAssets
+> Task :core-auth:bundleLibRuntimeToJarDebug
+> Task :feature-chat:bundleLibRuntimeToJarDebug
+> Task :core-network:bundleLibRuntimeToJarDebug
+> Task :feature-status:bundleLibRuntimeToJarDebug
+> Task :feature-approval:bundleLibRuntimeToJarDebug
+> Task :feature-inbox:bundleLibRuntimeToJarDebug
+> Task :feature-agents:bundleLibRuntimeToJarDebug
+> Task :feature-issue-link:bundleLibRuntimeToJarDebug
+> Task :core-model:bundleLibRuntimeToJarDebug
+> Task :app:desugarDebugFileDependencies
+> Task :core-auth:processDebugJavaRes NO-SOURCE
+> Task :core-model:processDebugJavaRes NO-SOURCE
+> Task :core-network:processDebugJavaRes NO-SOURCE
+> Task :feature-agents:processDebugJavaRes NO-SOURCE
+> Task :feature-approval:processDebugJavaRes NO-SOURCE
+> Task :feature-chat:processDebugJavaRes NO-SOURCE
+> Task :feature-inbox:processDebugJavaRes NO-SOURCE
+> Task :feature-issue-link:processDebugJavaRes NO-SOURCE
+> Task :feature-status:processDebugJavaRes NO-SOURCE
+> Task :core-auth:bundleLibRuntimeToDirDebug
+> Task :feature-chat:bundleLibRuntimeToDirDebug
+> Task :app:checkDebugDuplicateClasses
+> Task :app:kaptGenerateStubsDebugKotlin
+> Task :core-network:bundleLibRuntimeToDirDebug
+> Task :feature-status:bundleLibRuntimeToDirDebug
+> Task :feature-approval:bundleLibRuntimeToDirDebug
+> Task :feature-inbox:bundleLibRuntimeToDirDebug
+> Task :feature-agents:bundleLibRuntimeToDirDebug
+> Task :feature-issue-link:bundleLibRuntimeToDirDebug
+> Task :core-model:bundleLibRuntimeToDirDebug
+> Task :app:mergeDebugJniLibFolders
+> Task :core-auth:mergeDebugJniLibFolders
+> Task :core-auth:mergeDebugNativeLibs NO-SOURCE
+> Task :app:mergeLibDexDebug
+> Task :core-auth:copyDebugJniLibsProjectOnly
+> Task :core-model:mergeDebugJniLibFolders
+> Task :core-model:mergeDebugNativeLibs NO-SOURCE
+> Task :core-model:copyDebugJniLibsProjectOnly
+> Task :core-network:mergeDebugJniLibFolders
+> Task :core-network:mergeDebugNativeLibs NO-SOURCE
+> Task :core-network:copyDebugJniLibsProjectOnly
+> Task :feature-agents:mergeDebugJniLibFolders
+> Task :feature-agents:mergeDebugNativeLibs NO-SOURCE
+> Task :feature-agents:copyDebugJniLibsProjectOnly
+> Task :feature-approval:mergeDebugJniLibFolders
+> Task :feature-approval:mergeDebugNativeLibs NO-SOURCE
+> Task :feature-approval:copyDebugJniLibsProjectOnly
+> Task :feature-chat:mergeDebugJniLibFolders
+> Task :feature-chat:mergeDebugNativeLibs NO-SOURCE
+> Task :feature-chat:copyDebugJniLibsProjectOnly
+> Task :feature-inbox:mergeDebugJniLibFolders
+> Task :feature-inbox:mergeDebugNativeLibs NO-SOURCE
+> Task :feature-inbox:copyDebugJniLibsProjectOnly
+> Task :feature-issue-link:mergeDebugJniLibFolders
+> Task :feature-issue-link:mergeDebugNativeLibs NO-SOURCE
+> Task :feature-issue-link:copyDebugJniLibsProjectOnly
+> Task :feature-status:mergeDebugJniLibFolders
+> Task :feature-status:mergeDebugNativeLibs NO-SOURCE
+> Task :feature-status:copyDebugJniLibsProjectOnly
+> Task :app:validateSigningDebug
+> Task :app:writeDebugAppMetadata
+> Task :app:mergeDebugNativeLibs
+> Task :app:writeDebugSigningConfigVersions
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:javaPreCompileDebugUnitTest
+> Task :app:preReleaseBuild UP-TO-DATE
+
+> Task :app:stripDebugDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libdatastore_shared_counter.so.
+
+> Task :app:buildKotlinToolingMetadata
+> Task :app:generateReleaseBuildConfig
+> Task :core-auth:preReleaseBuild UP-TO-DATE
+> Task :core-model:preReleaseBuild UP-TO-DATE
+> Task :core-auth:writeReleaseAarMetadata
+> Task :core-network:preReleaseBuild UP-TO-DATE
+> Task :core-model:writeReleaseAarMetadata
+> Task :feature-agents:preReleaseBuild UP-TO-DATE
+> Task :core-network:writeReleaseAarMetadata
+> Task :feature-approval:preReleaseBuild UP-TO-DATE
+> Task :feature-agents:writeReleaseAarMetadata
+> Task :feature-chat:preReleaseBuild UP-TO-DATE
+> Task :feature-approval:writeReleaseAarMetadata
+> Task :feature-inbox:preReleaseBuild UP-TO-DATE
+> Task :feature-chat:writeReleaseAarMetadata
+> Task :feature-issue-link:preReleaseBuild UP-TO-DATE
+> Task :feature-inbox:writeReleaseAarMetadata
+> Task :feature-status:preReleaseBuild UP-TO-DATE
+> Task :feature-issue-link:writeReleaseAarMetadata
+> Task :feature-status:writeReleaseAarMetadata
+> Task :app:generateReleaseResValues
+> Task :core-auth:generateReleaseResValues
+> Task :core-auth:generateReleaseResources
+> Task :app:checkReleaseAarMetadata
+> Task :core-auth:packageReleaseResources
+> Task :core-model:generateReleaseResValues
+> Task :core-model:generateReleaseResources
+> Task :core-model:packageReleaseResources
+> Task :core-network:generateReleaseResValues
+> Task :core-network:generateReleaseResources
+> Task :core-network:packageReleaseResources
+> Task :feature-agents:generateReleaseResValues
+> Task :feature-agents:generateReleaseResources
+> Task :feature-agents:packageReleaseResources
+> Task :feature-approval:generateReleaseResValues
+> Task :feature-approval:generateReleaseResources
+> Task :feature-approval:packageReleaseResources
+> Task :feature-chat:generateReleaseResValues
+> Task :feature-chat:generateReleaseResources
+> Task :feature-chat:packageReleaseResources
+> Task :feature-inbox:generateReleaseResValues
+> Task :feature-inbox:generateReleaseResources
+> Task :feature-inbox:packageReleaseResources
+> Task :feature-issue-link:generateReleaseResValues
+> Task :feature-issue-link:generateReleaseResources
+> Task :feature-issue-link:packageReleaseResources
+> Task :feature-status:generateReleaseResValues
+> Task :feature-status:generateReleaseResources
+> Task :feature-status:packageReleaseResources
+> Task :app:mapReleaseSourceSetPaths
+> Task :app:generateReleaseResources
+
+> Task :app:kaptDebugKotlin
+warning: The following options were not recognized by any processor: '[dagger.fastInit, kapt.kotlin.generated]'
+
+> Task :app:mergeReleaseResources
+> Task :app:packageReleaseResources
+> Task :app:createReleaseCompatibleScreenManifests
+> Task :app:extractDeepLinksRelease
+> Task :app:parseReleaseLocalResources
+> Task :core-auth:extractDeepLinksRelease
+> Task :core-model:extractDeepLinksRelease
+> Task :core-auth:processReleaseManifest
+> Task :core-network:extractDeepLinksRelease
+> Task :core-model:processReleaseManifest
+> Task :core-network:processReleaseManifest
+> Task :feature-agents:extractDeepLinksRelease
+> Task :feature-approval:extractDeepLinksRelease
+> Task :feature-agents:processReleaseManifest
+> Task :feature-chat:extractDeepLinksRelease
+> Task :feature-approval:processReleaseManifest
+> Task :feature-inbox:extractDeepLinksRelease
+> Task :feature-chat:processReleaseManifest
+> Task :feature-issue-link:extractDeepLinksRelease
+> Task :feature-inbox:processReleaseManifest
+> Task :feature-issue-link:processReleaseManifest
+> Task :feature-status:extractDeepLinksRelease
+> Task :core-auth:compileReleaseLibraryResources
+> Task :feature-status:processReleaseManifest
+> Task :core-auth:parseReleaseLocalResources
+> Task :app:processReleaseMainManifest
+> Task :app:processReleaseManifest
+> Task :app:processReleaseManifestForPackage
+> Task :core-model:compileReleaseLibraryResources
+> Task :core-auth:generateReleaseRFile
+> Task :core-network:compileReleaseLibraryResources
+> Task :core-model:parseReleaseLocalResources
+> Task :core-model:generateReleaseRFile
+> Task :core-network:parseReleaseLocalResources
+> Task :feature-agents:compileReleaseLibraryResources
+> Task :core-network:generateReleaseRFile
+> Task :feature-agents:parseReleaseLocalResources
+> Task :feature-approval:compileReleaseLibraryResources
+> Task :feature-agents:generateReleaseRFile
+> Task :feature-approval:parseReleaseLocalResources
+> Task :feature-chat:compileReleaseLibraryResources
+> Task :feature-approval:generateReleaseRFile
+> Task :feature-chat:parseReleaseLocalResources
+> Task :feature-inbox:compileReleaseLibraryResources
+> Task :feature-chat:generateReleaseRFile
+> Task :feature-inbox:parseReleaseLocalResources
+> Task :feature-issue-link:compileReleaseLibraryResources
+> Task :feature-inbox:generateReleaseRFile
+> Task :feature-issue-link:parseReleaseLocalResources
+> Task :feature-status:compileReleaseLibraryResources
+> Task :feature-issue-link:generateReleaseRFile
+> Task :core-model:compileReleaseKotlin NO-SOURCE
+> Task :feature-status:parseReleaseLocalResources
+> Task :core-model:javaPreCompileRelease
+> Task :core-model:compileReleaseJavaWithJavac NO-SOURCE
+> Task :feature-status:generateReleaseRFile
+> Task :core-model:bundleLibCompileToJarRelease
+> Task :core-network:compileReleaseKotlin NO-SOURCE
+> Task :core-network:javaPreCompileRelease
+> Task :core-network:compileReleaseJavaWithJavac NO-SOURCE
+> Task :app:processReleaseResources
+> Task :core-network:bundleLibCompileToJarRelease
+> Task :core-auth:javaPreCompileRelease
+> Task :core-auth:compileReleaseKotlin NO-SOURCE
+> Task :core-auth:compileReleaseJavaWithJavac NO-SOURCE
+> Task :core-auth:bundleLibCompileToJarRelease
+> Task :feature-agents:compileReleaseKotlin NO-SOURCE
+> Task :feature-agents:javaPreCompileRelease
+> Task :feature-approval:compileReleaseKotlin NO-SOURCE
+> Task :feature-agents:compileReleaseJavaWithJavac NO-SOURCE
+> Task :feature-agents:bundleLibCompileToJarRelease
+> Task :feature-chat:compileReleaseKotlin NO-SOURCE
+> Task :feature-approval:javaPreCompileRelease
+> Task :feature-chat:javaPreCompileRelease
+> Task :feature-approval:compileReleaseJavaWithJavac NO-SOURCE
+> Task :feature-chat:compileReleaseJavaWithJavac NO-SOURCE
+> Task :feature-approval:bundleLibCompileToJarRelease
+> Task :feature-chat:bundleLibCompileToJarRelease
+> Task :feature-inbox:compileReleaseKotlin NO-SOURCE
+> Task :feature-inbox:javaPreCompileRelease
+> Task :feature-issue-link:compileReleaseKotlin NO-SOURCE
+> Task :feature-inbox:compileReleaseJavaWithJavac NO-SOURCE
+> Task :feature-inbox:bundleLibCompileToJarRelease
+> Task :feature-issue-link:javaPreCompileRelease
+> Task :feature-status:compileReleaseKotlin NO-SOURCE
+> Task :feature-issue-link:compileReleaseJavaWithJavac NO-SOURCE
+> Task :feature-issue-link:bundleLibCompileToJarRelease
+> Task :feature-status:javaPreCompileRelease
+> Task :feature-status:compileReleaseJavaWithJavac NO-SOURCE
+> Task :app:javaPreCompileRelease
+> Task :feature-status:bundleLibCompileToJarRelease
+> Task :core-auth:bundleLibRuntimeToJarRelease
+> Task :feature-chat:bundleLibRuntimeToJarRelease
+> Task :core-network:bundleLibRuntimeToJarRelease
+> Task :feature-status:bundleLibRuntimeToJarRelease
+> Task :feature-approval:bundleLibRuntimeToJarRelease
+> Task :app:kaptGenerateStubsReleaseKotlin
+> Task :feature-inbox:bundleLibRuntimeToJarRelease
+> Task :feature-agents:bundleLibRuntimeToJarRelease
+> Task :feature-issue-link:bundleLibRuntimeToJarRelease
+> Task :core-model:bundleLibRuntimeToJarRelease
+> Task :app:preReleaseUnitTestBuild UP-TO-DATE
+> Task :app:javaPreCompileReleaseUnitTest
+> Task :core-auth:processReleaseJavaRes NO-SOURCE
+> Task :core-model:processReleaseJavaRes NO-SOURCE
+> Task :core-network:processReleaseJavaRes NO-SOURCE
+> Task :feature-agents:processReleaseJavaRes NO-SOURCE
+> Task :feature-approval:processReleaseJavaRes NO-SOURCE
+> Task :feature-chat:processReleaseJavaRes NO-SOURCE
+> Task :feature-inbox:processReleaseJavaRes NO-SOURCE
+> Task :feature-issue-link:processReleaseJavaRes NO-SOURCE
+> Task :feature-status:processReleaseJavaRes NO-SOURCE
+> Task :core-auth:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:mergeExtDexDebug
+
+> Task :app:kaptReleaseKotlin
+warning: The following options were not recognized by any processor: '[dagger.fastInit, kapt.kotlin.generated]'
+
+> Task :core-auth:generateDebugUnitTestStubRFile
+> Task :core-auth:compileDebugUnitTestKotlin NO-SOURCE
+> Task :core-auth:javaPreCompileDebugUnitTest
+> Task :core-auth:processDebugUnitTestJavaRes NO-SOURCE
+> Task :core-auth:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :core-auth:testDebugUnitTest NO-SOURCE
+> Task :core-auth:preReleaseUnitTestBuild UP-TO-DATE
+> Task :core-auth:generateReleaseUnitTestStubRFile
+> Task :core-auth:javaPreCompileReleaseUnitTest
+> Task :core-auth:compileReleaseUnitTestKotlin NO-SOURCE
+> Task :core-auth:compileReleaseUnitTestJavaWithJavac NO-SOURCE
+> Task :core-auth:processReleaseUnitTestJavaRes NO-SOURCE
+> Task :core-auth:testReleaseUnitTest NO-SOURCE
+> Task :core-auth:test UP-TO-DATE
+> Task :core-model:preDebugUnitTestBuild UP-TO-DATE
+> Task :core-model:javaPreCompileDebugUnitTest
+> Task :core-model:preReleaseUnitTestBuild UP-TO-DATE
+> Task :core-model:generateDebugUnitTestStubRFile
+> Task :core-model:compileDebugUnitTestKotlin NO-SOURCE
+> Task :core-model:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :core-model:processDebugUnitTestJavaRes NO-SOURCE
+> Task :core-model:generateReleaseUnitTestStubRFile
+> Task :core-model:testDebugUnitTest NO-SOURCE
+> Task :core-model:compileReleaseUnitTestKotlin NO-SOURCE
+> Task :app:compileDebugKotlin
+> Task :core-model:javaPreCompileReleaseUnitTest
+> Task :app:compileReleaseKotlin
+> Task :app:compileDebugJavaWithJavac
+> Task :app:hiltAggregateDepsDebug
+> Task :app:compileReleaseJavaWithJavac
+
+> Task :app:hiltJavaCompileDebug
+Note: /Users/benjamin/Workspace/chatty/android/app/build/generated/hilt/component_sources/debug/ai/chatty/app/Hilt_ChattyApplication.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :app:processDebugJavaRes
+> Task :app:transformDebugClassesWithAsm
+> Task :app:dexBuilderDebug
+> Task :app:mergeDebugGlobalSynthetics
+> Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:mergeProjectDexDebug
+> Task :app:bundleDebugClassesToCompileJar
+> Task :app:hiltAggregateDepsRelease
+> Task :app:kaptGenerateStubsDebugUnitTestKotlin
+> Task :app:mergeDebugJavaResource
+> Task :app:kaptDebugUnitTestKotlin
+
+> Task :app:hiltJavaCompileRelease
+Note: /Users/benjamin/Workspace/chatty/android/app/build/generated/hilt/component_sources/release/ai/chatty/app/Hilt_ChattyApplication.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :app:compileDebugUnitTestKotlin NO-SOURCE
+> Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :app:hiltAggregateDepsDebugUnitTest
+> Task :app:hiltJavaCompileDebugUnitTest NO-SOURCE
+> Task :app:processDebugUnitTestJavaRes NO-SOURCE
+> Task :app:transformDebugUnitTestClassesWithAsm
+> Task :app:processReleaseJavaRes
+> Task :app:testDebugUnitTest NO-SOURCE
+> Task :core-model:compileReleaseUnitTestJavaWithJavac NO-SOURCE
+> Task :core-model:processReleaseUnitTestJavaRes NO-SOURCE
+> Task :core-model:testReleaseUnitTest NO-SOURCE
+> Task :core-model:test UP-TO-DATE
+> Task :core-network:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:bundleReleaseClassesToCompileJar
+> Task :app:transformReleaseClassesWithAsm
+> Task :core-network:generateDebugUnitTestStubRFile
+> Task :app:bundleReleaseClassesToRuntimeJar
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:assembleDebug
+> Task :app:kaptGenerateStubsReleaseUnitTestKotlin
+> Task :core-network:compileDebugUnitTestKotlin NO-SOURCE
+> Task :core-network:processDebugUnitTestJavaRes NO-SOURCE
+> Task :core-network:javaPreCompileDebugUnitTest
+> Task :core-network:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :core-network:testDebugUnitTest NO-SOURCE
+> Task :core-network:preReleaseUnitTestBuild UP-TO-DATE
+> Task :feature-agents:preDebugUnitTestBuild UP-TO-DATE
+> Task :core-network:javaPreCompileReleaseUnitTest
+> Task :core-network:generateReleaseUnitTestStubRFile
+> Task :core-network:compileReleaseUnitTestKotlin NO-SOURCE
+> Task :feature-agents:generateDebugUnitTestStubRFile
+> Task :core-network:compileReleaseUnitTestJavaWithJavac NO-SOURCE
+> Task :core-network:processReleaseUnitTestJavaRes NO-SOURCE
+> Task :core-network:testReleaseUnitTest NO-SOURCE
+> Task :core-network:test UP-TO-DATE
+> Task :feature-agents:compileDebugUnitTestKotlin NO-SOURCE
+> Task :feature-agents:javaPreCompileDebugUnitTest
+> Task :feature-agents:processDebugUnitTestJavaRes NO-SOURCE
+> Task :feature-agents:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :feature-agents:testDebugUnitTest NO-SOURCE
+> Task :feature-agents:preReleaseUnitTestBuild UP-TO-DATE
+> Task :app:kaptReleaseUnitTestKotlin
+> Task :app:compileReleaseUnitTestKotlin NO-SOURCE
+> Task :app:compileReleaseUnitTestJavaWithJavac NO-SOURCE
+> Task :feature-agents:generateReleaseUnitTestStubRFile
+> Task :feature-agents:compileReleaseUnitTestKotlin NO-SOURCE
+> Task :app:hiltAggregateDepsReleaseUnitTest
+> Task :app:hiltJavaCompileReleaseUnitTest NO-SOURCE
+> Task :feature-agents:javaPreCompileReleaseUnitTest
+> Task :app:processReleaseUnitTestJavaRes NO-SOURCE
+> Task :feature-agents:compileReleaseUnitTestJavaWithJavac NO-SOURCE
+> Task :feature-agents:processReleaseUnitTestJavaRes NO-SOURCE
+> Task :feature-agents:testReleaseUnitTest NO-SOURCE
+> Task :feature-agents:test UP-TO-DATE
+> Task :app:transformReleaseUnitTestClassesWithAsm
+> Task :app:testReleaseUnitTest NO-SOURCE
+> Task :app:test UP-TO-DATE
+> Task :feature-approval:preDebugUnitTestBuild UP-TO-DATE
+> Task :feature-approval:preReleaseUnitTestBuild UP-TO-DATE
+> Task :feature-approval:javaPreCompileDebugUnitTest
+> Task :feature-approval:generateDebugUnitTestStubRFile
+> Task :feature-approval:compileDebugUnitTestKotlin NO-SOURCE
+> Task :feature-approval:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :feature-approval:generateReleaseUnitTestStubRFile
+> Task :feature-approval:processDebugUnitTestJavaRes NO-SOURCE
+> Task :feature-approval:testDebugUnitTest NO-SOURCE
+> Task :feature-approval:compileReleaseUnitTestKotlin NO-SOURCE
+> Task :feature-approval:processReleaseUnitTestJavaRes NO-SOURCE
+> Task :feature-chat:preDebugUnitTestBuild UP-TO-DATE
+> Task :feature-approval:javaPreCompileReleaseUnitTest
+> Task :feature-approval:compileReleaseUnitTestJavaWithJavac NO-SOURCE
+> Task :feature-approval:testReleaseUnitTest NO-SOURCE
+> Task :feature-approval:test UP-TO-DATE
+> Task :feature-chat:preReleaseUnitTestBuild UP-TO-DATE
+> Task :feature-chat:javaPreCompileDebugUnitTest
+> Task :feature-chat:generateDebugUnitTestStubRFile
+> Task :feature-chat:compileDebugUnitTestKotlin NO-SOURCE
+> Task :feature-chat:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :feature-chat:generateReleaseUnitTestStubRFile
+> Task :feature-chat:processDebugUnitTestJavaRes NO-SOURCE
+> Task :feature-chat:testDebugUnitTest NO-SOURCE
+> Task :feature-chat:compileReleaseUnitTestKotlin NO-SOURCE
+> Task :feature-chat:processReleaseUnitTestJavaRes NO-SOURCE
+> Task :feature-inbox:preDebugUnitTestBuild UP-TO-DATE
+> Task :feature-chat:javaPreCompileReleaseUnitTest
+> Task :feature-chat:compileReleaseUnitTestJavaWithJavac NO-SOURCE
+> Task :feature-chat:testReleaseUnitTest NO-SOURCE
+> Task :feature-chat:test UP-TO-DATE
+> Task :feature-inbox:preReleaseUnitTestBuild UP-TO-DATE
+> Task :feature-inbox:javaPreCompileDebugUnitTest
+> Task :feature-inbox:generateDebugUnitTestStubRFile
+> Task :feature-inbox:compileDebugUnitTestKotlin NO-SOURCE
+> Task :feature-inbox:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :feature-inbox:generateReleaseUnitTestStubRFile
+> Task :feature-inbox:processDebugUnitTestJavaRes NO-SOURCE
+> Task :feature-inbox:testDebugUnitTest NO-SOURCE
+> Task :feature-inbox:compileReleaseUnitTestKotlin NO-SOURCE
+> Task :feature-inbox:processReleaseUnitTestJavaRes NO-SOURCE
+> Task :feature-issue-link:preDebugUnitTestBuild UP-TO-DATE
+> Task :feature-inbox:javaPreCompileReleaseUnitTest
+> Task :feature-inbox:compileReleaseUnitTestJavaWithJavac NO-SOURCE
+> Task :feature-inbox:testReleaseUnitTest NO-SOURCE
+> Task :feature-inbox:test UP-TO-DATE
+> Task :feature-issue-link:generateDebugUnitTestStubRFile
+> Task :feature-issue-link:javaPreCompileDebugUnitTest
+> Task :feature-issue-link:compileDebugUnitTestKotlin NO-SOURCE
+> Task :feature-issue-link:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :feature-issue-link:processDebugUnitTestJavaRes NO-SOURCE
+> Task :feature-issue-link:testDebugUnitTest NO-SOURCE
+> Task :feature-issue-link:preReleaseUnitTestBuild UP-TO-DATE
+> Task :feature-status:preDebugUnitTestBuild UP-TO-DATE
+> Task :feature-issue-link:javaPreCompileReleaseUnitTest
+> Task :feature-issue-link:generateReleaseUnitTestStubRFile
+> Task :feature-issue-link:compileReleaseUnitTestKotlin NO-SOURCE
+> Task :feature-issue-link:compileReleaseUnitTestJavaWithJavac NO-SOURCE
+> Task :feature-status:generateDebugUnitTestStubRFile
+> Task :feature-issue-link:processReleaseUnitTestJavaRes NO-SOURCE
+> Task :feature-issue-link:testReleaseUnitTest NO-SOURCE
+> Task :feature-issue-link:test UP-TO-DATE
+> Task :feature-status:compileDebugUnitTestKotlin NO-SOURCE
+> Task :feature-status:processDebugUnitTestJavaRes NO-SOURCE
+> Task :feature-status:javaPreCompileDebugUnitTest
+> Task :feature-status:preReleaseUnitTestBuild UP-TO-DATE
+> Task :feature-status:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :feature-status:testDebugUnitTest NO-SOURCE
+> Task :core-auth:stripDebugDebugSymbols NO-SOURCE
+> Task :feature-status:javaPreCompileReleaseUnitTest
+> Task :feature-status:generateReleaseUnitTestStubRFile
+> Task :core-auth:copyDebugJniLibsProjectAndLocalJars
+> Task :feature-status:compileReleaseUnitTestKotlin NO-SOURCE
+> Task :feature-status:compileReleaseUnitTestJavaWithJavac NO-SOURCE
+> Task :feature-status:processReleaseUnitTestJavaRes NO-SOURCE
+> Task :feature-status:testReleaseUnitTest NO-SOURCE
+> Task :feature-status:test UP-TO-DATE
+> Task :core-auth:extractDebugAnnotations
+> Task :core-auth:extractDeepLinksForAarDebug
+> Task :core-auth:mergeDebugGeneratedProguardFiles
+> Task :core-auth:mergeDebugConsumerProguardFiles
+> Task :core-auth:prepareDebugArtProfile
+> Task :core-auth:prepareLintJarForPublish
+> Task :core-network:stripDebugDebugSymbols NO-SOURCE
+> Task :core-auth:mergeDebugJavaResource
+> Task :core-network:copyDebugJniLibsProjectAndLocalJars
+> Task :core-network:extractDebugAnnotations
+> Task :core-auth:syncDebugLibJars
+> Task :core-auth:bundleDebugLocalLintAar
+> Task :core-network:extractDeepLinksForAarDebug
+> Task :core-network:mergeDebugGeneratedProguardFiles
+> Task :core-network:mergeDebugConsumerProguardFiles
+> Task :core-network:prepareDebugArtProfile
+> Task :core-network:prepareLintJarForPublish
+> Task :core-model:stripDebugDebugSymbols NO-SOURCE
+> Task :core-network:mergeDebugJavaResource
+> Task :core-model:copyDebugJniLibsProjectAndLocalJars
+> Task :core-network:syncDebugLibJars
+> Task :core-network:bundleDebugLocalLintAar
+> Task :core-model:extractDebugAnnotations
+> Task :core-model:extractDeepLinksForAarDebug
+> Task :core-model:mergeDebugGeneratedProguardFiles
+> Task :core-model:mergeDebugConsumerProguardFiles
+> Task :core-model:prepareDebugArtProfile
+> Task :core-model:prepareLintJarForPublish
+> Task :feature-chat:stripDebugDebugSymbols NO-SOURCE
+> Task :core-model:mergeDebugJavaResource
+> Task :feature-chat:copyDebugJniLibsProjectAndLocalJars
+> Task :core-model:syncDebugLibJars
+> Task :core-model:bundleDebugLocalLintAar
+> Task :feature-chat:extractDebugAnnotations
+> Task :feature-chat:extractDeepLinksForAarDebug
+> Task :feature-chat:mergeDebugGeneratedProguardFiles
+> Task :feature-chat:mergeDebugConsumerProguardFiles
+> Task :feature-chat:prepareDebugArtProfile
+> Task :feature-chat:prepareLintJarForPublish
+> Task :feature-status:stripDebugDebugSymbols NO-SOURCE
+> Task :feature-chat:mergeDebugJavaResource
+> Task :feature-status:copyDebugJniLibsProjectAndLocalJars
+> Task :feature-status:extractDebugAnnotations
+> Task :feature-chat:syncDebugLibJars
+> Task :feature-chat:bundleDebugLocalLintAar
+> Task :feature-status:extractDeepLinksForAarDebug
+> Task :feature-status:mergeDebugGeneratedProguardFiles
+> Task :feature-status:mergeDebugConsumerProguardFiles
+> Task :feature-status:prepareDebugArtProfile
+> Task :feature-status:prepareLintJarForPublish
+> Task :feature-approval:stripDebugDebugSymbols NO-SOURCE
+> Task :feature-status:mergeDebugJavaResource
+> Task :feature-approval:copyDebugJniLibsProjectAndLocalJars
+> Task :feature-status:syncDebugLibJars
+> Task :feature-status:bundleDebugLocalLintAar
+> Task :feature-approval:extractDebugAnnotations
+> Task :feature-approval:extractDeepLinksForAarDebug
+> Task :feature-approval:mergeDebugGeneratedProguardFiles
+> Task :feature-approval:mergeDebugConsumerProguardFiles
+> Task :feature-approval:prepareDebugArtProfile
+> Task :feature-approval:prepareLintJarForPublish
+> Task :feature-inbox:stripDebugDebugSymbols NO-SOURCE
+> Task :feature-approval:mergeDebugJavaResource
+> Task :feature-inbox:copyDebugJniLibsProjectAndLocalJars
+> Task :feature-approval:syncDebugLibJars
+> Task :feature-approval:bundleDebugLocalLintAar
+> Task :feature-inbox:extractDebugAnnotations
+> Task :feature-inbox:extractDeepLinksForAarDebug
+> Task :feature-inbox:mergeDebugGeneratedProguardFiles
+> Task :feature-inbox:mergeDebugConsumerProguardFiles
+> Task :feature-inbox:prepareDebugArtProfile
+> Task :feature-inbox:prepareLintJarForPublish
+> Task :feature-agents:stripDebugDebugSymbols NO-SOURCE
+> Task :feature-inbox:mergeDebugJavaResource
+> Task :feature-agents:copyDebugJniLibsProjectAndLocalJars
+> Task :feature-inbox:syncDebugLibJars
+> Task :feature-inbox:bundleDebugLocalLintAar
+> Task :feature-agents:extractDebugAnnotations
+> Task :feature-agents:extractDeepLinksForAarDebug
+> Task :feature-agents:mergeDebugGeneratedProguardFiles
+> Task :feature-agents:mergeDebugConsumerProguardFiles
+> Task :feature-agents:prepareDebugArtProfile
+> Task :feature-agents:prepareLintJarForPublish
+> Task :feature-issue-link:stripDebugDebugSymbols NO-SOURCE
+> Task :feature-agents:mergeDebugJavaResource
+> Task :feature-issue-link:copyDebugJniLibsProjectAndLocalJars
+> Task :feature-agents:syncDebugLibJars
+> Task :feature-agents:bundleDebugLocalLintAar
+> Task :feature-issue-link:extractDebugAnnotations
+> Task :feature-issue-link:extractDeepLinksForAarDebug
+> Task :feature-issue-link:mergeDebugGeneratedProguardFiles
+> Task :feature-issue-link:mergeDebugConsumerProguardFiles
+> Task :feature-issue-link:prepareDebugArtProfile
+> Task :feature-issue-link:prepareLintJarForPublish
+> Task :app:preDebugAndroidTestBuild SKIPPED
+> Task :app:generateDebugAndroidTestResValues
+> Task :feature-issue-link:mergeDebugJavaResource
+> Task :feature-issue-link:syncDebugLibJars
+> Task :feature-issue-link:bundleDebugLocalLintAar
+> Task :core-auth:createFullJarDebug
+> Task :core-auth:writeDebugLintModelMetadata
+> Task :core-model:createFullJarDebug
+> Task :core-model:writeDebugLintModelMetadata
+> Task :core-network:createFullJarDebug
+> Task :core-network:writeDebugLintModelMetadata
+> Task :feature-agents:createFullJarDebug
+> Task :feature-agents:writeDebugLintModelMetadata
+> Task :feature-approval:createFullJarDebug
+> Task :feature-approval:writeDebugLintModelMetadata
+> Task :feature-chat:createFullJarDebug
+> Task :feature-chat:writeDebugLintModelMetadata
+> Task :feature-inbox:createFullJarDebug
+> Task :feature-inbox:writeDebugLintModelMetadata
+> Task :feature-issue-link:createFullJarDebug
+> Task :feature-issue-link:writeDebugLintModelMetadata
+> Task :feature-status:createFullJarDebug
+> Task :feature-status:writeDebugLintModelMetadata
+> Task :app:generateDebugAndroidTestLintModel
+> Task :app:extractProguardFiles
+> Task :core-auth:extractProguardFiles
+> Task :core-model:extractProguardFiles
+> Task :core-model:generateDebugLintModel
+> Task :core-network:extractProguardFiles
+> Task :core-network:generateDebugLintModel
+> Task :core-auth:generateDebugLintModel
+> Task :feature-agents:extractProguardFiles
+> Task :feature-agents:generateDebugLintModel
+> Task :feature-approval:extractProguardFiles
+> Task :feature-approval:generateDebugLintModel
+> Task :feature-chat:extractProguardFiles
+> Task :feature-chat:generateDebugLintModel
+> Task :feature-inbox:extractProguardFiles
+> Task :feature-inbox:generateDebugLintModel
+> Task :feature-issue-link:extractProguardFiles
+> Task :feature-issue-link:generateDebugLintModel
+> Task :feature-status:extractProguardFiles
+> Task :feature-status:generateDebugLintModel
+> Task :app:generateDebugLintReportModel
+> Task :app:generateDebugUnitTestLintModel
+> Task :core-auth:preDebugAndroidTestBuild UP-TO-DATE
+> Task :core-auth:generateDebugAndroidTestResValues
+> Task :core-auth:generateDebugAndroidTestLintModel
+> Task :core-auth:generateDebugUnitTestLintModel
+> Task :core-auth:lintAnalyzeDebugAndroidTest
+> Task :app:lintAnalyzeDebugUnitTest
+> Task :app:lintAnalyzeDebugAndroidTest
+> Task :core-model:preDebugAndroidTestBuild UP-TO-DATE
+> Task :core-model:generateDebugAndroidTestResValues
+> Task :core-model:generateDebugAndroidTestLintModel
+> Task :core-model:generateDebugUnitTestLintModel
+> Task :core-auth:lintAnalyzeDebugUnitTest
+> Task :core-network:preDebugAndroidTestBuild UP-TO-DATE
+> Task :core-network:generateDebugAndroidTestResValues
+> Task :core-network:generateDebugAndroidTestLintModel
+> Task :core-model:lintAnalyzeDebugAndroidTest
+> Task :core-model:lintAnalyzeDebugUnitTest
+> Task :core-network:generateDebugUnitTestLintModel
+> Task :feature-agents:preDebugAndroidTestBuild UP-TO-DATE
+> Task :feature-agents:generateDebugAndroidTestResValues
+> Task :feature-agents:generateDebugAndroidTestLintModel
+> Task :feature-agents:generateDebugUnitTestLintModel
+> Task :core-network:lintAnalyzeDebugUnitTest
+> Task :feature-agents:lintAnalyzeDebugAndroidTest
+> Task :core-network:lintAnalyzeDebugAndroidTest
+> Task :feature-approval:preDebugAndroidTestBuild UP-TO-DATE
+> Task :feature-approval:generateDebugAndroidTestResValues
+> Task :feature-approval:generateDebugAndroidTestLintModel
+> Task :feature-approval:generateDebugUnitTestLintModel
+> Task :feature-agents:lintAnalyzeDebugUnitTest
+> Task :feature-chat:preDebugAndroidTestBuild UP-TO-DATE
+> Task :feature-chat:generateDebugAndroidTestResValues
+> Task :feature-chat:generateDebugAndroidTestLintModel
+> Task :feature-approval:lintAnalyzeDebugUnitTest
+> Task :feature-chat:generateDebugUnitTestLintModel
+> Task :feature-approval:lintAnalyzeDebugAndroidTest
+> Task :feature-inbox:preDebugAndroidTestBuild UP-TO-DATE
+> Task :feature-inbox:generateDebugAndroidTestResValues
+> Task :feature-inbox:generateDebugAndroidTestLintModel
+> Task :feature-inbox:generateDebugUnitTestLintModel
+> Task :feature-chat:lintAnalyzeDebugAndroidTest
+> Task :feature-chat:lintAnalyzeDebugUnitTest
+> Task :feature-issue-link:preDebugAndroidTestBuild UP-TO-DATE
+> Task :feature-issue-link:generateDebugAndroidTestResValues
+> Task :feature-issue-link:generateDebugAndroidTestLintModel
+> Task :feature-issue-link:generateDebugUnitTestLintModel
+> Task :core-model:lintAnalyzeDebug
+> Task :feature-inbox:lintAnalyzeDebugAndroidTest
+> Task :feature-inbox:lintAnalyzeDebugUnitTest
+> Task :feature-issue-link:lintAnalyzeDebugAndroidTest
+> Task :feature-agents:lintAnalyzeDebug
+> Task :core-network:lintAnalyzeDebug
+> Task :feature-approval:lintAnalyzeDebug
+> Task :feature-inbox:lintAnalyzeDebug
+> Task :feature-issue-link:lintAnalyzeDebug
+> Task :feature-status:lintAnalyzeDebug
+> Task :feature-status:preDebugAndroidTestBuild UP-TO-DATE
+> Task :feature-status:generateDebugAndroidTestResValues
+> Task :feature-status:generateDebugAndroidTestLintModel
+> Task :feature-status:generateDebugUnitTestLintModel
+> Task :feature-issue-link:lintAnalyzeDebugUnitTest
+> Task :feature-chat:lintAnalyzeDebug
+> Task :core-auth:generateDebugLintReportModel
+> Task :core-model:generateDebugLintReportModel
+> Task :core-model:lintReportDebug
+> Task :core-model:lintDebug
+> Task :core-model:lint
+> Task :core-network:generateDebugLintReportModel
+> Task :core-network:lintReportDebug
+> Task :core-network:lintDebug
+> Task :core-network:lint
+> Task :feature-agents:generateDebugLintReportModel
+> Task :feature-agents:lintReportDebug
+> Task :feature-agents:lintDebug
+> Task :feature-agents:lint
+> Task :feature-status:lintAnalyzeDebugAndroidTest
+> Task :feature-approval:generateDebugLintReportModel
+> Task :feature-chat:generateDebugLintReportModel
+> Task :feature-status:lintAnalyzeDebugUnitTest
+> Task :feature-approval:lintReportDebug
+> Task :feature-inbox:generateDebugLintReportModel
+> Task :feature-approval:lintDebug
+> Task :feature-approval:lint
+> Task :feature-issue-link:generateDebugLintReportModel
+> Task :feature-chat:lintReportDebug
+> Task :feature-chat:lintDebug
+> Task :feature-chat:lint
+> Task :feature-status:generateDebugLintReportModel
+> Task :feature-inbox:lintReportDebug
+> Task :feature-inbox:lintDebug
+> Task :feature-inbox:lint
+> Task :feature-issue-link:lintReportDebug
+> Task :feature-issue-link:lintDebug
+> Task :feature-issue-link:lint
+> Task :feature-status:lintReportDebug
+> Task :feature-status:lintDebug
+> Task :feature-status:lint
+> Task :core-auth:lintAnalyzeDebug
+
+> Task :core-auth:lintReportDebug
+Wrote HTML report to file:///Users/benjamin/Workspace/chatty/android/core-auth/build/reports/lint-results-debug.html
+
+> Task :core-auth:lintDebug
+> Task :core-auth:lint
+> Task :app:lintAnalyzeDebug
+
+> Task :app:lintReportDebug
+Wrote HTML report to file:///Users/benjamin/Workspace/chatty/android/app/build/reports/lint-results-debug.html
+
+> Task :app:lintDebug FAILED
+Lint found 1 errors, 5 warnings. First failure:
+
+/Users/benjamin/Workspace/chatty/android/app/src/main/res/values/styles.xml:1: Error: android:windowLightNavigationBar requires API level 27 (current min is 26) [NewApi]
+
+The full lint text report is located at:
+  /Users/benjamin/Workspace/chatty/android/app/build/intermediates/lint_intermediate_text_report/debug/lintReportDebug/lint-results-debug.txt
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:lintDebug'.
+> Lint found errors in the project; aborting build.
+  
+  Fix the issues identified by lint, or create a baseline to see only new errors.
+  To create a baseline, run `gradlew updateLintBaseline` after adding the following to the module's build.gradle file:
+  ```
+  android {
+      lint {
+          baseline = file("lint-baseline.xml")
+      }
+  }
+  ```
+  For more details, see https://developer.android.com/studio/write/lint#snapshot
+  
+  Lint found 1 errors, 5 warnings. First failure:
+  
+  /Users/benjamin/Workspace/chatty/android/app/src/main/res/values/styles.xml:1: Error: android:windowLightNavigationBar requires API level 27 (current min is 26) [NewApi]
+  
+  The full lint text report is located at:
+    /Users/benjamin/Workspace/chatty/android/app/build/intermediates/lint_intermediate_text_report/debug/lintReportDebug/lint-results-debug.txt
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 1m 7s
+604 actionable tasks: 604 executed

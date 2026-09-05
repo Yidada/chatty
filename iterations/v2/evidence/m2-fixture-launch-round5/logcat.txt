@@ -1,0 +1,35 @@
+--------- beginning of main
+09-05 13:40:01.788 14844 14844 I Zygote  : Process 14844 created for ai.chatty.app.fixture
+09-05 13:40:01.788 14844 14844 I tty.app.fixture: Late-enabling -Xcheck:jni
+09-05 13:40:01.803 14844 14844 I tty.app.fixture: Using generational CollectorTypeCMC GC.
+09-05 13:40:01.808 14844 14844 D nativeloader: Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+09-05 13:40:02.020 14844 14844 D nativeloader: Configuring clns-9 for other apk /data/app/~~dhl85JwpNeafWrU4llsSaA==/ai.chatty.app.fixture-nagabj3C1JGKXXdAkyEJSA==/base.apk. target_sdk_version=35, uses_libraries=, library_path=/data/app/~~dhl85JwpNeafWrU4llsSaA==/ai.chatty.app.fixture-nagabj3C1JGKXXdAkyEJSA==/lib/arm64:/data/app/~~dhl85JwpNeafWrU4llsSaA==/ai.chatty.app.fixture-nagabj3C1JGKXXdAkyEJSA==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/ai.chatty.app.fixture
+09-05 13:40:02.021 14844 14844 D CompatChangeReporter: Compat change id reported: 202956589; UID 10332; state: ENABLED
+09-05 13:40:02.026 14844 14844 V GraphicsEnvironment: Currently set values for:
+09-05 13:40:02.026 14844 14844 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[com.android.angle]
+09-05 13:40:02.026 14844 14844 V GraphicsEnvironment:   angle_gl_driver_selection_values=[angle]
+09-05 13:40:02.026 14844 14844 V GraphicsEnvironment: ai.chatty.app.fixture is not listed in per-application setting
+09-05 13:40:02.026 14844 14844 V GraphicsEnvironment: No special selections for ANGLE, returning default driver choice
+09-05 13:40:02.026 14844 14844 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+--------- beginning of system
+09-05 13:40:02.043 14844 14859 I DisplayManager: Choreographer implicitly registered for the refresh rate.
+09-05 13:40:02.044 14844 14859 D vulkan  : searching for layers in '/data/app/~~dhl85JwpNeafWrU4llsSaA==/ai.chatty.app.fixture-nagabj3C1JGKXXdAkyEJSA==/lib/arm64'
+09-05 13:40:02.044 14844 14859 D vulkan  : searching for layers in '/data/app/~~dhl85JwpNeafWrU4llsSaA==/ai.chatty.app.fixture-nagabj3C1JGKXXdAkyEJSA==/base.apk!/lib/arm64-v8a'
+09-05 13:40:02.049 14844 14844 D DesktopExperienceFlags: Toggle override initialized to: false
+09-05 13:40:02.065 14844 14844 D CompatChangeReporter: Compat change id reported: 309578419; UID 10332; state: ENABLED
+09-05 13:40:02.065 14844 14844 D DesktopModeFlags: Toggle override initialized to: OVERRIDE_UNSET
+09-05 13:40:02.086 14844 14844 D CompatChangeReporter: Compat change id reported: 349153669; UID 10332; state: ENABLED
+09-05 13:40:02.286 14844 14844 W tty.app.fixture: Method boolean androidx.compose.runtime.snapshots.SnapshotStateList.conditionalUpdate(boolean, kotlin.jvm.functions.Function1) failed lock verification and will run slower.
+09-05 13:40:02.286 14844 14844 W tty.app.fixture: Common causes for lock verification issues are non-optimized dex code
+09-05 13:40:02.286 14844 14844 W tty.app.fixture: and incorrect proguard optimizations.
+09-05 13:40:02.286 14844 14844 W tty.app.fixture: Method boolean androidx.compose.runtime.snapshots.SnapshotStateList.conditionalUpdate$default(androidx.compose.runtime.snapshots.SnapshotStateList, boolean, kotlin.jvm.functions.Function1, int, java.lang.Object) failed lock verification and will run slower.
+09-05 13:40:02.286 14844 14844 W tty.app.fixture: Method java.lang.Object androidx.compose.runtime.snapshots.SnapshotStateList.mutate(kotlin.jvm.functions.Function1) failed lock verification and will run slower.
+09-05 13:40:02.286 14844 14844 W tty.app.fixture: Method void androidx.compose.runtime.snapshots.SnapshotStateList.update(boolean, kotlin.jvm.functions.Function1) failed lock verification and will run slower.
+09-05 13:40:02.286 14844 14844 W tty.app.fixture: Method void androidx.compose.runtime.snapshots.SnapshotStateList.update$default(androidx.compose.runtime.snapshots.SnapshotStateList, boolean, kotlin.jvm.functions.Function1, int, java.lang.Object) failed lock verification and will run slower.
+09-05 13:40:02.304 14844 14844 I HWUI    : Using FreeType backend (prop=Auto)
+09-05 13:40:02.332 14844 14850 I tty.app.fixture: Compiler allocated 5127KB to compile void android.view.ViewRootImpl.performTraversals()
+09-05 13:40:02.339 14844 14844 D VRI[MainActivity]: WindowInsets changed: 1440x3120 statusBars:[0,145,0,0] navigationBars:[0,0,0,84] mandatorySystemGestures:[0,187,0,112] 
+09-05 13:40:02.341 14844 14844 D WindowOnBackDispatcher: setTopOnBackInvokedCallback (unwrapped): android.view.ViewRootImpl$$ExternalSyntheticLambda25@8fe4660
+09-05 13:40:02.398 14844 14844 I Choreographer: Skipped 33 frames!  The application may be doing too much work on its main thread.
+09-05 13:40:02.421 14844 14844 D InsetsController: hide(ime())
+09-05 13:40:02.421 14844 14844 I ImeTracker: ai.chatty.app.fixture:93392f8: onCancelled at PHASE_CLIENT_ALREADY_HIDDEN

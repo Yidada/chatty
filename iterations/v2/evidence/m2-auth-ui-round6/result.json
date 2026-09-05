@@ -1,0 +1,27 @@
+{
+  "session": "0cfcf9df-fa91-47fe-aa88-963181456266",
+  "checks": [
+    "PASS: 更换邮箱",
+    "PASS: 获取验证码",
+    "PASS: 获取验证码",
+    "PASS: 验证码已发送，请查看邮箱。",
+    "PASS: 登录并连接",
+    "PASS: 请求未通过，请检查邮箱和验证码。",
+    "PASS: 登录并连接",
+    "PASS: Loop Test Workspace",
+    "PASS: 工作区已连接",
+    "PASS: JWT absent from plaintext preference bytes",
+    "PASS: 工作区已连接",
+    "PASS: Loop Test Workspace",
+    "PASS: 重新加载",
+    "PASS: 暂时无法连接，请重试。已有登录信息会保留。",
+    "PASS: 暂时无法连接，请重试。已有登录信息会保留。",
+    "PASS: 重新加载",
+    "PASS: 工作区已连接",
+    "PASS: Loop Test Workspace",
+    "PASS: 重新加载",
+    "PASS: 获取验证码",
+    "PASS: 获取验证码",
+    "PASS: fixture login, invalid code, secure cold start, 503 preserves credentials, 401 clears credentials"
+  ]
+}

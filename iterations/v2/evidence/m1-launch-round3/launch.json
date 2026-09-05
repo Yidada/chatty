@@ -1,0 +1,11 @@
+{
+  "package": "ai.chatty.app.debug",
+  "model": "Pixel 6 Pro",
+  "android": "16",
+  "pid": "12830",
+  "focus": [
+    "mCurrentFocus=null",
+    "mCurrentFocus=Window{55cf74a u0 ai.chatty.app.debug/ai.chatty.app.MainActivity}"
+  ],
+  "result": "PASS"
+}

@@ -1,0 +1,11 @@
+{
+  "package": "ai.chatty.app.fixture",
+  "model": "Pixel 6 Pro",
+  "android": "16",
+  "pid": "14477",
+  "focus": [
+    "mCurrentFocus=null",
+    "mCurrentFocus=Window{313661f u0 ai.chatty.app.fixture/ai.chatty.app.MainActivity}"
+  ],
+  "result": "PASS"
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "route": "/api/workspaces",
+    "authenticated": true,
+    "workspace": null,
+    "status": 200
+  },
+  {
+    "route": "/api/workspaces",
+    "authenticated": true,
+    "workspace": "fixture",
+    "status": 200
+  },
+  {
+    "route": "/api/workspaces",
+    "authenticated": true,
+    "workspace": "fixture",
+    "status": 503
+  },
+  {
+    "route": "/api/workspaces",
+    "authenticated": true,
+    "workspace": "fixture",
+    "status": 503
+  },
+  {
+    "route": "/api/workspaces",
+    "authenticated": true,
+    "workspace": "fixture",
+    "status": 200
+  },
+  {
+    "route": "/api/workspaces",
+    "authenticated": true,
+    "workspace": "fixture",
+    "status": 401
+  }
+]

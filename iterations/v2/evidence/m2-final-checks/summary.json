@@ -1,0 +1,7 @@
+{
+  "modules": 10,
+  "unit_tests": 12,
+  "physical_device": "Pixel 6 Pro Android 16",
+  "fixture_ui": "PASS",
+  "live_auth": "pending user login"
+}

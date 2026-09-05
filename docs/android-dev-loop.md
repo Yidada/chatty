@@ -1,72 +1,81 @@
-# Android 开发闭环 (Dev Loop)
+# Android 开发闭环
 
-> 目标：Android 开发助手在本机 (omarchy) 上运行「构建 → 安装 → 启动 → UI 验证 → 修复」闭环，
-> 用 adb + Appium (UIAutomator2) 在 **Pixel 6 Pro 真机**（USB）上循环调试。
-> 真机断开时可回退到模拟器 AVD `chatty35`（KVM 硬件加速可用）。
+2026-09-05 当前执行环境：Mac + USB Pixel 6 Pro（Android 16）。历史 Omarchy/AVD 记录保留在 v1；每次运行都重新检查当前设备，脚本默认选择唯一已授权的真机。
 
-## 环境（已就绪）
+## 本轮工具
 
-| 工具 | 位置 |
-| --- | --- |
-| JDK 21 (Temurin, mise) | `~/.local/share/mise/installs/java/temurin-21*`, shim 在 PATH |
-| Gradle 8.7 (mise) | 同上 |
-| Android SDK | `$ANDROID_HOME = ~/android-sdk`（platform-tools, platforms;android-35, build-tools;35.0.0, emulator） |
-| adb | `$ANDROID_HOME/platform-tools/adb` |
-| Appium 3.7 + uiautomator2 8.5.2 | `appium` (npm -g), server 需带 `ANDROID_HOME` 启动 |
-| 模拟器 AVD | `chatty35` (android-35 google_apis x86_64, 系统镜像已装) |
-| 真机 | Pixel 6 Pro (`adb devices` 显示 `device` 即 USB 已授权) |
+| 工具 | 版本 / 位置 |
+|---|---|
+| JDK | Homebrew OpenJDK 17 |
+| Gradle | `android/gradlew`，8.7 |
+| SDK | `.tools/android-sdk`，platform 35、build-tools 34.0.0 |
+| Appium | `.tools/appium`，3.0.2 |
+| UIAutomator2 | `.tools/appium-home`，5.0.0 |
+| Appium 服务 | `127.0.0.1:4725`，与其他服务隔离 |
 
-环境变量已写入 `~/.bashrc`（`ANDROID_HOME`, `ANDROID_AVD_HOME`, PATH）。
+`source scripts/android-env.sh` 会配置本工程路径，可通过 `JAVA_HOME`、`ANDROID_HOME`、`ADB`、`GRADLE_USER_HOME` 覆盖。Linux 已安装 SDK 时设置 `ANDROID_HOME=$HOME/android-sdk`。
 
-## 五步闭环
+## 日常闭环
 
 ```bash
-# 0. 基础设施（后台）
-appium --port 4723 --log-level info &     # 必须与 ANDROID_HOME 同环境启动
-
-# 1. 构建
-gradle :app:assembleDebug                  # 或 .gradlew assembleDebug (项目内 wrapper 优先)
-
-# 2. 安装 + 启动（含崩溃检查）
-scripts/dev-loop.sh app/build/outputs/apk/debug/app-debug.apk com.chatty.smoke .MainActivity
-
-# 3. UI 验证（Appium session，可查文本、可点击元素，自动截图）
-appium --port 4723 &                      # 若未在运行
-scripts/appium-ui.sh "CHATTY SMOKE OK" "TAP ME" 1
-
-# 4. 看崩溃/错误
-adb logcat -d -t 300 | grep -E "FATAL EXCEPTION|$aPKG"
-
-# 5. 修复 → 回到 1
+source scripts/android-env.sh
+"$ADB" devices -l
+android/gradlew -p android :app:assembleDebug test lint
+scripts/dev-loop.sh android/app/build/outputs/apk/debug/app-debug.apk ai.chatty.app.debug ai.chatty.app.MainActivity
 ```
 
-## 命令速查
+另一个终端启动 Appium：
 
 ```bash
-export PATH=$PWD/../android-sdk/platform-tools:$PATH   # 或在 .bashrc 中已配置
-adb devices                 # 设备在线状态
-adb install -r <apk>        # 覆盖安装
-adb shell am start -n <pkg>/<act>   # 启动应用
-adb shell am force-stop <pkg>       # 停止应用
-adb shell input text 'hello'        # 注入输入
-adb shell input swipe 540 1200 540 400 300  # 滑动
-adb logcat -d -t 300 -s <pkg>      # 只看本应用日志
-adb exec-out screencap -p > /tmp/opencode/scr.png   # 截图
-
-# 模拟器（仅当无真机时）
-emulator -avd chatty35 -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect -no-snapshot &
+source scripts/android-env.sh
+appium --address 127.0.0.1 --port 4725
 ```
 
-## Appium 使用要点
+```bash
+# 首次登录界面
+scripts/appium-ui.sh "获取验证码"
+# 可选：期望文本、点击文本、等待秒数、点击后的期望文本
+scripts/appium-ui.sh "选择工作区" "某个工作区" 1 "工作区已连接"
+```
 
-- 服务器必须以 `ANDROID_HOME` 环境变量启动，否则 session 报 `Neither ANDROID_HOME nor ANDROID_SDK_ROOT...`
-- 先杀旧 server 再启动：`pkill -f appium; sleep 2; appium --port 4723 &`
-- 原生 Appium 3 路径是 `/session`（无 `/wd/hub` 前缀）
-- uiautomator2 不支持 `text` locate strategy；用 XPath：`//*[@text='TAP ME']`
-- 元素响应 key 为 W3C `element-6066-11e4-a52e-4f735466cecf`
-- 会话必备 caps：`platformName=Android, appium:automationName=UiAutomator2, appium:appPackage, appium:appActivity, appium:noReset=true`
-- 首次 session 会自动在设备上安装 `appium-uiautomator2-server`，耐心等待几秒
+- `dev-loop.sh` 检查授权、安装结果、进程存活、当前前台窗口和本次启动日志。
+- `appium-ui.sh` 使用 W3C API，检查 HTTP 错误和真实元素，保证 session 释放。
+- `ANDROID_SERIAL` 可显式选择设备；无授权或多台真机时脚本直接失败，避免连错设备。
+- `PKG`、`ACT`、`APPIUM_URL` 可覆盖默认值。
+- 证据自动写入 `iterations/v2/evidence/<时间戳>-.../`；`EVIDENCE_DIR` 可指定独立轮次目录，避免覆盖。
+- 未获得用户授权时，不使用真实账号自动发送验证码或对话；合成服务用于异常测试。
 
-## 已验收
+## M2 登录异常闭环
 
-2026-09-04：Pixel 6 Pro 真机完成闭环冒烟（3 次循环识别 UI → 点击 → 验证计数状态变化，全 PASS）。
+启动 `python3 scripts/auth-fixture.py`（仅本机 8765），另一个终端执行：
+
+```bash
+source scripts/android-env.sh
+"$ADB" reverse tcp:8765 tcp:8765
+android/gradlew -p android -PchattyFixture=true :app:assembleDebug test lint
+scripts/dev-loop.sh android/app/build/outputs/apk/debug/app-debug.apk ai.chatty.app.fixture ai.chatty.app.MainActivity
+python3 scripts/auth-device-test.py
+```
+
+- 测试包名称 `Chatty Test`，包 ID `.fixture`；合成邮箱与 token 均无真实权限。
+- 覆盖错误验证码、有效登录、选工作区、杀进程冷启动、503 保留凭据、恢复成功、401 清理。
+- 通过 `run-as` 在内存中检查合成 token 不以明文保存在偏好文件，不写出偏好原文。
+- 无 `chattyFixture` 属性时 Debug 使用真实 API；Release 始终使用 HTTPS 真实 API。
+- 合成服务不证明真实 Multica 登录或 Mika 对话通过，EVAL 分开记录。
+
+结束测试后恢复普通构建安装，并移除该测试端口映射：
+
+```bash
+android/gradlew -p android :app:assembleDebug test lint
+scripts/dev-loop.sh android/app/build/outputs/apk/debug/app-debug.apk ai.chatty.app.debug ai.chatty.app.MainActivity
+"$ADB" reverse --remove tcp:8765
+```
+
+## 本轮发现并修复
+
+- 原脚本硬编码 `com.chatty.smoke`，现改为可配置的真实应用 ID。
+- 原 UI 检查最后一次命中仍可能失败，现逐次精确判断。
+- 原脚本仅警告应用不在前台，现直接失败。
+- 原崩溃检查可能匹配其他应用，现限定本次启动和当前 PID。
+- Mac 的 zsh 与 Bash 源文件路径语法不同，环境脚本分别处理。
+- 不清空整台手机 logcat，不停止其他 Appium 服务。
