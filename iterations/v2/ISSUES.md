@@ -11,6 +11,13 @@
 - 真实 Mika 新消息收发尚未执行；M3/M4 完整验收继续保持进行中。未将本地实现状态回写为外部任务 Done。
 - 源码格式覆盖与差异见 [CHAT_SOURCE_PARITY.md](CHAT_SOURCE_PARITY.md)，证据见 [EVAL.md](EVAL.md)。
 
+## 三 Tab 调整（用户本轮要求）
+
+- 一级导航固定为“对话 / 项目 / 设置”。原独立 Agent / 动态页面安排由 [NAVIGATION.md](NAVIGATION.md) 覆盖。
+- M3 页面收敛到 Mika 单对话；M5/M7 相关 Issue 进度与资源信息分别落到项目、设置。
+- 项目页新增按 Project 读取、搜索、筛选、分页、详情和状态更新；设置页新增 Runtime / Agents / Squads 列表与对应管理入口。
+- 当前构建、32 个独立单测和 Pixel 合成三 Tab 闭环通过。详细配置仍在 Multica 页面编辑，完整 V2 验收保持进行中。
+
 ## 执行规则
 
 - 严格按阶段推进，同一仓库仅由当前 Codex 会话实现，不启动其他 Agent。

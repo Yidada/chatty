@@ -86,8 +86,6 @@ fun ChatRoute(workspace: Workspace, credentials: CredentialStore, baseUrl: Strin
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ChatScreen(state: ChatState, controller: ChatController, baseUrl: String, webUrl: String) {
-    var history by remember { mutableStateOf(false) }
-    var picker by remember { mutableStateOf(false) }
     var localError by remember { mutableStateOf<String?>(null) }
     val context = LocalContext.current
     val keyboard = LocalSoftwareKeyboardController.current
@@ -107,11 +105,10 @@ private fun ChatScreen(state: ChatState, controller: ChatController, baseUrl: St
     Column(Modifier.fillMaxSize().imePadding()) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
-                Text(state.session?.title?.ifBlank { state.agent?.name ?: "对话" } ?: state.agent?.name ?: "对话", style = MaterialTheme.typography.titleMedium, maxLines = 1)
+                Text("Mika", style = MaterialTheme.typography.titleMedium, maxLines = 1)
                 Text(if (state.connected) "已连接" else "正在连接 · 自动同步", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
-            TextButton(onClick = { history = true }, enabled = !state.sending) { Text("历史") }
-            TextButton(onClick = { picker = true }, enabled = !state.sending) { Text("新对话") }
+            TextButton(onClick = controller::refresh, enabled = !state.sending) { Text("刷新对话") }
         }
         HorizontalDivider()
         if (state.loading) LinearProgressIndicator(Modifier.fillMaxWidth())
@@ -152,34 +149,6 @@ private fun ChatScreen(state: ChatState, controller: ChatController, baseUrl: St
             TextButton(onClick = { launcher.launch(arrayOf("*/*")) }, enabled = !state.sending && !state.loading && state.session?.status != "archived") { Text("附件") }
             OutlinedTextField(state.draft, controller::draft, Modifier.weight(1f).testTag("chat-draft"), placeholder = { Text("发消息…") }, maxLines = 5, enabled = !state.sending, shape = RoundedCornerShape(20.dp))
             TextButton(onClick = { followLatest = true; keyboard?.hide(); controller.send() }, enabled = state.canSend, modifier = Modifier.testTag("chat-send")) { Text(if (state.sending) "发送中" else "发送") }
-        }
-    }
-    if (history) ModalBottomSheet(onDismissRequest = { history = false }) {
-        Column(Modifier.fillMaxWidth().padding(20.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) { Text("对话历史", Modifier.weight(1f), style = MaterialTheme.typography.titleLarge); TextButton(onClick = controller::refresh) { Text("刷新") } }
-            LazyColumn(Modifier.heightIn(max = 520.dp)) {
-                listOf("active", "archived").forEach { status ->
-                    val sessions = orderedSessions(state.sessions.filter { it.status == status })
-                    if (sessions.isNotEmpty()) item { Text(if (status == "active") "进行中" else "已归档", Modifier.padding(vertical = 12.dp), style = MaterialTheme.typography.labelMedium) }
-                    items(sessions, key = { it.id }) { session ->
-                        Column(Modifier.fillMaxWidth().clickable { controller.open(session); history = false }.padding(vertical = 12.dp)) {
-                            Row { Text((if (session.pinned) "置顶 · " else "") + session.title.ifBlank { "新对话" }, Modifier.weight(1f), fontWeight = FontWeight.Medium, maxLines = 1); Text(chatTime(session.updated_at), style = MaterialTheme.typography.labelSmall) }
-                            Text(state.agents.find { it.id == session.agent_id }?.name ?: "Agent", style = MaterialTheme.typography.labelSmall)
-                            Row { Text(preview(session.last_message?.content.orEmpty()), Modifier.weight(1f), maxLines = 1, style = MaterialTheme.typography.bodySmall); if (session.has_unread || session.unread_count > 0) Text("未读 ${session.unread_count.takeIf { it > 0 } ?: ""}", color = MaterialTheme.colorScheme.primary) }
-                            if (session.last_message?.failure_reason != null) Text("任务未完成", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelSmall)
-                        }
-                    }
-                }
-                if (state.sessions.isEmpty()) item { Text("暂无对话") }
-            }
-        }
-    }
-    if (picker) ModalBottomSheet(onDismissRequest = { picker = false }) {
-        Column(Modifier.padding(20.dp).verticalScroll(rememberScrollState())) {
-            Text("选择 Agent", style = MaterialTheme.typography.titleLarge)
-            state.agents.filter { it.archived_at == null && canChat(it, state.userId, state.role) }.forEach { agent ->
-                TextButton(onClick = { controller.newChat(agent); picker = false }, modifier = Modifier.fillMaxWidth()) { Text("${agent.name} · ${if (agent.status == "offline") "离线" else "在线"}") }
-            }
         }
     }
 }

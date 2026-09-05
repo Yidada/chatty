@@ -49,9 +49,9 @@ class ChatController(private val api: ChatApi, private val drafts: ChatDrafts, p
             }
             val role = members.find { it.user_id == user.id }?.role
             val available = agents.filter { it.archived_at == null && canChat(it, user.id, role) }
-            val mika = available.find { it.system_key == "mika" } ?: available.find { it.name.equals("Mika", true) }
-            mutable.update { it.copy(sessions = orderedSessions(sessions), agents = agents, userId = user.id, role = role, agent = mika ?: available.firstOrNull(), loading = false, error = null) }
-            val initial = orderedSessions(sessions).firstOrNull { it.status != "archived" && it.agent_id == mika?.id }
+            val mika = available.find { it.system_key == "mika" } ?: available.find { it.system_key == null && it.name.equals("Mika", true) }
+            mutable.update { it.copy(sessions = orderedSessions(sessions), agents = agents, userId = user.id, role = role, agent = mika, loading = false, error = if (mika == null) "此工作区尚未配置可用的 Mika，请在设置中检查 Agents。" else null) }
+            val initial = sessions.filter { it.status != "archived" && it.agent_id == mika?.id }.maxByOrNull { it.updated_at }
             if (initial != null) open(initial) else newChat(state.value.agent)
         } catch (e: CancellationException) { throw e } catch (e: Exception) { mutable.update { it.copy(loading = false, error = errorText(e)) } }
     }

@@ -18,7 +18,8 @@ class ChatControllerTest {
         var sends = 0; var fail = false; var gate: CompletableDeferred<Unit>? = null
         var pendingTask = PendingTask(); var cursor: String? = null
         override suspend fun sessions() = listOf(session)
-        override suspend fun agents() = listOf(ChatAgent("mika", "Renamed", system_key = "mika", owner_id = "u1", runtime_id = "r1"))
+        var agentRows = listOf(ChatAgent("mika", "Renamed", system_key = "mika", owner_id = "u1", runtime_id = "r1"))
+        override suspend fun agents() = agentRows
         override suspend fun me() = ChatUser("u1")
         override suspend fun members(id: String) = listOf(ChatMember("u1", "member"))
         override suspend fun create(body: NewChat) = session
@@ -44,6 +45,12 @@ class ChatControllerTest {
         val data = mutableMapOf<String, String>()
         override suspend fun read(key: String) = data[key].orEmpty()
         override suspend fun write(key: String, value: String) { data[key] = value }
+    }
+    @Test fun missingMikaCannotSendToAnotherAgent() = runTest {
+        val api = Fake(); api.agentRows = listOf(ChatAgent("other", "Other Agent", owner_id="u1", runtime_id="r1"))
+        val c = ChatController(api, Drafts(), Workspace("w", "slug", "Test"), this)
+        c.initialize(); advanceUntilIdle(); c.draft("hello"); c.send(); advanceUntilIdle()
+        assertNull(c.state.value.agent); assertFalse(c.state.value.canSend); assertEquals(0, api.sends)
     }
     @Test fun sendIsSingleFlightAndUsesServerTask() = runTest {
         val api = Fake(); val drafts = Drafts(); val c = ChatController(api, drafts, Workspace("w", "slug", "Test"), this)

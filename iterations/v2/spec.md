@@ -1,5 +1,8 @@
 ## Spec: Chatty v2 — Android Client Spec (based on Multica source)
 
+> 2026-09-05 用户确认导航调整：三个 Tab 为 Mika 单对话、按 Project 管理 Issues 进度、设置（Runtime / Agents / Squads 等）。具体页面行为以 [NAVIGATION.md](NAVIGATION.md) 为准；下文接口与数据边界继续适用。
+
+
 - **Author:** Android 开发助手 (agent)
 - **Status:** Reviewed — CLE-56 已完成；2026-09-05 按用户指示进入实现
 - **Stage:** 2 of 6 — Spec

@@ -11,6 +11,10 @@ MESSAGES=[{'id':f'm{i:03}','chat_session_id':'s1','role':'user' if i%2 else 'ass
 MESSAGES += [{'id':'rich','chat_session_id':'s1','role':'assistant','content':'## 格式验证\n\n**粗体**与[链接](https://multica.ai)\n\n| 项目 | 状态 |\n| --- | --- |\n| 对话 | OK |\n\n- [x] 游标分页\n- [ ] 待办事项\n\n```python\nprint("Chatty")\n```','created_at':'2026-09-05T02:00:00Z','attachments':[A],'quick_actions':[{'label':'继续测试','prompt':'继续测试格式'}]}]
 SESSIONS=[S,dict(S,id='s2',title='第二个会话',pinned=False,has_unread=False,unread_count=0),dict(S,id='s3',title='归档会话',status='archived',pinned=False)]
 PENDING={};TRACES={};CLIENTS=[];CALLS=[];LOCK=threading.Lock();STATUS=200;SEND_COUNT=0
+ISSUES=[{'id':'i'+str(i),'identifier':'LOOP-'+str(i+1),'title':f'Issue {i+1:02}','status':'todo' if i<30 else 'done','description':'Synthetic issue description','project_id':'p1','revision':1,'priority':'high' if i==0 else 'none'} for i in range(55)]
+ISSUES.append({'id':'orphan','identifier':'LOOP-56','title':'Unassigned project issue','status':'todo','project_id':None,'revision':1})
+STATUSES=[{'key':'todo','name':'待开始','category':'todo'},{'key':'qa_custom','name':'内部验收','category':'in_review'},{'key':'done','name':'已完成','category':'done'}]
+WRITES=[]
 
 def broadcast(kind,payload):
     data=json.dumps({'type':kind,'payload':payload}).encode()
@@ -91,14 +95,35 @@ class API(BaseHTTPRequestHandler):
             threading.Thread(target=finish,args=(tid,sid,body['content']),daemon=True).start()
             return self.reply(200,{'message_id':msg['id'],'task_id':tid,'created_at':now})
         self.reply(404,{'error':'unknown route'})
+    def do_PUT(self):
+        body=json.loads(self.raw() or '{}')
+        if not self.auth():return
+        m=re.fullmatch('/api/issues/([^/]+)',self.path)
+        row=next((i for i in ISSUES if m and i['id']==m[1]),None)
+        if row is None:return self.reply(404,{'error':'missing'})
+        if body.get('suppress_run') is not True:return self.reply(400,{'error':'must suppress execution in fixture'})
+        if body.get('expected_revision')!=row['revision']:return self.reply(409,{'error':'stale'})
+        row['status']=body['status'];row['revision']+=1;WRITES.append(body)
+        return self.reply(200,row)
     def do_GET(self):
         path=urlsplit(self.path).path;q=parse_qs(urlsplit(self.path).query)
         if path=='/ws':return self.websocket()
-        if path=='/__calls':return self.reply(200,{'calls':CALLS,'send_count':SEND_COUNT})
+        if path=='/__calls':return self.reply(200,{'calls':CALLS,'send_count':SEND_COUNT,'issue_writes':WRITES})
         if path=='/files/note.txt':return self.reply(200,b'Chatty attachment preview OK','text/plain')
         if not self.auth():return
         if STATUS!=200:return self.reply(STATUS,{'error':'synthetic failure'})
         if path=='/api/workspaces':return self.reply(200,[{'id':'w1','slug':'fixture','name':'Loop Test Workspace'}])
+        if path=='/api/projects':return self.reply(200,{'projects':[{'id':'p1','title':'Loop Project','status':'in_progress','issue_count':55,'done_count':sum(i['status']=='done' for i in ISSUES if i['project_id']=='p1')},{'id':'p2','title':'Empty Project','issue_count':0,'done_count':0}], 'total':2})
+        if path=='/api/issue-statuses':return self.reply(200,{'statuses':STATUSES})
+        if path=='/api/issues':
+            rows=[i for i in ISSUES if (i['project_id']==q['project_id'][0] if q.get('project_id') else i['project_id'] is None if q.get('include_no_project')==['true'] else True)]
+            if q.get('status'):rows=[i for i in rows if i['status']==q['status'][0]]
+            if q.get('q'):rows=[i for i in rows if q['q'][0].lower() in i['title'].lower()]
+            offset=int(q.get('offset',['0'])[0]);limit=int(q.get('limit',['50'])[0]);return self.reply(200,{'issues':rows[offset:offset+limit],'total':len(rows)})
+        if path.startswith('/api/issues/'):
+            row=next((i for i in ISSUES if i['id']==path.split('/')[-1]),None);return self.reply(200,row) if row else self.reply(404,{'error':'missing'})
+        if path=='/api/runtimes':return self.reply(200,[{'id':'r1','name':'Raw runtime name','custom_name':'Loop Runtime','status':'online','provider':'codex','runtime_mode':'local','device_info':'Synthetic Mac','last_seen_at':'2026-09-05T10:00:00Z'}])
+        if path=='/api/squads':return self.reply(200,[{'id':'sq1','name':'Loop Squad','description':'Synthetic team','leader_id':'mika','member_count':3}])
         if path=='/api/me':return self.reply(200,{'id':'u1'})
         if path=='/api/agents':return self.reply(200,[AGENT,dict(AGENT,id='private',name='Private Agent',owner_id='someone-else',system_key=None,permission_mode='private')])
         if path=='/api/workspaces/w1/members':return self.reply(200,[{'user_id':'u1','role':'member'}])

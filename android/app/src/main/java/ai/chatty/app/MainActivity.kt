@@ -50,21 +50,18 @@ fun ChattyShell(workspace: ai.chatty.core.model.Workspace, credentials: ai.chatt
     var tab by rememberSaveable { mutableStateOf("对话") }
     Scaffold(bottomBar = {
         NavigationBar(containerColor = MaterialTheme.colorScheme.background) {
-            listOf("对话", "Agent", "动态").forEach { title ->
-                NavigationBarItem(selected = tab == title, onClick = { tab = title }, icon = { Text(when (title) { "对话" -> "◌"; "Agent" -> "◇"; else -> "≋" }) }, label = { Text(title) })
+            listOf("对话", "项目", "设置").forEach { title ->
+                NavigationBarItem(selected = tab == title, onClick = { tab = title }, icon = { Text(when (title) { "对话" -> "◌"; "项目" -> "▦"; else -> "⚙" }) }, label = { Text(title) })
             }
         }
     }) { padding ->
-        Column(Modifier.fillMaxSize().padding(padding)) {
-            Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                Text("Chatty", style = MaterialTheme.typography.titleLarge)
-                TextButton(onClick = switchWorkspace) { Text(workspace.name) }
-                TextButton(onClick = signOut) { Text("退出") }
-            }
-            if (tab == "对话") key(workspace.id) { ai.chatty.feature.chat.ChatRoute(workspace, credentials, BuildConfig.API_BASE_URL) }
-            else Column(Modifier.padding(24.dp)) {
-                Text(if (tab == "Agent") "你的 Agent 团队" else "需要你关注的进展", style = MaterialTheme.typography.headlineMedium)
-                Text("此页面将在后续阶段接入。")
+        Box(Modifier.fillMaxSize().padding(padding)) {
+            key(workspace.id, tab) {
+                when (tab) {
+                    "对话" -> ai.chatty.feature.chat.ChatRoute(workspace, credentials, BuildConfig.API_BASE_URL)
+                    "项目" -> ai.chatty.feature.workspace.ProjectsRoute(workspace, credentials, BuildConfig.API_BASE_URL)
+                    "设置" -> ai.chatty.feature.workspace.SettingsRoute(workspace, credentials, BuildConfig.API_BASE_URL, switchWorkspace, signOut)
+                }
             }
         }
     }

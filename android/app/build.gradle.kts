@@ -38,6 +38,7 @@ dependencies {
     implementation(project(":core-network"))
     implementation(project(":core-auth"))
     implementation(project(":feature-chat"))
+    implementation(project(":feature-workspace"))
     implementation(project(":feature-status"))
     implementation(project(":feature-approval"))
     implementation(project(":feature-inbox"))

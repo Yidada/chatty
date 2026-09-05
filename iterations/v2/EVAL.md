@@ -52,3 +52,16 @@
 - **真实发送未验收**：尚未取得本轮明确测试消息授权，没有向真实 Mika 发送新消息。M3/M4 不标记为完整 Done。
 - **证据**：`evidence/m3-chat-validation/`；完整成功 UI 目录 `evidence/20260905-141208-612015-ui/`、`evidence/20260905-141627-717037-ui/`。首次脚本等待失败另保留，原因见 HARDENING。
 - **覆盖边界**：见 `CHAT_SOURCE_PARITY.md`；完整 V2 gate 仍未通过。
+
+## 2026-09-05 三 Tab 验收增量
+
+- 一级导航：Mika 单对话 / 按 Project 管理 Issues / 设置。会话历史和其他 Agent 选择器已移除。
+- 构建、lint 与 **32 个独立测试**通过（Network 15、Auth 3、Chat 9、Projects 5）。
+- Pixel 三 Tab 闭环通过：项目服务端进度、自定义状态单次更新、搜索、状态筛选、50→55 条分页、空项目、未归属项目、Runtime / Agents / Squads 列表详情、三轮切换。
+- 合成写入证据：恰好一次 Issue PUT，包含 `suppress_run=true` 与 `expected_revision=1`；三 Tab 用例没有发送 Chat 消息。
+- 单 Mika 页回归通过：两轮合成收发、附件文本预览、任务过程、重连、跨 Tab 草稿、冷启动、历史分页、无回复、错误详情和 503 恢复。
+- 证据：`evidence/three-tabs-validation/`、`evidence/20260905-144033-757160-ui/`、`evidence/20260905-144230-904782-ui/`。
+- 本轮设置的原生范围是列表与详情；配置编辑和更完整 Issue 管理通过对应 Multica 页面打开。完整 V2 gate 保持未通过。
+
+- 三 Tab 真实只读验证通过：项目进度正常显示，Runtime / Agents 列表正常，当前 Squads 返回空态，Mika 保持单一入口并连上真实 WebSocket。未修改真实 Issues。
+- 真实项目内 Issue 列表另行只读验证通过；未触发状态修改。

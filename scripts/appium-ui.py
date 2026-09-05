@@ -54,12 +54,12 @@ if __name__=='__main__':
     s=Session()
     try:
         if len(sys.argv)>1 and sys.argv[1]=='--shell-loop':
-            s.expect('历史')
+            s.expect('Mika')
             s.shot('chat')
             for n in range(3):
-                s.tap('Agent');s.expect('你的 Agent 团队')
-                s.tap('动态');s.expect('需要你关注的进展')
-                s.tap('对话');s.expect('历史')
+                s.tap('项目');s.expect('按项目查看所有 Issues 的进度')
+                s.tap('设置');s.expect('Runtimes')
+                s.tap('对话');s.expect('Mika')
             s.shot('after-three-loops')
         else:
             if len(sys.argv)>1 and sys.argv[1]: s.expect(sys.argv[1])
