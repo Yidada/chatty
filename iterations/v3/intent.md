@@ -1,9 +1,9 @@
 # Intent: Chatty v3 — 性能、缓存与稳定性升级
 
 - **Author:** Mika
-- **Status:** Proposed — 等待 Benjamin 验收
-- **Stage:** 1 of 6 — Intent 与基线
-- **Issue:** CLE-70
+- **Status:** 1A–6A 已批准；Stage 2 基线准备中；B0/T 待验收
+- **Stage:** 2 — Baseline harness & numeric budgets
+- **Issue:** CLE-70（整体推进）/ CLE-73（本次基线准备）
 - **Last updated:** 2026-09-06
 - **Writable source:** `Yidada/chatty@e7e1c518daaabe65db2c74f7fae236cc955e6d8c`
 - **Server reference (read-only):** `multica-ai/multica@7a438bd5b8bf39afd54259a7eb0971390e50a8ef`
@@ -42,7 +42,7 @@ v3 的核心原则是：
 - 消息首屏有 50 条分页，但连续“加载更早”会把页面不断追加到同一个内存列表；trace map 也随当前会话读取增长。Generic Activity 单独限制为 30 条；来源：`ChatApi.kt:12-14`、`ChatController.kt:14-23,157-169,217`。
 - 当前持久化只有 Keystore 支撑的 token/workspace、按账户与 workspace 隔离的草稿；sessions、messages、projects、issues、agents、task/pending 和附件元数据均只在内存，进程死亡后必须全量重取；来源：`EncryptedSessionStore.kt:9-25`、`ChatScreen.kt:63-78`。
 - OkHttp 禁止连接失败自动重试，25 秒 call timeout，动态 App API 没有客户端缓存配置；这对写请求安全，但读请求也没有分层重试与 single-flight repository；来源：`MulticaApi.kt:36-42`。
-- 当前工程没有 Macrobenchmark、Baseline Profile、Room、通用缓存指标、WorkManager、崩溃/ANR 采集或长时间 soak runner。`feature-inbox` 等模块仍为空边界。
+- 基线 main 没有 Macrobenchmark、Baseline Profile、Room、通用缓存指标、WorkManager、崩溃/ANR 采集或长时间 soak runner。Stage 2 新增的测量工具单独记录，不代表产品优化已完成。`feature-inbox` 等模块仍为空边界。
 
 ## 3. 范围
 
@@ -73,10 +73,10 @@ v3 的核心原则是：
 | --- | --- | --- |
 | Chatty 主分支 | `origin/main = e7e1c51`，任务分支检出后与其相同 | 这是 v3 基线；包含 2026-09-05 的登录、Chat、三 Tab、原生 UI 与导航连续性实现 |
 | 已合并 PR | GitHub pull ref #1 的 head `96594fc` 可从 `origin/main` 到达，主分支含合并提交 `392ce19` | #1 已合并，属于 v2 spec/README 文档 |
-| 未合并 PR | pull ref #2 head `f282942` 不可从 `origin/main` 到达，GitHub 仍发布 `refs/pull/2/merge`；其差异为旧版 v2 `ISSUES.md`/README | #2 仍未合并且已落后于 main 的 8 个实现提交；v3 不依赖、不修改其两份文档，Stage 2 前需再次检查是否关闭或更新 |
+| 未合并 PR | pull ref #2 head `f282942` 不可从 `origin/main` 到达，GitHub 仍发布 `refs/pull/2/merge`；其差异为旧版 v2 `ISSUES.md`/README | #2 仍未合并且已落后于 main 的 8 个实现提交；v3 不依赖、不修改其两份文档，Stage 2 已逐项复核，迁移/关闭证据见 `baseline/pr-audit.md` |
 | Multica 参考 | `origin/main = 7a438bd5b` | API、分页、事件、权限和缓存语义均以此只读 revision 为证据；没有对该仓库写入 |
 
-### 4.2 本轮可执行基线
+### 4.2 Stage 1 历史构建证据（不是本次 Stage 2 实测）
 
 环境：macOS、OpenJDK 17.0.20、Android SDK `/Users/benjamin/Android/Sdk`，Chatty 基线 `e7e1c51`。
 
@@ -124,7 +124,7 @@ android/gradlew -p android :app:assembleDebug test lint
 
 ### 6.1 为什么此时没有伪造数字
 
-Pixel 6 Pro 本轮不在线，运行时指标未采集。v3 Stage 1 先冻结设备、数据集、步骤、采样和阈值算法；设备接入后生成 `B0` 基线报告，再由 Benjamin 在 Stage 2 接受具体数值预算。任何没有 `B0` 原始证据的百分比改善声明都无效。
+Stage 1 没有设备数据；Stage 2 已重新核对 Pixel 6 Pro 连通性并准备采集。具体环境、实测与缺项以 `baseline/README.md` 为准。生成 `B0` 原始报告后，由 Benjamin 接受具体数值预算。任何没有 `B0` 原始证据的百分比改善声明都无效。
 
 ### 6.2 预算符号
 
@@ -135,7 +135,7 @@ Pixel 6 Pro 本轮不在线，运行时指标未采集。v3 Stage 1 先冻结设
 
 ### 6.3 Gate 规则
 
-- B0 未采集：该指标状态为 `UNMEASURED`，v3 不得进入实现拆分。
+- B0 未采集：该指标状态为 `UNMEASURED`，允许基线工具与采集，不得进入产品优化实现。
 - B0 已采集但 T 未由评审冻结：状态为 `NO_BUDGET`，不得宣称优化完成。
 - 每个性能指标必须同时满足冻结后的绝对预算与相对预算；稳定性正确性指标采用零容忍或下表的明确上限。
 - 优化前后必须使用相同设备状态、数据集、网络 profile、构建 artifact 与采样数；否则只能作为探索数据。
@@ -307,7 +307,7 @@ v3 的最小有价值交付不是“一次大重写”，而是可验证的四�
 
 ## 13. 后续阶段拆分建议
 
-Intent 被 Benjamin 接受前不创建或启动实现 Issue。接受后建议按依赖串行推进：
+Benjamin 已于 2026-09-06 批准 1A–6A，CLE-73 执行 Stage 2；真实 B0 与数值预算验收前不启动 Stage 3 及之后的产品优化。按依赖串行推进：
 
 1. **Stage 2 — Baseline harness & numeric budgets**：fixture S0–S4、Macrobenchmark、Perfetto、网络/cache 指标；接入 Pixel 后冻结 B0/T。
 2. **Stage 3 — Repository contracts**：user/workspace key、freshness、single-flight、revision/tombstone、写操作状态机及单测。
@@ -328,14 +328,16 @@ Intent 被 Benjamin 接受前不创建或启动实现 Issue。接受后建议按
 - **重连/重试放大流量：** fixture 先验证 request/connection 上限，再接真实 API；通过 feature flag 或 repository fallback 快速关闭新策略。
 - **v2 继续变化：** v3 Stage 2 开始前 rebase 最新 main，并重新核对未合并 PR；不与 v2 未完成路径并发改写。
 
-## 15. 需要 Benjamin 确认的决策
+## 15. Benjamin 已批准的决策（2026-09-06）
 
-1. 是否接受“先基线、后冻结数字预算；B0 缺失即禁止进入实现”的 Gate？
-2. 是否接受 app-private Android credential-encrypted storage + 禁备份作为业务快照的初始静态安全边界，还是要求额外数据库级加密？后者会增加依赖、迁移和性能成本。
-3. 离线范围是否保持只读快照（推荐），不提供 Issue 状态变更、发送或任务操作队列？
-4. 默认是否缓存完整消息正文 7 天/10,000 条/50 MiB，还是采用更短保留或只缓存 preview？
-5. 是否接受“没有真实业务变化时后台不做 5 秒 polling”，并把 true push/更及时后台更新继续视为 Multica 服务端能力问题？
-6. PR #2 的旧 v2 计划是否应在 v3 Stage 2 前关闭/重做，以免后续误合并覆盖最新 main？
+以下 1A–6A 已明确批准，无需重复询问；仅具体数值预算仍需实测后验收。
+
+1. **1A：先基线后优化。** 现在开展 fixture、测量工具、脚本和 B0；真实 B0 与预算冻结后才启动产品优化。
+2. **2A：初始存储安全边界。** app-private credential-encrypted storage + 禁备份，账户/workspace 隔离、身份确认、登出/401/403 清理；首版不额外要求数据库级加密，机制仍需实现验证。403 清对应资源，不清有效凭据。
+3. **3A：离线只读。** 显示缓存时间和离线标识；允许本地草稿，恢复网络后由用户发送；不提供离线发送、Issue 状态变更或任务队列。
+4. **4A：完整消息正文缓存。** 最近最多 30 个会话，每 workspace 最多 10,000 条或 50 MiB，先到上限即淘汰；7 天未访问可淘汰，**不是硬性 7 天到期删除**。这些是已接受的初始候选，仍用真机数据库大小、查询耗时和 PSS 校准，必要时下调。附件二进制不默认持久化，敏感原始 tool trace 不纳入普通正文缓存。
+5. **5A：停止无变化高频后台轮询。** 无真实业务变化时不做 5 秒 polling；返回前台刷新；必要后台同步受系统约束，接受延迟；即时推送不纳入本轮。
+6. **6A：条件处理旧 PR #2。** 核对最新状态和独有内容，先迁移有价值遗漏再关闭过时 PR；该操作已授权。逐项证据见 `baseline/pr-audit.md`。
 
 ## 16. Stage 1 验收清单
 
@@ -346,7 +348,8 @@ Intent 被 Benjamin 接受前不创建或启动实现 Issue。接受后建议按
 - [x] 给出消息、会话、Agent/Issue/Task、附件元数据和静态资源的层级、TTL、容量、淘汰、失效、离线与安全矩阵。
 - [x] 覆盖冷启动、滚动/消息渲染、弱网、断线重连、进程恢复与 24 小时 soak 六类可执行验证。
 - [x] 给出 MVV、阶段拆分、风险、回滚和需要 Benjamin 决策的项目。
-- [ ] Benjamin 接受 Intent，并接入 Pixel 6 Pro 采集 B0 后冻结具体数值预算；在此之前不拆分或启动 v3 实现任务。
+- [x] Benjamin 接受 1A–6A 方向，授权 Stage 2 准备与采集。
+- [ ] 真实 B0 与具体数值预算 T 验收；在此之前不启动产品优化。
 
 ## 17. References
 

@@ -27,6 +27,15 @@ android {
             resValue("string", "app_name", "Chatty")
         }
     }
+    buildTypes.create("benchmark") {
+        initWith(buildTypes.getByName("release"))
+        applicationIdSuffix = ".benchmark"
+        isDebuggable = false
+        signingConfig = signingConfigs.getByName("debug")
+        matchingFallbacks += listOf("release")
+        buildConfigField("String", "API_BASE_URL", "\"http://127.0.0.1:8765/\"")
+        resValue("string", "app_name", "Chatty Benchmark")
+    }
     buildFeatures { compose = true; buildConfig = true }
     composeOptions { kotlinCompilerExtensionVersion = "1.5.15" }
     compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
