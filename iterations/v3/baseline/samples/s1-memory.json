@@ -1,0 +1,15 @@
+{
+  "status": "EXPLORATORY_MEASURED",
+  "scenario": "S1",
+  "method": "Five force-stop/launch cycles; snapshot 1s after fixture messages visible",
+  "pss_KiB": [
+    151100,
+    149822,
+    149826,
+    150037,
+    150181
+  ],
+  "median_MiB": 146.5205078125,
+  "compilation": "system default; this standalone test does not invoke Macrobenchmark CompilationMode.None",
+  "test_apk_sha256": "85c7a99c58d6128fa5a3169c014ddf750ef424e8e46f4b6d6f7f08ef2b690314"
+}

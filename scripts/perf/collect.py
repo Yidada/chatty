@@ -51,9 +51,10 @@ def main():
             device(['shell', 'settings', 'get', namespace, key], f'{label}-{key}.txt')
     fixture = None
     reverse_added = False
+    target_touched = False
     status = {'status': 'UNMEASURED', 'budget': 'NO_BUDGET', 'scenario': args.scenario,
               'device': 'Pixel 6 Pro', 'scope': 'synthetic loopback; not production network',
-              'compilation': 'None', 'r8': False, 'rounds': args.rounds, 'methods': args.methods}
+              'compilation': 'system-default (standalone PSS)' if args.methods == ['memory'] else 'None for Macrobenchmark; system-default for standalone PSS', 'r8': False, 'rounds': args.rounds, 'methods': args.methods}
     try:
         cmd([adb, 'devices', '-l'], 'devices.txt')
         model = device(['shell', 'getprop', 'ro.product.model'], 'model.txt').strip()
@@ -91,6 +92,7 @@ def main():
             status[path.name + '_sha256'] = hashlib.sha256(path.read_bytes()).hexdigest()
             device(['install', '-r', str(path)], path.stem + '-install.txt')
         # Only this disposable package is cleared. Production/debug app stays isolated.
+        target_touched = True
         device(['shell', 'pm', 'clear', PKG], 'clear-fixture-package.txt')
         def instrument(method, name):
             output = device(['shell', 'am', 'instrument', '-w', '-r', '-e', 'class',
@@ -121,6 +123,8 @@ def main():
             try: fixture.wait(timeout=10)
             except subprocess.TimeoutExpired: fixture.kill(); fixture.wait()
         try:
+            if target_touched:
+                device(['shell', 'am', 'force-stop', PKG], 'target-cleanup.txt')
             if reverse_added:
                 device(['reverse', '--remove', 'tcp:8765'], 'reverse-cleanup.txt')
         finally:

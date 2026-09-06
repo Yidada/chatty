@@ -1,7 +1,7 @@
 # Intent: Chatty v3 — 性能、缓存与稳定性升级
 
 - **Author:** Mika
-- **Status:** 1A–6A 已批准；Stage 2 基线准备中；B0/T 待验收
+- **Status:** 1A–6A 已批准；Stage 2 首批探索样本已采集；B0/T 待验收
 - **Stage:** 2 — Baseline harness & numeric budgets
 - **Issue:** CLE-70（整体推进）/ CLE-73（本次基线准备）
 - **Last updated:** 2026-09-06
@@ -73,7 +73,7 @@ v3 的核心原则是：
 | --- | --- | --- |
 | Chatty 主分支 | `origin/main = e7e1c51`，任务分支检出后与其相同 | 这是 v3 基线；包含 2026-09-05 的登录、Chat、三 Tab、原生 UI 与导航连续性实现 |
 | 已合并 PR | GitHub pull ref #1 的 head `96594fc` 可从 `origin/main` 到达，主分支含合并提交 `392ce19` | #1 已合并，属于 v2 spec/README 文档 |
-| 未合并 PR | pull ref #2 head `f282942` 不可从 `origin/main` 到达，GitHub 仍发布 `refs/pull/2/merge`；其差异为旧版 v2 `ISSUES.md`/README | #2 仍未合并且已落后于 main 的 8 个实现提交；v3 不依赖、不修改其两份文档，Stage 2 已逐项复核，迁移/关闭证据见 `baseline/pr-audit.md` |
+| 旧 PR #2 | head `f282942`，旧版 v2 `ISSUES.md`/README，GitHub 已于 2026-09-06 03:08 UTC 确认 closed/unmerged | 按已批准 6A 先迁移有价值遗漏再关闭；main 两份文档未回退，证据见 `baseline/pr-audit.md` |
 | Multica 参考 | `origin/main = 7a438bd5b` | API、分页、事件、权限和缓存语义均以此只读 revision 为证据；没有对该仓库写入 |
 
 ### 4.2 Stage 1 历史构建证据（不是本次 Stage 2 实测）
@@ -124,7 +124,7 @@ android/gradlew -p android :app:assembleDebug test lint
 
 ### 6.1 为什么此时没有伪造数字
 
-Stage 1 没有设备数据；Stage 2 已重新核对 Pixel 6 Pro 连通性并准备采集。具体环境、实测与缺项以 `baseline/README.md` 为准。生成 `B0` 原始报告后，由 Benjamin 接受具体数值预算。任何没有 `B0` 原始证据的百分比改善声明都无效。
+Stage 1 没有设备数据；Stage 2 已完成 Pixel 6 Pro 首批冷/热启动和滚动探索采集。具体环境、实测与缺项以 `baseline/results.md` 为准。生成 `B0` 原始报告后，由 Benjamin 接受具体数值预算。任何没有 `B0` 原始证据的百分比改善声明都无效。
 
 ### 6.2 预算符号
 

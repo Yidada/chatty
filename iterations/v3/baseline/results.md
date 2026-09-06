@@ -12,12 +12,39 @@ Status: **EXPLORATORY_MEASURED / NO_BUDGET**. First 10 valid cold-start samples 
 - S1: one session, 50 messages, no attachments. Synthetic loopback + adb reverse; no production login/network data.
 - Capture began at battery 83%, 37.5°C; thermal LIGHT (1), adaptive refresh (`peak=Infinity`, `min=0`), battery saver off. This violates the intended 40–80%/stable thermal/fixed 60 Hz protocol: **not budget-grade B0**.
 
+## Valid repeated S1 samples
+
+| Metric | Round 1 | Round 2 | Valid samples |
+| --- | --- | --- | --- |
+| COLD first display median / P95 (ms) | 315.05 / 366.26 | 304.92 / 337.83 | 10 + 10 |
+| HOT first display median / P95 (ms) | 42.38 / 59.00 | 44.39 / 49.69 | 20 + 20 |
+| Frame CPU P95 / P99 (ms) | 7.65 / 15.52 | 7.59 / 15.10 | 10 + 10 scroll iterations |
+| Frame overrun P95 / P99 (ms) | -3.38 / 2.70 | -3.53 / 1.91 | 10 + 10 scroll iterations |
+
+Frame samples: 5,135 + 5,124 = **10,259**. Positive frame overrun: 152/5,135 (2.96%) and 134/5,124 (2.62%). These are this trace metric’s deadline overruns, not a frozen jank acceptance threshold.
+
+Observed round-to-round changes on the **same app**: cold median −3.22%, cold P95 −7.76%; hot median +4.74%, hot P95 −15.79%. CPU frame P95 differs by about −0.84%. These are repeatability observations, not optimization gains or statistical noise confidence bounds. Do not derive production budgets from the overheated/adaptive-refresh condition.
+
+Fixture request totals per complete suite (including setup/warmup/reconciliation): cold 130/130, hot 265/265, scroll 13/13; all recorded REST responses were 200. They exclude the WebSocket protocol and are not per-launch network budgets. Fixture-handler time excludes transport/DNS/TLS/client scheduling.
+
+All six measurement tests passed. Raw iteration arrays are in `samples/s1-benchmark.json`; complete instrumentation/fixture/environment logs and all unique Perfetto traces are delivered as private issue attachments. The `timeToInitialDisplayMs` startup metric is first display, not first-interactive or fully-drawn timing. No offline/cache/soak success is implied.
+
+## Running-process PSS
+
+Five S1 force-stop/launch cycles, sampled one second after fixture messages were visible: **[151100, 149822, 149826, 150037, 150181] KiB**, median **146.52 MiB**, range **146.31–147.56 MiB**. All five snapshots passed the live-process assertion. These are post-start snapshots, not peaks or a leak trend.
+
+App APK is unchanged. Memory test source is in `e9e44da`; test APK SHA-256 is `85c7a99c58d6128fa5a3169c014ddf750ef424e8e46f4b6d6f7f08ef2b690314`. This standalone PSS test uses normal system compilation state, **not** Macrobenchmark's None reset. The raw collector's generic `compilation: None` field in this memory-only run is a labeling bug; the corrected interpretation is preserved here and in `samples/s1-memory.json`, and future collector output is fixed.
+
+All capture processes completed in the foreground. The fixture was terminated, adb reverse removed, and the isolated benchmark app force-stopped. No collection remains running after handoff.
+
 ## Invalid attempts retained
 
 1. Locked Pixel: prepare failed before measurement.
 2. Unlocked retry: unconditional test Back exited login when no keyboard was shown; fixed in harness.
 3. Prepare then passed, but Macrobenchmark 1.3.4 gfxinfo launch confirmation failed on Android 16; no valid metric emitted. Its failed trace is retained, excluded from metric counts.
 4. Current launch uses `am start -W` Status=ok plus actual fixture UI assertions. Macrobenchmark still controls COLD/HOT lifecycle, tracing and extraction. No unrelated Kotlin/product upgrade was introduced.
+
+Macrobenchmark 1.3.4 predates the runtime-image workaround added in 1.4.0-rc01; `CompilationMode.None` is the recorded mode, not a guarantee that every iteration represents worst-case ART state ([release notes](https://developer.android.com/jetpack/androidx/releases/benchmark#1.4.0-rc01)).
 
 No failed preparation counts as a slow launch; no missing meminfo process counts as zero PSS. Percentiles use linear interpolation of raw iteration values. Ten launches cannot establish a stable P99 budget.
 
@@ -33,3 +60,7 @@ No failed preparation counts as a slow launch; no missing meminfo process counts
 | Peak PSS/leaks, offline convergence, energy, 24h soak | UNMEASURED; scenario instrumentation + reserved duration; next checkpoint: concrete run plan/owner/time before execution |
 
 CLE-70 remains the overall V3 tracker. PR #2 was closed only after migration; #3 no longer carries parent close intent; #4 does not close CLE-70/CLE-73 on merge. The collector owns and cleans its fixture/reverse mapping before returning.
+
+## Local validation
+
+Benchmark app/test APK builds, Debug APK build and lint passed. JVM executions: 46 Debug + 46 Release + 3 app Benchmark, all passed; variant executions overlap and are not 95 distinct cases. Three Python fixture tests passed (composite cursor coverage without gaps/duplicates, deterministic fixture shape, fault status/Retry-After/metric redaction). Final Python syntax and diff checks passed. No CI result is asserted.
