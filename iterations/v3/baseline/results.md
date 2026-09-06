@@ -41,7 +41,7 @@ All capture processes completed in the foreground. The fixture was terminated, a
 
 1. Locked Pixel: prepare failed before measurement.
 2. Unlocked retry: unconditional test Back exited login when no keyboard was shown; fixed in harness.
-3. Prepare then passed, but Macrobenchmark 1.3.4 gfxinfo launch confirmation failed on Android 16; no valid metric emitted. Its failed trace is retained, excluded from metric counts.
+3. Prepare then passed, but Macrobenchmark 1.3.4 gfxinfo launch confirmation failed on Android 16; no valid metric emitted. The failure log is retained; that failed attempt’s device trace was not exported before the next run, and is not included in the 80 valid traces.
 4. Current launch uses `am start -W` Status=ok plus actual fixture UI assertions. Macrobenchmark still controls COLD/HOT lifecycle, tracing and extraction. No unrelated Kotlin/product upgrade was introduced.
 
 Macrobenchmark 1.3.4 predates the runtime-image workaround added in 1.4.0-rc01; `CompilationMode.None` is the recorded mode, not a guarantee that every iteration represents worst-case ART state ([release notes](https://developer.android.com/jetpack/androidx/releases/benchmark#1.4.0-rc01)).
