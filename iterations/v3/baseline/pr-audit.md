@@ -25,7 +25,7 @@ GitHub connector confirmed #2 OPEN, unmerged, mergeable=false, head `f282942a58a
 
 Preserved planning context: task-list status is a dated snapshot, never a replacement for live Multica ownership/status or implementation evidence. Original spec group mapping: M1/M2 = A foundation/auth; M3/M4 = B chat; M5/M6 = C/D status/evidence/inbox; M7 = E fleet (now native screens); M8 = chat voice; M9 = F background; M10 = G device acceptance. Independent milestone validation must accompany each later PR even where the original stage label is stale. M10 remains the final device gate, and implementation acceptance is separate from release acceptance.
 
-No missing product implementation was found in #2 (it changed only two Markdown files). This audit migrates the useful editorial context before authorized closure; no old branch is deleted and no issue is marked done by closure.
+No missing product implementation was found in #2 (it changed only two Markdown files). The useful editorial context was pushed in `8af0506` and PR #4 before #2 was closed at 2026-09-06T03:08:01Z. GitHub confirmed state=closed, merged=false. No old branch was deleted and no issue was marked done by closure.
 
 ## PR #3 and parent lifecycle
 

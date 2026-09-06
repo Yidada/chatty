@@ -21,7 +21,7 @@ def main():
     parser.add_argument('--output', required=True)
     parser.add_argument('--serial', required=True)
     parser.add_argument('--scenario', choices=['S0', 'S1', 'S2', 'S3', 'S4'], default='S1')
-    parser.add_argument('--methods', nargs='+', choices=['cold', 'hot', 'scroll'], default=['cold', 'hot', 'scroll'])
+    parser.add_argument('--methods', nargs='+', choices=['cold', 'hot', 'scroll', 'memory'], default=['cold', 'hot', 'scroll'])
     parser.add_argument('--rounds', type=int, default=2)
     args = parser.parse_args()
     if args.rounds < 1:
@@ -105,7 +105,8 @@ def main():
                 request('/__perf', {'reset_metrics': True})
                 instrument(method, f'round-{round_id}-{method}.txt')
                 (out / f'round-{round_id}-{method}-network.json').write_text(json.dumps(request('/__metrics'), indent=2))
-                device(['pull', f'/sdcard/Android/media/{TEST}', str(out / f'round-{round_id}-{method}-traces')], f'round-{round_id}-{method}-pull.txt')
+                if method != 'memory':
+                    device(['pull', f'/sdcard/Android/media/{TEST}', str(out / f'round-{round_id}-{method}-traces')], f'round-{round_id}-{method}-pull.txt')
                 snapshot(f'round-{round_id}-{method}')
         status['status'] = 'MEASURED_CANDIDATE'
     except Exception as error:

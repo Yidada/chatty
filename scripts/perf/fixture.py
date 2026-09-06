@@ -58,8 +58,8 @@ def manifest():
             'sessions': len(f.SESSIONS), 'target_messages': len(f.MESSAGES),
             'markdown_messages': sum(m['content'].startswith('##') for m in f.MESSAGES),
             'image_metadata': sum(len(m.get('attachments', [])) for m in f.MESSAGES),
-            'trace_count': sum(map(len, f.TRACES.values())), 'projects': 50, 'issues': len(f.ISSUES),
-            'agents': 34, 'runtimes': 33, 'squads': 33}
+            'trace_count': sum(map(len, f.TRACES.values())), 'projects': 50 if CONFIG['scenario'] == 'S3' else 2, 'issues': len(f.ISSUES),
+            'agents': 34 if CONFIG['scenario'] == 'S3' else 2, 'runtimes': 33 if CONFIG['scenario'] == 'S3' else 1, 'squads': 33 if CONFIG['scenario'] == 'S3' else 1}
 
 
 def route(path):

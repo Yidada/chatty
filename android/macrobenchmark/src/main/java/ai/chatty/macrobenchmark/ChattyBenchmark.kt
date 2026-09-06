@@ -1,5 +1,6 @@
 package ai.chatty.macrobenchmark
 
+import android.os.Bundle
 import androidx.benchmark.macro.*
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -73,6 +74,20 @@ class ChattyBenchmark {
         launch(clearTask = mode == StartupMode.COLD)
         required(By.res("chat-draft"))
         required(By.res("chat-messages"))
+    }
+    @Test fun memory() {
+        repeat(5) { sample ->
+            device.executeShellCommand("am force-stop $pkg")
+            launch(clearTask = true)
+            required(By.res("chat-messages"))
+            required(By.textContains("Baseline message"))
+            Thread.sleep(1_000)
+            val raw = device.executeShellCommand("dumpsys meminfo $pkg")
+            check(!raw.contains("No process found")) { "Target exited before PSS snapshot" }
+            InstrumentationRegistry.getInstrumentation().sendStatus(2, Bundle().apply {
+                putString("stream", "PSS_SAMPLE_BEGIN $sample\n$raw\nPSS_SAMPLE_END $sample\n")
+            })
+        }
     }
     @Test fun scroll() = benchmark.measureRepeated(
         packageName = pkg,
