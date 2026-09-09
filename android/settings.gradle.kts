@@ -6,3 +6,5 @@ include(":app", ":core-model", ":core-network", ":core-auth", ":feature-chat", "
 include(":feature-workspace")
 
 include(":core-ui")
+
+include(":macrobenchmark")
