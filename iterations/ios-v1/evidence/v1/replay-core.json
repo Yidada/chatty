@@ -1,0 +1,31 @@
+{
+  "success": true,
+  "data": {
+    "replayed": 56,
+    "healed": 0,
+    "session": "chatty-ios-v1-core",
+    "sessionActive": false,
+    "artifactPaths": [
+      "/Users/benjamin/Workspace/chatty/iterations/ios-v1/evidence/v1/login-invalid.png",
+      "/Users/benjamin/Workspace/chatty/iterations/ios-v1/evidence/v1/chat.png",
+      "/Users/benjamin/Workspace/chatty/iterations/ios-v1/evidence/v1/file-preview.png",
+      "/Users/benjamin/Workspace/chatty/iterations/ios-v1/evidence/v1/chat-reply.png",
+      "/Users/benjamin/Workspace/chatty/iterations/ios-v1/evidence/v1/issue-updated.png",
+      "/Users/benjamin/Workspace/chatty/iterations/ios-v1/evidence/v1/issues-55.png"
+    ],
+    "snapshotDiagnostics": {
+      "stats": {
+        "count": 59,
+        "p50Ms": 140,
+        "p95Ms": 178,
+        "maxMs": 1469,
+        "slowThresholdMs": 1500,
+        "platform": "ios",
+        "backends": {
+          "xctest": 59
+        }
+      }
+    },
+    "message": "Replayed 56 steps in 54.4s"
+  }
+}

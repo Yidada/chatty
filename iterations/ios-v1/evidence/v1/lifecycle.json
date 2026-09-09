@@ -1,0 +1,50 @@
+{
+  "background_sockets": 0,
+  "background_extra_requests": 0,
+  "resume_reauthenticated": true,
+  "max_active_sockets_after_fix": 1,
+  "message_count": 4,
+  "events": [
+    {
+      "event": "close",
+      "workspace": "fixture"
+    },
+    {
+      "event": "open",
+      "workspace": "fixture",
+      "token_in_url": false
+    },
+    {
+      "event": "authenticated",
+      "workspace": "fixture",
+      "user": "u1",
+      "active_in_scope": 1,
+      "active_total": 1
+    },
+    {
+      "event": "close",
+      "workspace": "fixture"
+    },
+    {
+      "event": "open",
+      "workspace": "fixture",
+      "token_in_url": false
+    },
+    {
+      "event": "authenticated",
+      "workspace": "fixture",
+      "user": "u1",
+      "active_in_scope": 1,
+      "active_total": 1
+    }
+  ],
+  "offline_cold_start_draft": "IOS_V1_OFFLINE_DRAFT",
+  "offline_send_available": false,
+  "recovered_without_send": true,
+  "foreground_project_refresh": "25/55 -> 26/55 after synthetic server update",
+  "uncertain_cold_start_persists": true,
+  "uncertain_send_button_enabled": false,
+  "uncertain_refresh_extra_send": 0,
+  "extra_validation_total_message_writes": 5,
+  "extra_validation_total_issue_writes": 2
+}

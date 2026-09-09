@@ -1,0 +1,21 @@
+{
+  "simulator": {
+    "built": true,
+    "bundle_id": "ai.chatty.ios",
+    "fixture_endpoint_token_support_present": false,
+    "ATS_exceptions": false,
+    "UIFileSharingEnabled": false,
+    "production_origin_present": true,
+    "sha256": "533e37519517272e9478e7ab60204c4b6ba68e62aec1a99a89fc96135683011b"
+  },
+  "iphone_unsigned": {
+    "built": true,
+    "bundle_id": "ai.chatty.ios",
+    "fixture_endpoint_token_support_present": false,
+    "ATS_exceptions": false,
+    "UIFileSharingEnabled": false,
+    "production_origin_present": true,
+    "sha256": "9b9eaba66e5a08126841f91427af13e27688f10a398f3652e37c01f8ea0327d7"
+  },
+  "verified_at": "2026-09-05T23:41:44.890982+08:00"
+}

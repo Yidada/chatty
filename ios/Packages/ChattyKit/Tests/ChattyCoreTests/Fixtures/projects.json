@@ -1,0 +1,17 @@
+{
+  "projects": [
+    {
+      "id": "p1",
+      "title": "Loop Project",
+      "issue_count": 55,
+      "done_count": 25
+    },
+    {
+      "id": "p2",
+      "title": "Empty Project",
+      "issue_count": 0,
+      "done_count": 0
+    }
+  ],
+  "total": 2
+}

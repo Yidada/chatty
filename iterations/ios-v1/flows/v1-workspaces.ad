@@ -1,0 +1,33 @@
+context platform=ios kind=simulator
+open "ai.chatty.ios.fixture"
+wait "id=\"auth.email\""
+fill "id=\"auth.email\"" "ios@example.test"
+press "id=\"auth.sendCode\""
+fill "id=\"auth.code\"" "123456"
+press "id=\"auth.verify\""
+press "id=\"workspace.w1\""
+wait stable 1000 10000
+wait "id=\"chat.attach\""
+fill "id=\"chat.draft\"" "WORKSPACE_ONE_DRAFT"
+press "role=\"button\" label=\"收起键盘\""
+press "role=\"button\" label=\"设置\""
+press "id=\"settings.workspaces\""
+wait stable 1000 10000
+press "id=\"workspace.w2\""
+wait stable 1000 10000
+wait "role=\"statictext\" label=\"第二工作区 · 历史消息 54\""
+screenshot "iterations/ios-v1/evidence/v1/workspace-two.png"
+fill "id=\"chat.draft\"" "WORKSPACE_TWO_DRAFT"
+press "role=\"button\" label=\"收起键盘\""
+press "role=\"button\" label=\"设置\""
+press "id=\"settings.workspaces\""
+wait stable 1000 10000
+press "id=\"workspace.w1\""
+wait stable 1000 10000
+wait "id=\"chat.draft\" value=\"WORKSPACE_ONE_DRAFT\""
+press "role=\"button\" label=\"设置\""
+press "id=\"settings.signOut\""
+wait stable 1000 10000
+press "role=\"button\" label=\"退出登录\""
+wait "id=\"auth.email\""
+close

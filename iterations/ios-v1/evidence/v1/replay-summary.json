@@ -1,0 +1,16 @@
+{
+  "flows": {
+    "core": 56,
+    "resources": 29,
+    "workspaces": 32
+  },
+  "steps": 117,
+  "passed": true,
+  "healed": 0,
+  "message_writes": 2,
+  "issue_writes": 1,
+  "max_active_sockets": 1,
+  "credentials_on_auth_or_in_socket_url": false,
+  "protected_files_after_logout": [],
+  "execution_note": "Core and resources passed together; workspace alone retried after modal timing and scoped accessibility-query fixes, using the same synthetic server."
+}

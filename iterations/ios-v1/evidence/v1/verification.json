@@ -1,0 +1,179 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-09-05T23:56:05.803941+08:00",
+  "scope": "Chatty iOS V1 P1-P5 local client development",
+  "implementation": "P1-P4 complete; P5 local verification complete; physical and real-account acceptance pending",
+  "sdlc_stage": "test",
+  "sdlc_status": "active",
+  "swift_tests": {
+    "passed": 33,
+    "failed": 0
+  },
+  "ios_tests": {
+    "passed": 4,
+    "failed": 0,
+    "skipped": 1,
+    "skip_reason": "Physical file protection attributes unavailable in Simulator",
+    "result_bundle": "~/Library/Developer/XcodeBuildMCP/workspaces/chatty-a525cea81dd1/result-bundles/test_sim_2026-09-05T15-43-43-879Z_pid78253_821e034c.xcresult"
+  },
+  "ui_replay": {
+    "flows": {
+      "core": 56,
+      "resources": 29,
+      "workspaces": 32
+    },
+    "steps": 117,
+    "passed": true,
+    "healed": 0,
+    "message_writes": 2,
+    "issue_writes": 1,
+    "max_active_sockets": 1,
+    "credentials_on_auth_or_in_socket_url": false,
+    "protected_files_after_logout": [],
+    "execution_note": "Core and resources passed together; workspace alone retried after modal timing and scoped accessibility-query fixes, using the same synthetic server.",
+    "final_run": ".tools/ios-v1/20260905-235016-replay"
+  },
+  "release": {
+    "simulator": {
+      "built": true,
+      "bundle_id": "ai.chatty.ios",
+      "fixture_endpoint_token_support_present": false,
+      "ATS_exceptions": false,
+      "UIFileSharingEnabled": false,
+      "production_origin_present": true,
+      "sha256": "533e37519517272e9478e7ab60204c4b6ba68e62aec1a99a89fc96135683011b"
+    },
+    "iphone_unsigned": {
+      "built": true,
+      "bundle_id": "ai.chatty.ios",
+      "fixture_endpoint_token_support_present": false,
+      "ATS_exceptions": false,
+      "UIFileSharingEnabled": false,
+      "production_origin_present": true,
+      "sha256": "9b9eaba66e5a08126841f91427af13e27688f10a398f3652e37c01f8ea0327d7"
+    },
+    "verified_at": "2026-09-05T23:41:44.890982+08:00"
+  },
+  "lifecycle": {
+    "background_sockets": 0,
+    "background_extra_requests": 0,
+    "resume_reauthenticated": true,
+    "max_active_sockets_after_fix": 1,
+    "message_count": 4,
+    "events": [
+      {
+        "event": "close",
+        "workspace": "fixture"
+      },
+      {
+        "event": "open",
+        "workspace": "fixture",
+        "token_in_url": false
+      },
+      {
+        "event": "authenticated",
+        "workspace": "fixture",
+        "user": "u1",
+        "active_in_scope": 1,
+        "active_total": 1
+      },
+      {
+        "event": "close",
+        "workspace": "fixture"
+      },
+      {
+        "event": "open",
+        "workspace": "fixture",
+        "token_in_url": false
+      },
+      {
+        "event": "authenticated",
+        "workspace": "fixture",
+        "user": "u1",
+        "active_in_scope": 1,
+        "active_total": 1
+      }
+    ],
+    "offline_cold_start_draft": "IOS_V1_OFFLINE_DRAFT",
+    "offline_send_available": false,
+    "recovered_without_send": true,
+    "foreground_project_refresh": "25/55 -> 26/55 after synthetic server update",
+    "uncertain_cold_start_persists": true,
+    "uncertain_send_button_enabled": false,
+    "uncertain_refresh_extra_send": 0,
+    "extra_validation_total_message_writes": 5,
+    "extra_validation_total_issue_writes": 2
+  },
+  "small_screen": {
+    "simulator": "iPhone SE (3rd generation)",
+    "os": "iOS 26.5",
+    "logical_size": [
+      375,
+      667
+    ],
+    "appearance": "dark",
+    "content_sizes": [
+      "large",
+      "accessibility-medium",
+      "accessibility-extra-extra-extra-large"
+    ],
+    "checks": [
+      "second synthetic account has no first-account draft",
+      "login with keyboard dismissal",
+      "composer input and keyboard dismissal",
+      "chat/project/settings tab navigation",
+      "large cards and settings scroll",
+      "issue status control enabled and hittable at accessibility-medium"
+    ],
+    "visual_review": "Screenshots inspected; largest text requires scrolling. Fixture-only banner reduces content height.",
+    "human_voiceover": "pending",
+    "physical_iphone": "pending",
+    "terminated_after_qa": true
+  },
+  "external_acceptance_pending": [
+    "physical iPhone connection and Developer Mode",
+    "Apple Development Team selection and signed install",
+    "real Multica account/workspace and authorized test message",
+    "physical file protection / lock state / Quick Look cache",
+    "human VoiceOver and physical network switching"
+  ],
+  "delivery": {
+    "commit": false,
+    "push": false,
+    "testflight": false,
+    "public_deploy": false,
+    "lan": "http://192.168.88.32:8876/progress.html"
+  },
+  "matrix_overrides": [
+    [
+      "A07",
+      "生命周期与隔离",
+      "本地通过",
+      "修正后台残留 Socket；后台 0 连接/0 新请求，恢复最多 1 条；离线草稿与未知回执重启保留。物理 iPhone 待验。"
+    ],
+    [
+      "A08",
+      "富文本与附件",
+      "本地通过",
+      "PhotosPicker 和 Files 合成样本上传、绑定、图片/Quick Look 读回；外域凭据、过期 URL 和限额测试通过。物理文件选择待验。"
+    ],
+    [
+      "A12",
+      "原生可用性",
+      "部分通过",
+      "375×667 小屏、深浅色、两档辅助大字号、键盘和导航检查通过；最大字号需滚动，人工 VoiceOver 待验收。"
+    ]
+  ],
+  "environment": {
+    "Xcode": "26.6 (17F113)",
+    "iOS Simulator": "26.5",
+    "agent-device": "0.20.10"
+  },
+  "normal_release_launch": {
+    "passed": true,
+    "screen": "email login",
+    "fixture_banner": false,
+    "real_auth_requests": false,
+    "screenshot": "normal-login.png"
+  }
+}

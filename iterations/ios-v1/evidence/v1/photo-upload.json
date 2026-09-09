@@ -1,0 +1,13 @@
+{
+  "system_photos_picker": true,
+  "upload": {
+    "id": "upload-1",
+    "filename": "synthetic-upload.png",
+    "content_type": "image/png",
+    "size_bytes": 320,
+    "download_url": "http://127.0.0.1:8765/api/attachments/upload-1/download"
+  },
+  "messages_added_since_core_suite": 1,
+  "reply": "CHATTY_CHAT_OK \u00b7 IOS_V1_ATTACHMENT",
+  "image_preview_opened": true
+}

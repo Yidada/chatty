@@ -1,0 +1,375 @@
+{
+  "messages": [
+    {
+      "id": "m006",
+      "chat_session_id": "s1",
+      "role": "assistant",
+      "content": "历史消息 06",
+      "created_at": "2026-09-05T01:06:00Z"
+    },
+    {
+      "id": "m007",
+      "chat_session_id": "s1",
+      "role": "user",
+      "content": "历史消息 07",
+      "created_at": "2026-09-05T01:07:00Z"
+    },
+    {
+      "id": "m008",
+      "chat_session_id": "s1",
+      "role": "assistant",
+      "content": "历史消息 08",
+      "created_at": "2026-09-05T01:08:00Z"
+    },
+    {
+      "id": "m009",
+      "chat_session_id": "s1",
+      "role": "user",
+      "content": "历史消息 09",
+      "created_at": "2026-09-05T01:09:00Z"
+    },
+    {
+      "id": "m010",
+      "chat_session_id": "s1",
+      "role": "assistant",
+      "content": "历史消息 10",
+      "created_at": "2026-09-05T01:10:00Z"
+    },
+    {
+      "id": "m011",
+      "chat_session_id": "s1",
+      "role": "user",
+      "content": "历史消息 11",
+      "created_at": "2026-09-05T01:11:00Z"
+    },
+    {
+      "id": "m012",
+      "chat_session_id": "s1",
+      "role": "assistant",
+      "content": "历史消息 12",
+      "created_at": "2026-09-05T01:12:00Z"
+    },
+    {
+      "id": "m013",
+      "chat_session_id": "s1",
+      "role": "user",
+      "content": "历史消息 13",
+      "created_at": "2026-09-05T01:13:00Z"
+    },
+    {
+      "id": "m014",
+      "chat_session_id": "s1",
+      "role": "assistant",
+      "content": "历史消息 14",
+      "created_at": "2026-09-05T01:14:00Z"
+    },
+    {
+      "id": "m015",
+      "chat_session_id": "s1",
+      "role": "user",
+      "content": "历史消息 15",
+      "created_at": "2026-09-05T01:15:00Z"
+    },
+    {
+      "id": "m016",
+      "chat_session_id": "s1",
+      "role": "assistant",
+      "content": "历史消息 16",
+      "created_at": "2026-09-05T01:16:00Z"
+    },
+    {
+      "id": "m017",
+      "chat_session_id": "s1",
+      "role": "user",
+      "content": "历史消息 17",
+      "created_at": "2026-09-05T01:17:00Z"
+    },
+    {
+      "id": "m018",
+      "chat_session_id": "s1",
+      "role": "assistant",
+      "content": "历史消息 18",
+      "created_at": "2026-09-05T01:18:00Z"
+    },
+    {
+      "id": "m019",
+      "chat_session_id": "s1",
+      "role": "user",
+      "content": "历史消息 19",
+      "created_at": "2026-09-05T01:19:00Z"
+    },
+    {
+      "id": "m020",
+      "chat_session_id": "s1",
+      "role": "assistant",
+      "content": "历史消息 20",
+      "created_at": "2026-09-05T01:20:00Z"
+    },
+    {
+      "id": "m021",
+      "chat_session_id": "s1",
+      "role": "user",
+      "content": "历史消息 21",
+      "created_at": "2026-09-05T01:21:00Z"
+    },
+    {
+      "id": "m022",
+      "chat_session_id": "s1",
+      "role": "assistant",
+      "content": "历史消息 22",
+      "created_at": "2026-09-05T01:22:00Z"
+    },
+    {
+      "id": "m023",
+      "chat_session_id": "s1",
+      "role": "user",
+      "content": "历史消息 23",
+      "created_at": "2026-09-05T01:23:00Z"
+    },
+    {
+      "id": "m024",
+      "chat_session_id": "s1",
+      "role": "assistant",
+      "content": "历史消息 24",
+      "created_at": "2026-09-05T01:24:00Z"
+    },
+    {
+      "id": "m025",
+      "chat_session_id": "s1",
+      "role": "user",
+      "content": "历史消息 25",
+      "created_at": "2026-09-05T01:25:00Z"
+    },
+    {
+      "id": "m026",
+      "chat_session_id": "s1",
+      "role": "assistant",
+      "content": "历史消息 26",
+      "created_at": "2026-09-05T01:26:00Z"
+    },
+    {
+      "id": "m027",
+      "chat_session_id": "s1",
+      "role": "user",
+      "content": "历史消息 27",
+      "created_at": "2026-09-05T01:27:00Z"
+    },
+    {
+      "id": "m028",
+      "chat_session_id": "s1",
+      "role": "assistant",
+      "content": "历史消息 28",
+      "created_at": "2026-09-05T01:28:00Z"
+    },
+    {
+      "id": "m029",
+      "chat_session_id": "s1",
+      "role": "user",
+      "content": "历史消息 29",
+      "created_at": "2026-09-05T01:29:00Z"
+    },
+    {
+      "id": "m030",
+      "chat_session_id": "s1",
+      "role": "assistant",
+      "content": "历史消息 30",
+      "created_at": "2026-09-05T01:30:00Z"
+    },
+    {
+      "id": "m031",
+      "chat_session_id": "s1",
+      "role": "user",
+      "content": "历史消息 31",
+      "created_at": "2026-09-05T01:31:00Z"
+    },
+    {
+      "id": "m032",
+      "chat_session_id": "s1",
+      "role": "assistant",
+      "content": "历史消息 32",
+      "created_at": "2026-09-05T01:32:00Z"
+    },
+    {
+      "id": "m033",
+      "chat_session_id": "s1",
+      "role": "user",
+      "content": "历史消息 33",
+      "created_at": "2026-09-05T01:33:00Z"
+    },
+    {
+      "id": "m034",
+      "chat_session_id": "s1",
+      "role": "assistant",
+      "content": "历史消息 34",
+      "created_at": "2026-09-05T01:34:00Z"
+    },
+    {
+      "id": "m035",
+      "chat_session_id": "s1",
+      "role": "user",
+      "content": "历史消息 35",
+      "created_at": "2026-09-05T01:35:00Z"
+    },
+    {
+      "id": "m036",
+      "chat_session_id": "s1",
+      "role": "assistant",
+      "content": "历史消息 36",
+      "created_at": "2026-09-05T01:36:00Z"
+    },
+    {
+      "id": "m037",
+      "chat_session_id": "s1",
+      "role": "user",
+      "content": "历史消息 37",
+      "created_at": "2026-09-05T01:37:00Z"
+    },
+    {
+      "id": "m038",
+      "chat_session_id": "s1",
+      "role": "assistant",
+      "content": "历史消息 38",
+      "created_at": "2026-09-05T01:38:00Z"
+    },
+    {
+      "id": "m039",
+      "chat_session_id": "s1",
+      "role": "user",
+      "content": "历史消息 39",
+      "created_at": "2026-09-05T01:39:00Z"
+    },
+    {
+      "id": "m040",
+      "chat_session_id": "s1",
+      "role": "assistant",
+      "content": "历史消息 40",
+      "created_at": "2026-09-05T01:40:00Z"
+    },
+    {
+      "id": "m041",
+      "chat_session_id": "s1",
+      "role": "user",
+      "content": "历史消息 41",
+      "created_at": "2026-09-05T01:41:00Z"
+    },
+    {
+      "id": "m042",
+      "chat_session_id": "s1",
+      "role": "assistant",
+      "content": "历史消息 42",
+      "created_at": "2026-09-05T01:42:00Z"
+    },
+    {
+      "id": "m043",
+      "chat_session_id": "s1",
+      "role": "user",
+      "content": "历史消息 43",
+      "created_at": "2026-09-05T01:43:00Z"
+    },
+    {
+      "id": "m044",
+      "chat_session_id": "s1",
+      "role": "assistant",
+      "content": "历史消息 44",
+      "created_at": "2026-09-05T01:44:00Z"
+    },
+    {
+      "id": "m045",
+      "chat_session_id": "s1",
+      "role": "user",
+      "content": "历史消息 45",
+      "created_at": "2026-09-05T01:45:00Z"
+    },
+    {
+      "id": "m046",
+      "chat_session_id": "s1",
+      "role": "assistant",
+      "content": "历史消息 46",
+      "created_at": "2026-09-05T01:46:00Z"
+    },
+    {
+      "id": "m047",
+      "chat_session_id": "s1",
+      "role": "user",
+      "content": "历史消息 47",
+      "created_at": "2026-09-05T01:47:00Z"
+    },
+    {
+      "id": "m048",
+      "chat_session_id": "s1",
+      "role": "assistant",
+      "content": "历史消息 48",
+      "created_at": "2026-09-05T01:48:00Z"
+    },
+    {
+      "id": "m049",
+      "chat_session_id": "s1",
+      "role": "user",
+      "content": "历史消息 49",
+      "created_at": "2026-09-05T01:49:00Z"
+    },
+    {
+      "id": "m050",
+      "chat_session_id": "s1",
+      "role": "assistant",
+      "content": "历史消息 50",
+      "created_at": "2026-09-05T01:50:00Z"
+    },
+    {
+      "id": "m051",
+      "chat_session_id": "s1",
+      "role": "user",
+      "content": "历史消息 51",
+      "created_at": "2026-09-05T01:51:00Z"
+    },
+    {
+      "id": "m052",
+      "chat_session_id": "s1",
+      "role": "assistant",
+      "content": "历史消息 52",
+      "created_at": "2026-09-05T01:52:00Z"
+    },
+    {
+      "id": "m053",
+      "chat_session_id": "s1",
+      "role": "user",
+      "content": "历史消息 53",
+      "created_at": "2026-09-05T01:53:00Z"
+    },
+    {
+      "id": "m054",
+      "chat_session_id": "s1",
+      "role": "assistant",
+      "content": "历史消息 54",
+      "created_at": "2026-09-05T01:54:00Z"
+    },
+    {
+      "id": "rich",
+      "chat_session_id": "s1",
+      "role": "assistant",
+      "content": "## 格式验证\n\n**粗体**与[链接](https://multica.ai)\n\n| 项目 | 状态 |\n| --- | --- |\n| 对话 | OK |\n\n- [x] 游标分页\n- [ ] 待办事项\n\n```python\nprint(\"Chatty\")\n```",
+      "created_at": "2026-09-05T02:00:00Z",
+      "attachments": [
+        {
+          "id": "file1",
+          "filename": "fixture-note.txt",
+          "content_type": "text/plain",
+          "size_bytes": 32,
+          "markdown_url": "/api/attachments/file1/download",
+          "download_url": "http://127.0.0.1:8765/files/note.txt"
+        }
+      ],
+      "quick_actions": [
+        {
+          "label": "继续测试",
+          "prompt": "继续测试格式"
+        }
+      ]
+    }
+  ],
+  "has_more": true,
+  "next_cursor": {
+    "id": "m006",
+    "created_at": "2026-09-05T01:06:00Z"
+  }
+}

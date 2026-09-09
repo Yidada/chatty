@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "change_id": "20260905-complete-ios-v1-native-client-p1-through-p5",
+  "title": "Complete iOS V1 native client P1 through P5",
+  "risk": "R3",
+  "current_stage": "test",
+  "status": "active",
+  "required_artifacts": [
+    "intent.md",
+    "spec.md",
+    "plan.md",
+    "evidence.md",
+    "review.md",
+    "decisions.md",
+    "risk.md",
+    "rollback.md",
+    "approvals.md"
+  ],
+  "gates": {
+    "spec": "approved",
+    "plan": "approved",
+    "production": "not_required"
+  },
+  "created_at": "2026-09-05T14:21:49Z",
+  "updated_at": "2026-09-05T15:12:44Z",
+  "delivery": "local",
+  "approval_records": {
+    "spec": {
+      "actor": "Benjamin",
+      "note": "User approved the existing concrete iterations/ios-v1/plan.md full V1 scope with 没问题，全部执行开发完吧; spec.md maps the same local client scope without deployment or unapproved real test messages.",
+      "recorded_at": "2026-09-05T14:23:10Z",
+      "fingerprint": "7fffa1f875939d5d596759446ab17bbaa48007600131be2aa2348fd4ced8cc5f"
+    },
+    "plan": {
+      "actor": "Benjamin",
+      "note": "Same explicit user authorization covers existing P1-P5 order and implementation plan; no expansion into production delivery.",
+      "recorded_at": "2026-09-05T14:23:10Z",
+      "fingerprint": "adaca212b3970423f98e8e4870f66957477e06f2261e0246206957b0f550aba8"
+    }
+  }
+}

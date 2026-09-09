@@ -1,0 +1,216 @@
+{
+  "calls": [
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/agents",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runtimes",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/workspaces",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/squads",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/projects",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/messages/page",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runtimes",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/projects",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/squads",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/workspaces",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/agents",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/workspaces",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/agents",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runtimes",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/squads",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/projects",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/messages/page",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/agents",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runtimes",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/workspaces",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/squads",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/projects",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/messages/page",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/workspaces",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runtimes",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/workspaces",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/agents",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/projects",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/squads",
+      "authenticated": true,
+      "workspace": "fixture"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/sessions/s1/messages/page",
+      "authenticated": true,
+      "workspace": "fixture"
+    }
+  ],
+  "send_count": 0,
+  "issue_writes": []
+}

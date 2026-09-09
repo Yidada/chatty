@@ -1,0 +1,675 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Chatty for iPhone · 首版方案</title>
+<style>
+:root{--bg:#f7f7f2;--surface:#fff;--ink:#202b25;--muted:#67736b;--line:#dce2d9;--green:#365e50;--mint:#e4ede5;--warm:#f1e4ce;--code:#ecefe8;--shadow:0 22px 70px #28382c12;--radius:22px}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:90px}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.75 -apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC",sans-serif}a{color:var(--green);text-underline-offset:4px}button{font:inherit;cursor:pointer}button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid #638d76;outline-offset:4px}button:disabled{cursor:default}.top{border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:0;z-index:20}.top-inner{max-width:1240px;padding:16px 30px;display:flex;align-items:center;gap:22px;margin:auto}.brand{font-size:19px;font-weight:750;letter-spacing:-.5px}.brand b{color:var(--green);padding-right:8px}.top nav{display:flex;gap:22px;font-size:13px;margin-left:auto}.top nav a{text-decoration:none;color:var(--muted)}.theme{border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:5px 13px;border-radius:99px;font-size:12px;min-height:36px}main{max-width:1180px;padding:0 30px;margin:auto}.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:60px;padding:72px 0 56px;align-items:center}.eyebrow{font-size:12px;letter-spacing:2px;color:var(--green);font-weight:700;text-transform:uppercase}.hero h1{font-size:64px;letter-spacing:-3px;font-weight:620;line-height:1.13;margin:20px 0 28px}.hero h1 span{display:block;font-size:35px;font-weight:450;letter-spacing:-1px;margin-top:17px}.lead{font-size:19px;line-height:1.9;max-width:510px;color:var(--muted)}.chips{display:flex;flex-wrap:wrap;gap:8px;margin:25px 0}.chip{border:1px solid var(--line);padding:5px 11px;font-size:12px;border-radius:99px;background:var(--surface)}.cta{display:inline-block;padding:11px 19px;border-radius:12px;background:var(--green);color:#fff;text-decoration:none;font-size:14px;font-weight:650}.textlink{font-size:14px;margin-left:15px}.subnote{font-size:12px;color:var(--muted);margin-top:24px}.preview{position:relative;justify-self:center}.preview:before{content:"";position:absolute;inset:60px -35px;background:var(--mint);border-radius:50%;z-index:-1;filter:blur(6px)}.phone{width:337px;height:706px;border:7px solid #25332a;border-radius:48px;overflow:hidden;background:var(--bg);box-shadow:0 28px 60px #1a352126;position:relative;color:var(--ink)}.status{height:46px;display:flex;align-items:center;justify-content:space-between;padding:0 21px;font-size:12px;font-weight:700}.island{width:93px;height:24px;border-radius:20px;background:#17211b;position:absolute;top:10px;left:50%;transform:translateX(-50%)}.screen{height:572px;overflow-y:auto;scrollbar-width:thin;padding:15px 19px 95px}.phone h2{font-size:28px;line-height:1.25;margin:8px 0}.phone h3{font-size:17px;margin:0}.small{font-size:11px;color:var(--muted);line-height:1.55}.screen .context{font-size:12px;color:var(--muted)}.mika-head{display:flex;gap:10px;align-items:center;margin:4px 0 25px}.avatar{width:38px;height:38px;display:grid;place-items:center;background:var(--mint);border-radius:14px;font-size:24px;color:var(--green)}.user-msg{background:var(--mint);font-size:13px;line-height:1.7;border-radius:18px 18px 5px 18px;padding:11px 14px;margin:18px 0 23px 40px}.assistant-msg{font-size:14px;line-height:1.9}.assistant-msg p{margin:0 0 13px}.screen-btn{width:100%;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:15px;padding:13px;text-align:left;display:block;margin:13px 0;font-size:12px}.task{display:flex;justify-content:space-between;gap:7px;align-items:center;color:var(--green)}.task small{font-size:10px}.trace{font-size:11px;color:var(--muted);padding:3px 13px 12px}.trace p{margin:5px 0}.attachment{display:flex;align-items:center;gap:12px}.fileicon{border-radius:8px;background:var(--mint);font-size:10px;font-weight:750;padding:8px}.composer{position:absolute;bottom:94px;left:15px;right:15px;min-height:47px;display:flex;gap:12px;align-items:center;padding:9px 13px;background:var(--surface);border-radius:23px;border:1px solid var(--line);font-size:13px;box-shadow:0 3px 12px #00000009}.composer .placeholder{color:var(--muted);flex:1}.send{border:0;line-height:1;width:29px;height:29px;border-radius:50%;color:#fff;background:var(--green);font-size:20px}.tabbar{position:absolute;bottom:21px;left:13px;right:13px;background:color-mix(in srgb,var(--surface) 88%,transparent);border:1px solid var(--line);backdrop-filter:blur(18px);border-radius:29px;height:62px;display:flex;align-items:center;padding:3px;box-shadow:0 3px 10px #1934210a}.tabbar button{width:33.33%;display:flex;flex-direction:column;align-items:center;justify-content:center;border:0;background:transparent;border-radius:25px;font-size:10px;height:52px;color:var(--muted);line-height:1.5;gap:2px}.tabbar button.active{color:var(--green);background:var(--mint);font-weight:700}.tabbar svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.7}.home-indicator{width:104px;height:4px;border-radius:9px;position:absolute;bottom:7px;left:50%;transform:translateX(-50%);background:var(--ink)}.preview-note{text-align:center;max-width:360px;font-size:12px;color:var(--muted);line-height:1.6;margin:17px 0 0}.project{width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;color:var(--ink);margin:12px 0}.project .projtitle{font-size:16px;font-weight:600}.progress{height:5px;border-radius:5px;background:var(--line);margin:16px 0 10px;overflow:hidden}.progress span{display:block;height:100%;background:var(--green);border-radius:5px}.project-meta{font-size:11px;color:var(--muted);display:flex;justify-content:space-between}.group{border:1px solid var(--line);background:var(--surface);border-radius:18px;margin:15px 0;overflow:hidden}.resource{border:0;background:transparent;color:var(--ink);display:flex;align-items:center;justify-content:space-between;width:100%;padding:15px 14px;text-align:left;font-size:13px}.resource+.resource{border-top:1px solid var(--line)}.workspace{background:var(--mint);padding:20px 16px;border-radius:20px;margin:17px 0 25px}.workspace strong{font-size:17px}.workspace button{color:var(--green);font-size:12px;border:0;background:transparent;padding:10px 0 0}.section-label{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:1px;margin:15px 4px 5px}.back{background:transparent;border:0;color:var(--green);font-size:12px;padding:0;margin:0 0 12px;min-height:30px}.status-pill{font-size:10px;background:var(--mint);color:var(--green);padding:4px 8px;border-radius:8px}.notice{padding:10px 12px;background:var(--mint);color:var(--green);border-radius:12px;font-size:11px;margin:14px 0}.rule{border-top:1px solid var(--line);padding:46px 0}.section-title{display:flex;align-items:baseline;gap:15px;margin-bottom:23px}.section-title .num{font-size:12px;color:var(--green);font-weight:700}.section-title h2{font-size:27px;line-height:1.35;letter-spacing:-.6px;margin:0}.section-title p{font-size:13px;color:var(--muted);margin:0 0 0 auto}.decisions{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}.decision{border-top:2px solid var(--green);padding-top:16px}.decision b{display:block;font-size:17px;margin-bottom:8px}.decision p{font-size:13px;line-height:1.8;color:var(--muted);margin:0}.milestones{display:grid;grid-template-columns:1fr 1fr;gap:22px}.milestone{border:1px solid var(--line);border-radius:var(--radius);padding:25px;background:var(--surface)}.milestone.alt{background:var(--mint)}.milestone h3{font-size:23px;margin:7px 0 14px}.milestone p,.milestone li{font-size:14px;color:var(--muted)}.milestone ul{padding-left:20px;margin-bottom:0}.milestone li{margin:6px 0}.pipeline{display:flex;gap:8px;align-items:stretch;margin-top:22px;flex-wrap:wrap}.stage{flex:1;min-width:135px;background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:12px 15px;font-size:13px}.stage span{font-size:10px;display:block;color:var(--green);letter-spacing:1px}.risklist{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.risk{padding:22px;background:var(--warm);border-radius:18px}.risk h3{font-size:17px;margin:0 0 9px}.risk p{font-size:13px;margin:0;line-height:1.9;color:var(--muted)}.docbar{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:22px}.docbar p{font-size:13px;color:var(--muted);margin:0}.docbar button{font-size:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:7px 12px;border-radius:9px;min-height:36px}.doc-section{border-top:1px solid var(--line);scroll-margin-top:85px}.doc-section:last-child{border-bottom:1px solid var(--line)}.doc-section>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;font-size:18px;font-weight:600;padding:21px 4px}.doc-section>summary::-webkit-details-marker{display:none}.doc-section>summary:after{content:"＋";font-weight:400;color:var(--muted)}.doc-section[open]>summary:after{content:"−"}.doc-body{padding:0 4px 32px;font-size:14px}.doc-body h3{font-size:19px;margin:29px 0 15px}.doc-body h4{font-size:16px}.doc-body p{margin:14px 0}.doc-body ul,.doc-body ol{padding-left:23px}.doc-body li{margin:7px 0}.doc-body .table-wrap{overflow-x:auto;margin:18px 0}.doc-body table{width:100%;border-collapse:collapse;font-size:12px;line-height:1.7;min-width:640px;text-align:left}.doc-body th{font-weight:650;background:var(--mint)}.doc-body th,.doc-body td{border-bottom:1px solid var(--line);padding:12px 14px;vertical-align:top}.doc-body code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9em;overflow-wrap:anywhere;background:var(--code);padding:2px 5px;border-radius:5px}.doc-body pre{padding:20px;background:var(--code);border-radius:15px;overflow:auto;line-height:1.7;font-size:12px}.doc-body pre code{padding:0;overflow-wrap:normal;white-space:pre}.doc-body blockquote{border-left:3px solid var(--green);margin-left:0;padding-left:17px;color:var(--muted)}.footer{padding:30px 0 50px;font-size:12px;color:var(--muted);display:flex;gap:20px;justify-content:space-between}.footer a{color:var(--muted)}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}body.dark{--bg:#141b16;--surface:#202a23;--ink:#e5eae2;--muted:#a8b5a9;--line:#354437;--green:#a9cdb8;--mint:#2c4033;--warm:#3a3429;--code:#26332a}.dark .cta,.dark .send{background:#a9cdb8;color:#14221a}.dark .phone{border-color:#536656}
+@media(max-width:900px){.hero{gap:30px;padding-top:45px}.hero h1{font-size:48px}.hero h1 span{font-size:27px}.lead{font-size:16px}.decisions{grid-template-columns:repeat(2,1fr)}.risklist{grid-template-columns:1fr}.top nav{gap:14px}.phone{width:314px}.preview:before{inset:80px -10px}}
+@media(max-width:680px){main{padding:0 20px}.top-inner{padding:12px 20px;gap:12px}.top nav{display:none}.theme{margin-left:auto}.hero{grid-template-columns:1fr;padding-top:36px;gap:35px}.hero h1{font-size:50px}.hero h1 span{font-size:28px}.lead{font-size:17px}.preview{margin-top:3px}.phone{width:337px;max-width:calc(100vw - 44px)}.decisions{gap:23px}.decision b{font-size:16px}.milestones{grid-template-columns:1fr}.section-title{flex-wrap:wrap;gap:10px}.section-title p{margin-left:0;width:100%}.section-title h2{font-size:24px}.doc-section>summary{font-size:16px}.footer{flex-direction:column;gap:6px}.rule{padding:32px 0}.textlink{display:inline-block;margin-left:10px}.docbar{align-items:flex-start}.docbar p{max-width:210px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+@media print{.top,.theme,.docbar button{display:none}.hero{padding-top:15px}.phone{box-shadow:none}.doc-section>summary{break-after:avoid}.doc-body table{min-width:0}.doc-body pre{white-space:pre-wrap}.doc-body pre code{white-space:pre-wrap}.risk,.milestone{break-inside:avoid}.footer{padding-bottom:0}}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-inner"><div class="brand"><b>✦</b>Chatty</div><nav aria-label="方案导航"><a href="#direction">产品方向</a><a href="#delivery">交付范围</a><a href="#tradeoffs">关键取舍</a><a href="#full-plan">完整计划</a></nav><button class="theme" id="theme" type="button" aria-pressed="false">切换深色</button></div></header>
+<main>
+<section class="hero" aria-labelledby="title"><div><div class="eyebrow">iPhone · Product plan / 01</div><h1 id="title">Chatty for iPhone<span>随时接续，与 Mika 的工作。</span></h1><p class="lead">打开即对话。执行过程、产物与项目进度，都能在手机上看清楚。沿用 Multica 的工作事实，让 iPhone 成为自然的日常入口。</p><div class="chips"><span class="chip">SwiftUI 原生 · 建议</span><span class="chip">三个核心入口</span><span class="chip">iOS 26+ · 暂定</span></div><a class="cta" href="#delivery">查看首版范围</a><a class="textlink" href="plan.md">阅读 Markdown 计划 ↗</a><p class="subnote">2026.09.05 · 规划草案 · 默认按个人 iPhone 使用设计<br>当前交付为方案，iOS 应用尚未实现。</p></div>
+<div class="preview"><div class="phone" aria-label="iPhone 交互草图，全部为合成示例"><div class="status"><span>9:41</span><span class="island" aria-hidden="true"></span><span>◒ ▰</span></div><div class="screen" id="screen" aria-live="polite"></div><div class="composer" id="composer"><span aria-hidden="true">＋</span><span class="placeholder">和 Mika 聊聊…</span><button class="send" disabled aria-label="示意发送按钮，不连接服务">↑</button></div><div class="tabbar" role="tablist" aria-label="草图页面"><button type="button" data-tab="chat" role="tab" aria-selected="true" class="active"><svg viewBox="0 0 24 24"><path d="M4 4h16v12H8l-4 4Z"/></svg>对话</button><button type="button" data-tab="projects" role="tab" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M3 6h7l2 2h9v12H3Z"/></svg>项目</button><button type="button" data-tab="settings" role="tab" aria-selected="false"><svg viewBox="0 0 24 24"><path d="m10 3-1 3-3 1-3 3 2 2-1 4 3 2 3-1 2 4 3-1 1-3 4-1v-4l-3-2-1-4-4 1Z"/><circle cx="12" cy="12" r="3"/></svg>设置</button></div><div class="home-indicator" aria-hidden="true"></div></div><p class="preview-note">可点击底部三个 Tab、项目与任务过程。<br>合成数据交互草图；最终材质与布局以 SwiftUI 真机为准。</p></div></section>
+<section class="rule" id="direction"><div class="section-title"><span class="num">01</span><h2>保持清晰的产品边界</h2><p>继承当前 Chatty 的原生方向</p></div><div class="decisions"><div class="decision"><b>打开就是 Mika</b><p>接续当前工作区的最近有效会话。历史会话管理与其他 Agent 对话留在后续。</p></div><div class="decision"><b>项目承担进度</b><p>完整计数来自服务端。状态修改只更新进度，携带版本校验并抑制自动运行。</p></div><div class="decision"><b>设置容纳资源</b><p>工作区、Runtimes、Agents、Squads 都有原生入口与明确返回路径。</p></div><div class="decision"><b>系统组件优先</b><p>保留暖白与低饱和绿。导航、Sheet、字体和键盘遵循 iPhone 系统行为。</p></div></div></section>
+<section class="rule" id="delivery"><div class="section-title"><span class="num">02</span><h2>先可用，再补齐</h2><p>一个首版计划，两个可检查的交付点</p></div><div class="milestones"><article class="milestone alt"><div class="eyebrow">Delivery A</div><h3>随时继续一段 Mika 工作</h3><p>先打通每天最常用的一条路径。</p><ul><li>登录与工作区，安全恢复会话</li><li>文字收发、历史分页、任务状态</li><li>前台实时更新，回来后同步结果</li><li>发送结果不明时保留草稿、避免重复提交</li></ul></article><article class="milestone"><div class="eyebrow">Delivery B</div><h3>覆盖 Android 当前核心能力</h3><p>补齐内容、项目和资源管理的原生体验。</p><ul><li>任务过程、Markdown、图片与文件</li><li>项目进度、Issue 搜索/分页/状态</li><li>Runtimes、Agents、Squads 原生详情</li><li>iPhone 真机、深浅色、键盘与可访问性验收</li></ul></article></div><div class="pipeline" aria-label="实施顺序"><div class="stage"><span>IOS-P0</span>契约与底座</div><div class="stage"><span>IOS-P1</span>登录与导航</div><div class="stage"><span>IOS-P2 → A</span>Mika 闭环</div><div class="stage"><span>IOS-P3</span>内容与可靠性</div><div class="stage"><span>IOS-P4</span>项目与资源</div><div class="stage"><span>IOS-P5 → B</span>iPhone 验收</div></div></section>
+<section class="rule" id="tradeoffs"><div class="section-title"><span class="num">03</span><h2>先处理会影响结果的差异</h2></div><div class="risklist"><article class="risk"><h3>后台时机由 iOS 决定</h3><p>首版确保重新打开后同步最新结果。APNs 需要服务端注册与发送通道，单独规划。<a href="https://developer.apple.com/documentation/backgroundtasks/choosing-background-strategies-for-your-app">Apple 后台策略 ↗</a></p></article><article class="risk"><h3>网络中断要避免重复任务</h3><p>提交超时可能已经被服务端接受。保留草稿并核对记录，使用 task_id 收敛；切换工作区后拒收旧请求结果。</p></article><article class="risk"><h3>两端共享验收样本</h3><p>Kotlin 与 Swift 使用相同契约、事件和失败样本。规则一致通过测试保证；视觉和系统交互分别适配平台。</p></article></div></section>
+<section class="rule" id="full-plan"><div class="section-title"><span class="num">04</span><h2>完整计划与验收条件</h2><p>14 项验收均为待实现 / 待验证</p></div><div class="docbar"><p>展开查看具体范围、调用路径、失败行为和实施依赖。</p><button type="button" id="expand">展开全部</button></div>
+<details class="doc-section" id="plan-1" open><summary>1. 先把问题说清楚</summary><div class="doc-body"><p><strong>你需要在离开电脑时，打开 iPhone 就能接续与 Mika 的工作：表达需求、看执行过程和结果、核对项目进度。</strong> Multica 继续承担账号、会话、任务与 Runtime 执行；手机负责把这些信息清楚地呈现出来。</p>
+<ul>
+<li>使用者：先按 Benjamin 个人使用规划，尚待确认是否首批就邀请 TestFlight 用户。</li>
+<li>当前缺口：Chatty 已有 Android 原生客户端，仓库尚无 iOS 工程。</li>
+<li>可观察结果：iPhone 登录后进入同一工作区的 Mika 会话，发送一次需求，看到对应任务和最终回复；关掉应用后再打开，重新读取服务端结果。</li>
+<li>核心约束：延续「对话 / 项目 / 设置」；内部业务流程在原生页面完成；不增加第二套服务端状态。</li>
+<li>范围假设：首版对齐当前 Android 核心功能，iPhone 优先，最低 iOS 26 暂定。语音、APNs 和更完整审批能力分别规划。</li>
+</ul>
+<h3>事实、建议与待确认</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>分类</th>
+<th>当前结论</th>
+<th>依据或影响</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>已核实</td>
+<td>Chatty <code>main</code> 为 <code>3c003f9</code>，规划开始前工作区干净，只有 Android 源码</td>
+<td>本轮本地检查；本次仅增加规划文档</td>
+</tr>
+<tr>
+<td>已核实</td>
+<td>最新导航为 Mika 单一对话、项目、设置，已取消 Multica 网页流程出口</td>
+<td><code>iterations/v2/NAVIGATION.md</code> 优先于旧 Spec 的页面安排</td>
+</tr>
+<tr>
+<td>已核实</td>
+<td>Android 支持真实历史读取；合成收发、项目管理和资源导航已有证据</td>
+<td><code>CHAT_SOURCE_PARITY.md</code>、<code>EVAL.md</code> 后续增量章节；Android 全量 V2 仍未通过验收</td>
+</tr>
+<tr>
+<td>已核实</td>
+<td>agent-device 0.20.10 已在 Pixel 上重放 11 步，含项目加载等待、页面断言及截图</td>
+<td><code>.tools/agent-device-trial-20260905/replay-result.json</code>；这项结果只覆盖 Android</td>
+</tr>
+<tr>
+<td>已核实</td>
+<td>本机 Xcode 26.6，可用 iOS 26.2 / 26.5 模拟器运行时</td>
+<td>本轮 <code>xcodebuild -version</code> 与 <code>simctl list devices available</code>；没有启动模拟器</td>
+</tr>
+<tr>
+<td>已核实</td>
+<td>配对 iPhone 当前 unavailable；iPad mini available</td>
+<td>本轮 <code>devicectl list devices</code>；iPad 不能代替 iPhone 真机验收</td>
+</tr>
+<tr>
+<td>已核实</td>
+<td>Multica 本地源码为 <code>1cc46b269</code>，已有独立 Expo / React Native 移动端</td>
+<td>本轮检查 <code>apps/mobile/package.json</code>；可参考数据规则，不能视作现成 Chatty iOS</td>
+</tr>
+<tr>
+<td>设计建议</td>
+<td>SwiftUI 原生、iPhone 优先、iOS 26 起步</td>
+<td>减少旧系统适配面；最低版本需结合目标 iPhone 确认</td>
+</tr>
+<tr>
+<td>待确认</td>
+<td>个人自用或首批 TestFlight、目标 iPhone / 系统、签名 Team</td>
+<td>不阻碍方案评审；分别影响发布工作、兼容范围和真机安装</td>
+</tr>
+</tbody></table></div>
+</div></details>
+<details class="doc-section" id="plan-2" ><summary>2. 最小交付与首版范围</summary><div class="doc-body"><p><strong>先得到可用的 Mika 对话闭环，再补齐 Android 现有的项目与设置。</strong> 两个交付点属于同一份首版计划。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>能力</th>
+<th>第一个可用交付 A</th>
+<th>首版完整交付 B</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>登录与工作区</td>
+<td>邮箱验证码、Keychain、选择与恢复工作区、退出</td>
+<td>切换工作区隔离、权限和异常完整回归</td>
+</tr>
+<tr>
+<td>Mika 对话</td>
+<td>接续最近有效会话、文字发送、完整回复、历史分页</td>
+<td>任务过程、失败详情、快捷建议、附件与 Markdown 格式对齐</td>
+</tr>
+<tr>
+<td>实时与恢复</td>
+<td>前台单 WebSocket，断线 REST 重取，回前台同步</td>
+<td>重复/乱序事件、后台中断、冷启动和发送回执不明的完整验证</td>
+</tr>
+<tr>
+<td>项目</td>
+<td>不作为 A 的验收前提</td>
+<td>完整项目统计、Issue 搜索/筛选/分页/详情、状态修改、未归属项目入口</td>
+</tr>
+<tr>
+<td>设置</td>
+<td>工作区与退出</td>
+<td>Runtimes、Agents、Squads 原生列表和详情</td>
+</tr>
+<tr>
+<td>原生质量</td>
+<td>系统键盘、基本深浅色、可访问性标识</td>
+<td>Dynamic Type、VoiceOver、Reduce Motion、键盘和小屏完整验收</td>
+</tr>
+</tbody></table></div>
+<h3>后续增强</h3>
+<ul>
+<li>应用内长按转写：V1.1；首版文字输入可使用系统键盘提供的听写，不宣称已实现应用内语音功能。</li>
+<li>APNs 通知：单独的服务端与客户端联动任务；首版不依赖后台通知完成核心流程。</li>
+<li>结构化审批、取消执行、排队消息、其他 Agent 直接对话、会话管理：确认接口和产品范围后再进入计划。</li>
+<li>iPad 多栏、Apple Watch、Widget、Live Activities、Siri / App Intents、Share Extension、公开 App Store 发布：后续独立范围。</li>
+<li>HTML / Mermaid 的执行式预览、任意网页嵌入、离线完整消息库、Runtime 远程控制和配置编辑：首版不提供入口。</li>
+</ul>
+</div></details>
+<details class="doc-section" id="plan-3" ><summary>3. 三个入口与关键交互</summary><div class="doc-body"><h3>对话：继续和 Mika 工作</h3>
+<ol>
+<li>登录后默认进入当前工作区的 Mika。</li>
+<li>按 <code>system_key = &quot;mika&quot;</code> 和实际权限定位 Agent，接续最近更新的有效会话。没有会话时，在首次发送时创建。</li>
+<li>顶部展示 Mika、连接/同步状态；主体展示用户消息、助手正文和关联任务过程。</li>
+<li>底部是附件入口、多行草稿和发送按钮。发送后以服务端 <code>message_id</code>、<code>task_id</code> 追踪结果。</li>
+<li>任务过程默认折叠；点开后查看步骤、工具结果、耗时与失败信息。最终回复保持完整文本，不制造逐 token 输出。</li>
+<li>快捷建议只填入草稿，用户再点发送。历史列表、新对话和其他 Agent 选择器不进入首版页面。</li>
+</ol>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>用户看到什么</th>
+<th>行为规则</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>等待响应</td>
+<td>正在提交，发送暂时不可用</td>
+<td>同一会话只允许一个发送请求</td>
+</tr>
+<tr>
+<td>服务端已接受</td>
+<td>按 task_id 显示排队或执行状态</td>
+<td>本地更新出错也不重新发送</td>
+</tr>
+<tr>
+<td>请求超时，是否接受不明</td>
+<td>“发送结果待确认”，草稿保留，可先核对消息记录</td>
+<td>不自动重发，不宣称服务端未收到，不用相同文字猜测唯一回执</td>
+</tr>
+<tr>
+<td>断网</td>
+<td>同次运行已加载内容仍可阅读，显示离线状态</td>
+<td>前台恢复后重取；冷启动无网络时只展示草稿与明确空态</td>
+</tr>
+<tr>
+<td>Mika 无权限或不存在</td>
+<td>说明当前工作区无法使用 Mika，提供切换工作区</td>
+<td>不按显示名称猜 Agent，不绕过权限</td>
+</tr>
+<tr>
+<td>回复为空或任务失败</td>
+<td>明确的无回复/失败结果，可展开详情</td>
+<td>不把无内容当成功回复</td>
+</tr>
+</tbody></table></div>
+<h3>项目：先看全局，再处理一条 Issue</h3>
+<ol>
+<li>首页显示项目名称、已完成/总数、进度，以及“未归属项目的 Issues”。计数取完整服务端统计。</li>
+<li>点击项目 push 到 Issue 列表；原生搜索框和状态筛选，50 条分页，保留当前位置。</li>
+<li>点 Issue push 到详情，进入时读取最新 revision。</li>
+<li>状态用原生选择器修改；提交显式携带 <code>suppress_run=true</code> 与可用的 <code>expected_revision</code>。</li>
+<li>提交期间禁用重复操作，成功后重取详情与项目统计；冲突时展示最新结果并让用户重新选择。</li>
+<li>页面说明“仅更新进度，不启动 Agent”；不给未实现的创建、分派、描述编辑提供空入口。</li>
+</ol>
+<h3>设置：工作区与协作资源</h3>
+<ul>
+<li>顶部工作区卡片：当前工作区、切换工作区；切换用原生 Sheet。</li>
+<li>“运行与协作”分组：Runtimes、Agents、Squads；列表 push 到原生详情，保留原生返回手势。</li>
+<li>退出登录：清本机凭据、隔离草稿、临时附件与内存数据，取消旧请求和连接。</li>
+<li>核心业务不跳转 Multica 网页；第三方资料链接可通过系统浏览入口查看，返回后保留阅读位置。</li>
+</ul>
+<h3>图片、文件与富文本</h3>
+<ul>
+<li>图片：应用内全屏预览、缩放、关闭后恢复对话位置。</li>
+<li>文件：<code>PhotosPicker</code> / <code>fileImporter</code> 选择，上传成功后保留 attachment ID，发送回执校验实际绑定的附件。</li>
+<li>文本与代码：原生阅读、复制；Markdown 至少覆盖标题、列表、引用、链接、代码、表格、删除线和任务列表。</li>
+<li>普通文件：经授权下载到有保护的临时文件后交给 Quick Look；未知格式给出类型与可用操作。</li>
+<li>HTML / Mermaid：按源码或文本阅读；内部实体链接进入已实现的原生页面，缺少页面时保留文本。</li>
+</ul>
+</div></details>
+<details class="doc-section" id="plan-4" ><summary>4. iOS 视觉与触控规则</summary><div class="doc-body"><p><strong>保留 Chatty 的暖白、石墨、低饱和绿，让导航与交互遵循 iPhone 习惯。</strong> HTML 中的屏幕是合成数据交互草图，最终外观以 SwiftUI 真机为准。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>元素</th>
+<th>iOS 设计建议</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>导航</td>
+<td>系统 <code>TabView</code> + 每 Tab 独立 <code>NavigationStack</code>；保持三个位置和返回路径</td>
+</tr>
+<tr>
+<td>材质</td>
+<td>使用系统导航、工具栏、Sheet 的 Liquid Glass；聊天正文和项目内容使用稳定、不透明表面</td>
+</tr>
+<tr>
+<td>基础色</td>
+<td>暖白 <code>#F6F7F4</code>、石墨 <code>#202521</code>、主色 <code>#365E50</code>；深色沿用 <code>#141815</code> / <code>#E5EAE2</code> / <code>#A9CDB8</code></td>
+</tr>
+<tr>
+<td>字体</td>
+<td>系统语义字号与 Dynamic Type；正文优先 17pt；代码用等宽字体</td>
+</tr>
+<tr>
+<td>布局</td>
+<td>页边距约 20pt；内容间距采用 8pt 基准；避免把 Android 的 dp/sp 数值直接搬成 pt</td>
+</tr>
+<tr>
+<td>触控</td>
+<td>操作区至少 44×44pt；图标使用 SF Symbols 并配合可访问性文字</td>
+</tr>
+<tr>
+<td>输入</td>
+<td>按系统安全区布置 composer；只保留一套键盘避让，不重复计算底部间距</td>
+</tr>
+<tr>
+<td>动效</td>
+<td>状态和 Sheet 使用系统动效；遵循减少动态效果与降低透明度设置</td>
+</tr>
+<tr>
+<td>长内容</td>
+<td>不截断关键失败说明；表格和代码横向滚动；长消息阅读时不强制跳到底部</td>
+</tr>
+</tbody></table></div>
+<p>Apple 建议使用系统标准组件自动适配 Liquid Glass，并检查明暗、透明度与动态效果设置。<a href="https://developer.apple.com/documentation/technologyoverviews/adopting-liquid-glass">Apple：Adopting Liquid Glass</a></p>
+</div></details>
+<details class="doc-section" id="plan-5" ><summary>5. 技术路线与边界</summary><div class="doc-body"><h3>推荐 SwiftUI 原生</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>路线</th>
+<th>可以复用什么</th>
+<th>主要代价</th>
+<th>本次判断</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SwiftUI + Swift</td>
+<td>服务契约、设计语义、合成样本、验收场景</td>
+<td>需要维护 Swift 的 DTO 和状态逻辑</td>
+<td>推荐：符合现有原生方向，便于系统导航、键盘、文件和可访问性适配</td>
+</tr>
+<tr>
+<td>基于 Multica Expo 客户端裁剪</td>
+<td>TypeScript 类型、部分数据逻辑和组件</td>
+<td>需裁剪不同产品导航及状态层，持续承受上游变化；不能直接复用 Android Kotlin UI</td>
+<td>若目标改成最快交付跨平台客户端，可重新评估</td>
+</tr>
+<tr>
+<td>Kotlin Multiplatform</td>
+<td>未来可分享部分业务逻辑</td>
+<td>当前 Retrofit、Hilt、Android 存储等需额外重构，扩大首版范围</td>
+<td>暂不引入</td>
+</tr>
+</tbody></table></div>
+<p><strong>主要风险是两端业务规则分叉。</strong> 解决办法是把发送回执、分页、权限、任务事件和 Issue 状态样本作为共同输入，要求 Kotlin 与 Swift 对相同样本给出一致结果。先复用契约与验证，再按需要提取共享代码。</p>
+<h3>拟议工程结构</h3>
+<p>以下路径与 scheme 均是计划，当前尚未创建：</p>
+<pre><code class="language-text">ios/
+  Chatty.xcodeproj                 # 应用宿主与共享 scheme
+  Chatty/                         # App、根导航、生命周期、环境注入
+  Packages/ChattyKit/
+    Sources/
+      Domain/                     # Codable DTO、状态和纯转换规则
+      Networking/                 # URLSession REST、WebSocket、附件策略
+      Session/                    # Keychain、工作区、请求作用域
+      Features/                   # Auth、Chat、Projects、Settings
+      DesignSystem/               # 颜色角色、公共状态与原生组件包装
+    Tests/                        # 契约、状态转换、并发与错误行为
+  ChattyUITests/                  # XCTest 系统交互与生命周期补充
+scripts/ios-env.sh                # 设备、scheme 与输出目录
+scripts/ios-dev-loop.sh           # build → install → launch → inspect
+iterations/ios-v1/flows/          # agent-device .ad 流程
+iterations/ios-v1/evidence/       # 脱敏验收摘要与可提交证据
+</code></pre>
+<ul>
+<li>第一轮使用一个应用 target + 一个本地 Swift Package，以目录区分职责；出现真实依赖隔离需求后再拆 package。</li>
+<li>Swift Concurrency 管异步与取消；UI 状态在主线程，Session/连接所有者独立控制生命周期。</li>
+<li>依赖通过构造器注入，首版不引入全局容器、复杂单向框架或 Core Data / SwiftData 消息库。</li>
+<li>Markdown 完整能力是单独的技术验证项；系统基础 Markdown 显示不能自动视为已满足表格等全部要求。第三方库需先验证格式、链接策略、可访问性与许可，再锁版本。</li>
+</ul>
+<h3>状态如何流动</h3>
+<pre><code class="language-text">用户动作 → SwiftUI 页面 → Feature 状态与用例 → Multica REST
+                                              ↓
+                           message_id / task_id / revision
+                                              ↓
+前台 WebSocket → 作用域校验 → 对应数据失效 → REST 重取 → 页面更新
+</code></pre>
+<ul>
+<li>每个登录账号与工作区只有一套有效连接。切换工作区、退出、退后台都会取消旧监听与重连定时器。</li>
+<li>每次作用域变更增加 generation；迟到的 HTTP、Socket、上传结果只能更新其所属账号与工作区。</li>
+<li>URLSession 使用禁用敏感响应磁盘缓存的配置；REST 明确控制重定向和凭据附加规则。</li>
+<li>写请求默认不自动重试；只读请求才考虑有限退避。WebSocket 恢复后通过 REST 重取，不假定事件补发。</li>
+</ul>
+</div></details>
+<details class="doc-section" id="plan-6" ><summary>6. 沿用已有服务契约</summary><div class="doc-body"><div class="table-wrap"><table>
+<thead>
+<tr>
+<th>入口</th>
+<th>契约</th>
+<th>iOS 必须保持的规则</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>登录</td>
+<td><code>POST /auth/send-code</code>、<code>POST /auth/verify-code</code></td>
+<td>验证码不存储；验证码请求和登录请求不自动重试</td>
+</tr>
+<tr>
+<td>作用域</td>
+<td><code>/api/workspaces</code>、<code>/api/me</code>、workspace members</td>
+<td><code>/api/</code> 使用 Bearer 与 <code>X-Workspace-Slug</code>；迟到的旧 401 不清新凭据</td>
+</tr>
+<tr>
+<td>Mika / 会话</td>
+<td><code>/api/agents</code>、<code>/api/chat/sessions</code></td>
+<td><code>system_key</code> + 权限；最近有效 Mika 会话；归档会话不作为发送目标</td>
+</tr>
+<tr>
+<td>历史</td>
+<td><code>/api/chat/sessions/{id}/messages/page</code></td>
+<td><code>limit=50</code>，时间与 ID 双游标，按消息 ID 去重，向前加载保留滚动位置</td>
+</tr>
+<tr>
+<td>发送</td>
+<td><code>POST /api/chat/sessions/{id}/messages</code></td>
+<td>使用回执 <code>message_id/task_id/attachment_ids</code>；用户发送一次只产生一次写请求</td>
+</tr>
+<tr>
+<td>任务与过程</td>
+<td><code>pending-task</code>、<code>/api/tasks/{id}/messages</code></td>
+<td>trace 按 seq 去重排序；文本/过程/最终回复按同一 task_id 关联</td>
+</tr>
+<tr>
+<td>实时</td>
+<td><code>GET /ws</code>，auth 首帧 → auth_ack</td>
+<td>token 不放 URL；工作区与客户端参数参考现有协议；<code>client_os=ios</code>；认证超时和重连受生命周期控制</td>
+</tr>
+<tr>
+<td>附件</td>
+<td><code>upload-file</code>、attachments metadata/content/download</td>
+<td>刷新过期 metadata；只向 API 同源发凭据；外部签名下载不附带 Bearer；限制大小并清理临时文件</td>
+</tr>
+<tr>
+<td>项目与 Issue</td>
+<td>projects、issues、issue-statuses</td>
+<td>使用服务端统计和自定义状态；状态写入 suppress_run + revision；成功后刷新关联计数</td>
+</tr>
+<tr>
+<td>协作资源</td>
+<td>runtimes、agents、squads</td>
+<td>保持服务端权限与归档过滤；离线 Runtime 不暗示自动迁移执行</td>
+</tr>
+</tbody></table></div>
+<h3>本地数据规则</h3>
+<ul>
+<li>Token：Keychain，暂定 <code>kSecAttrAccessibleWhenUnlockedThisDeviceOnly</code>，关闭跨设备同步。该保护等级适合首版前台访问；以后添加锁屏后台访问时需重新审查可访问等级。<a href="https://developer.apple.com/documentation/security/ksecattraccessiblewhenunlockedthisdeviceonly">Apple：Keychain 可访问性</a></li>
+<li>本机允许保留：受保护、排除备份的草稿，最近工作区标识和少量偏好；服务器消息、任务和项目只保存在内存。</li>
+<li>草稿按稳定账号 ID + workspace ID + session/agent ID 隔离；账号 ID 来自 <code>/api/me</code>。取不到账号 ID 时不加载其他账号草稿，不自动迁移 Android 草稿。</li>
+<li>临时附件按账号作用域管理、文件保护、排除备份；退出立即清理，下载/启动时按明确 TTL 清理。首版测试需验证系统缓存和 Quick Look 相关残留。</li>
+<li>用户日志记录请求类型、状态码与脱敏 ID，不记录 token、验证码、原始私密消息或完整签名 URL。</li>
+</ul>
+</div></details>
+<details class="doc-section" id="plan-7" ><summary>7. iOS 特有问题与取舍</summary><div class="doc-body"><h3>后台：回到应用后收敛</h3>
+<ul>
+<li>进入后台：保存草稿，停止前台 Socket 与轮询；已在 Multica Runtime 执行的任务由服务端继续管理。</li>
+<li>回到前台：立即触发一次去重的消息、pending-task 与当前页面数据重取，再恢复单连接。</li>
+<li>发送途中退后台：可评估短时后台执行窗口；窗口耗尽时进入“结果待确认”，恢复后核对，不能自动重发。</li>
+<li>首版不设计固定间隔后台轮询承诺。Apple 明确由系统决定 <code>BGAppRefreshTask</code> 的运行时机。<a href="https://developer.apple.com/documentation/backgroundtasks/choosing-background-strategies-for-your-app">Apple：后台策略</a></li>
+</ul>
+<h3>推送：需要服务端配合</h3>
+<ul>
+<li>在本轮检查的 Multica 本地 <code>1cc46b269</code> 后端 Go/SQL 源码中，没有发现 APNs、device-token 或 push-sender 实现；已有规格也将推送记为缺口。这不能证明线上部署的全部能力，开工前需向实际服务接口复核。</li>
+<li>后续 APNs 需要设备 token 注册/解绑接口、服务端发送通道、权限、去重与原生跳转目标。仅添加客户端通知权限无法完成远程通知。<a href="https://developer.apple.com/documentation/usernotifications/registering-your-app-with-apns">Apple：注册 APNs</a></li>
+<li>首版不出现无法兑现的通知设置；界面在必要位置说明“重新打开后同步最新进度”。</li>
+</ul>
+<h3>语音与审批：分别立项</h3>
+<ul>
+<li>应用内转写后续采用 Speech 框架候选方案，先核实目标机型、语言、<code>isAvailable</code>、<code>supportedLocales</code> 与已安装模型；不可用时保留文字输入。音频是否外发必须随实际转写引擎明确说明。<a href="https://developer.apple.com/documentation/speech/speechtranscriber">Apple：SpeechTranscriber</a></li>
+<li>“需要你回复”只能基于已核实的任务受阻、Issue 状态和 Inbox 信号；打开预填草稿，用户决定发送。当前资料没有通用 approve/reject 契约，不增加虚构批准按钮。</li>
+</ul>
+</div></details>
+<details class="doc-section" id="plan-8" ><summary>8. 实施顺序与交付检查</summary><div class="doc-body"><p>这些是本地计划编号，尚未创建 Multica / Linear Issue。原 CLE 编号仅作为 Android 语义来源，不用来承载 iOS 实现。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>计划项</th>
+<th>工作与主要文件</th>
+<th>依赖</th>
+<th>完成后能检查什么</th>
+<th>规模</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>IOS-P0 契约与测试底座</td>
+<td>固化 DTO/事件样本；复用 auth-fixture.py、chat-fixture.py；建立 ChattyFixture 与 Chatty scheme；技术验证 Markdown</td>
+<td>目标系统建议</td>
+<td>模拟器启动 fixture 包，读取页面快照；契约解析测试可运行</td>
+<td>中</td>
+</tr>
+<tr>
+<td>IOS-P1 登录与导航</td>
+<td>Session、Keychain、Auth、三个 Tab、系统主题与标识</td>
+<td>P0</td>
+<td>合成登录、错误验证码、401/503、冷启动与工作区隔离</td>
+<td>中</td>
+</tr>
+<tr>
+<td>IOS-P2 Mika 最小闭环</td>
+<td>Chat 状态、历史分页、文字发送、pending、前台 Socket、恢复逻辑</td>
+<td>P1</td>
+<td>合成两轮收发、单次写入、真实账号手动登录与读取；取得授权后验证明确内容的真实发送</td>
+<td>大</td>
+</tr>
+<tr>
+<td>交付 A</td>
+<td>P0–P2 集成在 iPhone</td>
+<td>P2、签名与可用 iPhone</td>
+<td>离开电脑后能继续一段 Mika 工作；保留失败与恢复证据</td>
+<td>里程碑</td>
+</tr>
+<tr>
+<td>IOS-P3 内容与可靠性</td>
+<td>Markdown、任务过程、附件预览/上传、草稿、未知事件和取消清理</td>
+<td>P2</td>
+<td>格式样本、回执不明、乱序、签名 URL 过期、后台中断与重启</td>
+<td>大</td>
+</tr>
+<tr>
+<td>IOS-P4 项目与资源</td>
+<td>Projects、Issue 详情/状态写入、Settings、Runtimes/Agents/Squads</td>
+<td>P1；集成在 P3 后</td>
+<td>服务端计数、50→55 分页、自定义状态、revision 冲突、无 Agent 启动</td>
+<td>大</td>
+</tr>
+<tr>
+<td>IOS-P5 iPhone 验收</td>
+<td>agent-device 流程、XCTest 补充、可访问性/键盘/深色、真实账号 E2E</td>
+<td>P3、P4、可用 iPhone</td>
+<td>验收矩阵逐项带独立证据；交付 B 可日常试用</td>
+<td>中</td>
+</tr>
+</tbody></table></div>
+<p>按 P0 → P1 → P2 → A → P3 → P4 → P5 推进，每轮有可运行结果。规模用于比较工作量，不代表工期承诺。首版发布范围若包含 TestFlight，在 P5 后增加签名归档、分发与隐私说明的独立检查项。</p>
+</div></details>
+<details class="doc-section" id="plan-9" ><summary>9. 验收矩阵</summary><div class="doc-body"><p>所有条目当前状态均为 <strong>待实现 / 待验证</strong>。下表描述目标，不表示已通过。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>场景与检查</th>
+<th>通过条件</th>
+<th>证据方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A01</td>
+<td>Fixture 与真实环境隔离</td>
+<td>独立 bundle/config；fixture 不连接生产；Release 不允许宽泛 HTTP 例外</td>
+<td>配置检查 + 网络请求记录</td>
+</tr>
+<tr>
+<td>A02</td>
+<td>登录错误、401、403、503、迟到响应</td>
+<td>凭据只按当前认证状态清理；网络/服务器错误保留登录；旧响应不污染新账号</td>
+<td>URLProtocol 契约测试 + 模拟器流程</td>
+</tr>
+<tr>
+<td>A03</td>
+<td>Mika、会话与权限</td>
+<td>system_key 稳定定位；最近有效会话；无权限和空工作区有明确页面</td>
+<td>合成权限组合 + 真实只读核对</td>
+</tr>
+<tr>
+<td>A04</td>
+<td>一次发送、未知回执</td>
+<td>双击仅一个 POST；服务端已接受后不重发；超时保留草稿并提示核对</td>
+<td>合成服务计数 + 模拟器操作</td>
+</tr>
+<tr>
+<td>A05</td>
+<td>历史分页和重复时间戳</td>
+<td>50 条边界及相同时间戳不漏不重；阅读位置保持；加载状态可访问</td>
+<td>JSON 样本 + 截图与断言</td>
+</tr>
+<tr>
+<td>A06</td>
+<td>task_id 与消息内容</td>
+<td>过程按 seq 排序去重，最终回复正确关联；失败/无回复/未知事件不崩溃</td>
+<td>Kotlin/Swift 共同期望值 + UI</td>
+</tr>
+<tr>
+<td>A07</td>
+<td>断网、后台、冷启动、快速切换工作区</td>
+<td>最多一个有效 Socket；恢复后数据收敛；无跨工作区消息/附件/草稿</td>
+<td>可控时序测试 + iPhone 生命周期流程</td>
+</tr>
+<tr>
+<td>A08</td>
+<td>原生富文本与附件</td>
+<td>约定 Markdown 格式可读；图片关闭回原位置；过期链接可恢复；凭据不发给外域</td>
+<td>样本集 + 本地 HTTP 检查 + 真机文件选择</td>
+</tr>
+<tr>
+<td>A09</td>
+<td>项目统计、筛选、分页</td>
+<td>完成数来自全项目统计；搜索/自定义状态/50→55/空列表/无项目入口正确</td>
+<td>现有 chat fixture 场景 + agent-device</td>
+</tr>
+<tr>
+<td>A10</td>
+<td>Issue 状态修改</td>
+<td>一次 PUT，suppress_run=true，正确 revision；冲突不自动重发；完成数刷新</td>
+<td>fixture 写入计数与请求体 + UI</td>
+</tr>
+<tr>
+<td>A11</td>
+<td>原生资源导航</td>
+<td>Runtimes/Agents/Squads 数据正确，空态/无权限可用，返回路径完整</td>
+<td>合成流程 + 真实只读核对</td>
+</tr>
+<tr>
+<td>A12</td>
+<td>触控、键盘、可访问性</td>
+<td>小屏、深浅色、两档大字号可用；VoiceOver 标签明确；键盘与输入区无重复留白或遮挡</td>
+<td>agent-device 截图 + XCTest/人工 VoiceOver</td>
+</tr>
+<tr>
+<td>A13</td>
+<td>存储与退出</td>
+<td>token/验证码不进入日志；草稿隔离；敏感缓存不落盘；退出后临时文件清理</td>
+<td>文件/配置检查 + 重启与多账号流程</td>
+</tr>
+<tr>
+<td>A14</td>
+<td>iPhone 真实业务闭环</td>
+<td>用户登录目标工作区；经明确消息授权后发一次、读到对应回复；后台返回和重启后与服务端一致</td>
+<td>真机截图、脱敏回执、服务端事实对照</td>
+</tr>
+</tbody></table></div>
+<h3>agent-device 如何接进开发循环</h3>
+<ol>
+<li>先构建和安装 ChattyFixture 到指定 iPhone 模拟器，发现并固定测试目标。</li>
+<li>open → 读取可访问性树 → 按 ID/label 操作 → 等待明确内容 → 断言 → 截图 → close。</li>
+<li>控件约定标识：<code>auth.email</code>、<code>auth.code</code>、<code>chat.draft</code>、<code>chat.send</code>、<code>projects.list</code>、<code>issue.status</code>、<code>settings.workspaces</code>。具体 ID 在 P0 固化。</li>
+<li>将稳定流程保存为 <code>.ad</code>；网络完成用内容/状态条件等待，避免用固定 sleep 或页面静止代替数据就绪。</li>
+<li>每次变更先跑相关流程；发布候选再跑完整矩阵。模拟器通过后才开展 iPhone 签名安装与真实验证。</li>
+<li>agent-device 物理 iPhone 路径需要配对、Developer Mode 和签名配置，当前尚未在 iPhone 上验证。系统弹窗、VoiceOver、后台时序由 XCTest/人工补足。</li>
+<li>合成数据与真实验证分开记录。原始私密截图/日志写入 <code>.tools/ios-v1/&lt;run&gt;/</code>，脱敏摘要写入 <code>iterations/ios-v1/evidence/</code>。</li>
+</ol>
+<p>拟议命令形态如下，工程、scheme 与脚本建立后才能运行：</p>
+<pre><code class="language-bash">xcodebuild -project ios/Chatty.xcodeproj -scheme ChattyFixture \
+  -destination &#39;platform=iOS Simulator,id=&lt;selected-simulator-udid&gt;&#39; test
+scripts/ios-dev-loop.sh --fixture --device &lt;selected-device-id&gt;
+agent-device replay iterations/ios-v1/flows/navigation.ad --platform ios
+</code></pre>
+<p>agent-device 官方 iPhone 前置条件：<a href="https://oss.callstack.com/agent-device/docs/installation">Installation</a>。Android 的 5.4 秒重放结果不作为 iOS 性能目标。</p>
+</div></details>
+<details class="doc-section" id="plan-10" ><summary>10. 尚需确定的事项</summary><div class="doc-body"><div class="table-wrap"><table>
+<thead>
+<tr>
+<th>事项</th>
+<th>当前采用的建议</th>
+<th>最晚何时确定</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>首批使用对象</td>
+<td>Benjamin 自用、覆盖 Android 核心能力</td>
+<td>进入实现前；若需 TestFlight，增加分发范围</td>
+</tr>
+<tr>
+<td>最低 iOS / 目标设备</td>
+<td>iPhone 优先，iOS 26+</td>
+<td>P0；低版本需求会增加兼容与回归工作</td>
+</tr>
+<tr>
+<td>实现路线</td>
+<td>SwiftUI 原生；本轮只形成建议</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>Apple 签名 Team 与 bundle ID</td>
+<td>暂未选定，不复用已存在应用身份</td>
+<td>真机安装前；不阻塞模拟器底座</td>
+</tr>
+<tr>
+<td>真机连接</td>
+<td>当前 iPhone unavailable，实施时重新连接检查</td>
+<td>交付 A 的 iPhone 验收前</td>
+</tr>
+<tr>
+<td>真实发送的测试内容</td>
+<td>尚未授权任何新测试消息</td>
+<td>A14 执行前，与用户确定具体内容</td>
+</tr>
+<tr>
+<td>远程推送是否升级为首版必需</td>
+<td>当前放在后续，复核真实后端接口</td>
+<td>若改为必需，首版必须加入服务端工作</td>
+</tr>
+</tbody></table></div>
+</div></details>
+<details class="doc-section" id="plan-11" ><summary>11. 实施时要读的源码与依据</summary><div class="doc-body"><h3>Chatty 当前基线</h3>
+<ul>
+<li><a href="../v2/NAVIGATION.md">导航与最新原生边界</a></li>
+<li><a href="../v2/CHAT_SOURCE_PARITY.md">对话源码对齐清单</a></li>
+<li><a href="../v2/EVAL.md">Android 验证记录，含后续增量</a></li>
+<li><a href="../../docs/android-visual-design.md">现有颜色与布局语义</a></li>
+<li><a href="../../android/core-network/src/main/java/ai/chatty/core/network/MulticaApi.kt">认证与网络契约</a></li>
+<li><a href="../../android/core-network/src/main/java/ai/chatty/core/network/ChatApi.kt">Chat API</a> 与 <a href="../../android/core-network/src/main/java/ai/chatty/core/network/ChatSocket.kt">ChatSocket</a></li>
+<li><a href="../../android/feature-chat/src/main/java/ai/chatty/feature/chat/ChatController.kt">ChatController</a> 与 <a href="../../android/feature-chat/src/main/java/ai/chatty/feature/chat/ChatPresentation.kt">呈现规则</a></li>
+<li><a href="../../android/core-network/src/main/java/ai/chatty/core/network/WorkspaceApi.kt">Workspace API</a> 与 <a href="../../android/feature-workspace/src/main/java/ai/chatty/feature/workspace/ProjectsController.kt">ProjectsController</a></li>
+<li><a href="../../scripts/auth-fixture.py">认证 fixture</a> 与 <a href="../../scripts/chat-fixture.py">Chat / 项目 fixture</a>：同一 8765 端口，按场景分别运行；模拟器访问 Mac loopback，物理 iPhone 需要独立受控可达地址或测试隧道，不能假设手机 127.0.0.1 指向 Mac。</li>
+</ul>
+<h3>Multica 参考基线</h3>
+<ul>
+<li><code>/Users/benjamin/Workspace/multica/packages/core/types/{chat,agent,attachment}.ts</code>：协议与权限输入。</li>
+<li><code>/Users/benjamin/Workspace/multica/apps/mobile/data/realtime/</code>：移动生命周期和失效范围的参考。</li>
+<li><code>/Users/benjamin/Workspace/multica/apps/mobile/components/chat/</code>：当前移动端内容展示参考，不能覆盖 Chatty 最新产品范围。</li>
+<li><code>/Users/benjamin/Workspace/multica/server/cmd/server/router.go</code>：进入实现时复核真实路由与服务能力。</li>
+</ul>
+<p>本方案的完成标准是范围、交互、实现依赖和验证方法清楚可审查。后续实现需要独立留下运行证据；本文不标记任何 iOS 功能已完成。</p>
+</div></details>
+</section>
+<footer class="footer"><span>Chatty `3c003f9` · Multica 参考 `1cc46b269` · 本地方案</span><span><a href="plan.md">计划源文件</a> · <a href="../v2/NAVIGATION.md">当前产品边界</a></span></footer>
+</main>
+<script>
+const screen=document.getElementById('screen');const composer=document.getElementById('composer');let active='chat';
+const chat=`<div class="mika-head"><div class="avatar">✦</div><div><h3>Mika</h3><div class="small">已连接 · 当前工作区</div></div></div><div class="user-msg">帮我整理 iOS 首版的交付范围。</div><div class="assistant-msg"><p>首版分两次交付。先让你在 iPhone 上接续对话，再补齐项目与资源查看。</p></div><button class="screen-btn task" type="button" data-action="trace" aria-expanded="false"><strong>▸ 任务过程 · 3 项</strong><small>已完成</small></button><div id="trace" class="trace" hidden><p>✓ 核对 Android 当前导航</p><p>✓ 核对 Multica 服务契约</p><p>✓ 整理首版验收条件</p></div><div class="assistant-msg"><p><strong>先完成这条路径</strong><br>登录 → Mika 对话 → 查看结果。重新打开应用后同步最新状态。</p></div><button class="screen-btn attachment" type="button" data-action="artifact"><span class="fileicon">MD</span><span><strong>iOS 首版计划</strong><br><span class="small">范围、依赖与验收标准</span></span></button><div class="small">9:41 · 示例对话</div>`;
+const projects=`<h2>项目</h2><div class="context">按项目查看所有 Issues 的进度</div><button class="project" data-action="project"><div class="projtitle">Chatty iOS <span style="float:right">›</span></div><div class="small">移动端体验</div><div class="progress"><span style="width:62.5%"></span></div><div class="project-meta"><span>5 / 8 已完成</span><span>63%</span></div></button><button class="project" data-action="other"><div class="projtitle">日常研究 <span style="float:right">›</span></div><div class="small">个人工作</div><div class="progress"><span style="width:40%"></span></div><div class="project-meta"><span>2 / 5 已完成</span><span>40%</span></div></button><button class="resource" data-action="unassigned">未归属项目的 Issues <span>›</span></button><div class="notice">示例计数。实际进度读取服务端完整统计。</div>`;
+const settings=`<h2>设置</h2><div class="context">你的工作空间与协作伙伴</div><div class="workspace"><div class="small">工作区</div><strong>我的工作空间</strong><br><button data-action="workspace">⇄ 切换工作区</button></div><div class="section-label">运行与协作</div><div class="group"><button class="resource" data-action="runtimes">Runtimes <span>›</span></button><button class="resource" data-action="agents">Agents <span>›</span></button><button class="resource" data-action="squads">Squads <span>›</span></button></div><div class="small">打开资源可查看当前状态与详情。</div><button class="resource" data-action="logout">退出登录 <span>›</span></button>`;
+const back=(tab,title)=>`<button class="back" data-action="back" data-back="${tab}">‹ ${title}</button>`;
+function render(tab){active=tab;screen.innerHTML={chat,projects,settings}[tab];screen.scrollTop=0;composer.hidden=tab!=='chat';composer.style.display=tab==='chat'?'flex':'none';document.querySelectorAll('[data-tab]').forEach(b=>{b.classList.toggle('active',b.dataset.tab===tab);b.setAttribute('aria-selected',b.dataset.tab===tab)})}
+function detail(markup){screen.innerHTML=markup;screen.scrollTop=0;composer.style.display='none'}
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>render(b.dataset.tab)));
+screen.addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(!b)return;switch(b.dataset.action){case'back':render(b.dataset.back);break;case'trace':{const t=document.getElementById('trace');t.hidden=!t.hidden;b.setAttribute('aria-expanded',!t.hidden);b.querySelector('strong').textContent=(t.hidden?'▸':'▾')+' 任务过程 · 3 项';break}case'artifact':detail(back('chat','对话')+'<h2>iOS 首版计划</h2><p class="small">附件阅读示意</p><div class="group" style="padding:16px;font-size:13px"><h3>交付 A</h3><p>登录、历史、文字收发、任务状态。</p><h3>交付 B</h3><p>富文本、附件、项目与协作资源。</p></div><p class="small">实际应用可查看附件，关闭后回到原阅读位置。</p>');break;case'project':detail(back('projects','项目')+'<h2>Chatty iOS</h2><p class="small">示例 · 5 / 8 已完成</p><div class="group"><button class="resource" data-action="issue">登录与工作区 <span class="status-pill">已完成</span></button><button class="resource" data-action="issue">Mika 对话闭环 <span class="status-pill">进行中</span></button><button class="resource" data-action="issue">原生附件预览 <span class="status-pill">待开始</span></button></div><div class="notice">真实页面提供搜索、状态筛选与分页。</div>');break;case'issue':detail(back('projects','项目')+'<div class="small">Chatty iOS · 示例 Issue</div><h2>Mika 对话闭环</h2><p style="font-size:13px">从历史读取到一次发送，按服务端 task_id 展示任务过程与最终回复。</p><div class="group"><button class="resource" data-action="status">状态 <span class="status-pill">进行中</span></button></div><div class="notice">仅更新进度，不启动 Agent。</div>');break;case'status':detail(back('projects','项目')+'<h2>选择状态</h2><div class="group"><button class="resource" data-action="status-picked">待开始 <span>○</span></button><button class="resource" data-action="status-picked">进行中 <span>●</span></button><button class="resource" data-action="status-picked">已完成 <span>○</span></button></div><div class="small">真实状态来自工作区目录，提交时检查 revision。</div>');break;case'status-picked':detail(back('projects','项目')+'<h2>状态交互示意</h2><div class="notice">你选择了“'+b.textContent.trim().replace(/[○●]/g,'').trim()+'”。</div><p class="small">草图不会写入服务。实际提交成功后刷新详情与项目完成数；冲突时重新读取最新版本。</p>');break;case'runtimes':case'agents':case'squads':{const key=b.dataset.action;const data={runtimes:['Runtimes','Home Mac','在线 · 个人设备'],agents:['Agents','Mika','当前可见 · 协调工作'],squads:['Squads','个人协作','3 位成员 · 示例']}[key];detail(back('settings','设置')+'<h2>'+data[0]+'</h2><div class="group" style="padding:20px"><h3>'+data[1]+'</h3><p class="small">'+data[2]+'</p></div><div class="notice">资源详情在应用内查看。未实现的配置不展示入口。</div>');break}case'workspace':detail(back('settings','设置')+'<h2>切换工作区</h2><div class="group"><button class="resource" data-action="workspace-picked">我的工作空间 <span>✓</span></button><button class="resource" data-action="workspace-picked">研究空间 <span>›</span></button></div><p class="small">切换后重新读取会话与项目，草稿按账号和工作区隔离。</p>');break;case'workspace-picked':render('settings');break;case'logout':detail(back('settings','设置')+'<h2>退出登录</h2><p style="font-size:13px">实际应用退出时清理本机凭据与临时文件，取消旧请求和连接。</p><div class="notice">当前是交互草图，没有真实账号操作。</div>');break;case'other':case'unassigned':detail(back('projects','项目')+'<h2>'+ (b.dataset.action==='other'?'日常研究':'未归属项目') +'</h2><div class="group" style="padding:20px;font-size:13px">这个页面使用相同的 Issue 列表、筛选与详情结构。</div>');break}});
+document.getElementById('theme').addEventListener('click',e=>{const on=document.body.classList.toggle('dark');e.currentTarget.textContent=on?'切换浅色':'切换深色';e.currentTarget.setAttribute('aria-pressed',on)});
+document.getElementById('expand').addEventListener('click',e=>{const sections=[...document.querySelectorAll('.doc-section')];const all=sections.every(s=>s.open);sections.forEach(s=>s.open=!all);e.currentTarget.textContent=all?'展开全部':'收起全部'});
+window.addEventListener('beforeprint',()=>document.querySelectorAll('.doc-section').forEach(d=>d.open=true));render('chat');
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "success": true,
+  "data": {
+    "replayed": 14,
+    "healed": 0,
+    "session": "chatty-ios-p0",
+    "sessionActive": false,
+    "artifactPaths": [],
+    "snapshotDiagnostics": {
+      "stats": {
+        "count": 13,
+        "p50Ms": 103,
+        "p95Ms": 4579,
+        "maxMs": 4579,
+        "slowThresholdMs": 1500,
+        "platform": "ios",
+        "backends": {
+          "xctest": 13
+        }
+      }
+    },
+    "message": "Replayed 14 steps in 11.0s"
+  }
+}

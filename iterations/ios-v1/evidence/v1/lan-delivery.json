@@ -1,0 +1,8 @@
+{
+  "url": "http://192.168.88.32:8876/progress.html",
+  "root_points_to_latest_report": true,
+  "html_sha256": "8171b32b8932112f7dbbd6dda6e1a9669d0282c2ebd26682ca89721764dda172",
+  "linked_artifacts_http_ok": 19,
+  "browser_visual_qa": false,
+  "native_screenshots_visually_reviewed": true
+}

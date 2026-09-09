@@ -1,0 +1,72 @@
+{
+  "date": "2026-09-05",
+  "scope": "IOS-P0 synthetic fixture only; local delivery",
+  "simulator": {
+    "name": "iPhone 17 Pro",
+    "runtime": "iOS 26.5",
+    "xcode": "26.6"
+  },
+  "swift_package_tests": {
+    "passed": 13,
+    "failed": 0
+  },
+  "ios_xctest": {
+    "passed": 2,
+    "failed": 0
+  },
+  "fixture_debug_build": "pass",
+  "normal_release_arm64_simulator_build": "pass",
+  "replay": {
+    "replayed": 14,
+    "healed": 0,
+    "session": "chatty-ios-p0",
+    "sessionActive": false,
+    "artifactPaths": [],
+    "snapshotDiagnostics": {
+      "stats": {
+        "count": 13,
+        "p50Ms": 103,
+        "p95Ms": 4579,
+        "maxMs": 4579,
+        "slowThresholdMs": 1500,
+        "platform": "ios",
+        "backends": {
+          "xctest": 13
+        }
+      }
+    },
+    "message": "Replayed 14 steps in 11.0s"
+  },
+  "http_503_recovery": "Error visible; previous messages retained; error removed after manual retry at HTTP 200",
+  "http_302": {
+    "result": "pass",
+    "requests": [
+      "/api/projects"
+    ],
+    "redirect_sink_requests": 0
+  },
+  "service_audit": {
+    "get_calls": 35,
+    "send_count": 0,
+    "issue_writes": 0,
+    "workspace": "fixture",
+    "note": "Captured before temporarily replacing the owned fixture process for the 302 check; normal fixture restored afterwards."
+  },
+  "normal_app_isolation": {
+    "bundle_id": "ai.chatty.ios",
+    "configuration": "Release arm64 iOS Simulator",
+    "ats_exceptions": false,
+    "fixture_markers_in_binary": false,
+    "binary_sha256": "4ceaf9cfd9e38d9aa2f1829a0ab51433c82c3fbc46698f93ed00ceb7c6e86548"
+  },
+  "dev_loop_script": "pass",
+  "dark_mode_visual_review": "pass; light mode restored",
+  "flow_sha256": "a1d2a7772c014888f31706f31cd5a2b3839a982d8274015a534e677500250e20",
+  "unverified": [
+    "Real authentication and Keychain",
+    "Real message sending and WebSocket",
+    "Full Markdown/attachment interaction",
+    "Physical iPhone and signing",
+    "Production distribution"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "simulator": "iPhone SE (3rd generation)",
+  "os": "iOS 26.5",
+  "logical_size": [
+    375,
+    667
+  ],
+  "appearance": "dark",
+  "content_sizes": [
+    "large",
+    "accessibility-medium",
+    "accessibility-extra-extra-extra-large"
+  ],
+  "checks": [
+    "second synthetic account has no first-account draft",
+    "login with keyboard dismissal",
+    "composer input and keyboard dismissal",
+    "chat/project/settings tab navigation",
+    "large cards and settings scroll",
+    "issue status control enabled and hittable at accessibility-medium"
+  ],
+  "visual_review": "Screenshots inspected; largest text requires scrolling. Fixture-only banner reduces content height.",
+  "human_voiceover": "pending",
+  "physical_iphone": "pending",
+  "terminated_after_qa": true
+}

@@ -1,0 +1,26 @@
+{
+  "success": true,
+  "data": {
+    "replayed": 32,
+    "healed": 0,
+    "session": "chatty-ios-v1-workspaces",
+    "sessionActive": false,
+    "artifactPaths": [
+      "/Users/benjamin/Workspace/chatty/iterations/ios-v1/evidence/v1/workspace-two.png"
+    ],
+    "snapshotDiagnostics": {
+      "stats": {
+        "count": 44,
+        "p50Ms": 364,
+        "p95Ms": 401,
+        "maxMs": 1465,
+        "slowThresholdMs": 1500,
+        "platform": "ios",
+        "backends": {
+          "xctest": 44
+        }
+      }
+    },
+    "message": "Replayed 32 steps in 35.5s"
+  }
+}

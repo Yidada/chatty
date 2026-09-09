@@ -1,0 +1,30 @@
+context platform=ios kind=simulator
+open "ai.chatty.ios.fixture"
+wait "id=\"auth.email\""
+fill "id=\"auth.email\"" "ios@example.test"
+press "id=\"auth.sendCode\""
+fill "id=\"auth.code\"" "123456"
+press "id=\"auth.verify\""
+press "id=\"workspace.w1\""
+wait "id=\"chat.attach\""
+press "role=\"button\" label=\"设置\""
+press "id=\"settings.runtimes\""
+press "id=\"runtime.r1\""
+wait "id=\"resource.details.title\" label=\"Loop Runtime\""
+back
+back
+press "id=\"settings.agents\""
+press "id=\"agent.mika\""
+wait "id=\"resource.details.title\" label=\"Mika Renamed\""
+back
+back
+press "id=\"settings.squads\""
+press "id=\"squad.sq1\""
+wait "id=\"resource.details.title\" label=\"Loop Squad\""
+back
+back
+press "id=\"settings.signOut\""
+wait stable 1000 10000
+press "role=\"button\" label=\"退出登录\""
+wait "id=\"auth.email\""
+close

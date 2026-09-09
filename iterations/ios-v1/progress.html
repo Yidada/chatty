@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chatty iOS · 开发交付</title>
+<style>
+:root{color-scheme:light;--bg:#f5f6f2;--ink:#202720;--green:#365e50;--muted:#667069}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{max-width:1200px;margin:auto;padding:36px 28px 70px}nav{display:flex;justify-content:space-between;gap:20px;border-bottom:1px solid #d9dfd6;padding-bottom:16px;font-size:14px}a{color:var(--green)}.brand{font-weight:750;font-size:21px;letter-spacing:-1px}.eyebrow{color:var(--green);letter-spacing:2px;font-size:12px;margin:48px 0 14px}h1{font-size:clamp(35px,5vw,68px);line-height:1.1;letter-spacing:-2px;margin:0 0 22px}h2{font-size:26px;letter-spacing:-.5px;margin:48px 0 16px}.intro{color:var(--muted);max-width:740px;font-size:18px}.badge{display:inline-block;background:#e2eade;color:var(--green);border-radius:24px;padding:6px 14px;font-size:13px}.stats,.features{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:28px}.card{border:1px solid #dce2d8;border-radius:22px;padding:24px;background:#fff}.card strong{font-size:32px;line-height:1.2;display:block}.card span,.note{color:var(--muted);font-size:14px}.features .card strong{font-size:19px;margin-bottom:8px}.features .card p{margin:0;font-size:14px;color:var(--muted)}.callout{border-left:4px solid #bb8e45;background:#f0eadc;padding:20px 24px;border-radius:0 16px 16px 0;margin:30px 0}.gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}figure{margin:0;min-width:0}figure img{width:100%;height:auto;border:1px solid #dce2d8;border-radius:24px;box-shadow:0 6px 25px #2027200d}figcaption{font-size:14px;color:var(--muted);margin:8px 0}.scroll{overflow:auto;border:1px solid #dce2d8;border-radius:18px;background:#fff}table{border-collapse:collapse;width:100%;font-size:14px;min-width:750px}th,td{text-align:left;padding:15px;border-bottom:1px solid #e9ece5}th{background:#edf1e8;color:var(--muted);font-size:12px}td:first-child{color:var(--green);font-variant-numeric:tabular-nums}.pill{white-space:nowrap;border-radius:20px;padding:4px 10px;background:#e6eee2;color:var(--green);font-size:12px}.warn{background:#f4ecd9;color:#836125}code,pre{font:13px/1.65 ui-monospace,SFMono-Regular,monospace}pre{overflow:auto;background:#e9eee4;padding:20px;border-radius:15px}footer{margin-top:48px;padding-top:22px;border-top:1px solid #d9dfd6;color:var(--muted);font-size:13px}li{margin:6px 0}@media(max-width:760px){main{padding:22px 18px 45px}.stats,.features{grid-template-columns:repeat(2,1fr)}.card{padding:18px}.gallery{grid-template-columns:repeat(2,1fr);gap:14px}h1{letter-spacing:-1px}.intro{font-size:16px}}@media(prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#141815;--ink:#e5eae2;--green:#a9cdb8;--muted:#a1ada1}.card,.scroll{background:#1e251f;border-color:#354035}nav,footer,figure img,.scroll{border-color:#354035}.badge,.pill,pre,th{background:#25352a}td{border-color:#303a31}.callout{background:#332d20}.warn{background:#3b3321;color:#e2bd73}}</style>
+<main>
+<nav>
+<span class="brand">Chatty / iOS</span>
+<span>
+<a href="design.html">设计基线</a> · <a href="evidence/v1/verification.json">验证摘要</a>
+</span>
+</nav>
+<p class="eyebrow">NATIVE IPHONE CLIENT · V1</p>
+<h1>工作，随你继续。</h1>
+<p class="intro">登录、Mika 对话、附件、项目和协作资源已落入 SwiftUI 原生应用。这里展示实际模拟器截图与验证进度。</p>
+<span class="badge">本地开发交付 · 真实 iPhone 验收待完成</span>
+<div class="stats">
+<div class="card">
+<strong>37</strong>
+<span>自动测试通过 · 另 1 项需真机</span>
+</div>
+<div class="card">
+<strong>117</strong>
+<span>设备回放步骤 · 0 自动修正</span>
+</div>
+<div class="card">
+<strong>2 + 1</strong>
+<span>核心回放：消息 + Issue 写入</span>
+</div>
+<div class="card">
+<strong>iOS 26+</strong>
+<span>Swift 6 · SwiftUI · iPhone</span>
+</div>
+</div>
+<div class="callout">
+<b>当前交付边界</b>
+<ul>
+<li>正常应用和测试应用均可在 Xcode 构建；普通 Release 已通过 Simulator 与通用 iPhone 编译。</li>
+<li>本页是截图与开发报告。运行原生应用请打开 Xcode 工程。</li>
+<li>真实账号、物理 iPhone、Apple 签名 Team 与指定测试消息尚待提供；完整业务验收保持待完成。</li>
+</ul>
+</div>
+<div class="features">
+<div class="card">
+<strong>P1 · 登录</strong>
+<p>验证码、Keychain、工作区、退出清理与离线草稿。</p>
+</div>
+<div class="card">
+<strong>P2 · 对话</strong>
+<p>Mika、双游标历史、回执核对、前台实时连接与恢复。</p>
+</div>
+<div class="card">
+<strong>P3 · 内容</strong>
+<p>原生 Markdown、执行过程、照片/文件、受限下载与预览。</p>
+</div>
+<div class="card">
+<strong>P4 · 项目</strong>
+<p>完整计数、自定义状态、分页、Issue 修改与原生资源页。</p>
+</div>
+</div>
+<h2>实际运行画面</h2>
+<p class="note">登录页来自普通 Release；其余业务画面来自独立测试包中的合成数据。点击图片查看原尺寸。</p>
+<div class="gallery"><figure><a href="evidence/v1/normal-login.png"><img loading="lazy" src="evidence/v1/normal-login.png" alt="普通 Release 登录页"></a><figcaption>普通 Release 登录页</figcaption></figure><figure><a href="evidence/v1/chat.png"><img loading="lazy" src="evidence/v1/chat.png" alt="原生对话与 Markdown"></a><figcaption>原生对话与 Markdown</figcaption></figure><figure><a href="evidence/v1/chat-reply.png"><img loading="lazy" src="evidence/v1/chat-reply.png" alt="两轮收发与执行过程"></a><figcaption>两轮收发与执行过程</figcaption></figure><figure><a href="evidence/v1/file-preview.png"><img loading="lazy" src="evidence/v1/file-preview.png" alt="原生文件预览"></a><figcaption>原生文件预览</figcaption></figure><figure><a href="evidence/v1/issue-updated.png"><img loading="lazy" src="evidence/v1/issue-updated.png" alt="自定义状态修改"></a><figcaption>自定义状态修改</figcaption></figure><figure><a href="evidence/v1/issues-55.png"><img loading="lazy" src="evidence/v1/issues-55.png" alt="完整分页边界"></a><figcaption>完整分页边界</figcaption></figure><figure><a href="evidence/v1/runtime.png"><img loading="lazy" src="evidence/v1/runtime.png" alt="Runtime 原生详情"></a><figcaption>Runtime 原生详情</figcaption></figure><figure><a href="evidence/v1/workspace-two.png"><img loading="lazy" src="evidence/v1/workspace-two.png" alt="独立工作区"></a><figcaption>独立工作区</figcaption></figure><figure><a href="evidence/v1/login-invalid.png"><img loading="lazy" src="evidence/v1/login-invalid.png" alt="错误验证码反馈"></a><figcaption>错误验证码反馈</figcaption></figure><figure><a href="evidence/v1/photo-preview.png"><img loading="lazy" src="evidence/v1/photo-preview.png" alt="照片上传与预览"></a><figcaption>照片上传与预览</figcaption></figure><figure><a href="evidence/v1/file-import.png"><img loading="lazy" src="evidence/v1/file-import.png" alt="系统 Files 导入与读回"></a><figcaption>系统 Files 导入与读回</figcaption></figure><figure><a href="evidence/v1/foreground-project.png"><img loading="lazy" src="evidence/v1/foreground-project.png" alt="恢复前台刷新项目"></a><figcaption>恢复前台刷新项目</figcaption></figure><figure><a href="evidence/v1/uncertain.png"><img loading="lazy" src="evidence/v1/uncertain.png" alt="未知回执防重复发送"></a><figcaption>未知回执防重复发送</figcaption></figure><figure><a href="evidence/v1/offline-draft.png"><img loading="lazy" src="evidence/v1/offline-draft.png" alt="离线草稿恢复"></a><figcaption>离线草稿恢复</figcaption></figure><figure><a href="evidence/v1/small-dark.png"><img loading="lazy" src="evidence/v1/small-dark.png" alt="小屏深色"></a><figcaption>小屏深色</figcaption></figure><figure><a href="evidence/v1/small-large-text.png"><img loading="lazy" src="evidence/v1/small-large-text.png" alt="小屏大字号"></a><figcaption>小屏大字号</figcaption></figure><figure><a href="evidence/v1/small-issue.png"><img loading="lazy" src="evidence/v1/small-issue.png" alt="大字号 Issue 详情"></a><figcaption>大字号 Issue 详情</figcaption></figure></div>
+<h2>验收记录</h2>
+<p class="note">合成服务通过与真实业务通过分别记录。SDLC 当前阶段：Test。</p>
+<div class="scroll">
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>场景</th>
+<th>状态</th>
+<th>证据边界</th>
+</tr>
+</thead>
+<tbody><tr><td>A01</td><td>环境隔离</td><td><span class="pill ">通过</span></td><td>普通 Release 与 Fixture 分离；Simulator 与 iPhone 构建均通过隔离检查。</td></tr><tr><td>A02</td><td>登录与认证错误</td><td><span class="pill ">通过</span></td><td>验证码、当前与旧作用域 401、403/503、Keychain 持久化与清理。</td></tr><tr><td>A03</td><td>Mika 与会话权限</td><td><span class="pill ">本地通过</span></td><td>按 system_key 和授权范围识别；真实工作区仍待读取。</td></tr><tr><td>A04</td><td>单次发送与未知回执</td><td><span class="pill ">通过</span></td><td>两轮各一次 POST；非法回执保留待确认；不自动重发。</td></tr><tr><td>A05</td><td>消息分页</td><td><span class="pill ">本地通过</span></td><td>50→55、重复时间戳与消息 ID 去重；历史阅读保留位置。</td></tr><tr><td>A06</td><td>任务过程与回复</td><td><span class="pill ">通过</span></td><td>按 task_id/seq 关联、去重排序；失败说明、无回复和未知事件容错。</td></tr><tr><td>A07</td><td>生命周期与隔离</td><td><span class="pill ">本地通过</span></td><td>修正后台残留 Socket；后台 0 连接/0 新请求，恢复最多 1 条；离线草稿与未知回执重启保留。物理 iPhone 待验。</td></tr><tr><td>A08</td><td>富文本与附件</td><td><span class="pill ">本地通过</span></td><td>PhotosPicker 和 Files 合成样本上传、绑定、图片/Quick Look 读回；外域凭据、过期 URL 和限额测试通过。物理文件选择待验。</td></tr><tr><td>A09</td><td>项目与 Issue 列表</td><td><span class="pill ">通过</span></td><td>服务端 25/55 统计、50→55 分页、自定义筛选与无项目入口。</td></tr><tr><td>A10</td><td>状态修改</td><td><span class="pill ">通过</span></td><td>一次 PUT，suppress_run=true，expected_revision=1；冲突不重发。</td></tr><tr><td>A11</td><td>协作资源</td><td><span class="pill ">本地通过</span></td><td>Runtime、Agent、Squad 原生列表与详情回放通过。</td></tr><tr><td>A12</td><td>原生可用性</td><td><span class="pill warn">部分通过</span></td><td>375×667 小屏、深浅色、两档辅助大字号、键盘和导航检查通过；最大字号需滚动，人工 VoiceOver 待验收。</td></tr><tr><td>A13</td><td>存储与退出</td><td><span class="pill warn">部分通过</span></td><td>Keychain、排除备份、草稿/预览清理通过；物理文件保护属性待 iPhone。</td></tr><tr><td>A14</td><td>真实 iPhone 业务闭环</td><td><span class="pill warn">待条件</span></td><td>目标 iPhone 仍 unavailable；待真实邮箱、Team 和明确测试消息。</td></tr></tbody>
+</table>
+</div>
+<h2>在 Mac 上运行</h2>
+<pre>cd /Users/benjamin/Workspace/chatty
+scripts/ios-dev-loop.sh app
+
+# 合成测试，在另一个终端启动服务
+python3 scripts/ios-fixture.py
+scripts/ios-dev-loop.sh fixture</pre>
+<p class="note">Xcode 工程：ios/Chatty.xcodeproj。更多说明：ios/README.md。合成邮箱 ios@example.test，验证码 123456。物理 iPhone 的安装需选择自己的 Apple Development Team。</p>
+<footer>2026-09-05 · AI-Native SDLC · 普通包 ai.chatty.ios · 无提交、推送、TestFlight 或公开发布。<br>历史 P0 证据保留在 evidence/p0；完整开发证据保留在 evidence/v1。</footer>
+</main>
+</html>
