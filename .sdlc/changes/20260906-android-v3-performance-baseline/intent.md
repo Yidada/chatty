@@ -358,9 +358,9 @@ Benjamin 已于 2026-09-06 批准 1A–6A，CLE-73 执行 Stage 2；真实 B0 �
 - `android/core-network/src/main/java/ai/chatty/core/network/MulticaApi.kt`
 - `android/core-network/src/main/java/ai/chatty/core/network/ChatApi.kt`
 - `android/core-auth/src/main/java/ai/chatty/core/auth/EncryptedSessionStore.kt`
-- `iterations/v2/intent.md`
-- `iterations/v2/spec.md`
-- `iterations/v2/EVAL.md`
+- `.sdlc/archive/iterations/v2/intent.md`
+- `.sdlc/archive/iterations/v2/spec.md`
+- `.sdlc/archive/iterations/v2/EVAL.md`
 - `docs/android-dev-loop.md`
 - Multica read-only: `server/internal/handler/chat.go`
 - Multica read-only: `server/internal/realtime/hub.go`

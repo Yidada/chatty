@@ -10,15 +10,15 @@
 - `source scripts/android-env.sh && cd android && ./gradlew -PchattyFixture=true :app:assembleDebug` -> exit 0.
 - `PYTHONPYCACHEPREFIX=/tmp/chatty-pyc python3 -m py_compile scripts/native-device-test.py scripts/chat-fixture.py scripts/tabs-device-test.py` -> exit 0.
 - `git diff --check` -> exit 0.
-- Logs and summary: `iterations/v2/evidence/native-validation/{build-test-lint.log,fixture-build.log,tests.json,apk.json}`.
+- Logs and summary: `.sdlc/archive/iterations/v2/evidence/native-validation/{build-test-lint.log,fixture-build.log,tests.json,apk.json}`.
 
 ## Pixel isolated acceptance
 Setup: source scripts/android-env.sh; Appium on 127.0.0.1:4725; `python3 scripts/chat-fixture.py` on 127.0.0.1:8765; adb reverse tcp:8765 tcp:8765; fixture APK installed.
-- `EVIDENCE_DIR="$PWD/iterations/v2/evidence/native-tabs-loop" python3 scripts/tabs-device-test.py` -> exit 0; 80 recorded checks; project aggregates, single Issue PUT with suppress_run=true/revision, search/filter/paging, empty and unassigned project, resource details, three tab loops. Every screenshot checkpoint rejects removed web labels and checks foreground package.
-- `EVIDENCE_DIR="$PWD/iterations/v2/evidence/native-chat-loop" python3 -u scripts/chat-device-test.py` -> exit 0; 36 checks; two synthetic sends, trace, reconnect, draft/cold start, cursor paging, error recovery and text attachment preview.
+- `EVIDENCE_DIR="$PWD/.sdlc/archive/iterations/v2/evidence/native-tabs-loop" python3 scripts/tabs-device-test.py` -> exit 0; 80 recorded checks; project aggregates, single Issue PUT with suppress_run=true/revision, search/filter/paging, empty and unassigned project, resource details, three tab loops. Every screenshot checkpoint rejects removed web labels and checks foreground package.
+- `EVIDENCE_DIR="$PWD/.sdlc/archive/iterations/v2/evidence/native-chat-loop" python3 -u scripts/chat-device-test.py` -> exit 0; 36 checks; two synthetic sends, trace, reconnect, draft/cold start, cursor paging, error recovery and text attachment preview.
 - First `native-device-test.py` run -> exit 1: new native-rich message was in viewport but previous link was above it; area-based scroll did not find link. Kept `native-content-loop/failure.*` and `native-validation/content-round1.log`.
 - Corrected harness to wait for refreshed conversation and scroll by actual chat list element. No application change after the original successful build.
-- `EVIDENCE_DIR="$PWD/iterations/v2/evidence/native-content-loop-2" python3 -u scripts/native-device-test.py` -> exit 0. Multica label preserves text and does not leave app; Mermaid code has no web fallback; both Markdown image and image attachment open/close native previews. Screenshots visually inspected.
+- `EVIDENCE_DIR="$PWD/.sdlc/archive/iterations/v2/evidence/native-content-loop-2" python3 -u scripts/native-device-test.py` -> exit 0. Multica label preserves text and does not leave app; Mermaid code has no web fallback; both Markdown image and image attachment open/close native previews. Screenshots visually inspected.
 - Original evidence folders and failed run retained. Test server restarted with new image fixture after chat regression.
 
 ## Real installed app and delivery

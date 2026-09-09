@@ -31,7 +31,7 @@
 ```sh
 source /Users/benjamin/Workspace/chatty/scripts/android-env.sh
 ./gradlew testDebugUnitTest assembleDebug lintDebug
-./gradlew -I ../iterations/v2/evidence/navigation-sdlc-test/repro/init.gradle :feature-chat:testDebugUnitTest --tests '*NavigationChatBoundaryTest*'
+./gradlew -I ../.sdlc/archive/iterations/v2/evidence/navigation-sdlc-test/repro/init.gradle :feature-chat:testDebugUnitTest --tests '*NavigationChatBoundaryTest*'
 ./gradlew assembleDebug -PchattyFixture=true
 ```
 

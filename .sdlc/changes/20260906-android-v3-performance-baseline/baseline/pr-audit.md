@@ -12,7 +12,7 @@ GitHub connector confirmed #2 OPEN, unmerged, mergeable=false, head `f282942a58a
 
 | Old content | Current destination / disposition |
 | --- | --- |
-| Eleven issue identifiers, UUIDs, stage, owner, priority | Already in main `iterations/v2/ISSUES.md`; retain latest version |
+| Eleven issue identifiers, UUIDs, stage, owner, priority | Already in main `.sdlc/archive/iterations/v2/ISSUES.md`; retain latest version |
 | Per-stage scope, dependencies, acceptance, commands | Already present in each main issue section; preserve rather than replace with old translation |
 | Stage barriers, one active implementation, later backlog | Main execution rules already cover these; current state requires verification, not resetting implemented stages to backlog |
 | Structured Approval absent; three signals only open reply composer | Main execution rules + CLE-60 section + v2 spec; retained |

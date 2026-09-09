@@ -1,7 +1,7 @@
 # Intent: Chatty (v1 — closed)
 
 - **Author:** Benjamin Zhang
-- **Status:** Closed — superseded by [`iterations/v2/intent.md`](../v2/intent.md)
+- **Status:** Closed — superseded by [`.sdlc/archive/iterations/v2/intent.md`](../v2/intent.md)
 - **Closed reason:** 方向收敛为「Multica 手机端应用」，未进入验收即被 v2 取代（2026-09-04）
 - **Stage:** 1 of 6 — Plan (superseded before acceptance)
 - **Last updated:** 2026-08-31

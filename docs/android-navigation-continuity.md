@@ -1,6 +1,6 @@
 # Android 导航连续性
 
-2026-09-05。参考 `iterations/ios-v1/plan.md` 的交互目标，范围为 Tab 状态保留、原生完整详情页、可取消的工作区选择。
+2026-09-05。参考 `.sdlc/changes/20260905-complete-ios-v1-native-client-p1-through-p5/design-plan.md` 的交互目标，范围为 Tab 状态保留、原生完整详情页、可取消的工作区选择。
 
 ## 行为
 
@@ -31,12 +31,12 @@
 
 ## 本轮结果
 
-> 历史补测确认 NAV-TEST-01：Mika 绑定 Runtime 后，返回对话和手动刷新未更新调用能力，重启才恢复。原有 41 项测试仍通过，新增边界测试 3 项通过、1 项失败。见 [原始复核记录](../iterations/v2/evidence/navigation-sdlc-test/review.md)。该问题已在本地修复，验证与交付范围见 [修复记录](../iterations/v2/evidence/runtime-binding-fix/review.md)。
+> 历史补测确认 NAV-TEST-01：Mika 绑定 Runtime 后，返回对话和手动刷新未更新调用能力，重启才恢复。原有 41 项测试仍通过，新增边界测试 3 项通过、1 项失败。见 [原始复核记录](../.sdlc/archive/iterations/v2/evidence/navigation-sdlc-test/review.md)。该问题已在本地修复，验证与交付范围见 [修复记录](../.sdlc/archive/iterations/v2/evidence/runtime-binding-fix/review.md)。
 
 - 构建、Lint 与 41 项 JVM 测试通过。
 - Pixel 连续性、原有项目管理、聊天收发与恢复、深色/1.3 倍字体流程通过。
 - 第 55 条 Issue 在切换前后屏幕坐标一致，历史消息阅读锚点保持。
-- 测试证据保存在 `iterations/v2/evidence/navigation-validation/` 与同级 `navigation-*-loop/`、`navigation-*-regression/`。
+- 测试证据保存在 `.sdlc/archive/iterations/v2/evidence/navigation-validation/` 与同级 `navigation-*-loop/`、`navigation-*-regression/`。
 
 - 最终真实服务 APK 已安装至 Pixel 6 Pro；真实工作区选择取消和三个资源列表的跨 Tab 保留验证通过，当前进程无 AndroidRuntime FATAL。
 - 测试包与本次端口转发已移除，系统夜间模式 auto / 字号 1.0 已恢复；未发送真实消息或修改真实 Issues。

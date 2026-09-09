@@ -2,7 +2,7 @@
 
 日期：2026-09-05 · 状态：规划草案 · 尚未开始 iOS 实现或验收。
 
-本次使用独立 `sdlc-plan`，产出范围、交互方案、技术建议和验收计划。现有 `.sdlc` 变更已关闭；本次沿用 `iterations/` 项目格式，不修改 Android 生命周期记录。
+此文件保留 2026-09-05 的原始设计提案及当时的事实。2026-09-09 归入本变更；当前执行顺序见 [plan.md](plan.md)，实现进度见 [progress.md](progress.md)，生命周期状态见 [state.json](state.json)。
 
 ## 1. 先把问题说清楚
 
@@ -19,7 +19,7 @@
 | 分类 | 当前结论 | 依据或影响 |
 | --- | --- | --- |
 | 已核实 | Chatty `main` 为 `3c003f9`，规划开始前工作区干净，只有 Android 源码 | 本轮本地检查；本次仅增加规划文档 |
-| 已核实 | 最新导航为 Mika 单一对话、项目、设置，已取消 Multica 网页流程出口 | `iterations/v2/NAVIGATION.md` 优先于旧 Spec 的页面安排 |
+| 已核实 | 最新导航为 Mika 单一对话、项目、设置，已取消 Multica 网页流程出口 | `.sdlc/archive/iterations/v2/NAVIGATION.md` 优先于旧 Spec 的页面安排 |
 | 已核实 | Android 支持真实历史读取；合成收发、项目管理和资源导航已有证据 | `CHAT_SOURCE_PARITY.md`、`EVAL.md` 后续增量章节；Android 全量 V2 仍未通过验收 |
 | 已核实 | agent-device 0.20.10 已在 Pixel 上重放 11 步，含项目加载等待、页面断言及截图 | `.tools/agent-device-trial-20260905/replay-result.json`；这项结果只覆盖 Android |
 | 已核实 | 本机 Xcode 26.6，可用 iOS 26.2 / 26.5 模拟器运行时 | 本轮 `xcodebuild -version` 与 `simctl list devices available`；没有启动模拟器 |
@@ -142,8 +142,8 @@ ios/
   ChattyUITests/                  # XCTest 系统交互与生命周期补充
 scripts/ios-env.sh                # 设备、scheme 与输出目录
 scripts/ios-dev-loop.sh           # build → install → launch → inspect
-iterations/ios-v1/flows/          # agent-device .ad 流程
-iterations/ios-v1/evidence/       # 脱敏验收摘要与可提交证据
+tests/device/ios/          # agent-device .ad 流程
+.sdlc/changes/20260905-complete-ios-v1-native-client-p1-through-p5/evidence/       # 脱敏验收摘要与可提交证据
 ```
 
 - 第一轮使用一个应用 target + 一个本地 Swift Package，以目录区分职责；出现真实依赖隔离需求后再拆 package。
@@ -254,7 +254,7 @@ iterations/ios-v1/evidence/       # 脱敏验收摘要与可提交证据
 4. 将稳定流程保存为 `.ad`；网络完成用内容/状态条件等待，避免用固定 sleep 或页面静止代替数据就绪。
 5. 每次变更先跑相关流程；发布候选再跑完整矩阵。模拟器通过后才开展 iPhone 签名安装与真实验证。
 6. agent-device 物理 iPhone 路径需要配对、Developer Mode 和签名配置，当前尚未在 iPhone 上验证。系统弹窗、VoiceOver、后台时序由 XCTest/人工补足。
-7. 合成数据与真实验证分开记录。原始私密截图/日志写入 `.tools/ios-v1/<run>/`，脱敏摘要写入 `iterations/ios-v1/evidence/`。
+7. 合成数据与真实验证分开记录。原始私密截图/日志写入 `.tools/ios-v1/<run>/`，脱敏摘要写入 `.sdlc/changes/20260905-complete-ios-v1-native-client-p1-through-p5/evidence/`。
 
 拟议命令形态如下，工程、scheme 与脚本建立后才能运行：
 
@@ -262,7 +262,7 @@ iterations/ios-v1/evidence/       # 脱敏验收摘要与可提交证据
 xcodebuild -project ios/Chatty.xcodeproj -scheme ChattyFixture \
   -destination 'platform=iOS Simulator,id=<selected-simulator-udid>' test
 scripts/ios-dev-loop.sh --fixture --device <selected-device-id>
-agent-device replay iterations/ios-v1/flows/navigation.ad --platform ios
+agent-device replay tests/device/ios/navigation.ad --platform ios
 ```
 
 agent-device 官方 iPhone 前置条件：[Installation](https://oss.callstack.com/agent-device/docs/installation)。Android 的 5.4 秒重放结果不作为 iOS 性能目标。
@@ -283,15 +283,15 @@ agent-device 官方 iPhone 前置条件：[Installation](https://oss.callstack.c
 
 ### Chatty 当前基线
 
-- [导航与最新原生边界](../v2/NAVIGATION.md)
-- [对话源码对齐清单](../v2/CHAT_SOURCE_PARITY.md)
-- [Android 验证记录，含后续增量](../v2/EVAL.md)
-- [现有颜色与布局语义](../../docs/android-visual-design.md)
-- [认证与网络契约](../../android/core-network/src/main/java/ai/chatty/core/network/MulticaApi.kt)
-- [Chat API](../../android/core-network/src/main/java/ai/chatty/core/network/ChatApi.kt) 与 [ChatSocket](../../android/core-network/src/main/java/ai/chatty/core/network/ChatSocket.kt)
-- [ChatController](../../android/feature-chat/src/main/java/ai/chatty/feature/chat/ChatController.kt) 与 [呈现规则](../../android/feature-chat/src/main/java/ai/chatty/feature/chat/ChatPresentation.kt)
-- [Workspace API](../../android/core-network/src/main/java/ai/chatty/core/network/WorkspaceApi.kt) 与 [ProjectsController](../../android/feature-workspace/src/main/java/ai/chatty/feature/workspace/ProjectsController.kt)
-- [认证 fixture](../../scripts/auth-fixture.py) 与 [Chat / 项目 fixture](../../scripts/chat-fixture.py)：同一 8765 端口，按场景分别运行；模拟器访问 Mac loopback，物理 iPhone 需要独立受控可达地址或测试隧道，不能假设手机 127.0.0.1 指向 Mac。
+- [导航与最新原生边界](../../archive/iterations/v2/NAVIGATION.md)
+- [对话源码对齐清单](../../archive/iterations/v2/CHAT_SOURCE_PARITY.md)
+- [Android 验证记录，含后续增量](../../archive/iterations/v2/EVAL.md)
+- [现有颜色与布局语义](../../../docs/android-visual-design.md)
+- [认证与网络契约](../../../android/core-network/src/main/java/ai/chatty/core/network/MulticaApi.kt)
+- [Chat API](../../../android/core-network/src/main/java/ai/chatty/core/network/ChatApi.kt) 与 [ChatSocket](../../../android/core-network/src/main/java/ai/chatty/core/network/ChatSocket.kt)
+- [ChatController](../../../android/feature-chat/src/main/java/ai/chatty/feature/chat/ChatController.kt) 与 [呈现规则](../../../android/feature-chat/src/main/java/ai/chatty/feature/chat/ChatPresentation.kt)
+- [Workspace API](../../../android/core-network/src/main/java/ai/chatty/core/network/WorkspaceApi.kt) 与 [ProjectsController](../../../android/feature-workspace/src/main/java/ai/chatty/feature/workspace/ProjectsController.kt)
+- [认证 fixture](../../../scripts/auth-fixture.py) 与 [Chat / 项目 fixture](../../../scripts/chat-fixture.py)：同一 8765 端口，按场景分别运行；模拟器访问 Mac loopback，物理 iPhone 需要独立受控可达地址或测试隧道，不能假设手机 127.0.0.1 指向 Mac。
 
 ### Multica 参考基线
 

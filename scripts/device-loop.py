@@ -20,7 +20,7 @@ def main():
         serial = devices[0]
     cmd = [adb, '-s', serial]
     assert pathlib.Path(apk).is_file(), 'APK not found'
-    evidence = pathlib.Path(os.environ.get('EVIDENCE_DIR', str(pathlib.Path(__file__).resolve().parents[1] / 'iterations/v2/evidence' / datetime.datetime.now().strftime('%Y%m%d-%H%M%S-%f-launch'))))
+    evidence = pathlib.Path(os.environ.get('EVIDENCE_DIR', str(pathlib.Path(__file__).resolve().parents[1] / '.sdlc/changes/20260905-native-experience-without-multica-web-exits/evidence/device-runs' / datetime.datetime.now().strftime('%Y%m%d-%H%M%S-%f-launch'))))
     evidence.mkdir(parents=True, exist_ok=False)
     output = run(*cmd, 'install', '-r', apk)
     assert 'Success' in output, output

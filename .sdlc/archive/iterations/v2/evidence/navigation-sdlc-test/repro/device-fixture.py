@@ -2,7 +2,7 @@
 import importlib.util
 from http.server import ThreadingHTTPServer
 from pathlib import Path
-root = Path(__file__).resolve().parents[5]
+root = next(parent for parent in Path(__file__).resolve().parents if (parent / 'scripts/chat-fixture.py').is_file())
 spec = importlib.util.spec_from_file_location('fixture', root/'scripts/chat-fixture.py')
 f = importlib.util.module_from_spec(spec); spec.loader.exec_module(f)
 f.AGENT.update(runtime_id='', runtime_bound=False)

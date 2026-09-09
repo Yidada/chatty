@@ -8,7 +8,7 @@
 
 | 项目 | 可复现命令 | 证据 | 结论 |
 |---|---|---|---|
-| M0 / CLE-68：真实任务链入库 | `rg -n 'CLE-' iterations/v2/ISSUES.md` | `ISSUES.md`，来源于 Multica CLE-57 的 11 个子 Issue | 本地工件完成；PR/远端合并未执行 |
+| M0 / CLE-68：真实任务链入库 | `rg -n 'CLE-' .sdlc/archive/iterations/v2/ISSUES.md` | `ISSUES.md`，来源于 Multica CLE-57 的 11 个子 Issue | 本地工件完成；PR/远端合并未执行 |
 | M1 / CLE-67：十模块工程与构建 | `source scripts/android-env.sh && android/gradlew -p android :app:assembleDebug test lint` | `evidence/m1-build-round2/build.log` | PASS；基线时尚无业务单测，后续 M2 增加实际测试 |
 | M1：真机安装启动 | `scripts/dev-loop.sh android/app/build/outputs/apk/debug/app-debug.apk ai.chatty.app.debug ai.chatty.app.MainActivity` | `evidence/m1-launch-round3/launch.json`、`launch.png`、`logcat.txt` | PASS，进程与前台窗口核实 |
 | M1：三轮页面切换 | `scripts/appium-ui.sh --shell-loop`（M1 版本；M2 后改为登录场景） | `evidence/m1-ui-round3/result.json`、`after-three-loops.png` | PASS，3 轮真实点击 |

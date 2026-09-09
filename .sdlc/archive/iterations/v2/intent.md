@@ -2,9 +2,9 @@
 
 - **Author:** Benjamin Zhang
 - **Status:** Accepted — 2026-09-04 (Benjamin Zhang)
-- **Stage:** 1 of 6 — Plan (complete; see `iterations/v2/spec.md` for Stage 2)
+- **Stage:** 1 of 6 — Plan (complete; see `.sdlc/archive/iterations/v2/spec.md` for Stage 2)
 - **Last updated:** 2026-09-04
-- **Forked from:** `iterations/v1/`（v1 未验收即关闭，本文件基于其后的新方向撰写）
+- **Forked from:** `.sdlc/archive/iterations/v1/`（v1 未验收即关闭，本文件基于其后的新方向撰写）
 - **Source of truth:** This file and its Git history
 
 ## Originator's intent
@@ -225,15 +225,15 @@ V1（Android）范围：
 - Out of scope 控制首期规模；
 - Open questions 已标记为 Stage 2 决策。
 
-接受后，下一项 Artifact 是 `iterations/v2/spec.md`。
+接受后，下一项 Artifact 是 `.sdlc/archive/iterations/v2/spec.md`。
 
-**验收记录：** Benjamin Zhang 于 2026-09-04 确认接受，进入 Stage 2 — Spec。Spec 见 [`iterations/v2/spec.md`](./spec.md)。
+**验收记录：** Benjamin Zhang 于 2026-09-04 确认接受，进入 Stage 2 — Spec。Spec 见 [`.sdlc/archive/iterations/v2/spec.md`](spec.md)。
 
 ## References
 
-- [Chatty README](../../README.md)
-- [Android 开发闭环](../../docs/android-dev-loop.md)
-- [SDLC 模具与轮次规则](../../docs/sdlc-workflow.md)
+- [Chatty README](../../../../README.md)
+- [Android 开发闭环](../../../../docs/android-dev-loop.md)
+- [SDLC 模具与轮次规则](../../../../docs/sdlc-workflow.md)
 - [v1 intent (closed)](../v1/intent.md)
 - [Multica](https://www.multica.ai/)
 - [Anthropic Agentic SDLC](https://claude.com/blog/the-ai-native-sdlc-playbook)

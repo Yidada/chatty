@@ -42,7 +42,7 @@ scripts/appium-ui.sh "选择工作区" "某个工作区" 1 "工作区已连接"
 - `appium-ui.sh` 使用 W3C API，检查 HTTP 错误和真实元素，保证 session 释放。
 - `ANDROID_SERIAL` 可显式选择设备；无授权或多台真机时脚本直接失败，避免连错设备。
 - `PKG`、`ACT`、`APPIUM_URL` 可覆盖默认值。
-- 证据自动写入 `iterations/v2/evidence/<时间戳>-.../`；`EVIDENCE_DIR` 可指定独立轮次目录，避免覆盖。
+- 证据自动写入 `.sdlc/changes/20260905-native-experience-without-multica-web-exits/evidence/device-runs/<时间戳>-.../`；`EVIDENCE_DIR` 可指定独立轮次目录，避免覆盖。
 - 未获得用户授权时，不使用真实账号自动发送验证码或对话；合成服务用于异常测试。
 
 ## M2 登录异常闭环

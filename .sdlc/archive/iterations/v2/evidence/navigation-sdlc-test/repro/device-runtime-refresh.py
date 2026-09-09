@@ -1,7 +1,7 @@
 """Expected to fail until returning Chat refreshes Mika capabilities. Never sends."""
 import importlib.util, json, os, subprocess, time, urllib.request
 from pathlib import Path
-root = Path(__file__).resolve().parents[5]
+root = next(parent for parent in Path(__file__).resolve().parents if (parent / 'scripts/chat-fixture.py').is_file())
 spec = importlib.util.spec_from_file_location('u', root/'scripts/appium-ui.py')
 u=importlib.util.module_from_spec(spec); spec.loader.exec_module(u)
 os.environ['PKG']='ai.chatty.app.fixture'

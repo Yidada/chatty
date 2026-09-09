@@ -47,7 +47,7 @@ Multica ID：`01a06d29-09d6-7e03-942b-f63f1b5bfbdb`
 
 ## 目标
 
-生成 Stage 3 仓库级 Artifact `iterations/v2/ISSUES.md`，把本父 Issue 下的全部 Multica 子 Issue、阶段、依赖、负责人、优先级、验收标准和验证命令固化到仓库，并将 README 当前指针更新为 Stage 3。
+生成 Stage 3 仓库级 Artifact `.sdlc/archive/iterations/v2/ISSUES.md`，把本父 Issue 下的全部 Multica 子 Issue、阶段、依赖、负责人、优先级、验收标准和验证命令固化到仓库，并将 README 当前指针更新为 Stage 3。
 
 ## 依赖
 
@@ -64,16 +64,16 @@ Multica ID：`01a06d29-09d6-7e03-942b-f63f1b5bfbdb`
 
 ## 验收标准
 
-- `iterations/v2/ISSUES.md` 存在，且列出全部子 Issue 标识符和阶段。
-- README Status 指向 Stage 3 和 `iterations/v2/ISSUES.md`。
+- `.sdlc/archive/iterations/v2/ISSUES.md` 存在，且列出全部子 Issue 标识符和阶段。
+- README Status 指向 Stage 3 和 `.sdlc/archive/iterations/v2/ISSUES.md`。
 - 文档与 `spec.md` §11–§14 一致。
 - 创建包含本 Issue key 和 `Closes <本 Issue key>` 的可审查 PR。
 
 ## 验证命令
 
 ```bash
-test -f iterations/v2/ISSUES.md
-rg -n "Stage 3|ISSUES.md|CLE-" README.md iterations/v2/ISSUES.md
+test -f .sdlc/archive/iterations/v2/ISSUES.md
+rg -n "Stage 3|ISSUES.md|CLE-" README.md .sdlc/archive/iterations/v2/ISSUES.md
 git diff --check
 ```
 
@@ -366,7 +366,7 @@ Multica ID：`01a06d28-d0f8-79ce-88a8-0b50356350bc`
 
 ## 目标
 
-在 Pixel 6 Pro 上完成 Chatty v2 Android V1 的构建、安装、启动和 Appium 全链路验证，并把成功标准 1–8 的真实证据提交到 `iterations/v2/evidence/`。
+在 Pixel 6 Pro 上完成 Chatty v2 Android V1 的构建、安装、启动和 Appium 全链路验证，并把成功标准 1–8 的真实证据提交到 `.sdlc/archive/iterations/v2/evidence/`。
 
 ## 依赖
 
@@ -386,7 +386,7 @@ Multica ID：`01a06d28-d0f8-79ce-88a8-0b50356350bc`
 ## 验收标准
 
 - Intent 成功标准 1–8 每项均有命令、结论和独立证据路径。
-- 所有截图/日志写入 `iterations/v2/evidence/`，不覆盖旧证据。
+- 所有截图/日志写入 `.sdlc/archive/iterations/v2/evidence/`，不覆盖旧证据。
 - 失败项如实记录并转入后续 EVAL/HARDENING，不以口头 PASS 代替。
 - 产出 Stage 4 实现交付摘要和进入 Stage 5 EVAL 的建议。
 

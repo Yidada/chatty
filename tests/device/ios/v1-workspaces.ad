@@ -16,7 +16,7 @@ wait stable 1000 10000
 press "id=\"workspace.w2\""
 wait stable 1000 10000
 wait "role=\"statictext\" label=\"第二工作区 · 历史消息 54\""
-screenshot "iterations/ios-v1/evidence/v1/workspace-two.png"
+screenshot ".sdlc/changes/20260905-complete-ios-v1-native-client-p1-through-p5/evidence/v1/workspace-two.png"
 fill "id=\"chat.draft\"" "WORKSPACE_TWO_DRAFT"
 press "role=\"button\" label=\"收起键盘\""
 press "role=\"button\" label=\"设置\""

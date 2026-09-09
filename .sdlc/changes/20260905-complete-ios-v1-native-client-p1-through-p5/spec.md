@@ -1,6 +1,6 @@
 # 规格
 
-采用已被用户确认的 iterations/ios-v1/plan.md §2–9 作为完整规格；本文件明确实现边界。
+采用已被用户确认的 .sdlc/changes/20260905-complete-ios-v1-native-client-p1-through-p5/design-plan.md §2–9 作为完整规格；本文件明确实现边界。
 
 - 登录：邮箱验证码；Keychain ThisDeviceOnly；恢复 /me 与 workspaces；403/503 不删凭据；401 仅使当前 token 和 generation 失效。切换/退出取消旧任务、socket 与上传下载，旧结果不能污染新工作区。
 - 对话：system_key=mika + owner/public_to permission；最近未归档会话；首次发送时创建。双游标分页，ID 去重，固定阅读锚点；草稿按 account/workspace/agent 隔离。单次 POST，未知回执不自动重发；有效回执后即使刷新失败也保持已接受。

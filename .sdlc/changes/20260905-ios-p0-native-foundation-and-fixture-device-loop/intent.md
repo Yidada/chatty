@@ -1,6 +1,6 @@
 # iOS P0：原生工程与合成设备闭环
 
-用户在审阅 `iterations/ios-v1/plan.md` 和局域网 HTML 后说“good 下一步”，并显式调用 AI-Native SDLC。继续已提出的 IOS-P0，形成可以构建、启动、读取合成服务及重放的最小工程。
+用户在审阅 `.sdlc/changes/20260905-complete-ios-v1-native-client-p1-through-p5/design-plan.md` 和局域网 HTML 后说“good 下一步”，并显式调用 AI-Native SDLC。继续已提出的 IOS-P0，形成可以构建、启动、读取合成服务及重放的最小工程。
 
 ## 结果
 - SwiftUI iPhone 应用实际运行，提供对话、项目、设置三入口。

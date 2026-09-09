@@ -1,7 +1,0 @@
-gradle.beforeProject { p ->
-    if (p.path in [':feature-chat', ':feature-workspace']) {
-        p.afterEvaluate {
-            p.android.sourceSets.test.java.srcDir(new File(p.rootDir, '../iterations/v2/evidence/navigation-sdlc-test/repro/' + p.name))
-        }
-    }
-}

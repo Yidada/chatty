@@ -33,7 +33,7 @@
 
 ## 验证
 
-- 构建、Lint、35 项 JVM 测试通过。证据位于 `iterations/v2/evidence/design-refresh/`。
+- 构建、Lint、35 项 JVM 测试通过。证据位于 `.sdlc/archive/iterations/v2/evidence/design-refresh/`。
 - `design-tabs-loop/`：项目进度、状态修改、搜索筛选、55 条分页、资源详情和 Tab 切换通过。
 - `design-chat-loop/`：两轮合成收发、附件、任务过程、草稿/冷启动、重连、分页和错误恢复通过。
 - `design-visual-loop/`：浅色、深色、1.3 倍字体及键盘画面已采集并检查。设置和项目布局清晰，放大字号仍可使用。

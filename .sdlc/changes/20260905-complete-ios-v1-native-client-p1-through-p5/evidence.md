@@ -7,11 +7,11 @@
 - Swift Package：33 tests、0 failures，日志 `.tools/ios-v1/full-run/swift-tests.log`。
 - iOS XCTest：4 passed、0 failed、1 skipped。最后系统测试结果：`~/Library/Developer/XcodeBuildMCP/workspaces/chatty-a525cea81dd1/result-bundles/test_sim_2026-09-05T15-43-43-879Z_pid78253_821e034c.xcresult`。真实 Keychain 写入、读取、更新、删除和 ThisDeviceOnly 属性通过；文件排除备份、过期删除、退出清理通过。物理文件保护属性在 Simulator 不可见，明确跳过。
 - 原生 Fixture Debug 构建、安装和运行：最后构建日志 `build_run_sim_2026-09-05T15-36-38-187Z_pid78253_cf7d2e14.log`（同一 XcodeBuildMCP logs 目录）。
-- 回归场景：core 56 steps，resources 29 steps，workspaces 32 steps；均 0 healed。可提交摘要在 `iterations/ios-v1/evidence/v1/replay-{core,resources,workspaces,summary,fixture-audit}.json`。
+- 回归场景：core 56 steps，resources 29 steps，workspaces 32 steps；均 0 healed。可提交摘要在 `.sdlc/changes/20260905-complete-ios-v1-native-client-p1-through-p5/evidence/v1/replay-{core,resources,workspaces,summary,fixture-audit}.json`。
 - 回放服务审计：2 条消息 POST、1 次 Issue PUT；`suppress_run=true`，`expected_revision=1`，自定义状态 `qa_custom`。每次仅 1 条有效 Socket，退出后 0 条；其他工作区和账号没有消息/Issue 写入；auth 请求没有 Bearer，WS URL 没有 token。
 - 退出后受保护目录内无文件；草稿和临时预览清理。测试包 Documents 中的合成输入样本单独保留，不属于私密缓存。
 - API 重定向：正式 APIClient 与历史 FixtureClient 均拒绝真实本机 302，目标收到 0 次请求；`.tools/ios-v1/full-run/redirect.log`。
-- 正常 Release Simulator 与通用 iPhone 无签名编译通过；`iterations/ios-v1/evidence/v1/release-isolation.json` 记录普通包无 Fixture token、回环地址、FixtureSupport 与 ATS 例外。最终构建日志为 build_sim_2026-09-05T15-40-41-949Z_pid78253_c16ec159.log；通用 iPhone 日志为 `.tools/ios-v1/full-run/iphone-build.log`，隔离文件哈希已刷新。
+- 正常 Release Simulator 与通用 iPhone 无签名编译通过；`.sdlc/changes/20260905-complete-ios-v1-native-client-p1-through-p5/evidence/v1/release-isolation.json` 记录普通包无 Fixture token、回环地址、FixtureSupport 与 ATS 例外。最终构建日志为 build_sim_2026-09-05T15-40-41-949Z_pid78253_c16ec159.log；通用 iPhone 日志为 `.tools/ios-v1/full-run/iphone-build.log`，隔离文件哈希已刷新。
 - PhotosPicker 已选择自己注入的 320 B 合成 PNG，上传后发送并确认 attachment ID，读到 `CHATTY_CHAT_OK · IOS_V1_ATTACHMENT`，打开原生图片预览；`photo-upload.json` / `photo-preview.png`。
 
 - FilesPicker 从 Fixture Documents 选择 52 B 文本，上传后发送 IOS_V1_FILE，绑定 upload-2 后用 Quick Look 读到原文；`file-upload.json` / `file-import.png`。
@@ -28,7 +28,7 @@
 - 最终回放一度卡在退出弹窗动画；使用回放格式支持的 wait stable 等待退出弹窗稳定，core 与 resources 完整通过；workspace Sheet 同样增加稳定等待并单独重测，三段使用同一份合成服务状态接受最终写入与退出审计。
 
 ## 保留门禁
-原生 Files 文本导入及 Quick Look 读回、生命周期、未知回执冷启动、小屏深色和两档辅助大字号检查已记录到 `iterations/ios-v1/evidence/v1/verification.json`。真实目标 iPhone 在最近一次 `devicectl list devices` 中为 unavailable。真实邮箱、Team 和指定测试消息未提供，A14、实机保护/锁屏和人工 VoiceOver 验收保持未完成；SDLC 不关闭。
+原生 Files 文本导入及 Quick Look 读回、生命周期、未知回执冷启动、小屏深色和两档辅助大字号检查已记录到 `.sdlc/changes/20260905-complete-ios-v1-native-client-p1-through-p5/evidence/v1/verification.json`。真实目标 iPhone 在最近一次 `devicectl list devices` 中为 unavailable。真实邮箱、Team 和指定测试消息未提供，A14、实机保护/锁屏和人工 VoiceOver 验收保持未完成；SDLC 不关闭。
 
 - 普通 Release 已安装并启动到邮箱登录页，未输入真实邮箱或发送验证码；日志 build_run_sim_2026-09-05T15-55-23-366Z_pid78253_6e2471e9.log，截图 normal-login.png。最终二进制哈希与隔离记录一致。
 - 最后工作区回放将文本查询限定为 statictext，并在 Sheet 进入/退出后等待原生界面稳定；32 步通过，0 healed。完整三段 117 步，合成服务最终审计仍为 2 次消息 + 1 次 Issue、最多 1 Socket、退出文件 0。

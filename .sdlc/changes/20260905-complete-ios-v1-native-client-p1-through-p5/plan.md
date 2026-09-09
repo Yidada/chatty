@@ -1,7 +1,7 @@
 # 实施计划
 
 ## 已有授权
-用户对 iterations/ios-v1/plan.md 完整范围及执行顺序明确批准「没问题，全部执行开发完吧」。本变更规格和计划将该已有方案落实为文件分工，未增加发布、后台推送、语音或服务端修改。沿用该授权记录 spec/plan 决策；真实发信/Agent测试消息等待具体内容授权。
+用户对 .sdlc/changes/20260905-complete-ios-v1-native-client-p1-through-p5/design-plan.md 完整范围及执行顺序明确批准「没问题，全部执行开发完吧」。本变更规格和计划将该已有方案落实为文件分工，未增加发布、后台推送、语音或服务端修改。沿用该授权记录 spec/plan 决策；真实发信/Agent测试消息等待具体内容授权。
 
 ## 顺序
 1. P1：ChattyCore 网络、CredentialVault、SessionModel、作用域与受保护本地存储；原生登录和工作区。

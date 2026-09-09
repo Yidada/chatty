@@ -44,9 +44,9 @@
 ```sh
 source /Users/benjamin/Workspace/chatty/scripts/android-env.sh
 ./gradlew testDebugUnitTest assembleDebug lintDebug
-./gradlew -I ../iterations/v2/evidence/navigation-sdlc-test/repro/init.gradle :feature-chat:testDebugUnitTest --tests '*NavigationChatBoundaryTest' :feature-workspace:testDebugUnitTest --tests '*NavigationProjectBoundaryTest' --continue
+./gradlew -I ../.sdlc/archive/iterations/v2/evidence/navigation-sdlc-test/repro/init.gradle :feature-chat:testDebugUnitTest --tests '*NavigationChatBoundaryTest' :feature-workspace:testDebugUnitTest --tests '*NavigationProjectBoundaryTest' --continue
 ./gradlew assembleDebug -PchattyFixture=true
-./gradlew -I ../iterations/v2/evidence/navigation-sdlc-test/repro/fresh-tests.gradle testDebugUnitTest assembleDebug lintDebug
+./gradlew -I ../.sdlc/archive/iterations/v2/evidence/navigation-sdlc-test/repro/fresh-tests.gradle testDebugUnitTest assembleDebug lintDebug
 ```
 
 第二条命令预期返回失败，保留 NAV-TEST-01 的复现。最后一条强制原有 Test 任务重新执行，同时恢复真实服务构建；其通过结果覆盖原有 41 项测试，不包括临时加入的 4 项边界测试。
@@ -55,12 +55,12 @@ source /Users/benjamin/Workspace/chatty/scripts/android-env.sh
 
 ```sh
 source /Users/benjamin/Workspace/chatty/scripts/android-env.sh
-python3 -B iterations/v2/evidence/navigation-sdlc-test/repro/device-fixture.py
+python3 -B .sdlc/archive/iterations/v2/evidence/navigation-sdlc-test/repro/device-fixture.py
 appium --address 127.0.0.1 --port 4725
 # 在 fixture 构建完成后安装；该包名为 ai.chatty.app.fixture。
 adb -s 1A021FDEE004VC install -r android/app/build/outputs/apk/debug/app-debug.apk
 adb -s 1A021FDEE004VC reverse tcp:8765 tcp:8875
-ANDROID_SERIAL=1A021FDEE004VC EVIDENCE_DIR=/tmp/chatty-runtime-refresh-new python3 -B iterations/v2/evidence/navigation-sdlc-test/repro/device-runtime-refresh.py
+ANDROID_SERIAL=1A021FDEE004VC EVIDENCE_DIR=/tmp/chatty-runtime-refresh-new python3 -B .sdlc/archive/iterations/v2/evidence/navigation-sdlc-test/repro/device-runtime-refresh.py
 ```
 
 本机服务仅监听 `127.0.0.1:8875`，设备通过 ADB reverse 使用它。脚本修改合成 Mika 绑定，不访问真实 Multica；合成 Chat 发送与 Issue 写入均为 0。

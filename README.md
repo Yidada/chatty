@@ -6,7 +6,7 @@ Chatty 是 **Multica 的移动端 thin client**：身份、任务、协调与执
 
 Chatty 直接复用 Multica 的 Runtime、Daemon 与连接能力，也吸收 ChatGPT 手机应用的设计语言与面向 AI 的交互体验。
 
-> **Lark Context Layer 定位说明：** 本文档下文保留的 Lark Context Layer / Context Index / `larkcli` 描述，是 v1 探索阶段留下的长期概念设想，**不属于 v2 V1 范围**。`iterations/v2/intent.md` 已明确将「飞书 / Lark Context Layer 深度集成」列为 Out of scope（候选后续增强）。v2 当前轮次以 [`iterations/v2/spec.md`](./iterations/v2/spec.md) 为准；下文涉及 Lark 的章节仅作为未来候选方向保留，读者应以 Stage 状态指针（见文末 `Status`）判断当前轮次的真实范围。
+> **Lark Context Layer 定位说明：** 本文档下文保留的 Lark Context Layer / Context Index / `larkcli` 描述，是 v1 探索阶段留下的长期概念设想，**不属于 v2 V1 范围**。`.sdlc/archive/iterations/v2/intent.md` 已明确将「飞书 / Lark Context Layer 深度集成」列为 Out of scope（候选后续增强）。v2 当前轮次以 [`.sdlc/archive/iterations/v2/spec.md`](.sdlc/archive/iterations/v2/spec.md) 为准；下文涉及 Lark 的章节仅作为未来候选方向保留，读者应以 Stage 状态指针（见文末 `Status`）判断当前轮次的真实范围。
 
 ## Why Chatty
 
@@ -34,7 +34,7 @@ Chatty 将这些能力组织成一个以个人为中心的系统。用户无需�
 
 ### 2. Context Layer carries shared state (候选后续能力，V1 范围外)
 
-> 本节描述的 Lark Context Layer 是长期概念设想，未包含在 v2 V1 范围（见文首定位说明与 `iterations/v2/intent.md` Out of scope）。V1 不依赖此层。
+> 本节描述的 Lark Context Layer 是长期概念设想，未包含在 v2 V1 范围（见文首定位说明与 `.sdlc/archive/iterations/v2/intent.md` Out of scope）。V1 不依赖此层。
 
 `Lark = Context Index + Context Graph + Retrieval Routing + Native Work Objects`
 
@@ -189,7 +189,7 @@ Daemon 直接使用 Multica Daemon，负责能力发现、任务领取、Session
 
 ## Execution Flow
 
-> 下图与 10 步链路是长期概念设想（含 Lark Context Index / Source Resolver 步骤），**不是 v2 V1 的实现范围**。V1 实际链路见下方「V1 简化链路」，并以 [`iterations/v2/spec.md`](./iterations/v2/spec.md) §1 为准。
+> 下图与 10 步链路是长期概念设想（含 Lark Context Index / Source Resolver 步骤），**不是 v2 V1 的实现范围**。V1 实际链路见下方「V1 简化链路」，并以 [`.sdlc/archive/iterations/v2/spec.md`](.sdlc/archive/iterations/v2/spec.md) §1 为准。
 
 ```mermaid
 flowchart TD
@@ -247,7 +247,7 @@ Chatty 的整体交互以 ChatGPT 手机应用的设计语言为主要参考（�
 
 ## Lark Context Layer（候选后续能力，V1 范围外）
 
-> 本节未包含在 v2 V1 范围，见文首定位说明与 `iterations/v2/intent.md` Out of scope。
+> 本节未包含在 v2 V1 范围，见文首定位说明与 `.sdlc/archive/iterations/v2/intent.md` Out of scope。
 
 `Lark = Context Index + Context Graph + Retrieval Routing + Native Work Objects`
 
@@ -289,7 +289,7 @@ GitHub、外部文档、本地文件、Runtime Session 和其他服务保留各�
 
 ## Product Scope（跨轮次概念，非本轮 V1 清单）
 
-> 本节是产品长期概念范围，不是本轮 V1 的权威范围声明。**v2 V1 的实际范围以 `iterations/v2/intent.md` 「Initial scope」/「Out of scope」与 `iterations/v2/spec.md` 为准**——两者都明确排除飞书 / Lark Context Layer 深度集成。
+> 本节是产品长期概念范围，不是本轮 V1 的权威范围声明。**v2 V1 的实际范围以 `.sdlc/archive/iterations/v2/intent.md` 「Initial scope」/「Out of scope」与 `.sdlc/archive/iterations/v2/spec.md` 为准**——两者都明确排除飞书 / Lark Context Layer 深度集成。
 
 概念范围（跨轮次）：
 
@@ -320,16 +320,20 @@ Chatty 让用户通过一次自然对话表达意图，调动分布在不同设�
 Chatty 当前处于 **Stage 4 — Implementation（进行中）**。
 
 - 当前轮次：**v2**。
-- 规格：[`iterations/v2/spec.md`](./iterations/v2/spec.md)，CLE-56 已验收。
-- 执行清单：[`iterations/v2/ISSUES.md`](./iterations/v2/ISSUES.md)，对应 Multica CLE-57 下 M0–M10。
+- 规格：[`.sdlc/archive/iterations/v2/spec.md`](.sdlc/archive/iterations/v2/spec.md)，CLE-56 已验收。
+- 执行清单：[`.sdlc/archive/iterations/v2/ISSUES.md`](.sdlc/archive/iterations/v2/ISSUES.md)，对应 Multica CLE-57 下 M0–M10。
 - 本轮：2026-09-05，按用户指示在 Mac + USB Pixel 6 Pro 上完成工程、登录和 Chat 核心开发；真实历史可读，合成收发闭环通过，真实新消息收发仍待验收。
-- 一级导航：**对话（Mika） / 项目（Issues 进度） / 设置**，见 [`NAVIGATION.md`](./iterations/v2/NAVIGATION.md)。
-- 导航连续性：Tab 保留详情、搜索与阅读位置，工作区切换支持取消，见 [Android 导航连续性](./docs/android-navigation-continuity.md)。
-- 视觉规范：已应用统一的暖白 / 石墨 / 低饱和绿主题、Material 线性图标和分组布局；支持系统深色模式，见 [Android 视觉规范](./docs/android-visual-design.md)。
-- 原生体验收敛：删除 Multica 网页流程和菜单；设置保留已有原生资源查看，图片使用应用内预览。本次记录位于 [SDLC 变更](./.sdlc/changes/20260905-native-experience-without-multica-web-exits/intent.md)。
-- Chat 源码覆盖：[`iterations/v2/CHAT_SOURCE_PARITY.md`](./iterations/v2/CHAT_SOURCE_PARITY.md)。
-- 验收记录：[`iterations/v2/EVAL.md`](./iterations/v2/EVAL.md)，仅通过有实际证据的项目。
-- 源码：[`android/`](./android/)。
-- 工程闭环：[`docs/android-dev-loop.md`](./docs/android-dev-loop.md)。
-- 生命周期规则：[`docs/sdlc-workflow.md`](./docs/sdlc-workflow.md)。
+- 一级导航：**对话（Mika） / 项目（Issues 进度） / 设置**，见 [`NAVIGATION.md`](.sdlc/archive/iterations/v2/NAVIGATION.md)。
+- 导航连续性：Tab 保留详情、搜索与阅读位置，工作区切换支持取消，见 [Android 导航连续性](docs/android-navigation-continuity.md)。
+- 视觉规范：已应用统一的暖白 / 石墨 / 低饱和绿主题、Material 线性图标和分组布局；支持系统深色模式，见 [Android 视觉规范](docs/android-visual-design.md)。
+- 原生体验收敛：删除 Multica 网页流程和菜单；设置保留已有原生资源查看，图片使用应用内预览。本次记录位于 [SDLC 变更](.sdlc/changes/20260905-native-experience-without-multica-web-exits/intent.md)。
+- Chat 源码覆盖：[`.sdlc/archive/iterations/v2/CHAT_SOURCE_PARITY.md`](.sdlc/archive/iterations/v2/CHAT_SOURCE_PARITY.md)。
+- 验收记录：[`.sdlc/archive/iterations/v2/EVAL.md`](.sdlc/archive/iterations/v2/EVAL.md)，仅通过有实际证据的项目。
+- 源码：[`android/`](android)。
+- 工程闭环：[`docs/android-dev-loop.md`](docs/android-dev-loop.md)。
+- 生命周期规则：[`docs/sdlc-workflow.md`](docs/sdlc-workflow.md)。
 - 全部 V2 功能完成前，不进入 Stage 5 正式总体评估或声明 V2 发布完成。
+
+## Development records
+
+Plans, progress and verification evidence are indexed in [.sdlc/README.md](.sdlc/README.md). Reusable device flows live in `tests/device/`; platform code remains in `android/` and `ios/`.

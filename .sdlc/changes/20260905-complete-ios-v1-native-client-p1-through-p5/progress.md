@@ -27,7 +27,7 @@
 
 核心回放审计与额外边界测试分别保留。额外照片、文件、未知回执和外部模拟修改产生另外 3 条合成消息及 1 次合成 Issue 修改；没有真实业务写入。
 
-机器摘要：[verification.json](evidence/v1/verification.json)。实际截图：[progress.html](progress.html)。完整架构与运行步骤：[ios/README.md](../../ios/README.md)。
+机器摘要：[verification.json](evidence/v1/verification.json)。实际截图：[progress.html](progress.html)。完整架构与运行步骤：[ios/README.md](../../../ios/README.md)。
 
 ## 验收条件
 
@@ -35,4 +35,4 @@
 - 真实 Multica 邮箱与目标工作区，指定允许发送的测试内容。
 - 实机文件保护/锁屏、网络切换、Quick Look 缓存行为与人工 VoiceOver 检查。
 
-未制作签名 IPA，未提交、推送、TestFlight 或 App Store 发布。原始设计 [plan.md](plan.md) / [design.html](design.html) 与历史 P0 证据保持独立。
+未制作签名 IPA，未提交、推送、TestFlight 或 App Store 发布。原始设计 [plan.md](design-plan.md) / [design.html](design.html) 与历史 P0 证据保持独立。

@@ -7,7 +7,7 @@
 - **Status:** Reviewed — CLE-56 已完成；2026-09-05 按用户指示进入实现
 - **Stage:** 2 of 6 — Spec
 - **Last updated:** 2026-09-04
-- **Based on:** `iterations/v2/intent.md` (Accepted 2026-09-04)
+- **Based on:** `.sdlc/archive/iterations/v2/intent.md` (Accepted 2026-09-04)
 - **Source of truth for API claims:** `https://github.com/multica-ai/multica` (read-only reference; no writes made). Every claim below cites `path:line`. Anything not confirmed by source reading is marked `UNCONFIRMED`.
 
 ---
@@ -244,7 +244,7 @@ Confirmed absent server-side: no FCM/APNs integration, no device-token registrat
 
 ## 10. Open Questions — decisions
 
-Resolving all 6 from `iterations/v2/intent.md` §Open questions, plus one new one surfaced by this review:
+Resolving all 6 from `.sdlc/archive/iterations/v2/intent.md` §Open questions, plus one new one surfaced by this review:
 
 1. **API coverage (WS/polling/push) and auth** — ✅ Decided. Internal App API (§3), Bearer JWT + `X-Workspace-Slug` (§6.1), single user-facing WS at `GET /ws` (§8.1) for realtime, no true push in V1 (see #3 below).
 2. **Voice transcription service and privacy boundary** — ✅ Decided. On-device Android `SpeechRecognizer`, offline-preferred, audio never sent to Multica (§7).
@@ -290,7 +290,7 @@ Each stage should land as its own Multica Issue chain (`--parent`/`--stage`), co
 
 ## 13. Eval plan
 
-Per `docs/sdlc-workflow.md` evidence rules: every row above (Criteria 1–8) needs a command/script + an evidence artifact path under `iterations/v2/evidence/` (screenshot, logcat excerpt, or Appium session id) before Stage 5 (`EVAL.md`) can go green. No criterion is accepted on verbal confirmation. Failures get logged to `HARDENING.md` with a reproducible command, per the repo's evidence discipline — this spec does not relax that rule for any of the gaps identified in §4/§8.4; those gaps are pre-declared as "cannot pass," not silently skipped, and Criterion 3/4's EVAL rows should explicitly note they're testing the §6.3/§8.3 approximations, not a fidelity Multica doesn't offer.
+Per `docs/sdlc-workflow.md` evidence rules: every row above (Criteria 1–8) needs a command/script + an evidence artifact path under `.sdlc/archive/iterations/v2/evidence/` (screenshot, logcat excerpt, or Appium session id) before Stage 5 (`EVAL.md`) can go green. No criterion is accepted on verbal confirmation. Failures get logged to `HARDENING.md` with a reproducible command, per the repo's evidence discipline — this spec does not relax that rule for any of the gaps identified in §4/§8.4; those gaps are pre-declared as "cannot pass," not silently skipped, and Criterion 3/4's EVAL rows should explicitly note they're testing the §6.3/§8.3 approximations, not a fidelity Multica doesn't offer.
 
 ---
 
@@ -315,6 +315,6 @@ Per `docs/sdlc-workflow.md` evidence rules: every row above (Criteria 1–8) nee
 ## 15. Consistency check performed for this spec
 
 - `README.md` "Status" section updated to point at Stage 2 and this spec, per acceptance criteria.
-- **Follow-up (2026-09-04, per Benjamin's review comment on this Issue):** `README.md`'s Lark/Context-Layer narrative — previously left as pre-pivot `iterations/v1/` content and flagged but not fixed in the first pass — has been downgraded throughout: every Lark-referencing section (`Why Chatty`, Core Principle 2, `Context Layer`, `Execution Flow`, `Lark Context Layer`, `Initial Product Scope`, `Product Statement`) now carries an explicit "候选后续能力，V1 范围外" banner, and the former "Initial Product Scope" section (which listed a `larkcli` bullet as if it were V1 scope) is renamed "Product Scope（跨轮次概念，非本轮 V1 清单）" with that bullet moved to a separate "候选后续能力" list and an explicit pointer to `iterations/v2/intent.md` as the authoritative V1 scope. A V1-only simplified Execution Flow (no Lark steps) was added alongside the original concept diagram, which is now labeled as long-term vision, not V1 implementation.
-- `iterations/v2/intent.md` header updated to `Status: Accepted` to reflect Benjamin's 2026-09-04 acceptance recorded in this Issue's description, satisfying Gate G1 before this spec could be written.
+- **Follow-up (2026-09-04, per Benjamin's review comment on this Issue):** `README.md`'s Lark/Context-Layer narrative — previously left as pre-pivot `.sdlc/archive/iterations/v1/` content and flagged but not fixed in the first pass — has been downgraded throughout: every Lark-referencing section (`Why Chatty`, Core Principle 2, `Context Layer`, `Execution Flow`, `Lark Context Layer`, `Initial Product Scope`, `Product Statement`) now carries an explicit "候选后续能力，V1 范围外" banner, and the former "Initial Product Scope" section (which listed a `larkcli` bullet as if it were V1 scope) is renamed "Product Scope（跨轮次概念，非本轮 V1 清单）" with that bullet moved to a separate "候选后续能力" list and an explicit pointer to `.sdlc/archive/iterations/v2/intent.md` as the authoritative V1 scope. A V1-only simplified Execution Flow (no Lark steps) was added alongside the original concept diagram, which is now labeled as long-term vision, not V1 implementation.
+- `.sdlc/archive/iterations/v2/intent.md` header updated to `Status: Accepted` to reflect Benjamin's 2026-09-04 acceptance recorded in this Issue's description, satisfying Gate G1 before this spec could be written.
 - No changes made to `https://github.com/multica-ai/multica` — read-only throughout, per repo-boundary constraint.

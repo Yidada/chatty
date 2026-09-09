@@ -65,4 +65,4 @@ scripts/ios-v1-replay.sh
 
 合成审计：`http://127.0.0.1:8765/__calls`，包含每个作用域的消息/Issue 写入、上传元数据及 Socket 开关记录。`/__control` 可设置 `status`、`disconnect`、`send_mode`、`issue_conflict`、`catalog_status`、`deny_mika`；通过 `X-Workspace-Slug` 和合成 token 指定作用域。写请求不会自动重试。
 
-验收结果见 [进度](../iterations/ios-v1/progress.md)、[截图报告](../iterations/ios-v1/progress.html) 和 `.sdlc/changes/20260905-complete-ios-v1-native-client-p1-through-p5/`。本机构建和原始日志位于 `.tools/ios-v1/full-run/`。
+验收结果见 [进度](../.sdlc/changes/20260905-complete-ios-v1-native-client-p1-through-p5/progress.md)、[截图报告](../.sdlc/changes/20260905-complete-ios-v1-native-client-p1-through-p5/progress.html) 和 `.sdlc/changes/20260905-complete-ios-v1-native-client-p1-through-p5/`。本机构建和原始日志位于 `.tools/ios-v1/full-run/`。

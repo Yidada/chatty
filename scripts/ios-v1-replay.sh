@@ -20,7 +20,7 @@ PY
 run_dir="$CHATTY_REPO_ROOT/.tools/ios-v1/$(date +%Y%m%d-%H%M%S)-replay"
 mkdir -p "$run_dir"
 for flow in core resources workspaces; do
-    agent-device replay "iterations/ios-v1/flows/v1-$flow.ad" --platform ios \
+    agent-device replay "tests/device/ios/v1-$flow.ad" --platform ios \
         --udid "$IOS_SIMULATOR_ID" --session "chatty-ios-v1-$flow" --json > "$run_dir/$flow.json"
 done
 python3 - "$run_dir" "$IOS_SIMULATOR_ID" <<'PY'
