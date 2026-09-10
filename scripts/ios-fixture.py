@@ -32,6 +32,7 @@ for user in TOKENS:
         module.DELIVERIES = []
         module.PROJECT_WRITES = []
         module.ISSUE_QUERIES = []
+        module.BATCH_WRITES = []
         for attachment in (module.A, module.IMAGE_A):
             for key, value in attachment.items():
                 if isinstance(value, str): attachment[key] = value.replace(':8765/', ':' + str(PORT) + '/')
@@ -103,7 +104,7 @@ class API(BASE.API):
                 user = 'u2' if 'other' in body.get('email','') else 'u1'
                 return self.reply(200,{'token':TOKENS[user]})
         if path == '/__control':
-            module.OPTIONS.update({key:body[key] for key in ('send_mode','receipt_delay','catalog_status','issue_conflict','deny_mika') if key in body})
+            module.OPTIONS.update({key:body[key] for key in ('send_mode','receipt_delay','catalog_status','issue_conflict','deny_mika','batch_skip','batch_status') if key in body})
             if 'deny_mika' in body: module.AGENT['owner_id'] = 'unrelated-user' if body['deny_mika'] else self.owner()
             if body.get('activity_scenario'):
                 for i, row in enumerate(module.ISSUES):
@@ -119,6 +120,37 @@ class API(BASE.API):
                 row['revision'] += 1
                 row['last_activity_at'] = time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime())
                 module.broadcast('issue:updated', {'issue_id':row['id']})
+        if path == '/api/issues/batch-update':
+            # Mirrors server/internal/handler/issue.go BatchUpdateIssues: a
+            # missing mutation field answers {"updated":0}, and ids that cannot
+            # be resolved or are explicitly skipped are silently skipped rather
+            # than reported. `batch_skip` makes that partial outcome reachable.
+            if not self.auth(): return
+            if module.STATUS != 200: return self.reply(module.STATUS,{'error':'synthetic failure'})
+            if module.OPTIONS.get('batch_status',200) != 200:
+                return self.reply(module.OPTIONS['batch_status'],{'error':'synthetic batch failure'})
+            ids = body.get('issue_ids') or []
+            updates = body.get('updates') or {}
+            if not ids: return self.reply(400,{'error':'issue_ids is required'})
+            # `suppress_run` alone is not a mutation; the real handler answers
+            # {"updated": 0} so a caller mistake cannot look like success.
+            if not (set(updates) - {'suppress_run'}): return self.reply(200,{'updated':0})
+            skip = set(module.OPTIONS.get('batch_skip') or [])
+            changed = []
+            for issue_id in ids:
+                if issue_id in skip: continue
+                row = next((r for r in module.ISSUES if r['id'] == issue_id), None)
+                if row is None: continue
+                if 'status' in updates: row['status'] = updates['status']
+                if 'priority' in updates: row['priority'] = updates['priority']
+                if 'due_date' in updates: row['due_date'] = updates['due_date']
+                row['revision'] = row.get('revision',1) + 1
+                row['updated_at'] = time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime())
+                row['last_activity_at'] = row['updated_at']
+                changed.append(issue_id)
+            module.BATCH_WRITES.append({'issue_ids':ids,'updates':updates,'updated':len(changed),'skipped':sorted(set(ids)-set(changed))})
+            for issue_id in changed: module.broadcast('issue:updated', {'issue_id':issue_id})
+            return self.reply(200,{'updated':len(changed)})
         match = re.fullmatch('/api/chat/sessions/([^/]+)/messages', path)
         if match:
             session = next((s for s in module.SESSIONS if s['id'] == match[1]), {})
@@ -131,7 +163,7 @@ class API(BASE.API):
         path = urlsplit(self.path).path
         module = self.module()
         if path == '/__calls':
-            scopes = {user + ':' + slug: {'calls':m.CALLS,'send_count':m.SEND_COUNT,'issue_writes':m.WRITES,'deliveries':m.DELIVERIES,'project_writes':m.PROJECT_WRITES,'issue_queries':m.ISSUE_QUERIES,'active_sockets':len(m.CLIENTS),'uploads':[a[0] for a in m.UPLOADS.values()]} for (user,slug),m in MODULES.items()}
+            scopes = {user + ':' + slug: {'calls':m.CALLS,'send_count':m.SEND_COUNT,'issue_writes':m.WRITES,'batch_writes':m.BATCH_WRITES,'deliveries':m.DELIVERIES,'project_writes':m.PROJECT_WRITES,'issue_queries':m.ISSUE_QUERIES,'active_sockets':len(m.CLIENTS),'uploads':[a[0] for a in m.UPLOADS.values()]} for (user,slug),m in MODULES.items()}
             return self.reply(200,{'scopes':scopes,'auth_calls':AUTH_CALLS,'ws_events':WS_EVENTS})
         if path in ('/api/workspaces','/api/me') or path in ('/api/workspaces/w1/members','/api/workspaces/w2/members'):
             if not self.auth(): return
