@@ -1,0 +1,24 @@
+{
+  "source_commit": "cb7a30a942017bab01f8ccec67b2d4332eccae1f",
+  "app_id": "6809083972",
+  "bundle_id": "ai.chatty.ios",
+  "version": "0.1.0",
+  "build": "2",
+  "team_id": "9247PC9936",
+  "distribution": "TestFlight Internal Only",
+  "upload_status": "uploaded",
+  "uploaded_at_local": "2026-09-10T20:10:00+08:00",
+  "uploaded_at_precision": "minute",
+  "evidence_source": "Xcode Organizer accessibility state observed through CUA",
+  "observed_confirmation": [
+    "App upload complete:",
+    "Chatty 0.1.0 (2) uploaded",
+    "Uploaded to Apple",
+    "Submission Status: Uploaded Today at 8:10 PM; Build Number 2"
+  ],
+  "app_store_connect_processing": "unverified_browser_login_pending",
+  "internal_group_assignment": "unverified_for_build_2",
+  "test_notes_saved": false,
+  "physical_installation": "unverified",
+  "recorded_at_utc": "2026-09-10T12:13:02.055221+00:00"
+}

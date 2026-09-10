@@ -1,0 +1,21 @@
+{
+  "source_commit": "cb7a30a942017bab01f8ccec67b2d4332eccae1f",
+  "archive": ".tools/ios-testflight/0.1.0-2/Chatty.xcarchive",
+  "bundle_id": "ai.chatty.ios",
+  "version": "0.1.0",
+  "build": "2",
+  "team": "9247PC9936",
+  "signing_identity": "Apple Development: Benjamin Zhang (DN7SAK4V8K)",
+  "archive_creation_date": "2026-09-10 08:17:36",
+  "fixture_markers_present": [],
+  "has_ats_exceptions": false,
+  "binary_sha256": "2388d78b95c3429f335e9ea0d49aea1d6635388dd9f9171fe18f948c0dd1222a",
+  "codesign_deep_strict_verified": true,
+  "verification_context": "Outside sandbox; sandbox certificate trust check was unavailable.",
+  "cli_export_status": "failed_before_upload",
+  "cli_export_errors": [
+    "No Accounts",
+    "No signing certificate \"iOS Distribution\" found"
+  ],
+  "testflight_upload_status": "uploaded_via_xcode_organizer"
+}

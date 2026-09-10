@@ -1,8 +1,10 @@
-# iOS 0.1.0 (2) 代码交付
+# iOS 0.1.0 (2) TestFlight 交付
 
 日期：2026-09-10。
 
-用户授权继续提交、推送并准备 TestFlight，随后选择“先完成代码提交，稍后登录”。因此本次交付范围为代码、构建号和发布准备；Apple 登录后再进行签名归档、上传与内测组验证。
+代码已提交并推送到 `main`：`cb7a30a942017bab01f8ccec67b2d4332eccae1f`。用户完成 Xcode 登录后，生产构建 `0.1.0 (2)` 已于 2026-09-10 20:10（Asia/Singapore）通过 Organizer 上传 Apple，分发方式为 **TestFlight Internal Only**。
+
+App Store Connect 网页仍需完成登录。Apple 处理结果、内测组分配和手机安装尚未核验，上传成功不代表已经可安装。
 
 ## 交付内容
 
@@ -23,11 +25,19 @@
 
 本次补充结果位于 `evidence/release-0.1.0-2/`。其中 `source-sha256.json` 使用准备提交的共用 fixture 内容计算哈希，避免把工作区尚未提交的 Android 扩展算入交付。
 
-## Apple 登录后的步骤
+## 签名与上传证据
 
-1. 核对 App Store Connect 当前最大构建号；如果 `2` 已使用，先更新生成器再重新构建。
-2. 使用 `Chatty` scheme、Team `9247PC9936` 和版本化 archive 路径归档。
-3. 在 Organizer 选择 TestFlight Internal Only 上传；测试说明使用 [已准备文案](testflight-notes.zh-Hans.txt)。
-4. 等待 Apple 处理完成，加入现有 Benjamin Internal 内测组，并核对该构建可测试。
+- `Chatty` / Release / generic iOS 归档成功，Team `9247PC9936`，归档路径 `.tools/ios-testflight/0.1.0-2/Chatty.xcarchive`。
+- 归档版本、bundle、无 Fixture 标记和无 ATS 例外均核对通过；`codesign --verify --deep --strict` 在可访问系统证书链的环境下通过。
+- CLI 导出报告 `No Accounts` 和缺少 distribution 证书；随后用已登录的 Xcode Organizer 完成上传。
+- Organizer 上传完成页显示 `Chatty 0.1.0 (2) uploaded`；归档列表显示 `Uploaded to Apple`，Submission Status 为 `Today at 8:10 PM`，Build Number 为 `2`。
+- [归档核对结果](evidence/release-0.1.0-2/archive-validation.json)与[上传状态记录](evidence/release-0.1.0-2/testflight-upload.json)记录了源码提交、版本与实际观察状态。
 
-当前未创建新的签名 archive，未上传 TestFlight，也未更改内测成员或通知设置。
+## 剩余发布步骤
+
+1. 完成 App Store Connect 网页登录并检查构建 `2` 的处理状态。
+2. 保存[中文测试说明](testflight-notes.zh-Hans.txt)。
+3. 将构建加入现有 Benjamin Internal 内测组，核对可测试状态。
+4. 手机安装与真实账号体验独立验证。
+
+目前未更改内测成员或通知设置。
