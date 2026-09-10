@@ -4,16 +4,24 @@ import Foundation
 
 private final class FlowProtocol: URLProtocol, @unchecked Sendable {
     nonisolated(unsafe) static var respond: (@Sendable (URLRequest) throws -> (Int, Data))?
+    nonisolated(unsafe) static var deliveryGate: (@Sendable (URLRequest) -> DispatchSemaphore?)?
+    private let lock = NSLock()
+    private var stopped = false
     override class func canInit(with request: URLRequest) -> Bool { true }
     override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
     override func startLoading() {
         do {
             let (status, data) = try XCTUnwrap(Self.respond)(request)
-            client?.urlProtocol(self, didReceive: HTTPURLResponse(url: request.url!, statusCode: status, httpVersion: "HTTP/1.1", headerFields: ["Content-Type":"application/json"])!, cacheStoragePolicy: .notAllowed)
-            client?.urlProtocol(self, didLoad: data); client?.urlProtocolDidFinishLoading(self)
+            let gate = Self.deliveryGate?(request)
+            DispatchQueue.global().async { [self] in
+                if let gate { _ = gate.wait(timeout: .now() + 10) }
+                guard !lock.withLock({ stopped }) else { return }
+                client?.urlProtocol(self, didReceive: HTTPURLResponse(url: request.url!, statusCode: status, httpVersion: "HTTP/1.1", headerFields: ["Content-Type":"application/json"])!, cacheStoragePolicy: .notAllowed)
+                client?.urlProtocol(self, didLoad: data); client?.urlProtocolDidFinishLoading(self)
+            }
         } catch { client?.urlProtocol(self, didFailWithError: error) }
     }
-    override func stopLoading() {}
+    override func stopLoading() { lock.withLock { stopped = true } }
 }
 
 private final class FlowServer: @unchecked Sendable {
@@ -32,11 +40,24 @@ private final class FlowServer: @unchecked Sendable {
         var issueConflict = false
         var issueStatus = "todo"
         var revision = 1
+        var sessionProject: String?
+        var patchStatus = 200
+        var queueSupported = false
+        var activeTask = false
+        var holdSend: DispatchSemaphore?
+        var activityScenario = false
+        var issueQueries: [[String: String]] = []
         var requests: [(String, String, String?, [String: Any])] = []
         var sent: [[String: Any]] = []
     }
     func mutate(_ block: (inout State) -> Void) { lock.withLock { block(&state) } }
     func read<T>(_ block: (State) -> T) -> T { lock.withLock { block(state) } }
+    func gate(_ request: URLRequest) -> DispatchSemaphore? {
+        lock.withLock {
+            guard request.httpMethod == "POST", request.url?.path.hasSuffix("/messages") == true else { return nil }
+            defer { state.holdSend = nil }; return state.holdSend
+        }
+    }
     func client(base: URL, token: String?, workspace: String?) -> APIClient {
         let config = URLSessionConfiguration.ephemeral; config.protocolClasses = [FlowProtocol.self]
         return APIClient(baseURL: base, token: token, workspace: workspace, session: URLSession(configuration: config))
@@ -70,15 +91,27 @@ private final class FlowServer: @unchecked Sendable {
             if path.hasPrefix("/api/attachments/") { return try reply(["id":"upload1","filename":"sample.txt","size_bytes":15,"content_type":"text/plain","download_url":"https://files.example.test/sample"]) }
             if path.hasSuffix("/members") { return try reply([["user_id":"u1","role":"member"]]) }
             if path == "/api/agents" { return try reply([["id":"mika", "name":"Renamed", "system_key":"mika", "owner_id": state.denyMika ? "other" : "u1", "permission_mode":"private", "runtime_id":"r1", "runtime_bound":true]]) }
-            let session: [String: Any] = ["id":"s1", "agent_id":"mika", "status":"active", "updated_at":"2026-09-05T00:00:00Z"]
+            var session: [String: Any] = ["id":"s1", "agent_id":"mika", "status":"active", "updated_at":"2026-09-05T00:00:00Z"]
+            session["project_id"] = state.sessionProject
+            if path == "/api/chat/sessions/s1", method == "PATCH" {
+                guard state.patchStatus == 200 else { return try reply([:], state.patchStatus) }
+                state.sessionProject = body["project_id"] as? String
+                session["project_id"] = state.sessionProject
+                return try reply(session)
+            }
             if path == "/api/chat/sessions" { return try reply(method == "POST" ? session : [session]) }
             if path.hasSuffix("/read") { return try reply([:]) }
-            if path.hasSuffix("/pending-task") { return try reply([:]) }
+            if path.hasSuffix("/pending-task") {
+                var result: [String: Any] = ["supports_queue":state.queueSupported]
+                if state.activeTask { result["task_id"] = "active"; result["status"] = "running" }
+                return try reply(result)
+            }
             if method == "POST", path.hasSuffix("/messages") {
-                let message: [String: Any] = ["id":"sent-\(state.sent.count)", "chat_session_id":"s1", "role":"user", "content":body["content"] ?? "", "created_at":"2026-09-06T00:00:00Z"]
+                let message: [String: Any] = ["id":"sent-\(state.sent.count)", "chat_session_id":"s1", "role":"user", "content":body["content"] ?? "", "created_at":"2026-09-06T00:00:00Z", "_project_id":state.sessionProject ?? "none", "_attachments":body["attachment_ids"] ?? []]
                 state.sent.append(message)
                 if state.sendStatus != 200 { return try reply([:], state.sendStatus) }
                 var receipt: [String: Any] = ["message_id":message["id"]!, "task_id":state.malformedReceipt ? "" : "t1", "created_at":"2026-09-06T00:00:00Z"]
+                receipt["supports_queue"] = state.queueSupported
                 if state.attachmentReceipt != "missing" { receipt["attachment_ids"] = state.attachmentReceipt == "unbound" ? [] : body["attachment_ids"] ?? [] }
                 return try reply(receipt)
             }
@@ -93,12 +126,15 @@ private final class FlowServer: @unchecked Sendable {
                 return try reply(result)
             }
             if path.hasPrefix("/api/tasks/") { return try reply([]) }
-            if path == "/api/projects" { return try reply(["projects":[["id":"p1","title":"Project","issue_count":55,"done_count":25]], "total":1]) }
+            if path == "/api/projects" { return try reply(["projects":[["id":"p1","title":"Project","issue_count":55,"done_count":25], ["id":"p2","title":"Other project"]], "total":2]) }
             if path == "/api/issue-statuses" { return try reply(["statuses":[["key":"todo","name":"待开始","category":"todo"],["key":"custom","name":"自定义","category":"in_review"]]], state.catalogStatus) }
             if path == "/api/issues" {
                 let query = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)?.queryItems ?? []
                 let offset = Int(query.first(where: { $0.name == "offset" })?.value ?? "0") ?? 0
-                let rows = (0..<55).map { issue($0) }; return try reply(["issues":Array(rows.dropFirst(offset).prefix(50)),"total":55])
+                state.issueQueries.append(Dictionary(uniqueKeysWithValues: query.map { ($0.name, $0.value ?? "") }))
+                var rows = (0..<55).map { issue($0) }
+                if let keys = query.first(where: { $0.name == "statuses" })?.value?.components(separatedBy: ",") { rows = rows.filter { keys.contains($0["status"] as? String ?? "") } }
+                return try reply(["issues":Array(rows.dropFirst(offset).prefix(50)),"total":rows.count])
             }
             if path.hasPrefix("/api/issues/") {
                 if method == "PUT" {
@@ -110,7 +146,9 @@ private final class FlowServer: @unchecked Sendable {
             return try reply([:], 404)
         }
     }
-    private func issue(_ i: Int) -> [String: Any] { ["id":"i\(i)","identifier":"FLOW-\(i)","title":"Issue \(i)","status":state.issueStatus,"revision":state.revision] }
+    private func issue(_ i: Int) -> [String: Any] {
+        ["id":"i\(i)","identifier":"FLOW-\(i)","title":"Issue \(i)","status":state.activityScenario && i == 54 ? "custom" : state.issueStatus,"revision":state.revision,"creator_id":"another-member","creator_type":"human","project_id":"p1"]
+    }
 }
 
 @MainActor private final class MemoryVault: CredentialVault {
@@ -126,6 +164,7 @@ private final class FlowServer: @unchecked Sendable {
     init() throws {
         let server = self.server
         FlowProtocol.respond = { try server.response($0) }
+        FlowProtocol.deliveryGate = { server.gate($0) }
         files = try ProtectedStorage(identifier: "flow", root: FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString))
         model = SessionModel(baseURL: URL(string:"https://flow.invalid")!, vault: vault, files: files, factory: { server.client(base: $0, token: $1, workspace: $2) })
     }
@@ -137,6 +176,125 @@ private final class FlowServer: @unchecked Sendable {
 }
 
 @MainActor final class ClientFlowTests: XCTestCase {
+    private func waitFor(_ predicate: () -> Bool, file: StaticString = #filePath, line: UInt = #line) async throws {
+        for _ in 0..<200 {
+            if predicate() { return }
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        XCTFail("Expected asynchronous state did not arrive", file: file, line: line)
+    }
+    func testConsecutiveSendsSnapshotProjectsAndFilesWhileFirstReceiptIsHeld() async throws {
+        let rig = try FlowRig(); defer { rig.cleanup() }; await rig.login()
+        let chat = try XCTUnwrap(rig.model.current?.chat)
+        let gate = DispatchSemaphore(value: 0); defer { gate.signal() }
+        rig.server.mutate { $0.queueSupported = true; $0.activeTask = true; $0.holdSend = gate }
+        await chat.refresh()
+        chat.selectProject("p1")
+        await chat.upload(data: Data("A attachment".utf8), filename: "a.txt", contentType: "text/plain")
+        chat.setDraft("A"); let first = Task { await chat.send() }
+        try await waitFor { rig.server.read { $0.sent.count } == 1 }
+        XCTAssertEqual(chat.draft, ""); XCTAssertTrue(chat.attachments.isEmpty); XCTAssertTrue(chat.sending)
+        await chat.refresh()
+        XCTAssertFalse(chat.messages.contains { $0.content == "A" }, "An early history echo must not duplicate the still-unconfirmed local row")
+        chat.selectProject("p2"); chat.setDraft("B"); XCTAssertTrue(chat.canSend); await chat.send()
+        chat.selectProject(nil); chat.setDraft("C"); await chat.send()
+        chat.setDraft("D still being composed")
+        XCTAssertEqual(chat.outbox.map(\.content), ["A", "B", "C"])
+        XCTAssertEqual(chat.outbox.map(\.projectId), ["p1", "p2", nil])
+        XCTAssertEqual(rig.server.read { $0.sent.count }, 1, "B and C must wait for A's HTTP receipt, not its agent run")
+        gate.signal(); await first.value
+        let sent = rig.server.read { $0.sent }
+        XCTAssertEqual(sent.compactMap { $0["content"] as? String }, ["A", "B", "C"])
+        XCTAssertEqual(sent.compactMap { $0["_project_id"] as? String }, ["p1", "p2", "none"])
+        XCTAssertEqual(sent.compactMap { $0["_attachments"] as? [String] }, [["upload1"], [], []])
+        XCTAssertEqual(chat.draft, "D still being composed"); XCTAssertTrue(chat.canSend); XCTAssertTrue(chat.outbox.isEmpty)
+        XCTAssertEqual(rig.server.read { $0.requests.filter { $0.0 == "PATCH" }.count }, 3)
+    }
+    func testLegacyActiveRunQueuesLocallyUntilRunFinishes() async throws {
+        let rig = try FlowRig(); defer { rig.cleanup() }; await rig.login()
+        let chat = try XCTUnwrap(rig.model.current?.chat)
+        rig.server.mutate { $0.activeTask = true; $0.queueSupported = false }; await chat.refresh()
+        chat.setDraft("Wait locally"); XCTAssertTrue(chat.canSend); await chat.send()
+        XCTAssertEqual(rig.server.read { $0.sent.count }, 0); XCTAssertEqual(chat.outbox.count, 1)
+        chat.setDraft("Keep typing"); XCTAssertTrue(chat.canSend)
+        rig.server.mutate { $0.activeTask = false }; await chat.refresh()
+        XCTAssertEqual(rig.server.read { $0.sent.count }, 1); XCTAssertEqual(chat.draft, "Keep typing")
+    }
+    func testIdenticalTextRemainsTwoSeparateMessagesAfterReceipts() async throws {
+        let rig = try FlowRig(); defer { rig.cleanup() }; await rig.login()
+        let chat = try XCTUnwrap(rig.model.current?.chat)
+        let gate = DispatchSemaphore(value: 0); defer { gate.signal() }
+        rig.server.mutate { $0.queueSupported = true; $0.holdSend = gate }
+        chat.setDraft("Same text"); let first = Task { await chat.send() }
+        try await waitFor { rig.server.read { $0.sent.count } == 1 }
+        chat.setDraft("Same text"); await chat.send(); await chat.refresh()
+        XCTAssertEqual(chat.outbox.count, 2)
+        gate.signal(); await first.value
+        XCTAssertEqual(rig.server.read { $0.sent.count }, 2)
+        XCTAssertEqual(chat.messages.filter { $0.content == "Same text" }.count, 2)
+        XCTAssertTrue(chat.outbox.isEmpty)
+    }
+    func testProjectPermissionFailureStopsPostAndExplicitRetryPreservesSnapshot() async throws {
+        let rig = try FlowRig(); defer { rig.cleanup() }; await rig.login()
+        let chat = try XCTUnwrap(rig.model.current?.chat)
+        rig.server.mutate { $0.patchStatus = 403 }
+        chat.selectProject("p1"); chat.setDraft("Requires project"); await chat.send()
+        XCTAssertEqual(rig.server.read { $0.sent.count }, 0); XCTAssertEqual(chat.outbox.first?.status, .failed)
+        chat.selectProject("p2")
+        rig.server.mutate { $0.patchStatus = 200 }
+        await chat.retryOutgoing(try XCTUnwrap(chat.outbox.first?.id))
+        XCTAssertEqual(rig.server.read { $0.sent.first?["_project_id"] as? String }, "p1")
+        XCTAssertEqual(chat.selectedProjectId, "p2"); XCTAssertTrue(chat.outbox.isEmpty)
+    }
+    func testColdQueueRequiresExplicitResumeAndKeepsComposerSeparate() async throws {
+        let rig = try FlowRig(); defer { rig.cleanup() }; await rig.login()
+        let chat = try XCTUnwrap(rig.model.current?.chat)
+        rig.server.mutate { $0.activeTask = true }; await chat.refresh()
+        chat.selectProject("p1"); chat.setDraft("Queued before closing"); await chat.send()
+        chat.setDraft("Unsent composer")
+        rig.model.select(rig.model.workspaces[0]); let restored = try XCTUnwrap(rig.model.current?.chat); await restored.initialize()
+        rig.server.mutate { $0.activeTask = false }; await restored.refresh()
+        XCTAssertEqual(restored.outbox.first?.status, .held); XCTAssertEqual(restored.draft, "Unsent composer")
+        XCTAssertEqual(rig.server.read { $0.sent.count }, 0)
+        await restored.resumeOutbox()
+        XCTAssertEqual(rig.server.read { $0.sent.count }, 1); XCTAssertEqual(restored.draft, "Unsent composer")
+    }
+    func testBackgroundHoldsFollowersWhileInFlightReceiptCompletes() async throws {
+        let rig = try FlowRig(); defer { rig.cleanup() }; await rig.login()
+        let chat = try XCTUnwrap(rig.model.current?.chat)
+        let gate = DispatchSemaphore(value: 0); defer { gate.signal() }
+        rig.server.mutate { $0.queueSupported = true; $0.holdSend = gate }
+        chat.setDraft("In flight"); let first = Task { await chat.send() }
+        try await waitFor { rig.server.read { $0.sent.count } == 1 }
+        chat.setDraft("Follower"); await chat.send(); chat.stop()
+        gate.signal(); await first.value
+        XCTAssertEqual(chat.outbox.first?.content, "Follower"); XCTAssertEqual(chat.outbox.first?.status, .held)
+        XCTAssertEqual(rig.server.read { $0.sent.count }, 1)
+        let saved = try rig.files.draft(account: "u1", workspace: "w1", agent: "mika")
+        XCTAssertEqual(saved.outbox?.map(\.content), ["Follower"])
+    }
+    func testActivityIncludesOtherCreatorsAndOlderActionsWithSeparateReadState() async throws {
+        let rig = try FlowRig(); defer { rig.cleanup() }; await rig.login()
+        rig.server.mutate { $0.activityScenario = true }
+        let activity = try XCTUnwrap(rig.model.current?.activity); await activity.refresh()
+        XCTAssertEqual(activity.recent.count, 50); XCTAssertEqual(activity.actions.map(\.id), ["i54"])
+        XCTAssertTrue(activity.recent.allSatisfy { $0.creatorId == "another-member" })
+        let action = try XCTUnwrap(activity.actions.first); activity.markRead(action)
+        XCTAssertFalse(activity.isUnread(action)); XCTAssertEqual(activity.actions.count, 1); XCTAssertTrue(activity.hasAttention)
+        let query = try XCTUnwrap(rig.server.read { $0.issueQueries.first { $0["statuses"] != nil } })
+        XCTAssertEqual(query["sort"], "last_activity"); XCTAssertTrue(query["statuses"]?.contains("custom") == true)
+        XCTAssertNil(query["assignee_id"]); XCTAssertNil(query["creator_id"]); XCTAssertNil(query["project_id"])
+        await activity.more(actions: false); XCTAssertEqual(activity.recent.count, 55)
+        rig.server.mutate { $0.revision += 1 }; await activity.refresh()
+        XCTAssertTrue(activity.isUnread(try XCTUnwrap(activity.actions.first)))
+        rig.server.mutate { $0.catalogStatus = 503 }; await activity.refresh()
+        XCTAssertEqual(activity.actions.count, 1); XCTAssertNotNil(activity.actionError)
+        rig.server.mutate { $0.status = 503 }; await activity.refresh()
+        XCTAssertEqual(activity.recent.count, 50); XCTAssertNotNil(activity.error)
+        XCTAssertEqual(try rig.files.activityReads(account: "u1", workspace: "w1")[action.id], ActivityModel.fingerprint(action))
+        XCTAssertTrue(try rig.files.activityReads(account: "u2", workspace: "w1").isEmpty)
+        XCTAssertTrue(try rig.files.activityReads(account: "u1", workspace: "w2").isEmpty)
+    }
     func testCredentialsNeverReachAuthOrForeignOrigin() throws {
         let client = APIClient(baseURL: URL(string:"https://api.example.test")!, token:"synthetic", workspace:"one")
         defer { client.invalidate() }
@@ -192,10 +350,45 @@ private final class FlowServer: @unchecked Sendable {
         rig.server.mutate { $0.malformedReceipt = true }
         let chat = try XCTUnwrap(rig.model.current?.chat); chat.setDraft("Ambiguous")
         await chat.send(); await chat.refresh(); await chat.send()
-        XCTAssertTrue(chat.uncertain); XCTAssertEqual(chat.draft,"Ambiguous"); XCTAssertFalse(chat.canSend)
+        XCTAssertTrue(chat.uncertain); XCTAssertEqual(chat.draft,""); XCTAssertEqual(chat.outbox.first?.content,"Ambiguous")
+        XCTAssertEqual(chat.outbox.first?.status,.uncertain)
+        chat.setDraft("Next message"); XCTAssertTrue(chat.canSend); await chat.send()
+        XCTAssertEqual(chat.outbox.count,2); XCTAssertEqual(chat.draft,"")
         XCTAssertEqual(rig.server.read { $0.sent.count },1)
         rig.model.select(rig.model.workspaces[0]); await rig.model.current?.chat.initialize()
         XCTAssertTrue(rig.model.current?.chat.uncertain == true)
+        XCTAssertEqual(rig.model.current?.chat.outbox.map(\.status),[.uncertain,.held])
+        await rig.model.current?.chat.refresh()
+        XCTAssertEqual(rig.server.read { $0.sent.count },1)
+    }
+    func testV1UncertainDraftMigratesWithoutBecomingANewSend() async throws {
+        let rig = try FlowRig(); defer { rig.cleanup() }; await rig.login()
+        rig.model.switchWorkspace()
+        try rig.files.saveDraft(.init(text: "V1 uncertain send", uncertain: true), account: "u1", workspace: "w1", agent: "mika")
+        rig.model.select(rig.model.workspaces[0]); await rig.model.current?.chat.initialize()
+        let chat = try XCTUnwrap(rig.model.current?.chat)
+        XCTAssertEqual(chat.draft, ""); XCTAssertTrue(chat.uncertain)
+        XCTAssertEqual(chat.outbox.first?.content, "V1 uncertain send"); XCTAssertEqual(chat.outbox.first?.status, .uncertain)
+        let migrated = try rig.files.draft(account: "u1", workspace: "w1", agent: "mika")
+        XCTAssertEqual(migrated.text, ""); XCTAssertEqual(migrated.outbox?.count, 1)
+        chat.setDraft("New request after upgrade"); await chat.send(); await chat.refresh()
+        XCTAssertEqual(rig.server.read { $0.sent.count }, 0)
+        chat.acknowledgeUncertain()
+        try await waitFor { rig.server.read { $0.sent.count } == 1 }
+        XCTAssertEqual(rig.server.read { $0.sent.first?["content"] as? String }, "New request after upgrade")
+    }
+    func testUnknownReceiptCanOnlyRetryAfterExplicitReview() async throws {
+        let rig = try FlowRig(); defer { rig.cleanup() }; await rig.login()
+        rig.server.mutate { $0.malformedReceipt = true }
+        let chat = try XCTUnwrap(rig.model.current?.chat)
+        chat.selectProject("p1"); chat.setDraft("Uncertain delivery"); await chat.send()
+        chat.selectProject("p2"); chat.setDraft("Next draft")
+        await chat.refresh(); XCTAssertEqual(rig.server.read { $0.sent.count },1)
+        rig.server.mutate { $0.malformedReceipt = false }
+        await chat.retryUncertainAfterReview()
+        XCTAssertEqual(rig.server.read { $0.sent.count },2)
+        XCTAssertEqual(rig.server.read { $0.sent.last?["_project_id"] as? String },"p1")
+        XCTAssertFalse(chat.uncertain); XCTAssertEqual(chat.draft,"Next draft")
     }
     func testAcceptedSendWithFailedRefreshIsNeverTurnedIntoRetry() async throws {
         let rig = try FlowRig(); defer { rig.cleanup() }; await rig.login()
@@ -240,7 +433,7 @@ private final class FlowServer: @unchecked Sendable {
     func testFailedStatusCatalogKeepsProjectsAndDisablesEditing() async throws {
         let rig = try FlowRig(); defer { rig.cleanup() }; await rig.login(); rig.server.mutate { $0.catalogStatus = 503 }
         let projects = try XCTUnwrap(rig.model.current?.projects); await projects.overview()
-        XCTAssertEqual(projects.projects.count,1); XCTAssertTrue(projects.statuses.isEmpty); XCTAssertNotNil(projects.catalogError)
+        XCTAssertEqual(projects.projects.count,2); XCTAssertTrue(projects.statuses.isEmpty); XCTAssertNotNil(projects.catalogError)
     }
     func testProtectedPreviewsAndAccountDraftsArePurgedOnLogout() throws {
         let rig = try FlowRig(); defer { rig.cleanup() }

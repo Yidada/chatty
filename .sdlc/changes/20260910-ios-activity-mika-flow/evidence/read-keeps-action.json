@@ -1,0 +1,25 @@
+{
+  "text": [
+    "e8|text|text|测试工作区 · 合成数据||fixture.banner",
+    "e32|text|text|Loop Project||",
+    "e33|text|text|·||",
+    "e34|text|text|2 hr, 1 min||",
+    "e35|text|text|登录流程已完成，等待验收||",
+    "e36|text|text|已进入审核，等待确认。||",
+    "e40|text|text|Loop Project||",
+    "e41|text|text|·||",
+    "e42|text|text|2 hr, 55 min||",
+    "e43|text|text|另一位成员的任务需要补充权限||",
+    "e44|text|text|当前受阻，需要进一步处理。||"
+  ],
+  "targets": [
+    "e30|tap|button|Loop Project, ·, 2 hr, 1 min, 登录流程已完成，等待验收, 已进入审核，等待确认。||activity.issue.i0",
+    "e37|tap|button|未读, Loop Project, ·, 2 hr, 55 min, 另一位成员的任务需要补充权限, 当前受阻，需要进一步处理。||activity.issue.i54",
+    "e19|tap|button|个人与设置||profile.open",
+    "e25|tap|button|新进展||activity.recent",
+    "e26|tap|button|待处理 2||activity.actions",
+    "e60|tap|tab|动态|1|waveform.path",
+    "e62|tap|tab|Mika|0|sparkles",
+    "e64|tap|tab|项目|0|folder"
+  ]
+}

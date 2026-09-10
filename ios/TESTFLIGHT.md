@@ -8,6 +8,12 @@
 - Distribution: **TestFlight Internal Only**. This uploaded build cannot be submitted to external testing or App Store release.
 - Console: https://appstoreconnect.apple.com/teams/d429cbf8-b4df-43fe-b7de-3cdb24e874e7/apps/6809083972/testflight
 
+## Next build prepared: 0.1.0 (2)
+
+The 2026-09-10 iOS activity / Mika update is configured as `0.1.0 (2)`. Source and test evidence are in [the delivery record](../.sdlc/changes/20260910-ios-activity-mika-flow/release.md). This build has **not** been uploaded. The user chose to complete code delivery first and sign into Apple later.
+
+Before uploading, check App Store Connect for a newer build number. Use the production `Chatty` scheme and the existing **Benjamin Internal** group. Prepared [Chinese test notes](../.sdlc/changes/20260910-ios-activity-mika-flow/testflight-notes.zh-Hans.txt) cover the new navigation, project selection, consecutive messages and activity badges.
+
 ## Rebuild
 
 ```sh
@@ -16,12 +22,12 @@ python3 scripts/generate-ios-project.py
 xcodebuild -project ios/Chatty.xcodeproj -scheme Chatty \
   -configuration Release -destination 'generic/platform=iOS' \
   -derivedDataPath .tools/ios-device-derived-data \
-  -archivePath .tools/ios-testflight/Chatty.xcarchive \
+  -archivePath .tools/ios-testflight/0.1.0-2/Chatty.xcarchive \
   DEVELOPMENT_TEAM=9247PC9936 CODE_SIGN_STYLE=Automatic \
   -allowProvisioningUpdates -skipPackageUpdates archive
 ```
 
-Increase `CURRENT_PROJECT_VERSION` in `scripts/generate-ios-project.py` before the next upload, then regenerate. Avoid overwriting the existing archive when preparing a later build; use a versioned archive path.
+`CURRENT_PROJECT_VERSION` is now `2` in `scripts/generate-ios-project.py`. Change that source and regenerate if App Store Connect requires a later number. Avoid overwriting previous archives; use a versioned archive path.
 
 Open the archive in Xcode Organizer, choose **Distribute App → TestFlight Internal Only**. Xcode must be signed into the development team. The first CLI export returned `No Accounts` despite a signed-in GUI account; Organizer successfully uploaded the build. No API key or `asc` installation was required for this upload.
 

@@ -22,6 +22,11 @@ import Observation
     public private(set) var notice: String?
     public private(set) var attachmentBindingUncertain = false
     public private(set) var scrollRequest: UUID?
+    public private(set) var outbox: [OutgoingMessage] = []
+    public private(set) var projects: [Project] = []
+    public private(set) var selectedProjectId: String?
+    public private(set) var projectError: String?
+    @ObservationIgnored public var onWorkspaceEvent: ((SocketEvent) -> Void)?
     @ObservationIgnored private let context: WorkspaceContext
     @ObservationIgnored private var visible = false
     @ObservationIgnored private var foreground = true
@@ -34,12 +39,13 @@ import Observation
     @ObservationIgnored private var refreshAgain = false
     @ObservationIgnored private var refreshJob: Task<Void, Never>?
     @ObservationIgnored private var polling: Task<Void, Never>?
+    @ObservationIgnored private var receiptRows: [String: ChatMessage] = [:]
     @ObservationIgnored private let connection = RealtimeConnection()
 
     init(context: WorkspaceContext) { self.context = context }
     public var canSend: Bool {
-        guard context.active, initialized, !loading, !sending, !uploading, !uncertain, !attachmentBindingUncertain,
-              pending?.taskId == nil, let agent, agent.runtimeBound != false, !(agent.runtimeId ?? "").isEmpty,
+        guard context.active, initialized, !loading, !uploading, !attachmentBindingUncertain, outbox.count < 100,
+              let agent, agent.runtimeBound != false, !(agent.runtimeId ?? "").isEmpty,
               session?.status != "archived", AgentPermission.canChat(agent, userId: context.user.id, role: role) else { return false }
         return !draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || !attachments.isEmpty
     }
@@ -58,9 +64,27 @@ import Observation
             else { session = ChatSessions.latest(for: agent.id, in: allSessions) }
             if !draftLoaded {
                 let saved = try context.files.draft(account: context.user.id, workspace: context.workspace.id, agent: agent.id)
-                draft = saved.text; uncertain = saved.uncertain; draftLoaded = true
+                draft = saved.text; uncertain = saved.uncertain
+                selectedProjectId = saved.projectSelectionSet == true ? saved.projectId : session?.projectId
+                outbox = (saved.outbox ?? []).map { message in
+                    var restored = message
+                    if restored.status == .submitting { restored.status = .uncertain }
+                    else if restored.status == .queued { restored.status = .held }
+                    return restored
+                }
+                // V1 kept an uncertain send in the composer. Migrate it to a
+                // review record so upgrading cannot submit it as a new draft.
+                if saved.uncertain, saved.outbox == nil, !saved.text.isEmpty {
+                    var previousSend = OutgoingMessage(content: saved.text, attachments: [], projectId: selectedProjectId)
+                    previousSend.status = .uncertain
+                    outbox = [previousSend]; draft = ""
+                    try persistDraft()
+                }
+                uncertain = uncertain || outbox.contains { $0.status == .uncertain }
+                draftLoaded = true
             }
             initialized = true
+            await loadProjects()
             try await syncMessages()
             scrollRequest = UUID()
         } catch { self.error = await context.report(error) }
@@ -75,12 +99,16 @@ import Observation
             while !Task.isCancelled {
                 do { try await Task.sleep(for: .seconds(5)) } catch { break }
                 guard let self, self.context.active else { break }
-                if !self.connected || self.pending?.taskId != nil || self.error != nil { await self.refresh() }
+                if !self.connected || self.pending?.taskId != nil || self.error != nil || self.outbox.first?.status == .queued { await self.refresh() }
             }
         }
         refreshJob = Task { [weak self] in await self?.refresh() }
     }
-    public func stop() { foreground = false; connection.stop(); polling?.cancel(); polling = nil; refreshJob?.cancel(); refreshJob = nil; connected = false }
+    public func stop() {
+        foreground = false; connection.stop(); polling?.cancel(); polling = nil; refreshJob?.cancel(); refreshJob = nil; connected = false
+        outbox = outbox.map { var value = $0; if value.status == .queued { value.status = .held }; return value }
+        if draftLoaded { do { try persistDraft() } catch { self.error = "未发送消息暂时无法保存，请保持应用打开。" } }
+    }
     public func refresh() async {
         guard context.active else { return }
         if refreshing { refreshAgain = true; return }
@@ -93,7 +121,7 @@ import Observation
                     let all: [ChatSession] = try await context.api.get("/api/chat/sessions"); try context.check()
                     if let current = session {
                         guard let fresh = all.first(where: { $0.id == current.id && $0.status != "archived" }) else {
-                            session = nil; messages = []; pending = nil; cursor = nil; hasMore = false; traces = [:]
+                            session = nil; messages = []; pending = nil; cursor = nil; hasMore = false; traces = [:]; receiptRows = [:]
                             notice = "原对话已归档或删除，下次发送将创建新的 Mika 对话。"; continue
                         }
                         session = fresh
@@ -103,6 +131,7 @@ import Observation
                 } catch { self.error = await context.report(error) }
             }
         } while refreshAgain && context.active && !Task.isCancelled
+        await flushOutbox()
     }
     private func syncMessages() async throws {
         guard let session else { return }
@@ -110,9 +139,16 @@ import Observation
         async let pageRequest: MessagePage = context.api.get(path + "/messages/page", query: [.init(name: "limit", value: "50")])
         async let pending: PendingTask = context.api.get(path + "/pending-task")
         let (page, task) = try await (pageRequest, pending); try context.check()
-        let earlier = page.messages.first.map { first in messages.filter { ($0.createdAt ?? "", $0.id) < (first.createdAt ?? "", first.id) } } ?? []
-        messages = MessagePages.merge(older: earlier, newer: page.messages).filter { $0.messageKind != "onboarding_kickoff" }
-        if earlier.isEmpty { cursor = page.nextCursor; hasMore = page.hasMore ?? false }
+        guard self.session?.id == session.id else { return }
+        // The server may broadcast an accepted message before its POST receipt.
+        // Until the receipt gives us its ID, keep the local row as the visible
+        // source. Matching on text would incorrectly collapse repeated messages.
+        if !sending {
+            for row in page.messages { receiptRows.removeValue(forKey: row.id) }
+            let earlier = page.messages.first.map { first in messages.filter { ($0.createdAt ?? "", $0.id) < (first.createdAt ?? "", first.id) } } ?? []
+            messages = MessagePages.merge(older: earlier, newer: page.messages + receiptRows.values.filter { $0.chatSessionId == session.id }).filter { $0.messageKind != "onboarding_kickoff" }
+            if earlier.isEmpty { cursor = page.nextCursor; hasMore = page.hasMore ?? false }
+        }
         self.pending = task
         if let taskId = task.taskId { await loadTrace(taskId) }
         await markRead()
@@ -143,61 +179,185 @@ import Observation
     }
     private func persistDraft() throws {
         guard let agent else { return }
-        try context.files.saveDraft(DraftRecord(text: draft, uncertain: uncertain), account: context.user.id, workspace: context.workspace.id, agent: agent.id)
+        try context.files.saveDraft(DraftRecord(text: draft, uncertain: uncertain, projectId: selectedProjectId, projectSelectionSet: true, outbox: outbox), account: context.user.id, workspace: context.workspace.id, agent: agent.id)
     }
     public func acknowledgeUncertain() {
         guard context.active, !sending else { return }
+        let previous = outbox
+        outbox.removeAll { $0.status == .uncertain }
         uncertain = false; notice = nil
-        do { try persistDraft() } catch { self.error = "无法保存核对状态，请重试。"; uncertain = true }
+        do {
+            try persistDraft(); error = nil
+            Task { [weak self] in await self?.refresh() }
+        } catch { outbox = previous; self.error = "无法保存核对状态，请重试。"; uncertain = true }
+    }
+    /// Explicit user decision after checking history; never called by refresh.
+    public func retryUncertainAfterReview() async {
+        guard context.active, !sending, let index = outbox.firstIndex(where: { $0.status == .uncertain }) else { return }
+        let previous = outbox
+        outbox[index].status = .queued; outbox[index].failure = nil
+        uncertain = outbox.contains { $0.status == .uncertain }
+        do { try persistDraft() }
+        catch { outbox = previous; uncertain = true; self.error = "无法保存核对结果，请重试。"; return }
+        error = nil; notice = nil
+        await refresh()
     }
     public func removeAttachment(_ id: String) {
-        guard !sending else { return }
+        guard context.active else { return }
         attachments.removeAll { $0.id == id }
         if attachments.isEmpty { attachmentBindingUncertain = false }
     }
     public func upload(data: Data, filename: String, contentType: String) async {
-        guard context.active, !sending, !uploading else { return }
+        guard context.active, !uploading else { return }
         uploading = true; error = nil; defer { uploading = false }
         do {
             let file = try await context.api.upload(data: data, filename: filename, contentType: contentType); try context.check()
             if !attachments.contains(where: { $0.id == file.id }) { attachments.append(file) }
         } catch { self.error = await context.report(error) }
     }
-    public func send() async {
-        guard canSend, let agent else { return }
-        let text = draft.trimmingCharacters(in: .whitespacesAndNewlines); let files = attachments
-        sending = true; error = nil; notice = nil
-        var submitted = false; var accepted = false
-        defer { sending = false }
+    public var selectedProjectName: String {
+        guard let selectedProjectId else { return "不指定项目" }
+        return projects.first { $0.id == selectedProjectId }?.title ?? "原项目暂不可用"
+    }
+    public func loadProjects() async {
         do {
-            // Persist ambiguity before any write so suspension/crash cannot silently resend.
-            uncertain = true; try persistDraft(); submitted = true
-            if session == nil {
-                let created: ChatSession = try await context.api.write("/api/chat/sessions", body: ["agent_id": .string(agent.id)])
-                try context.check(); session = created
-            }
-            guard let session else { throw APIError.http(404) }
-            let bytes = try await context.api.data("/api/chat/sessions/\(APIClient.segment(session.id))/messages", method: "POST", body: ["content": .string(text), "attachment_ids": .array(files.map { .string($0.id) })])
-            let receipt = try Contracts.receipt(from: bytes); accepted = true; try context.check()
-            uncertain = false; draft = ""
-            if let bound = receipt.attachmentIds { attachments = files.filter { !bound.contains($0.id) } }
-            else { attachments = files; attachmentBindingUncertain = !files.isEmpty }
-            if !attachments.isEmpty { notice = "部分附件绑定尚未确认，请核对消息并移除已发送的附件。" }
-            pending = PendingTask(taskId: receipt.taskId, status: "queued", waitReason: nil, supportsQueue: receipt.supportsQueue)
-            let bound = files.filter { file in receipt.attachmentIds?.contains(file.id) ?? false }
-            let row = ChatMessage(id: receipt.messageId, chatSessionId: session.id, role: "user", content: text, taskId: receipt.taskId, createdAt: receipt.createdAt, attachments: bound, messageKind: "message", failureReason: nil, elapsedMs: nil, quickActions: nil)
-            messages = MessagePages.merge(older: messages, newer: [row]); scrollRequest = UUID()
-            try persistDraft()
-            await refresh()
-        } catch {
-            guard context.active else { return }
-            let definite = (error as? APIError).map { if case .http(let code) = $0 { return (400..<500).contains(code) }; return false } ?? false
-            uncertain = submitted && !accepted && !definite
-            if accepted { notice = "消息已接受，本地更新尚未完成，请刷新核对。" }
-            else if uncertain { notice = "发送结果待确认。请先刷新核对消息，避免重复发送。" }
-            self.error = await context.report(error)
-            if context.active { do { try persistDraft() } catch { self.error = "草稿无法保存，请保持应用打开并先核对消息。" } }
+            let page: ProjectPage = try await context.api.get("/api/projects"); try context.check()
+            projects = page.projects; projectError = nil
+        } catch { projectError = await context.report(error) }
+    }
+    public func selectProject(_ id: String?) {
+        guard context.active, id == nil || projects.contains(where: { $0.id == id }) else { return }
+        let previous = selectedProjectId; selectedProjectId = id
+        do { try persistDraft() }
+        catch { selectedProjectId = previous; self.error = "项目选择暂时无法保存，请重试。" }
+    }
+    public func prepareIssueDiscussion(_ issue: Issue) {
+        guard context.active else { return }
+        guard draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && attachments.isEmpty else {
+            notice = "已保留当前草稿。发送后可从事项详情继续讨论。"; return
         }
+        let previous = selectedProjectId
+        selectedProjectId = issue.projectId
+        draft = "关于 [\(issue.identifier) · \(issue.title)](mention://issue/\(APIClient.segment(issue.identifier)))：\n"
+        do { try persistDraft() }
+        catch { selectedProjectId = previous; draft = ""; self.error = "事项上下文暂时无法保存，请重试。" }
+    }
+    public func send() async {
+        guard canSend else { return }
+        let previousDraft = draft, previousFiles = attachments
+        let item = OutgoingMessage(content: draft.trimmingCharacters(in: .whitespacesAndNewlines), attachments: attachments, projectId: selectedProjectId)
+        // One atomic protected record owns both composer and outbox: a crash
+        // cannot restore the same text as an unsent draft and a queued message.
+        outbox.append(item); draft = ""; attachments = []; error = nil; notice = nil
+        do { try persistDraft() }
+        catch {
+            outbox.removeAll { $0.id == item.id }; draft = previousDraft; attachments = previousFiles
+            self.error = "消息暂时无法保存，内容仍保留在输入框中。"; return
+        }
+        scrollRequest = UUID()
+        await flushOutbox()
+    }
+    public func resumeOutbox() async {
+        guard context.active, !sending, !uncertain else { return }
+        let previous = outbox
+        outbox = outbox.map { var item = $0; if item.status == .held { item.status = .queued }; return item }
+        do { try persistDraft() }
+        catch { outbox = previous; self.error = "无法恢复发送，请重试。"; return }
+        error = nil
+        // Recheck the server's pending state before resuming an old queue.
+        await refresh()
+    }
+    public func retryOutgoing(_ id: UUID) async {
+        guard context.active, !sending, let index = outbox.firstIndex(where: { $0.id == id }), outbox[index].status == .failed else { return }
+        outbox[index].status = .queued; outbox[index].failure = nil; error = nil
+        do { try persistDraft() }
+        catch { outbox[index].status = .failed; self.error = "无法保存重试状态，请重试。"; return }
+        await refresh()
+    }
+    public func editOutgoing(_ id: UUID) {
+        guard context.active, let item = outbox.first(where: { $0.id == id }), [.failed, .held, .queued].contains(item.status) else { return }
+        let oldDraft = draft, oldFiles = attachments, oldOutbox = outbox, oldProject = selectedProjectId
+        // Different project requirements must not be silently combined.
+        guard draft.isEmpty && attachments.isEmpty || selectedProjectId == item.projectId else {
+            notice = "输入框已有其他项目的草稿，请先发送或保存后再编辑这条消息。"; return
+        }
+        draft = draft.isEmpty ? item.content : draft + "\n" + item.content
+        selectedProjectId = item.projectId
+        attachments += item.attachments.filter { file in !attachments.contains { $0.id == file.id } }
+        outbox.removeAll { $0.id == id }
+        do { try persistDraft() }
+        catch { draft = oldDraft; attachments = oldFiles; outbox = oldOutbox; selectedProjectId = oldProject; self.error = "无法恢复编辑，请重试。" }
+    }
+    private var canDeliver: Bool {
+        guard let agent else { return false }
+        return context.active && foreground && initialized && !loading && !sending && !uncertain && error == nil &&
+            agent.runtimeBound != false && !(agent.runtimeId ?? "").isEmpty && session?.status != "archived" &&
+            AgentPermission.canChat(agent, userId: context.user.id, role: role) &&
+            !(pending?.taskId != nil && pending?.supportsQueue != true)
+    }
+    private func flushOutbox() async {
+        guard canDeliver, outbox.first?.status == .queued, let agent else { return }
+        do {
+            sending = true
+            defer { sending = false }
+            while context.active && foreground && !uncertain, let item = outbox.first, item.status == .queued {
+                guard !(pending?.taskId != nil && pending?.supportsQueue != true) else { break }
+                var posted = false, accepted = false
+                do {
+                    outbox[0].status = .submitting; try persistDraft()
+                    if session == nil {
+                        var body: [String: JSONValue] = ["agent_id": .string(agent.id)]
+                        if let project = item.projectId { body["project_id"] = .string(project) }
+                        let created: ChatSession = try await context.api.write("/api/chat/sessions", body: body)
+                        try context.check(); session = created
+                    }
+                    guard var current = session else { throw APIError.http(404) }
+                    // Refresh responses can race this loop. Reaffirm each snapshot
+                    // on the server instead of trusting a cached session project.
+                    current = try await context.api.write("/api/chat/sessions/\(APIClient.segment(current.id))", method: "PATCH", body: ["project_id": item.projectId.map(JSONValue.string) ?? .null])
+                    try context.check(); session = current
+                    guard current.projectId == item.projectId else { throw DeliveryError.projectMismatch }
+                    try context.check()
+                    guard foreground else {
+                        if let index = outbox.firstIndex(where: { $0.id == item.id }) { outbox[index].status = .held }
+                        try persistDraft(); return
+                    }
+                    posted = true
+                    let bytes = try await context.api.data("/api/chat/sessions/\(APIClient.segment(current.id))/messages", method: "POST", body: ["content": .string(item.content), "attachment_ids": .array(item.attachments.map { .string($0.id) })])
+                    let receipt = try Contracts.receipt(from: bytes); accepted = true; try context.check()
+                    let bound = item.attachments.filter { receipt.attachmentIds?.contains($0.id) == true }
+                    let unbound = item.attachments.filter { receipt.attachmentIds?.contains($0.id) != true }
+                    if !unbound.isEmpty {
+                        attachments += unbound.filter { file in !attachments.contains { $0.id == file.id } }
+                        attachmentBindingUncertain = receipt.attachmentIds == nil
+                        notice = "部分附件绑定尚未确认，请核对后移除已发送的附件。"
+                    }
+                    let row = ChatMessage(id: receipt.messageId, chatSessionId: current.id, role: "user", content: item.content, taskId: receipt.taskId, createdAt: receipt.createdAt, attachments: bound, messageKind: "message", failureReason: nil, elapsedMs: nil, quickActions: nil)
+                    receiptRows[row.id] = row
+                    messages = MessagePages.merge(older: messages, newer: [row]); scrollRequest = UUID()
+                    if let active = pending, let activeId = active.taskId, activeId != receipt.taskId {
+                        var next = PendingTask(taskId: activeId, status: active.status, waitReason: active.waitReason, supportsQueue: receipt.supportsQueue ?? active.supportsQueue)
+                        next.queuedTasks = (active.queuedTasks ?? []) + [QueuedChatTask(taskId: receipt.taskId, status: "queued", createdAt: receipt.createdAt, messageId: receipt.messageId, content: item.content)]
+                        pending = next
+                    } else { pending = PendingTask(taskId: receipt.taskId, status: "queued", waitReason: nil, supportsQueue: receipt.supportsQueue) }
+                    outbox.removeAll { $0.id == item.id }
+                    try persistDraft()
+                } catch {
+                    guard context.active else { return }
+                    let definite = (error as? APIError).map { if case .http(let code) = $0 { return (400..<500).contains(code) && code != 408 }; return false } ?? false
+                    if let index = outbox.firstIndex(where: { $0.id == item.id }) {
+                        outbox[index].status = posted && !accepted && !definite ? .uncertain : .failed
+                        outbox[index].failure = error is DeliveryError ? "项目归属未能确认，请刷新项目后重试。" : DisplayText.error(error)
+                    }
+                    uncertain = outbox.contains { $0.status == .uncertain }
+                    if accepted { notice = "消息已接受，本地保存尚未完成，请刷新核对。" }
+                    self.error = error is DeliveryError ? "项目归属未能确认，消息没有提交。" : await context.report(error)
+                    do { try persistDraft() } catch { self.error = "发送状态暂时无法保存，请保持应用打开并核对消息。" }
+                    return
+                }
+            }
+        }
+        await refresh()
     }
     public func loadTrace(_ taskId: String) async {
         do {
@@ -207,6 +367,7 @@ import Observation
     }
     private func onEvent(_ event: SocketEvent) {
         guard context.active else { return }
+        onWorkspaceEvent?(event)
         if event.type == "auth_ack" || event.type.hasPrefix("chat:session_") {
             refreshJob = Task { [weak self] in await self?.refresh() }; return
         }
@@ -220,3 +381,5 @@ import Observation
         } else { unknownEvents = Array((unknownEvents + [event.type]).suffix(30)) }
     }
 }
+
+private enum DeliveryError: Error { case projectMismatch }

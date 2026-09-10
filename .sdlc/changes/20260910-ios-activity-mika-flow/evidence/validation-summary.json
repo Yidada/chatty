@@ -1,0 +1,21 @@
+{
+  "swift_tests": 41,
+  "swift_failures": 0,
+  "ios_host_passed": 4,
+  "ios_host_skipped": 1,
+  "ios_host_skip_reason": "Simulator does not expose physical file protection attributes",
+  "release_compile": "passed",
+  "signing": "disabled for generic iPhone compilation",
+  "bundle_id": "ai.chatty.ios",
+  "version": "0.1.0",
+  "build": "1",
+  "fixture_markers_in_release": false,
+  "ats_exceptions": false,
+  "binary_sha256": "1bacf62c226f7cd98a60f510a1b7e8e2793d4f3e56cc20c03ccd0cd2cec50922",
+  "testflight_uploaded": false,
+  "logs": {
+    ".tools/ios-activity-mika/swift-tests.log": "6716cbae863dbc60f172650ee58017682b701b7f098adfe6b5bdb82442a27848",
+    ".tools/ios-activity-mika/release-build.log": "5f6a9e3bc93b5d4a0b93b54b1cd41ada3e4e0c5b090e0516aa784640aa3ce75c",
+    ".tools/ios-activity-mika/fixture-build.log": "d2527222a1df80374b63e275721e95c6d5d7896369b4dbcd6bb4a9644487f499"
+  }
+}

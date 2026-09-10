@@ -51,7 +51,13 @@ public enum VaultError: Error, LocalizedError {
 public struct DraftRecord: Codable, Equatable, Sendable {
     public var text: String
     public var uncertain: Bool
-    public init(text: String = "", uncertain: Bool = false) { self.text = text; self.uncertain = uncertain }
+    public var projectId: String?
+    public var projectSelectionSet: Bool?
+    public var outbox: [OutgoingMessage]?
+    public init(text: String = "", uncertain: Bool = false, projectId: String? = nil, projectSelectionSet: Bool? = nil, outbox: [OutgoingMessage]? = nil) {
+        self.text = text; self.uncertain = uncertain; self.projectId = projectId; self.projectSelectionSet = projectSelectionSet
+        self.outbox = outbox
+    }
 }
 
 public struct DraftRecoveryScope: Codable, Sendable {
@@ -95,6 +101,14 @@ public struct DraftRecoveryScope: Codable, Sendable {
     }
     public func saveDraft(_ value: DraftRecord, account: String, workspace: String, agent: String) throws {
         try write(JSONEncoder().encode(value), to: root.appendingPathComponent("draft-" + key("\(account)/\(workspace)/\(agent)") + ".json"))
+    }
+    public func activityReads(account: String, workspace: String) throws -> [String: String] {
+        let url = root.appendingPathComponent("activity-read-" + key("\(account)/\(workspace)") + ".json")
+        guard manager.fileExists(atPath: url.path) else { return [:] }
+        return try JSONDecoder().decode([String: String].self, from: Data(contentsOf: url))
+    }
+    public func saveActivityReads(_ reads: [String: String], account: String, workspace: String) throws {
+        try write(JSONEncoder().encode(reads), to: root.appendingPathComponent("activity-read-" + key("\(account)/\(workspace)") + ".json"))
     }
     public func rememberRecovery(token: String, account: String, workspace: Workspace, agent: String) throws {
         let scope = DraftRecoveryScope(credentialHash: key(token), accountId: account, workspace: workspace, agentId: agent)

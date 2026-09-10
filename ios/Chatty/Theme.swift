@@ -18,5 +18,5 @@ enum ChattyTheme {
 }
 
 enum AppTab: String, CaseIterable, Hashable {
-    case chat, projects, settings
+    case activity, chat, projects, settings
 }

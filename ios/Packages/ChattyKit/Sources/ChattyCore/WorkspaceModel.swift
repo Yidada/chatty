@@ -26,13 +26,20 @@ import Observation
     public let chat: ChatModel
     public let projects: ProjectsModel
     public let resources: ResourcesModel
+    public let activity: ActivityModel
     init(workspace: Workspace, user: User, api: APIClient, files: ProtectedStorage, onFailure: @escaping @MainActor (Error) async -> Void) {
         context = WorkspaceContext(workspace: workspace, user: user, api: api, files: files, onFailure: onFailure)
         chat = ChatModel(context: context); projects = ProjectsModel(context: context); resources = ResourcesModel(context: context)
+        activity = ActivityModel(context: context)
+        chat.onWorkspaceEvent = { [weak activity] event in
+            if event.type == "auth_ack" || ["issue:", "project:", "inbox:", "activity:"].contains(where: event.type.hasPrefix) {
+                activity?.scheduleRefresh()
+            }
+        }
     }
-    public func start() { chat.start() }
-    public func pause() { chat.stop() }
-    public func invalidate() { chat.stop(); context.invalidate() }
+    public func start() { chat.start(); activity.start() }
+    public func pause() { chat.stop(); activity.stop() }
+    public func invalidate() { chat.stop(); activity.stop(); context.invalidate() }
 }
 
 @MainActor @Observable public final class ResourcesModel {

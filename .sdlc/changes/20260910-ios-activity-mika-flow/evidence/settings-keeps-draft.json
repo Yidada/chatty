@@ -1,0 +1,36 @@
+{
+  "text": [
+    "e63|text|text|CHATTY_CHAT_OK · IOS-A first||",
+    "e64|text|text|耗时 3.0 秒||",
+    "e66|text|text|执行过程||",
+    "e8|text|text|测试工作区 · 合成数据||fixture.banner",
+    "e70|text|text|IOS-B while A awaits receipt||",
+    "e72|text|text|CHATTY_CHAT_OK · IOS-B while A awaits receipt||",
+    "e73|text|text|耗时 3.0 秒||",
+    "e75|text|text|执行过程||",
+    "e79|text|text|IOS-C third||",
+    "e81|text|text|CHATTY_CHAT_OK · IOS-C third||",
+    "e82|text|text|耗时 3.0 秒||",
+    "e84|text|text|执行过程||",
+    "e108|text|text|Loop Project||"
+  ],
+  "targets": [
+    "e112|typeText|text-field||Draft survives avatar settings|chat.draft",
+    "e20|tap|button|个人与设置||profile.open",
+    "e65|tap|button|执行过程||trace.t1",
+    "e68|tap|button|继续测试||chat.suggestion",
+    "e74|tap|button|执行过程||trace.t2",
+    "e77|tap|button|继续测试||chat.suggestion",
+    "e83|tap|button|执行过程||trace.t3",
+    "e86|tap|button|继续测试||chat.suggestion",
+    "e105|tap|button|Loop Project||chat.projectPicker",
+    "e106|tap|button|||",
+    "e109|tap|button|添加附件||chat.attach",
+    "e110|tap|button|||",
+    "e122|tap|button|发送||chat.send",
+    "e131|tap|tab|动态|0|waveform.path",
+    "e133|tap|tab|Mika|1|sparkles",
+    "e135|tap|tab|项目|0|folder",
+    "e172|tap|button|收起键盘||"
+  ]
+}

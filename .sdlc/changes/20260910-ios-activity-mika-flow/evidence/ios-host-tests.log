@@ -1,0 +1,23 @@
+2026-09-10 15:10:20.872 appintentsmetadataprocessor[38310:21648745] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+2026-09-10 15:10:21.108 appintentsmetadataprocessor[38322:21648831] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+2026-09-10 15:10:21.120 appintentsnltrainingprocessor[38323:21648832] No AppShortcuts found - Skipping.
+Test Suite 'All tests' started at 2026-09-10 15:10:29.020.
+Test Suite 'ChattyFixtureTests.xctest' started at 2026-09-10 15:10:29.020.
+Test Suite 'SimulatorContractTests' started at 2026-09-10 15:10:29.021.
+Test Case '-[ChattyFixtureTests.SimulatorContractTests testDraftAndPreviewBackupExclusionAndExpiry]' started.
+Test Case '-[ChattyFixtureTests.SimulatorContractTests testDraftAndPreviewBackupExclusionAndExpiry]' passed (0.006 seconds).
+Test Case '-[ChattyFixtureTests.SimulatorContractTests testMarkdownBlocksOnIOS]' started.
+Test Case '-[ChattyFixtureTests.SimulatorContractTests testMarkdownBlocksOnIOS]' passed (0.005 seconds).
+Test Case '-[ChattyFixtureTests.SimulatorContractTests testPhysicalFileProtectionAttribute]' started.
+/Users/benjamin/Workspace/chatty/ios/Tests/SimulatorContractTests.swift:41: -[ChattyFixtureTests.SimulatorContractTests testPhysicalFileProtectionAttribute] : Test skipped - Simulator does not expose file protection; physical iPhone validation remains required.
+Test Case '-[ChattyFixtureTests.SimulatorContractTests testPhysicalFileProtectionAttribute]' skipped (0.007 seconds).
+Test Case '-[ChattyFixtureTests.SimulatorContractTests testRealKeychainRoundTripProtectionAndLogout]' started.
+Test Case '-[ChattyFixtureTests.SimulatorContractTests testRealKeychainRoundTripProtectionAndLogout]' passed (0.012 seconds).
+Test Case '-[ChattyFixtureTests.SimulatorContractTests testSameServerReceiptOnIOS]' started.
+Test Case '-[ChattyFixtureTests.SimulatorContractTests testSameServerReceiptOnIOS]' passed (0.002 seconds).
+Test Suite 'SimulatorContractTests' passed at 2026-09-10 15:10:29.053.
+	 Executed 5 tests, with 1 test skipped and 0 failures (0 unexpected) in 0.031 (0.032) seconds
+Test Suite 'ChattyFixtureTests.xctest' passed at 2026-09-10 15:10:29.053.
+	 Executed 5 tests, with 1 test skipped and 0 failures (0 unexpected) in 0.031 (0.033) seconds
+Test Suite 'All tests' passed at 2026-09-10 15:10:29.053.
+	 Executed 5 tests, with 1 test skipped and 0 failures (0 unexpected) in 0.031 (0.033) seconds

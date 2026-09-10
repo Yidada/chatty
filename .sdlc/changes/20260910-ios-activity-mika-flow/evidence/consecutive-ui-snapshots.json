@@ -1,0 +1,138 @@
+[
+  {
+    "at": "2026-09-10T07:06:50.849Z",
+    "message": "IOS-FIX-A project two",
+    "text": [
+      "e8|text|text|测试工作区 · 合成数据||fixture.banner",
+      "e47|text|text|IOS-C third||",
+      "e49|text|text|CHATTY_CHAT_OK · IOS-C third||",
+      "e50|text|text|耗时 3.0 秒||",
+      "e52|text|text|执行过程||",
+      "e56|text|text|Draft survives avatar settings||",
+      "e58|text|text|CHATTY_CHAT_OK · Draft survives avatar settings||",
+      "e59|text|text|耗时 3.0 秒||",
+      "e61|text|text|执行过程||",
+      "e64|text|text|IOS-FIX-A project two||chat.outgoing.0A31FD03-25DB-4344-8B5F-8058782DD782",
+      "e67|text|text|发送中||chat.outgoing.0A31FD03-25DB-4344-8B5F-8058782DD782",
+      "e68|text|text|· Empty Project||chat.outgoing.0A31FD03-25DB-4344-8B5F-8058782DD782",
+      "e90|text|text|Empty Project||"
+    ],
+    "targets": [
+      "e94|typeText|text-field||和 Mika 说点什么…|chat.draft",
+      "e20|tap|button|个人与设置||profile.open",
+      "e51|tap|button|执行过程||trace.t3",
+      "e60|tap|button|执行过程||trace.t4",
+      "e87|tap|button|Empty Project||chat.projectPicker",
+      "e88|tap|button|||",
+      "e91|tap|button|添加附件||chat.attach",
+      "e92|tap|button|||",
+      "e113|tap|tab|动态|0|waveform.path",
+      "e115|tap|tab|Mika|1|sparkles",
+      "e117|tap|tab|项目|0|folder",
+      "e154|tap|button|收起键盘||"
+    ]
+  },
+  {
+    "at": "2026-09-10T07:07:04.867Z",
+    "message": "IOS-FIX-B project one",
+    "text": [
+      "e47|text|text|CHATTY_CHAT_OK · IOS-C third||",
+      "e48|text|text|耗时 3.0 秒||",
+      "e50|text|text|执行过程||",
+      "e8|text|text|测试工作区 · 合成数据||fixture.banner",
+      "e54|text|text|Draft survives avatar settings||",
+      "e56|text|text|CHATTY_CHAT_OK · Draft survives avatar settings||",
+      "e57|text|text|耗时 3.0 秒||",
+      "e59|text|text|执行过程||",
+      "e62|text|text|IOS-FIX-A project two||chat.outgoing.0A31FD03-25DB-4344-8B5F-8058782DD782",
+      "e65|text|text|发送中||chat.outgoing.0A31FD03-25DB-4344-8B5F-8058782DD782",
+      "e66|text|text|· Empty Project||chat.outgoing.0A31FD03-25DB-4344-8B5F-8058782DD782",
+      "e67|text|text|IOS-FIX-B project one||chat.outgoing.67DE927C-B0E7-4287-B860-55DBFEC9D594",
+      "e68|text|text|等待发送||chat.outgoing.67DE927C-B0E7-4287-B860-55DBFEC9D594",
+      "e69|text|text|· Loop Project||chat.outgoing.67DE927C-B0E7-4287-B860-55DBFEC9D594",
+      "e92|text|text|Loop Project||"
+    ],
+    "targets": [
+      "e96|typeText|text-field||和 Mika 说点什么…|chat.draft",
+      "e20|tap|button|个人与设置||profile.open",
+      "e49|tap|button|执行过程||trace.t3",
+      "e58|tap|button|执行过程||trace.t4",
+      "e70|tap|button|编辑||chat.outgoing.67DE927C-B0E7-4287-B860-55DBFEC9D594",
+      "e89|tap|button|Loop Project||chat.projectPicker",
+      "e90|tap|button|||",
+      "e93|tap|button|添加附件||chat.attach",
+      "e94|tap|button|||",
+      "e115|tap|tab|动态|0|waveform.path",
+      "e117|tap|tab|Mika|1|sparkles",
+      "e119|tap|tab|项目|0|folder",
+      "e156|tap|button|收起键盘||"
+    ]
+  },
+  {
+    "at": "2026-09-10T07:07:19.329Z",
+    "message": "IOS-FIX-C no project",
+    "text": [
+      "e47|text|text|Draft survives avatar settings||",
+      "e8|text|text|测试工作区 · 合成数据||fixture.banner",
+      "e49|text|text|CHATTY_CHAT_OK · Draft survives avatar settings||",
+      "e50|text|text|耗时 3.0 秒||",
+      "e52|text|text|执行过程||",
+      "e56|text|text|IOS-FIX-A project two||",
+      "e57|text|text|IOS-FIX-B project one||chat.outgoing.67DE927C-B0E7-4287-B860-55DBFEC9D594",
+      "e60|text|text|发送中||chat.outgoing.67DE927C-B0E7-4287-B860-55DBFEC9D594",
+      "e61|text|text|· Loop Project||chat.outgoing.67DE927C-B0E7-4287-B860-55DBFEC9D594",
+      "e62|text|text|IOS-FIX-C no project||chat.outgoing.8BC8AC0E-4575-48BD-9960-91AA82A0AADD",
+      "e63|text|text|等待发送||chat.outgoing.8BC8AC0E-4575-48BD-9960-91AA82A0AADD",
+      "e66|text|text|Mika 正在处理||",
+      "e89|text|text|不指定项目||"
+    ],
+    "targets": [
+      "e93|typeText|text-field||和 Mika 说点什么…|chat.draft",
+      "e20|tap|button|个人与设置||profile.open",
+      "e51|tap|button|执行过程||trace.t4",
+      "e64|tap|button|编辑||chat.outgoing.8BC8AC0E-4575-48BD-9960-91AA82A0AADD",
+      "e65|tap|button|Mika 正在处理||chat.pending",
+      "e86|tap|button|不指定项目||chat.projectPicker",
+      "e87|tap|button|||",
+      "e90|tap|button|添加附件||chat.attach",
+      "e91|tap|button|||",
+      "e112|tap|tab|动态|0|waveform.path",
+      "e114|tap|tab|Mika|1|sparkles",
+      "e116|tap|tab|项目|0|folder",
+      "e153|tap|button|收起键盘||"
+    ]
+  },
+  {
+    "at": "2026-09-10T07:07:23.137Z",
+    "text": [
+      "e43|text|text|执行过程||",
+      "e8|text|text|测试工作区 · 合成数据||fixture.banner",
+      "e47|text|text|Draft survives avatar settings||",
+      "e49|text|text|CHATTY_CHAT_OK · Draft survives avatar settings||",
+      "e50|text|text|耗时 3.0 秒||",
+      "e52|text|text|执行过程||",
+      "e56|text|text|IOS-FIX-A project two||",
+      "e57|text|text|IOS-FIX-B project one||chat.outgoing.67DE927C-B0E7-4287-B860-55DBFEC9D594",
+      "e60|text|text|发送中||chat.outgoing.67DE927C-B0E7-4287-B860-55DBFEC9D594",
+      "e61|text|text|· Loop Project||chat.outgoing.67DE927C-B0E7-4287-B860-55DBFEC9D594",
+      "e62|text|text|IOS-FIX-C no project||chat.outgoing.8BC8AC0E-4575-48BD-9960-91AA82A0AADD",
+      "e63|text|text|等待发送||chat.outgoing.8BC8AC0E-4575-48BD-9960-91AA82A0AADD",
+      "e86|text|text|不指定项目||"
+    ],
+    "targets": [
+      "e90|typeText|text-field||D can still be typed|chat.draft",
+      "e20|tap|button|个人与设置||profile.open",
+      "e51|tap|button|执行过程||trace.t4",
+      "e64|tap|button|编辑||chat.outgoing.8BC8AC0E-4575-48BD-9960-91AA82A0AADD",
+      "e83|tap|button|不指定项目||chat.projectPicker",
+      "e84|tap|button|||",
+      "e87|tap|button|添加附件||chat.attach",
+      "e88|tap|button|||",
+      "e100|tap|button|发送||chat.send",
+      "e109|tap|tab|动态|0|waveform.path",
+      "e111|tap|tab|Mika|1|sparkles",
+      "e113|tap|tab|项目|0|folder",
+      "e150|tap|button|收起键盘||"
+    ]
+  }
+]

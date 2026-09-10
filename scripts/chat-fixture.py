@@ -12,6 +12,7 @@ MESSAGES=[{'id':f'm{i:03}','chat_session_id':'s1','role':'user' if i%2 else 'ass
 MESSAGES += [{'id':'rich','chat_session_id':'s1','role':'assistant','content':'## 格式验证\n\n**粗体**与[链接](https://multica.ai)\n\n| 项目 | 状态 |\n| --- | --- |\n| 对话 | OK |\n\n- [x] 游标分页\n- [ ] 待办事项\n\n```python\nprint("Chatty")\n```','created_at':'2026-09-05T02:00:00Z','attachments':[A],'quick_actions':[{'label':'继续测试','prompt':'继续测试格式'}]}]
 SESSIONS=[S,dict(S,id='s2',title='第二个会话',pinned=False,has_unread=False,unread_count=0),dict(S,id='s3',title='归档会话',status='archived',pinned=False)]
 PENDING={};TRACES={};CLIENTS=[];CALLS=[];LOCK=threading.Lock();STATUS=200;SEND_COUNT=0
+TASKS={};CANCELLED=set();SLOW=False
 ISSUES=[{'id':'i'+str(i),'identifier':'LOOP-'+str(i+1),'title':f'Issue {i+1:02}','status':'todo' if i<30 else 'done','description':'Synthetic issue description','project_id':'p1','revision':1,'priority':'high' if i==0 else 'none'} for i in range(55)]
 ISSUES.append({'id':'orphan','identifier':'LOOP-56','title':'Unassigned project issue','status':'todo','project_id':None,'revision':1})
 STATUSES=[{'key':'todo','name':'待开始','category':'todo'},{'key':'qa_custom','name':'内部验收','category':'in_review'},{'key':'done','name':'已完成','category':'done'}]
@@ -27,17 +28,29 @@ def broadcast(kind,payload):
             except OSError:CLIENTS.remove(client)
 
 def finish(task,session,text):
-    time.sleep(1)
+    time.sleep(6 if SLOW else 1)
+    if task in CANCELLED:return
     trace={'task_id':task,'seq':1,'type':'thinking','content':'检查格式与上下文'}
     TRACES[task]=[trace];broadcast('task:message',trace)
     TRACES[task]+=[{'task_id':task,'seq':2,'type':'tool_use','tool':'fixture_check','input':{'check':'synthetic only'}}]
     broadcast('task:message',TRACES[task][-1])
-    time.sleep(2)
+    time.sleep(6 if SLOW else 2)
+    if task in CANCELLED:return
     final='CHATTY_CHAT_OK · '+text
     TRACES[task]+=[{'task_id':task,'seq':3,'type':'text','content':final}]
     broadcast('task:message',TRACES[task][-1])
     msg={'id':'reply-'+task,'chat_session_id':session,'role':'assistant','content':final,'task_id':task,'created_at':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'elapsed_ms':3000,'quick_actions':[{'label':'继续测试','prompt':'继续测试格式'}]}
-    MESSAGES.append(msg);PENDING.pop(session,None)
+    MESSAGES.append(msg)
+    cur=PENDING.get(session)
+    if cur and cur.get('task_id')==task:
+        q=cur.get('queued_tasks') or []
+        if q:
+            nxt=q.pop(0)
+            PENDING[session]={'task_id':nxt['task_id'],'status':'running','created_at':nxt['created_at'],'supports_queue':True,'queued_tasks':q}
+            broadcast('task:dispatch',{'task_id':nxt['task_id'],'chat_session_id':session,'status':'running'})
+            threading.Thread(target=finish,args=(nxt['task_id'],session,nxt.get('content','')),daemon=True).start()
+        else:
+            PENDING.pop(session,None)
     broadcast('chat:done',dict(msg,message_id=msg['id']))
 
 class API(BaseHTTPRequestHandler):
@@ -62,7 +75,7 @@ class API(BaseHTTPRequestHandler):
         if not valid:self.reply(401,{'error':'unauthorized'});return False
         return True
     def do_POST(self):
-        global STATUS,SEND_COUNT,NAVIGATION
+        global STATUS,SEND_COUNT,NAVIGATION,SLOW
         raw=self.raw()
         if self.path=='/api/upload-file':
             if not self.auth():return
@@ -71,6 +84,7 @@ class API(BaseHTTPRequestHandler):
         if self.path=='/__control':
             STATUS=body.get('status',200)
             NAVIGATION=body.get('navigation',NAVIGATION)
+            SLOW=body.get('slow',SLOW)
             if body.get('design'):
                 MESSAGES.extend([
                     {'id':'design-user','chat_session_id':'s1','role':'user','content':'帮我梳理一下项目进度。','created_at':'2026-09-05T08:32:00Z'},
@@ -104,11 +118,18 @@ class API(BaseHTTPRequestHandler):
             s=dict(S,id='s'+str(len(SESSIONS)+1),title='新对话',has_unread=False,unread_count=0);SESSIONS.append(s);return self.reply(200,s)
         m=re.fullmatch('/api/chat/sessions/([^/]+)/messages',self.path)
         if m:
-            SEND_COUNT+=1;sid=m[1];tid='t'+str(SEND_COUNT);now=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime())
-            msg={'id':'user-'+tid,'chat_session_id':sid,'role':'user','content':body['content'],'task_id':tid,'created_at':now,'attachments':[A] if body.get('attachment_ids') else []}
-            MESSAGES.append(msg);PENDING[sid]={'task_id':tid,'status':'running','created_at':now}
-            threading.Thread(target=finish,args=(tid,sid,body['content']),daemon=True).start()
-            return self.reply(200,{'message_id':msg['id'],'task_id':tid,'created_at':now})
+            SEND_COUNT+=1;sid=m[1];tid='t'+str(SEND_COUNT);mid='user-'+tid;now=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime())
+            msg={'id':mid,'chat_session_id':sid,'role':'user','content':body['content'],'task_id':tid,'created_at':now,'attachments':[A] if body.get('attachment_ids') else []}
+            MESSAGES.append(msg);TASKS[tid]={'session':sid,'content':body['content'],'message_id':mid}
+            cur=PENDING.get(sid)
+            if cur and cur.get('task_id'):
+                cur.setdefault('queued_tasks',[]).append({'task_id':tid,'status':'queued','created_at':now,'message_id':mid,'content':body['content']})
+                cur['supports_queue']=True;queued=True
+                broadcast('task:queued',{'task_id':tid,'chat_session_id':sid,'status':'queued'})
+            else:
+                PENDING[sid]={'task_id':tid,'status':'running','created_at':now,'supports_queue':True,'queued_tasks':[]};queued=False
+                threading.Thread(target=finish,args=(tid,sid,body['content']),daemon=True).start()
+            return self.reply(200,{'message_id':mid,'task_id':tid,'created_at':now,'queued':queued,'supports_queue':True})
         self.reply(404,{'error':'unknown route'})
     def do_PUT(self):
         body=json.loads(self.raw() or '{}')
@@ -156,7 +177,7 @@ class API(BaseHTTPRequestHandler):
         if path=='/api/attachments/file1/download':return self.reply(200,b'Chatty attachment preview OK','text/plain')
         m=re.fullmatch('/api/chat/sessions/([^/]+)/(messages/page|pending-task)',path)
         if m:
-            if m[2]=='pending-task':return self.reply(200,PENDING.get(m[1],{}))
+            if m[2]=='pending-task':return self.reply(200,PENDING.get(m[1],{'supports_queue':True}))
             rows=[x for x in MESSAGES if x['chat_session_id']==m[1]]
             if q.get('before_id'):
                 ids=[x['id'] for x in rows];rows=rows[:ids.index(q['before_id'][0])]

@@ -1,0 +1,16 @@
+{
+  "source": "staged shared fixture plus iOS fixture",
+  "writes": 3,
+  "projects": [
+    "p1",
+    "p2",
+    null
+  ],
+  "reply_order": [
+    "t1",
+    "t2",
+    "t3"
+  ],
+  "older_action_visible": true,
+  "passed": true
+}

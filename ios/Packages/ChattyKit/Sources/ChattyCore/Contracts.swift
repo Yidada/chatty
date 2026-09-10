@@ -46,6 +46,7 @@ public struct ChatSession: Decodable, Identifiable, Sendable {
     public let title: String?
     public let status: String?
     public let updatedAt: String?
+    public var projectId: String? = nil
 }
 
 public enum ChatSessions {
@@ -80,7 +81,7 @@ public struct QuickAction: Decodable, Sendable {
     public let primary: Bool?
 }
 
-public struct Attachment: Decodable, Identifiable, Sendable {
+public struct Attachment: Codable, Identifiable, Equatable, Sendable {
     public let id: String
     public let filename: String
     public let contentType: String?
@@ -115,6 +116,16 @@ public struct PendingTask: Decodable, Sendable {
     public let status: String?
     public let waitReason: String?
     public let supportsQueue: Bool?
+    public var queuedTasks: [QueuedChatTask]? = nil
+}
+
+public struct QueuedChatTask: Decodable, Identifiable, Sendable {
+    public let taskId: String
+    public let status: String
+    public let createdAt: String
+    public let messageId: String?
+    public let content: String?
+    public var id: String { taskId }
 }
 
 public struct Project: Decodable, Identifiable, Sendable {

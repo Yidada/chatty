@@ -1,5 +1,9 @@
 import Foundation
 
 extension AppConfiguration {
-    static let fixture = AppConfiguration(baseURL: URL(string: "http://127.0.0.1:8765/")!, isFixture: true, hint: "合成测试验证码：123456")
+    static var fixture: AppConfiguration {
+        let requested = Int(ProcessInfo.processInfo.environment["CHATTY_FIXTURE_PORT"] ?? "") ?? 8765
+        let port = (1024...65535).contains(requested) ? requested : 8765
+        return AppConfiguration(baseURL: URL(string: "http://127.0.0.1:\(port)/")!, isFixture: true, hint: "合成测试验证码：123456")
+    }
 }

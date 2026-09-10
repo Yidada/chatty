@@ -46,9 +46,14 @@ final class SimulatorContractTests: XCTestCase {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         let files = try ProtectedStorage(identifier: "test", root: root)
         defer { try? FileManager.default.removeItem(at: root) }
-        try files.saveDraft(.init(text:"synthetic draft"),account:"u1",workspace:"w1",agent:"mika")
+        let queued = OutgoingMessage(content: "queued snapshot", attachments: [], projectId: "p1")
+        try files.saveDraft(.init(text:"synthetic draft", projectId:"p2", projectSelectionSet:true, outbox:[queued]),account:"u1",workspace:"w1",agent:"mika")
+        try files.saveActivityReads(["i1":"activity-version|in_review"],account:"u1",workspace:"w1")
+        let restored = try files.draft(account:"u1",workspace:"w1",agent:"mika")
+        XCTAssertEqual(restored.text,"synthetic draft"); XCTAssertEqual(restored.projectId,"p2")
+        XCTAssertEqual(restored.outbox,[queued])
         let preview = try files.preview(Data("sample".utf8), filename:"fixture.txt")
-        let stored = try FileManager.default.contentsOfDirectory(at: root, includingPropertiesForKeys: nil).filter { $0.lastPathComponent.hasPrefix("draft-") }
+        let stored = try FileManager.default.contentsOfDirectory(at: root, includingPropertiesForKeys: nil).filter { $0.pathExtension == "json" }
         for path in stored + [preview] {
             XCTAssertEqual(try path.resourceValues(forKeys:[.isExcludedFromBackupKey]).isExcludedFromBackup,true)
         }
@@ -56,5 +61,6 @@ final class SimulatorContractTests: XCTestCase {
         XCTAssertFalse(FileManager.default.fileExists(atPath:preview.path))
         try files.clearAll()
         XCTAssertEqual(try files.draft(account:"u1",workspace:"w1",agent:"mika").text, "")
+        XCTAssertTrue(try files.activityReads(account:"u1",workspace:"w1").isEmpty)
     }
 }

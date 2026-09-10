@@ -1,0 +1,15 @@
+{
+  "version": "0.1.0",
+  "build": "2",
+  "bundle_id": "ai.chatty.ios",
+  "core_tests_passed": 42,
+  "core_tests_failed": 0,
+  "release_compile": "passed",
+  "signature": "not created",
+  "testflight_upload": "deferred until user completes Apple login",
+  "fixture_markers": false,
+  "ats_exceptions": false,
+  "binary_sha256": "7f0be92606e3adc210aa02aab875db35bdde79be6b0e5f0d13feb413b149dd9a",
+  "release_build_log": ".tools/ios-testflight/0.1.0-2/release-build.log",
+  "release_build_log_sha256": "76fd0bfd7cffbb22b7895bd16564547ec6b9829b2c829fdc0f911ba4db6d281d"
+}

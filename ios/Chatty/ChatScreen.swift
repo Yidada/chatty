@@ -26,8 +26,15 @@ struct ChatScreen: View {
                     Text("发送结果待确认").font(.callout).accessibilityIdentifier("chat.uncertain")
                     Spacer()
                     Button("刷新核对") { Task { await model.refresh() } }.frame(minHeight: 44)
-                    Button("已核对") { confirmUncertain = true }.frame(minHeight: 44).accessibilityIdentifier("chat.acknowledge")
+                    Button("核对结果") { confirmUncertain = true }.frame(minHeight: 44).accessibilityIdentifier("chat.acknowledge")
                 }.padding(.horizontal, 16).background(.orange.opacity(0.08))
+            }
+            if model.outbox.contains(where: { $0.status == .held }) {
+                HStack {
+                    Text("未发送的消息已保留").font(.callout)
+                    Spacer()
+                    Button("继续发送") { Task { await model.resumeOutbox() } }.frame(minHeight: 44).disabled(model.sending || model.uncertain).accessibilityIdentifier("chat.resumeQueue")
+                }.padding(.horizontal, 20)
             }
             ScrollViewReader { proxy in
                 ScrollView {
@@ -47,13 +54,16 @@ struct ChatScreen: View {
                         ForEach(model.messages) { message in
                             MessageRow(message: message, model: model, context: context).id(message.id)
                         }
+                        ForEach(model.outbox) { item in
+                            OutgoingRow(item: item, model: model).id(item.id)
+                        }
                         if let pending = model.pending, let task = pending.taskId {
-                            VStack(alignment: .leading, spacing: 10) {
-                                HStack { ProgressView(); Text(DisplayText.status(pending.status ?? "running")).font(.callout) }
+                            DisclosureGroup {
                                 if let reason = pending.waitReason { Text(reason).font(.caption).foregroundStyle(.secondary) }
                                 TaskDetails(taskId: task, model: model)
-                            }.padding(16).frame(maxWidth: .infinity, alignment: .leading)
-                                .background(ChattyTheme.surface, in: RoundedRectangle(cornerRadius: 18)).accessibilityIdentifier("chat.pending")
+                            } label: {
+                                Text((pending.queuedTasks?.isEmpty == false) ? "Mika 正在处理 · \(pending.queuedTasks?.count ?? 0) 条排队" : "Mika 正在处理").font(.callout).foregroundStyle(.secondary)
+                            }.accessibilityIdentifier("chat.pending")
                         }
                         Color.clear.frame(height: 1).id("chat.bottom")
                     }.padding(20)
@@ -61,6 +71,7 @@ struct ChatScreen: View {
                 .defaultScrollAnchor(.bottom, for: .initialOffset)
                 .scrollDismissesKeyboard(.interactively)
                 .accessibilityIdentifier("chat.messages")
+                .refreshable { await model.refresh(); await model.loadProjects() }
                 .onChange(of: model.scrollRequest) { _, _ in initialBottom = true; proxy.scrollTo("chat.bottom", anchor: .bottom) }
                 .onScrollPhaseChange { _, phase in if phase == .interacting { initialBottom = false } }
                 .onScrollGeometryChange(for: ChatScrollMetrics.self) { geometry in
@@ -89,13 +100,6 @@ struct ChatScreen: View {
         .navigationTitle("Mika").navigationBarTitleDisplayMode(.inline)
         .background(ChattyTheme.background)
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Label(model.connected ? "实时连接" : "定时同步", systemImage: model.connected ? "bolt.horizontal.circle.fill" : "arrow.triangle.2.circlepath")
-                    .font(.caption).foregroundStyle(.secondary).accessibilityIdentifier("chat.connection")
-            }
-            ToolbarItem(placement: .topBarTrailing) {
-                Button("刷新", systemImage: "arrow.clockwise") { Task { await model.refresh() } }.accessibilityIdentifier("chat.refresh")
-            }
             ToolbarItemGroup(placement: .keyboard) { Spacer(); Button("收起键盘") { draftFocused = false } }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) { composer }
@@ -124,13 +128,28 @@ struct ChatScreen: View {
             }
         }
         .alert("附件未能读取", isPresented: Binding(get: { importError != nil }, set: { if !$0 { importError = nil } })) { Button("知道了", role: .cancel) {} } message: { Text(importError ?? "") }
-        .alert("已核对服务端消息？", isPresented: $confirmUncertain) {
-            Button("已核对，继续编辑") { model.acknowledgeUncertain() }
+        .alert("这条消息已经收到？", isPresented: $confirmUncertain) {
+            Button("确认已收到") { model.acknowledgeUncertain() }
+            if model.outbox.contains(where: { $0.status == .uncertain }) {
+                Button("确认未收到，重试") { Task { await model.retryUncertainAfterReview() } }
+            }
             Button("继续核对", role: .cancel) {}
-        } message: { Text("解除待确认后可以再次发送。请先确认上一条消息是否已经到达，避免重复执行。") }
+        } message: { Text("请先刷新核对聊天记录。已收到会移除本机待核对记录；重试会再次提交，如果原消息稍后到达，可能重复执行。") }
     }
     private var composer: some View {
         VStack(spacing: 10) {
+            HStack {
+                Menu {
+                    Button("不指定项目") { model.selectProject(nil) }
+                    ForEach(model.projects) { project in Button(project.title) { model.selectProject(project.id) } }
+                    Divider()
+                    Button("刷新项目") { Task { await model.loadProjects() } }
+                } label: {
+                    Label(model.selectedProjectName, systemImage: "folder").font(.callout).lineLimit(1).frame(minHeight: 44)
+                }.accessibilityIdentifier("chat.projectPicker")
+                Spacer()
+            }.padding(.horizontal, 24)
+            if let error = model.projectError { Text(error).font(.caption).foregroundStyle(.secondary).padding(.horizontal, 24) }
             if !model.attachments.isEmpty {
                 ScrollView(.horizontal) {
                     HStack {
@@ -147,12 +166,12 @@ struct ChatScreen: View {
                     Button("选择照片", systemImage: "photo") { pickingPhoto = true }
                     Button("选择文件", systemImage: "doc") { pickingFile = true }
                 } label: { Image(systemName: "plus").font(.title3).frame(width: 44, height: 44) }
-                .disabled(model.sending || model.uploading || model.agent == nil).accessibilityLabel("添加附件").accessibilityIdentifier("chat.attach")
+                .disabled(model.uploading || model.agent == nil).accessibilityLabel("添加附件").accessibilityIdentifier("chat.attach")
                 TextField("和 Mika 说点什么…", text: Binding(get: { model.draft }, set: { model.setDraft($0) }), axis: .vertical)
                     .lineLimit(1...6).focused($draftFocused).padding(.vertical, 12).accessibilityIdentifier("chat.draft")
-                    .disabled(model.agent == nil || model.sending)
+                    .disabled(model.agent == nil)
                 Button { Task { await model.send() } } label: {
-                    Group { if model.sending { ProgressView() } else { Image(systemName: "arrow.up").fontWeight(.semibold) } }
+                    Image(systemName: "arrow.up").fontWeight(.medium)
                         .frame(width: 44, height: 44).background(model.canSend ? ChattyTheme.accent : .secondary.opacity(0.1), in: Circle())
                         .foregroundStyle(model.canSend ? ChattyTheme.onAccent : Color.secondary)
                 }.disabled(!model.canSend).accessibilityLabel("发送").accessibilityIdentifier("chat.send")
@@ -169,6 +188,9 @@ private struct MessageRow: View {
         VStack(alignment: .leading, spacing: 12) {
             if message.role == "user" {
                 HStack { Spacer(minLength: 36); Text(message.content ?? "").padding(14).background(ChattyTheme.accent.opacity(0.12), in: RoundedRectangle(cornerRadius: 18)).textSelection(.enabled) }
+                if model.pending?.queuedTasks?.contains(where: { $0.messageId == message.id }) == true {
+                    Text("排队中").font(.caption).foregroundStyle(.secondary).frame(maxWidth: .infinity, alignment: .trailing)
+                }
             } else {
                 if message.messageKind == "no_response" || (message.content ?? "").isEmpty && (message.attachments ?? []).isEmpty {
                     Label("本次执行没有返回文字回复。", systemImage: "text.bubble").foregroundStyle(.secondary)
@@ -236,5 +258,35 @@ private struct PickedPhoto: Transferable {
             guard (values.fileSize ?? Int.max) <= APIClient.maximumFileBytes else { throw APIError.oversizedFile }
             return PickedPhoto(data: try Data(contentsOf: received.file, options: .mappedIfSafe), name: received.file.lastPathComponent, contentType: values.contentType?.preferredMIMEType ?? "application/octet-stream")
         }
+    }
+}
+
+private struct OutgoingRow: View {
+    let item: OutgoingMessage
+    let model: ChatModel
+    var body: some View {
+        VStack(alignment: .trailing, spacing: 8) {
+            HStack {
+                Spacer(minLength: 36)
+                VStack(alignment: .leading, spacing: 8) {
+                    if !item.content.isEmpty { Text(item.content).textSelection(.enabled) }
+                    ForEach(item.attachments) { file in Label(file.filename, systemImage: "paperclip").font(.caption).lineLimit(2) }
+                }.padding(14).background(ChattyTheme.accent.opacity(0.12), in: RoundedRectangle(cornerRadius: 18))
+            }
+            HStack(spacing: 8) {
+                if item.status == .submitting { ProgressView().controlSize(.mini) }
+                Text(item.status.label)
+                if let project = model.projects.first(where: { $0.id == item.projectId }) { Text("· \(project.title)").lineLimit(1) }
+            }.font(.caption).foregroundStyle(.secondary)
+            if let failure = item.failure { Text(failure).font(.caption).foregroundStyle(.secondary) }
+            if item.status == .failed {
+                HStack {
+                    Button("重新编辑") { model.editOutgoing(item.id) }.frame(minHeight: 44)
+                    Button("重试") { Task { await model.retryOutgoing(item.id) } }.frame(minHeight: 44)
+                }.font(.callout)
+            } else if item.status == .held || item.status == .queued {
+                Button("编辑") { model.editOutgoing(item.id) }.font(.caption).frame(minHeight: 44)
+            }
+        }.frame(maxWidth: .infinity, alignment: .trailing).accessibilityIdentifier("chat.outgoing.\(item.id)")
     }
 }

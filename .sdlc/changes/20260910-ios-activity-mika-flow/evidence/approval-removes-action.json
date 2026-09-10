@@ -1,0 +1,19 @@
+{
+  "text": [
+    "e8|text|text|测试工作区 · 合成数据||fixture.banner",
+    "e33|text|text|Loop Project||",
+    "e34|text|text|·||",
+    "e35|text|text|2 hr, 56 min||",
+    "e36|text|text|另一位成员的任务需要补充权限||",
+    "e37|text|text|当前受阻，需要进一步处理。||"
+  ],
+  "targets": [
+    "e30|tap|button|未读, Loop Project, ·, 2 hr, 56 min, 另一位成员的任务需要补充权限, 当前受阻，需要进一步处理。||activity.issue.i54",
+    "e19|tap|button|个人与设置||profile.open",
+    "e25|tap|button|新进展||activity.recent",
+    "e26|tap|button|待处理 1||activity.actions",
+    "e53|tap|tab|动态|1|waveform.path",
+    "e55|tap|tab|Mika|0|sparkles",
+    "e57|tap|tab|项目|0|folder"
+  ]
+}

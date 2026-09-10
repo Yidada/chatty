@@ -19,12 +19,17 @@ import Observation
     public private(set) var selectedProject: String?
     public private(set) var query = ""
     public private(set) var filter: String?
+    public private(set) var timeline: [IssueTimelineEntry] = []
+    public private(set) var timelineError: String?
+    public private(set) var loadingTimeline = false
     @ObservationIgnored private var generation = 0
     @ObservationIgnored private var detailGeneration = 0
     @ObservationIgnored private let context: WorkspaceContext
     init(context: WorkspaceContext) { self.context = context }
 
     public func statusName(_ key: String) -> String { statuses.first(where: { $0.key == key })?.name ?? DisplayText.status(key) }
+    public func category(_ issue: Issue) -> String { issue.statusCategory ?? statuses.first { $0.key == issue.status }?.category ?? issue.status }
+    public var doneStatus: String? { statuses.first { $0.key == "done" }?.key ?? statuses.first { $0.category == "done" }?.key }
     public func overview() async {
         guard context.active else { return }
         let g = generation + 1; generation = g; loading = true; error = nil
@@ -79,6 +84,7 @@ import Observation
         guard context.active, !saving else { return }
         detailGeneration += 1; let g = detailGeneration
         detail = nil; loadingDetail = true; detailError = nil
+        timeline = []; timelineError = nil; loadingTimeline = false
         defer { if g == detailGeneration { loadingDetail = false } }
         do {
             let row: Issue = try await context.api.get("/api/issues/\(APIClient.segment(id))")
@@ -116,5 +122,15 @@ import Observation
                 } catch { }
             }
         }
+    }
+    public func loadTimeline(id: String) async {
+        guard context.active, !loadingTimeline else { return }
+        let g = detailGeneration; loadingTimeline = true
+        defer { if g == detailGeneration { loadingTimeline = false } }
+        do {
+            let rows: [IssueTimelineEntry] = try await context.api.get("/api/issues/\(APIClient.segment(id))/timeline")
+            try context.check(); guard g == detailGeneration else { return }
+            timeline = rows.sorted { $0.createdAt > $1.createdAt }; timelineError = nil
+        } catch { if g == detailGeneration { timelineError = await context.report(error) } }
     }
 }

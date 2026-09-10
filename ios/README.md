@@ -1,4 +1,4 @@
-# Chatty iOS V1
+# Chatty iOS
 
 SwiftUI 原生 iPhone 客户端，iOS 26+ / Swift 6。普通应用连接 `https://api.multica.ai/`，已实现验证码登录、Mika 对话、附件、项目与协作资源。
 
@@ -26,20 +26,23 @@ scripts/ios-dev-loop.sh fixture
 | 入口 | 已实现行为 |
 |---|---|
 | 登录 | 邮箱验证码、Keychain ThisDeviceOnly、账号恢复、工作区选择、401 清理、503 保留凭据 |
-| 对话 | 按 `system_key=mika` 和权限定位、最近有效会话、首次发送建会话、单次提交、回执核对、双游标历史 |
+| 动态 | 全工作区事项的新进展 / 待处理、包含其他发起人、独立分页、按事项版本保存已读、应用内红点 |
+| 对话 | 项目选择、连续发送、文本/附件/项目快照、本机顺序提交与服务端队列、回执核对、双游标历史 |
 | 实时与离线 | 前台 WebSocket auth 首帧、退避重连、REST 恢复、后台停止连接、跨工作区隔离、冷启动离线草稿 |
 | 内容 | Markdown 标题/表格/引用/嵌套列表/任务列表/代码/链接、task_id 过程、失败说明、建议填草稿 |
 | 附件 | 系统照片与文件选择、20 MB 限制、绑定回执校验、过期签名 URL 刷新、图片缩放、Quick Look、保存/分享 |
-| 项目 | 服务端总计、搜索/自定义状态/无项目筛选、50 条分页、详情、revision + suppress_run 状态修改 |
-| 设置 | 工作区 Sheet、Runtimes/Agents/Squads 原生列表与详情、退出清理 |
+| 项目 | 全部发起人的事项、搜索/自定义状态/无项目筛选、50 条分页、精简详情、折叠目标与记录、revision + suppress_run 验收/状态修改 |
+| 头像 → 设置 | 工作区 Sheet、Runtimes/Agents/Squads 原生列表与详情、退出清理 |
 
 - `Chatty` / `ai.chatty.ios`：普通应用，不编译 `ios/Fixture`，不链接 `ChattyFixtureSupport`，无 ATS 例外。
 - `ChattyFixture` / `ai.chatty.ios.fixture`：独立 bundle、Keychain service、受保护目录；允许本机测试网络。仅测试包开放 Documents 文件共享，便于通过系统 Files 选择合成样本；Library 内的受保护数据不在此目录。
 - `ChattyCore`：DTO、APIClient、作用域/业务模型、受保护存储、Markdown AST。界面在 `ios/Chatty`。
 - `scripts/generate-ios-project.py`：确定性生成 project、Info.plist 与共享 scheme。新增宿主 Swift 文件后运行；生成器是配置来源。
-- `--p0-preview` 保留历史 P0 测试壳；`flows/p0-navigation.ad` 是当时的证据，当前完整回归使用 `flows/v1-{core,resources,workspaces}.ad`。
+- `--p0-preview` 保留历史 P0 测试壳。`tests/device/ios/p0-navigation.ad` 和 `v1-*.ad` 对应旧导航；本次三页导航的实际交互证据见下文的新需求记录。
 
-Token 只保存在 Keychain。草稿、待确认标记和最近作用域保存在受保护、排除备份的目录；离线恢复元数据只保存账号/工作区/Agent 标识和凭据哈希，不保存 token。离线页不授予发送权限。消息与项目只在内存。临时附件 1 小时过期，关闭预览和退出时清理。外域下载不附加 Bearer 或工作区头；HTTP 重定向拒绝。HTML、SVG、Mermaid 等主动内容按文本阅读。任务过程中的常见凭据在呈现前隐藏。
+Token 只保存在 Keychain。草稿与待发送消息共同保存在一个受保护、排除备份的原子记录中；每条待发送消息保留其文本、附件元数据和项目。动态已读指纹按账号/工作区隔离，退出清理。离线恢复元数据只保存账号/工作区/Agent 标识和凭据哈希，不保存 token。离线页不授予发送权限。服务端历史消息、项目和动态列表只在内存。临时附件 1 小时过期，关闭预览和退出时清理。外域下载不附加 Bearer 或工作区头；HTTP 重定向拒绝。HTML、SVG、Mermaid 等主动内容按文本阅读。任务过程中的常见凭据在呈现前隐藏。
+
+发送会立即清空输入框。服务端支持队列时继续提交下一条；不支持时留在本机等待。冷启动或回到后台保留的队列需明确继续。超时/异常回执停止自动提交，核对后可确认已收到或明确重试；后者可能在原请求迟到时重复执行。每条 POST 前串行确认会话项目；后端目前没有逐条消息的原子项目参数，多端同时修改同一个会话项目的竞争仍需服务端后续支持。
 
 V1 范围不包含 APNs、语音转写、审批、其他 Agent 对话或远程 Runtime 控制。物理设备文件保护、VoiceOver 人工体验及真实账号业务闭环仍需对应验收，不能由合成服务测试替代。
 
@@ -53,7 +56,9 @@ xcodebuild -project ios/Chatty.xcodeproj -scheme ChattyFixture -configuration De
   -derivedDataPath "$CHATTY_IOS_DERIVED_DATA" CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- test
 ```
 
-XCTest 与 agent-device 串行运行。执行回放前确认测试应用已退出登录，并启动全新的 `scripts/ios-fixture.py`（状态修改和消息计数有意保留到服务进程结束）。
+XCTest 与 UI 交互串行运行。当前核心回归有 42 项 Swift 测试，另有 iOS 宿主 XCTest 和 XcodeBuildMCP 原生交互证据。需求与实现见 [iOS 动态与 Mika 连续发送](../.sdlc/changes/20260910-ios-activity-mika-flow/evidence.md)，提交前的升级迁移检查见 [交付记录](../.sdlc/changes/20260910-ios-activity-mika-flow/release.md)。
+
+以下为历史 V1 导航回放，保留用于追溯；其中设置 Tab、详情和计数选择器基于旧界面，不作为新版的验收命令。回放使用全新的测试服务，状态修改和消息计数有意保留到服务进程结束。
 
 ```sh
 scripts/ios-v1-replay.sh
@@ -63,6 +68,6 @@ scripts/ios-v1-replay.sh
 
 在 8765 端口空闲时，`python3 scripts/ios-check-redirect.py` 用真实本机 302 服务同时验证正式 `APIClient` 和历史 `FixtureClient`，要求重定向目标收到 0 次请求。不会停止他人占用的服务。
 
-合成审计：`http://127.0.0.1:8765/__calls`，包含每个作用域的消息/Issue 写入、上传元数据及 Socket 开关记录。`/__control` 可设置 `status`、`disconnect`、`send_mode`、`issue_conflict`、`catalog_status`、`deny_mika`；通过 `X-Workspace-Slug` 和合成 token 指定作用域。写请求不会自动重试。
+合成审计：`http://127.0.0.1:8765/__calls`，包含每个作用域的消息/Issue 写入、逐条项目快照、上传元数据及 Socket 开关记录。`/__control` 可设置 `status`、`disconnect`、`send_mode`、`issue_conflict`、`catalog_status`、`deny_mika`；新增 `activity_scenario:true` 生成跨发起人和旧待处理事项，`send_mode:delayed` + `receipt_delay:20` 延迟回执，`bump_issue:i0` 模拟新进展。通过 `X-Workspace-Slug` 和合成 token 指定作用域。测试服务与 Fixture 应用同时设置 `CHATTY_FIXTURE_PORT=8767` 可避开占用的 8765 端口；普通应用不读取此变量。写请求不会自动重试。
 
 验收结果见 [进度](../.sdlc/changes/20260905-complete-ios-v1-native-client-p1-through-p5/progress.md)、[截图报告](../.sdlc/changes/20260905-complete-ios-v1-native-client-p1-through-p5/progress.html) 和 `.sdlc/changes/20260905-complete-ios-v1-native-client-p1-through-p5/`。本机构建和原始日志位于 `.tools/ios-v1/full-run/`。

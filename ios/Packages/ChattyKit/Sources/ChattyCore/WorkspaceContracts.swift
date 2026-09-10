@@ -52,6 +52,21 @@ public struct Issue: Decodable, Identifiable, Sendable {
     public let assigneeType: String?
     public let dueDate: String?
     public let revision: Int?
+    public var creatorId: String? = nil
+    public var creatorType: String? = nil
+    public var updatedAt: String? = nil
+    public var lastActivityAt: String? = nil
+}
+
+public struct IssueTimelineEntry: Decodable, Identifiable, Sendable {
+    public let id: String
+    public let type: String
+    public let createdAt: String
+    public let actorType: String?
+    public let actorId: String?
+    public let action: String?
+    public let content: String?
+    public let details: JSONValue?
 }
 public struct IssuePage: Decodable, Sendable { public let issues: [Issue]; public let total: Int }
 public struct IssueStatus: Decodable, Identifiable, Sendable {
