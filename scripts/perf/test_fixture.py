@@ -55,5 +55,15 @@ class FixtureTest(unittest.TestCase):
         self.assertNotIn('private-id', json.dumps(metrics))
         self.assertNotIn('secret', json.dumps(metrics))
         self.assertNotIn(f.f.TOKEN, json.dumps(metrics))
+    def test_append_message_is_newest_and_cleared_by_reseed(self):
+        seeded = f.manifest()['target_messages']
+        first = f.append_message({'content': 'Live event one'})
+        second = f.append_message({'content': 'Live event two'})
+        self.assertEqual(f.manifest()['target_messages'], seeded + 2)
+        self.assertGreater(second['created_at'], first['created_at'])
+        page = self.get('/api/chat/sessions/s1/messages/page?limit=2')
+        self.assertEqual([m['id'] for m in page['messages']], [first['id'], second['id']])
+        self.assertEqual(f.seed('S2')['target_messages'], seeded)
+        self.assertEqual(f.CONFIG['appended'], 0)
 
 if __name__ == '__main__': unittest.main()

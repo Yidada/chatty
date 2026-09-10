@@ -5,6 +5,9 @@ plugins {
     id("com.google.dagger.hilt.android")
 }
 val fixture = providers.gradleProperty("chattyFixture").orNull == "true"
+// Measurement-only knob: points the benchmark build at a designated test service so
+// DNS/TLS/TTFB can be captured. Defaults to the synthetic loopback fixture.
+val benchmarkBaseUrl = providers.gradleProperty("chattyBenchmarkBaseUrl").getOrElse("http://127.0.0.1:8765/")
 android {
     namespace = "ai.chatty.app"
     compileSdk = 35
@@ -33,7 +36,7 @@ android {
         isDebuggable = false
         signingConfig = signingConfigs.getByName("debug")
         matchingFallbacks += listOf("release")
-        buildConfigField("String", "API_BASE_URL", "\"http://127.0.0.1:8765/\"")
+        buildConfigField("String", "API_BASE_URL", "\"$benchmarkBaseUrl\"")
         resValue("string", "app_name", "Chatty Benchmark")
     }
     buildFeatures { compose = true; buildConfig = true }

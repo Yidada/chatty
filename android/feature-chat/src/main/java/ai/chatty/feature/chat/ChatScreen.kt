@@ -29,6 +29,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -159,7 +160,11 @@ private fun ChatScreen(state: ChatState, controller: ChatController, baseUrl: St
         state.attachments.forEach { a -> Row(Modifier.padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
             Text(a.filename, Modifier.weight(1f), maxLines = 1); TextButton(onClick = { controller.removeAttachment(a.id) }, enabled = !state.sending) { Text("移除") }
         } }
-        Surface(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp), shape = RoundedCornerShape(28.dp), color = MaterialTheme.colorScheme.surface, border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant), shadowElevation = 1.dp) {
+        Surface(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp).onGloballyPositioned {
+            // Startup boundary: the composer is on screen, enabled for typing and
+            // its session has resolved. One-shot per process inside the probe.
+            if (state.session != null && !state.sending) StartupProbe.markComposerInteractive(StartupProbe.findActivity(context))
+        }, shape = RoundedCornerShape(28.dp), color = MaterialTheme.colorScheme.surface, border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant), shadowElevation = 1.dp) {
             Row(Modifier.fillMaxWidth().padding(6.dp), verticalAlignment = Alignment.Bottom) {
                 ActionIcon(Icons.Outlined.Add, "附件", { launcher.launch(arrayOf("*/*")) }, !state.sending && !state.loading && state.session?.status != "archived")
                 TextField(state.draft, controller::draft, Modifier.weight(1f).testTag("chat-draft"), placeholder = { Text("和 Mika 聊聊…") }, maxLines = 5, enabled = !state.sending,

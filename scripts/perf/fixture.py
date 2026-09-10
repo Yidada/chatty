@@ -18,13 +18,13 @@ f = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(f)
 LOCK = threading.Lock()
 RECORDS = []
-CONFIG = {'scenario': 'S1', 'delay_ms': 0, 'status': 200, 'retry_after': 1, 'disconnect': False}
+CONFIG = {'scenario': 'S1', 'delay_ms': 0, 'status': 200, 'retry_after': 1, 'disconnect': False, 'appended': 0}
 
 
 def seed(scenario):
     if scenario not in ('S0', 'S1', 'S2', 'S3', 'S4'):
         raise ValueError('scenario must be S0-S4')
-    CONFIG.update(scenario=scenario, delay_ms=0, status=200, disconnect=False)
+    CONFIG.update(scenario=scenario, delay_ms=0, status=200, disconnect=False, appended=0)
     large = scenario in ('S2', 'S4')
     count = 1000 if large else 50
     start = dt.datetime(2026, 9, 5, tzinfo=dt.timezone.utc)
@@ -64,6 +64,26 @@ def manifest():
 
 def route(path):
     return re.sub(r'(/(?:sessions|tasks|workspaces|issues|attachments)/)[^/]+', r'\1{id}', path)
+
+
+def append_message(spec):
+    """Append one synthetic message and announce it as a live ``chat:message`` frame.
+
+    Used by the S2 live-event path: the client must learn about the new message
+    from the WebSocket frame and render it without a manual refresh. Timestamps
+    stay after the seeded maximum so the paging cursor order is unchanged.
+    """
+    content = str(spec.get('content', 'Synthetic live event'))
+    session_id = str(spec.get('chat_session_id', 's1'))
+    rows = [m for m in f.MESSAGES if m['chat_session_id'] == session_id]
+    latest = max((m['created_at'] for m in rows), default='2026-09-05T00:00:00Z')
+    stamp = dt.datetime.fromisoformat(latest.replace('Z', '+00:00')) + dt.timedelta(seconds=2)
+    CONFIG['appended'] += 1
+    message = {'id': f'live{CONFIG["appended"]:05d}', 'chat_session_id': session_id, 'role': 'assistant',
+               'content': content, 'created_at': stamp.isoformat().replace('+00:00', 'Z')}
+    f.MESSAGES.append(message)
+    f.broadcast('chat:message', {'chat_session_id': session_id, 'id': message['id'], 'message': message})
+    return message
 
 
 class API(f.API):
@@ -118,6 +138,8 @@ class API(f.API):
                             pass
             for event in body.get('events', []):
                 f.broadcast(event['type'], event.get('payload', {}))
+            if 'append_message' in body:
+                append_message(body['append_message'] or {})
             return self.reply(200, manifest())
         if self.path.startswith('/api/') and self.fault():
             self.raw()

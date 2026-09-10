@@ -46,6 +46,9 @@ class SessionInterceptor(private val store: CredentialStore) : Interceptor {
 fun createRetrofit(baseUrl: String, store: CredentialStore): Retrofit {
     val client = OkHttpClient.Builder()
         .addInterceptor(SessionInterceptor(store))
+        // Inert unless the device flag `chatty_network_probe` is set; captures
+        // DNS/TCP/TLS/TTFB/end-to-end phases for the perf harness only.
+        .eventListenerFactory(NetworkProbe.factory)
         .followRedirects(false).followSslRedirects(false)
         .retryOnConnectionFailure(false) // Sends and verification are never silently repeated.
         .callTimeout(25, TimeUnit.SECONDS).build()
