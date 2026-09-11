@@ -1,5 +1,7 @@
 # Chatty for Mac
 
+四端发布与公证导出步骤见[统一发布流程](../docs/releases/README.md)。最新跨端交付状态见[0.2.0 发布记录](../docs/releases/0.2.0.json)。
+
 原生 SwiftUI + AppKit 客户端，macOS 15+，支持 Apple Silicon 与 Intel。共享业务核心位于 `../ios/Packages/ChattyKit`，Mac 界面与构建独立放在本目录。
 
 ## 安装与验收

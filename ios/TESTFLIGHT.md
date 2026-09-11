@@ -1,56 +1,44 @@
-# Chatty TestFlight
+# Chatty TestFlight 发布
 
-- App Store Connect App ID: `6809083972`
-- Bundle ID: `ai.chatty.ios`
-- Team: Benjamin Zhang (`9247PC9936`)
-- Scheme: `Chatty` (production API; exclude `ChattyFixture`)
-- Latest uploaded version/build: `0.1.0 (2)` on 2026-09-10 at 20:10 (Asia/Singapore), source commit `cb7a30a942017bab01f8ccec67b2d4332eccae1f`.
-- Distribution: **TestFlight Internal Only**. This uploaded build cannot be submitted to external testing or App Store release.
-- Console: https://appstoreconnect.apple.com/teams/d429cbf8-b4df-43fe-b7de-3cdb24e874e7/apps/6809083972/testflight
+统一入口：[四端发布流程](../docs/releases/README.md)。当前发布记录：[0.2.0](../docs/releases/0.2.0.json)。
 
-## Current upload: 0.1.0 (2)
+## 最近确认的状态
 
-The 2026-09-10 iOS activity / Mika update was archived, signature-verified and uploaded through Xcode Organizer. Organizer confirmed `Chatty 0.1.0 (2) uploaded`, followed by `Uploaded to Apple` and build number `2`. Source, validation and upload observations are in [the delivery record](../.sdlc/changes/20260910-ios-activity-mika-flow/release.md).
+- 应用标识：`ai.chatty.ios`；生产 Scheme：`Chatty`，排除 `ChattyFixture`。
+- 版本：`0.2.0 (3)`。
+- 已上传并完成 Apple 处理，已保存与代码实现一致的加密信息。
+- 已加入原有内部测试组，App Store Connect 显示 **Testing**。
+- 分发方式为 **TestFlight Internal Only**；此构建仅用于内部测试。
+- 手机下载、安装和启动尚未验证。以上为本次发布观察，不保证后续会话的登录和服务状态。
 
-App Store Connect browser login remains pending. Apple processing, assignment to **Benjamin Internal**, and installation have **not yet been verified for build 2**. After signing in, inspect build `2`, save the prepared [Chinese test notes](../.sdlc/changes/20260910-ios-activity-mika-flow/testflight-notes.zh-Hans.txt), and add it to the existing group.
+## 归档与上传
 
-## Rebuild
+1. 检查生产版本、构建号、Bundle ID、隐私声明与图标。版本在 `scripts/generate-ios-project.py` 维护，修改后重新生成工程。
+2. 使用唯一归档路径，禁止覆盖旧归档。开发团队只通过本机参数提供：
 
 ```sh
 swift scripts/generate-ios-icon.swift
 python3 scripts/generate-ios-project.py
 xcodebuild -project ios/Chatty.xcodeproj -scheme Chatty \
   -configuration Release -destination 'generic/platform=iOS' \
-  -derivedDataPath .tools/ios-device-derived-data \
-  -archivePath .tools/ios-testflight/0.1.0-2/Chatty.xcarchive \
-  DEVELOPMENT_TEAM=9247PC9936 CODE_SIGN_STYLE=Automatic \
+  -derivedDataPath "$CHATTY_IOS_DERIVED_DATA" \
+  -archivePath "$CHATTY_IOS_ARCHIVE" \
+  DEVELOPMENT_TEAM="$CHATTY_DEVELOPMENT_TEAM" CODE_SIGN_STYLE=Automatic \
   -allowProvisioningUpdates -skipPackageUpdates archive
 ```
 
-`CURRENT_PROJECT_VERSION` is now `2` in `scripts/generate-ios-project.py`. Change that source and regenerate if App Store Connect requires a later number. Avoid overwriting previous archives; use a versioned archive path.
+3. 在 Xcode Organizer 核对归档版本和标识，选择 **Distribute App → TestFlight Internal Only**，记录上传结果。
+4. 若 CLI 提示 `No Accounts`，检查实际认证配置。已有 GUI 登录可以通过 Organizer 完成上传，不需要为解决此问题临时导出登录凭据。
 
-Open the archive in Xcode Organizer, choose **Distribute App → TestFlight Internal Only**. Xcode must be signed into the development team. The first CLI export returned `No Accounts` despite a signed-in GUI account; Organizer successfully uploaded the build. No API key or `asc` installation was required for this upload.
+## 网页分发
 
-## Release resources
+1. 在用户指定浏览器打开 App Store Connect，进入 Chatty → TestFlight。Xcode 登录和网页登录独立检查。
+2. 等待目标版本/构建完成处理。出现 **Missing Compliance** 时打开 Manage，对照当前代码与依赖回答。
+3. 本轮代码仅使用 Apple 系统网络、Keychain、文件保护与 CryptoKit SHA-256，无自定义加密算法或独立加密库，问卷选择 **None of the algorithms mentioned above**。加密实现变化后重新评估，不能默认复制该答案。
+4. 保存后确认 **Ready to Test**。检查原内测组是否包含该构建；如未分配，通过 **Add Group** 选择原组。
+5. 以目标版本/构建同时显示 **Testing** 和原组名为渠道发布完成证据。不要因为旧版已有内测组而假设新版自动分发。
+6. 如任务包含真机闭环，在 iPhone TestFlight 更新并启动，单独记录安装和业务验证；未操作时明确标注未验证。
 
-- `Chatty/Assets.xcassets/AppIcon.appiconset`: opaque 1024px icon, compiled by Xcode.
-- `Config/PrivacyInfo.xcprivacy`: app-only user defaults (`CA92.1`), app-container file metadata (`C617.1`) and user-selected file metadata (`3B52.1`). Declares email, account ID, chat and attachment content for linked app functionality, with no tracking.
-- Encryption: current code uses Apple system networking, Keychain, file protection and CryptoKit SHA-256. The App Store Connect questionnaire was saved as “None of the algorithms mentioned above” because the app uses Apple system facilities and does not implement its own encryption algorithms. No non-exempt-encryption declaration has been hardcoded; revisit the answer if crypto usage changes.
+## 隐私与证据
 
-## Historical build 1 evidence (2026-09-06)
-
-Archive log: `.tools/ios-testflight/archive.log`.
-Xcode Organizer confirmed **Chatty 0.1.0 (1) uploaded**, followed by **Uploaded to Apple** at 09:55 on 2026-09-06.
-Apple processing, test-group assignment and tester installation are separate checks from upload success.
-
-## Historical build 1 distribution state (2026-09-06)
-
-Apple completed processing. Build `ff358207-91f2-42db-aa16-8c3e2cff68de` is **Testing**, assigned to **Benjamin Internal** (`39737e9c-54bf-4189-a3dd-babe20439452`). Automatic distribution is disabled. The group contains the account holder as its sole internal tester. TestFlight reports 90 days remaining; installation on the phone has not been verified.
-
-The build’s Chinese “What to Test” notes were saved in App Store Connect, including production-service scope and the recommended login/chat/attachment/offline checks.
-
-Final browser verification: **1 Tester · 1 Build**, tester status **Invited**. The account holder can accept the invitation on iPhone and install from TestFlight.
-
-## Physical-phone installation attempt (2026-09-06)
-
-iPhone Mirroring showed the iPhone 15 Pro running iOS 26.6.1. TestFlight was already installed. The original invitation returned “revoked or invalid” in TestFlight. Reinvited the existing tester via App Store Connect and observed the new email at 10:14. Before the new invitation could be accepted, mirroring entered **Connection Paused** at 10:16. Chatty installation and launch remain unverified; resume mirroring before continuing.
+公共源码仅记录去标识化状态。账号、Team ID、组 ID、签名凭据和原始截图日志不写入发布文档。使用本地发布清单保存产物哈希和实际结果，源码提交/推送状态与 TestFlight 分发状态分别记录。
