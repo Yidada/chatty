@@ -5,6 +5,7 @@
 - Team: Benjamin Zhang (`9247PC9936`)
 - Scheme: `Chatty` (production API; exclude `ChattyFixture`)
 - Latest uploaded version/build: `0.1.0 (2)` on 2026-09-10 at 20:10 (Asia/Singapore), source commit `cb7a30a942017bab01f8ccec67b2d4332eccae1f`.
+- Prepared but **not uploaded** build: `0.1.0 (3)`, source commit `c52ff217ff6bbbbdd3072bd7e7a1cc54a27dd4e0` (2026-09-11).
 - Distribution: **TestFlight Internal Only**. This uploaded build cannot be submitted to external testing or App Store release.
 - Console: https://appstoreconnect.apple.com/teams/d429cbf8-b4df-43fe-b7de-3cdb24e874e7/apps/6809083972/testflight
 
@@ -14,6 +15,12 @@ The 2026-09-10 iOS activity / Mika update was archived, signature-verified and u
 
 App Store Connect browser login remains pending. Apple processing, assignment to **Benjamin Internal**, and installation have **not yet been verified for build 2**. After signing in, inspect build `2`, save the prepared [Chinese test notes](../.sdlc/changes/20260910-ios-activity-mika-flow/testflight-notes.zh-Hans.txt), and add it to the existing group.
 
+## Prepared upload: 0.1.0 (3) — not yet uploaded
+
+The 2026-09-11 activity batch-actions build was archived and validated, but the upload is blocked: this Mac currently has **no App Store Connect account signed into Xcode** and **no `iOS Distribution` certificate**, so both the CLI export and Organizer distribution stop at `No Accounts`. Details, checks and unblock options are in [the delivery record](../.sdlc/changes/20260910-ios-activity-batch-actions/release.md).
+
+The validated archive is at `.tools/ios-testflight/0.1.0-3/Chatty.xcarchive` and a copy is installed in Xcode's archive list as `~/Library/Developer/Xcode/Archives/2026-09-11/Chatty.xcarchive`, so once the account is signed in it can be distributed directly from Organizer. `0.1.0 (3)` contains the activity feed multi-select and batch actions from PR [#6](https://github.com/Yidada/chatty/pull/6).
+
 ## Rebuild
 
 ```sh
@@ -22,12 +29,12 @@ python3 scripts/generate-ios-project.py
 xcodebuild -project ios/Chatty.xcodeproj -scheme Chatty \
   -configuration Release -destination 'generic/platform=iOS' \
   -derivedDataPath .tools/ios-device-derived-data \
-  -archivePath .tools/ios-testflight/0.1.0-2/Chatty.xcarchive \
+  -archivePath .tools/ios-testflight/0.1.0-3/Chatty.xcarchive \
   DEVELOPMENT_TEAM=9247PC9936 CODE_SIGN_STYLE=Automatic \
   -allowProvisioningUpdates -skipPackageUpdates archive
 ```
 
-`CURRENT_PROJECT_VERSION` is now `2` in `scripts/generate-ios-project.py`. Change that source and regenerate if App Store Connect requires a later number. Avoid overwriting previous archives; use a versioned archive path.
+`CURRENT_PROJECT_VERSION` is now `3` in `scripts/generate-ios-project.py`. Change that source and regenerate if App Store Connect requires a later number. Avoid overwriting previous archives; use a versioned archive path.
 
 Open the archive in Xcode Organizer, choose **Distribute App → TestFlight Internal Only**. Xcode must be signed into the development team. The first CLI export returned `No Accounts` despite a signed-in GUI account; Organizer successfully uploaded the build. No API key or `asc` installation was required for this upload.
 

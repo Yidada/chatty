@@ -18,7 +18,8 @@ instructions are in [the workflow guide](../docs/sdlc-workflow.md).
   动态 / Mika / 项目三页导航、工作区全量事项进展、已读红点与待处理，以及 Mika 连续交办。
 - [iOS 动态批量处理](changes/20260910-ios-activity-batch-actions/intent.md):
   [执行计划](changes/20260910-ios-activity-batch-actions/plan.md)、
-  [验证记录](changes/20260910-ios-activity-batch-actions/evidence.md)。
+  [验证记录](changes/20260910-ios-activity-batch-actions/evidence.md)、
+  [TestFlight 0.1.0 (3) 交付记录](changes/20260910-ios-activity-batch-actions/release.md)。
   多选、批量已读，以及待处理页批量验收完成 / 退回待办（`POST /api/issues/batch-update`）。
 - [Android native experience](changes/20260905-native-experience-without-multica-web-exits/intent.md).
 - [Android V3 performance baseline](changes/20260906-android-v3-performance-baseline/intent.md):

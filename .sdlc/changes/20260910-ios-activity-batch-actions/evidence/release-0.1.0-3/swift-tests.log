@@ -1,0 +1,272 @@
+Fetching https://github.com/swiftlang/swift-cmark.git from cache
+Fetching git@github.com:swiftlang/swift-markdown.git from cache
+Fetched https://github.com/swiftlang/swift-cmark.git from cache (0.02s)
+Fetched git@github.com:swiftlang/swift-markdown.git from cache (0.02s)
+Creating working copy for https://github.com/swiftlang/swift-cmark.git
+Creating working copy for git@github.com:swiftlang/swift-markdown.git
+Working copy of https://github.com/swiftlang/swift-cmark.git resolved at 0.8.0
+Working copy of git@github.com:swiftlang/swift-markdown.git resolved at 0.8.0
+Building for debugging...
+[0/45] /Users/benjamin/multica_workspaces/clematis-ai-ac1a5aa20d9b/cle-85-cdac75a95333/workdir/chatty/.tools/ios-swift-build-3/arm64-apple-macosx/debug/ChattyKitPackageTests.derived/runner.swift
+[1/45] Write sources
+[5/45] Write swift-version--58304C5D6DBC2206.txt
+[6/45] Compiling cmark-gfm registry.c
+[7/45] Compiling cmark-gfm arena.c
+[7/45] Compiling cmark-gfm references.c
+[9/45] Compiling cmark-gfm-extensions tagfilter.c
+[10/45] Compiling cmark-gfm-extensions core-extensions.c
+[11/45] Compiling cmark-gfm plugin.c
+[12/45] Compiling cmark-gfm xml.c
+[13/45] Compiling cmark-gfm plaintext.c
+[14/45] Compiling cmark-gfm syntax_extension.c
+[15/45] Compiling cmark-gfm render.c
+[16/45] Compiling cmark-gfm node.c
+[17/45] Compiling cmark-gfm map.c
+[18/45] Compiling cmark-gfm utf8.c
+[19/45] Compiling cmark-gfm man.c
+[20/45] Compiling cmark-gfm-extensions table.c
+[21/45] Compiling cmark-gfm linked_list.c
+[22/45] Compiling cmark-gfm latex.c
+[23/45] Compiling cmark-gfm iterator.c
+[24/45] Compiling cmark-gfm html.c
+[25/45] Compiling cmark-gfm houdini_html_u.c
+[26/45] Compiling cmark-gfm houdini_html_e.c
+[27/45] Compiling cmark-gfm houdini_href_e.c
+[28/45] Compiling cmark-gfm inlines.c
+[29/45] Compiling cmark-gfm scanners.c
+[30/45] Compiling cmark-gfm-extensions ext_scanners.c
+[31/45] Copying Fixtures
+[32/45] Write sources
+[33/45] Compiling cmark-gfm footnotes.c
+[34/45] Compiling cmark-gfm cmark_ctype.c
+[35/45] Compiling cmark-gfm commonmark.c
+[36/45] Compiling cmark-gfm cmark.c
+[37/45] Compiling CAtomic CAtomic.c
+[38/45] Compiling cmark-gfm buffer.c
+[39/45] Compiling cmark-gfm blocks.c
+[40/45] Compiling cmark-gfm-extensions tasklist.c
+[41/45] Compiling cmark-gfm-extensions autolink.c
+[42/45] Compiling cmark-gfm-extensions strikethrough.c
+[44/109] Compiling Markdown BlockContainer.swift
+[45/109] Compiling Markdown BlockMarkup.swift
+[46/109] Compiling Markdown InlineContainer.swift
+[47/109] Compiling Markdown InlineMarkup.swift
+[48/109] Compiling Markdown ListItemContainer.swift
+[49/109] Compiling Markdown AtomicCounter.swift
+[50/109] Compiling Markdown CharacterExtensions.swift
+[51/109] Compiling Markdown InlineAttributes.swift
+[52/109] Compiling Markdown Link.swift
+[53/109] Compiling Markdown Strikethrough.swift
+[54/109] Compiling Markdown Strong.swift
+[55/109] Compiling Markdown CustomInline.swift
+[56/109] Compiling Markdown InlineCode.swift
+[57/109] Compiling Markdown InlineHTML.swift
+[58/109] Compiling Markdown PlainTextConvertibleMarkup.swift
+[59/109] Compiling Markdown RawMarkup.swift
+[60/109] Compiling Markdown BlockDirective.swift
+[61/109] Compiling Markdown BlockQuote.swift
+[62/109] Compiling Markdown CustomBlock.swift
+[63/109] Compiling Markdown DoxygenAbstract.swift
+[64/109] Compiling Markdown DoxygenDiscussion.swift
+[65/109] Compiling Markdown LazySplitLines.swift
+[66/109] Compiling Markdown ParseOptions.swift
+[67/109] Compiling Markdown RangeAdjuster.swift
+[68/109] Compiling Markdown RangerTracker.swift
+[69/109] Compiling Markdown MarkupRewriter.swift
+[70/109] Compiling Markdown BasicBlockContainer.swift
+[71/109] Compiling Markdown BasicInlineContainer.swift
+[72/109] Compiling Markdown TableCellContainer.swift
+[73/109] Compiling Markdown TableHead.swift
+[74/109] Compiling Markdown TableRow.swift
+[75/109] Compiling Markdown Replacement.swift
+[76/109] Compiling Markdown SourceLocation.swift
+[77/109] Compiling Markdown Emphasis.swift
+[78/109] Compiling Markdown Image.swift
+[79/116] Compiling Markdown ChildIndexPath.swift
+[80/116] Compiling Markdown DirectiveArgument.swift
+[81/116] Compiling Markdown Document.swift
+[82/116] Compiling Markdown LiteralMarkup.swift
+[83/116] Compiling Markdown Markup.swift
+[84/116] Compiling Markdown MarkupChildren.swift
+[85/116] Compiling Markdown MarkupData.swift
+[86/116] Compiling Markdown CodeBlock.swift
+[87/116] Compiling Markdown HTMLBlock.swift
+[88/116] Compiling Markdown Heading.swift
+[89/116] Compiling Markdown ThematicBreak.swift
+[90/116] Compiling Markdown Table.swift
+[91/116] Compiling Markdown TableBody.swift
+[92/116] Compiling Markdown TableCell.swift
+[93/116] Compiling Markdown DoxygenNote.swift
+[94/116] Compiling Markdown DoxygenParameter.swift
+[95/116] Compiling Markdown DoxygenReturns.swift
+[96/116] Compiling Markdown ListItem.swift
+[97/116] Compiling Markdown OrderedList.swift
+[98/116] Compiling Markdown UnorderedList.swift
+[99/116] Compiling Markdown Paragraph.swift
+[100/116] Compiling Markdown LineBreak.swift
+[101/116] Compiling Markdown SoftBreak.swift
+[102/116] Compiling Markdown SymbolLink.swift
+[103/116] Compiling Markdown Text.swift
+[104/116] Compiling Markdown Aside.swift
+[105/116] Compiling Markdown BlockDirectiveParser.swift
+[106/116] Compiling Markdown CommonMarkConverter.swift
+[107/116] Emitting module Markdown
+[108/116] Compiling Markdown CollectionExtensions.swift
+[109/116] Compiling Markdown StringExtensions.swift
+[110/116] Compiling Markdown MarkupVisitor.swift
+[111/116] Compiling Markdown MarkupWalker.swift
+[112/116] Compiling Markdown HTMLFormatter.swift
+[113/116] Compiling Markdown MarkupFormatter.swift
+[114/116] Compiling Markdown MarkupTreeDumper.swift
+[115/130] Compiling ChattyCore SessionModel.swift
+[116/130] Compiling ChattyCore OutgoingMessage.swift
+[117/130] Compiling ChattyCore ProjectsModel.swift
+[118/131] Compiling ChattyCore WorkspaceModel.swift
+[119/131] Compiling ChattyCore Contracts.swift
+[120/131] Compiling ChattyCore MarkdownContent.swift
+[121/131] Compiling ChattyCore RealtimeConnection.swift
+[122/131] Compiling ChattyCore RichDocument.swift
+[123/131] Compiling ChattyCore APIClient.swift
+[124/131] Compiling ChattyCore ActivityModel.swift
+[125/131] Compiling ChattyCore ProtectedStorage.swift
+[126/131] Compiling ChattyCore BatchOperations.swift
+[127/131] Compiling ChattyCore ChatModel.swift
+[128/131] Emitting module ChattyCore
+[129/131] Compiling ChattyCore WorkspaceContracts.swift
+[130/133] Compiling ChattyFixtureSupport FixtureClient.swift
+[131/133] Emitting module ChattyFixtureSupport
+[132/139] Compiling ChattyCoreTests FixtureClientTests.swift
+[133/139] Compiling ChattyCoreTests resource_bundle_accessor.swift
+[134/139] Compiling ChattyCoreTests BatchOperationsTests.swift
+[135/139] Compiling ChattyCoreTests ClientFlowTests.swift
+[136/139] Compiling ChattyCoreTests ContractTests.swift
+[137/139] Emitting module ChattyCoreTests
+[138/141] Emitting module ChattyKitPackageTests
+[139/141] Compiling ChattyKitPackageTests runner.swift
+[139/141] Write Objects.LinkFileList
+[140/141] Linking ChattyKitPackageTests
+Build complete! (15.37s)
+Test Suite 'All tests' started at 2026-09-11 10:59:34.830.
+Test Suite 'ChattyKitPackageTests.xctest' started at 2026-09-11 10:59:34.836.
+Test Suite 'BatchOperationsTests' started at 2026-09-11 10:59:34.836.
+Test Case '-[ChattyCoreTests.BatchOperationsTests testAccumulatorSeparatesSkipsFromFailuresAndClampsOverReports]' started.
+Test Case '-[ChattyCoreTests.BatchOperationsTests testAccumulatorSeparatesSkipsFromFailuresAndClampsOverReports]' passed (0.002 seconds).
+Test Case '-[ChattyCoreTests.BatchOperationsTests testBatchChunkingKeepsOrderDropsBlanksAndCapsAtTwenty]' started.
+Test Case '-[ChattyCoreTests.BatchOperationsTests testBatchChunkingKeepsOrderDropsBlanksAndCapsAtTwenty]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.BatchOperationsTests testBatchRequestCarriesOnlyIntendedFieldsAndMarksSuppressRun]' started.
+Test Case '-[ChattyCoreTests.BatchOperationsTests testBatchRequestCarriesOnlyIntendedFieldsAndMarksSuppressRun]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.BatchOperationsTests testResultNeverReportsZeroAppliedAsSuccessAndHasNoRetryWhenEverythingLanded]' started.
+Test Case '-[ChattyCoreTests.BatchOperationsTests testResultNeverReportsZeroAppliedAsSuccessAndHasNoRetryWhenEverythingLanded]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.BatchOperationsTests testSelectionTogglesSelectsAllAndPrunesRowsThatLeftThePage]' started.
+Test Case '-[ChattyCoreTests.BatchOperationsTests testSelectionTogglesSelectsAllAndPrunesRowsThatLeftThePage]' passed (0.000 seconds).
+Test Suite 'BatchOperationsTests' passed at 2026-09-11 10:59:34.839.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+Test Suite 'ClientFlowTests' started at 2026-09-11 10:59:34.839.
+Test Case '-[ChattyCoreTests.ClientFlowTests testAcceptedSendWithFailedRefreshIsNeverTurnedIntoRetry]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testAcceptedSendWithFailedRefreshIsNeverTurnedIntoRetry]' passed (0.015 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testActivityBatchFailureIsReportedAndChunksAtTwenty]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testActivityBatchFailureIsReportedAndChunksAtTwenty]' passed (0.008 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testActivityBatchRejectsASecondSubmitWhileOneIsInFlight]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testActivityBatchRejectsASecondSubmitWhileOneIsInFlight]' passed (0.019 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testActivityBatchReportsSkippedRowsAsUnfinishedAndRetriesTheSameChunk]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testActivityBatchReportsSkippedRowsAsUnfinishedAndRetriesTheSameChunk]' passed (0.007 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testActivityBatchStatusConvergesFromServerAndMarksTouchedRowsRead]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testActivityBatchStatusConvergesFromServerAndMarksTouchedRowsRead]' passed (0.006 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testActivityIncludesOtherCreatorsAndOlderActionsWithSeparateReadState]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testActivityIncludesOtherCreatorsAndOlderActionsWithSeparateReadState]' passed (0.008 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testAttachmentReceiptControlsRemovalAndNeverGuessesBinding]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testAttachmentReceiptControlsRemovalAndNeverGuessesBinding]' passed (0.017 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testBackgroundHoldsFollowersWhileInFlightReceiptCompletes]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testBackgroundHoldsFollowersWhileInFlightReceiptCompletes]' passed (0.018 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testColdOfflineRecoveryKeepsDraftWithoutCreatingAuthorizedWorkspace]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testColdOfflineRecoveryKeepsDraftWithoutCreatingAuthorizedWorkspace]' passed (0.007 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testColdQueueRequiresExplicitResumeAndKeepsComposerSeparate]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testColdQueueRequiresExplicitResumeAndKeepsComposerSeparate]' passed (0.010 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testConsecutiveSendsSnapshotProjectsAndFilesWhileFirstReceiptIsHeld]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testConsecutiveSendsSnapshotProjectsAndFilesWhileFirstReceiptIsHeld]' passed (0.024 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testCredentialsNeverReachAuthOrForeignOrigin]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testCredentialsNeverReachAuthOrForeignOrigin]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testDoubleSendProducesOneWriteAndReceiptClearsDraft]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testDoubleSendProducesOneWriteAndReceiptClearsDraft]' passed (0.005 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testExpiredSignedURLRefreshesMetadataWithoutSendingCredentials]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testExpiredSignedURLRefreshesMetadataWithoutSendingCredentials]' passed (0.004 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testFailedStatusCatalogKeepsProjectsAndDisablesEditing]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testFailedStatusCatalogKeepsProjectsAndDisablesEditing]' passed (0.004 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testFailureLabelsAndTraceRedactionKeepSecretsOutOfPresentation]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testFailureLabelsAndTraceRedactionKeepSecretsOutOfPresentation]' passed (0.001 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testHistoryUsesBothCursorsAndKeepsEqualTimestampMessages]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testHistoryUsesBothCursorsAndKeepsEqualTimestampMessages]' passed (0.003 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testIdenticalTextRemainsTwoSeparateMessagesAfterReceipts]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testIdenticalTextRemainsTwoSeparateMessagesAfterReceipts]' passed (0.018 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testInvalidCodeDoesNotPersistCredentialsAndValidCodeLoadsAccount]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testInvalidCodeDoesNotPersistCredentialsAndValidCodeLoadsAccount]' passed (0.002 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testIssueConflictReadsFreshRevisionWithoutRepeatingWrite]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testIssueConflictReadsFreshRevisionWithoutRepeatingWrite]' passed (0.004 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testIssuePaginationAndOneRevisionProtectedSuppressedWrite]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testIssuePaginationAndOneRevisionProtectedSuppressedWrite]' passed (0.005 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testLegacyActiveRunQueuesLocallyUntilRunFinishes]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testLegacyActiveRunQueuesLocallyUntilRunFinishes]' passed (0.006 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testOnlyCurrent401ClearsCredentials]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testOnlyCurrent401ClearsCredentials]' passed (0.004 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testOversizeUploadIsRejectedBeforeAnyNetworkWrite]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testOversizeUploadIsRejectedBeforeAnyNetworkWrite]' passed (0.003 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testProjectPermissionFailureStopsPostAndExplicitRetryPreservesSnapshot]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testProjectPermissionFailureStopsPostAndExplicitRetryPreservesSnapshot]' passed (0.007 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testProtectedPreviewsAndAccountDraftsArePurgedOnLogout]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testProtectedPreviewsAndAccountDraftsArePurgedOnLogout]' passed (0.002 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testReadReceiptOnlyWhileChatIsVisibleAndDeduplicatesRefreshes]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testReadReceiptOnlyWhileChatIsVisibleAndDeduplicatesRefreshes]' passed (0.005 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testRichInlineStylesNestedListsAndUnsafeLinks]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testRichInlineStylesNestedListsAndUnsafeLinks]' passed (0.001 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testUnavailableMikaCannotSendEvenWhenDisplayNameMatches]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testUnavailableMikaCannotSendEvenWhenDisplayNameMatches]' passed (0.005 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testUnknownReceiptCanOnlyRetryAfterExplicitReview]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testUnknownReceiptCanOnlyRetryAfterExplicitReview]' passed (0.008 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testUnknownReceiptSurvivesRefreshAndColdModelWithoutResending]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testUnknownReceiptSurvivesRefreshAndColdModelWithoutResending]' passed (0.008 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testV1UncertainDraftMigratesWithoutBecomingANewSend]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testV1UncertainDraftMigratesWithoutBecomingANewSend]' passed (0.020 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testWorkspaceDraftIsolationAndOldScopeCannotSend]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testWorkspaceDraftIsolationAndOldScopeCannotSend]' passed (0.007 seconds).
+Test Suite 'ClientFlowTests' passed at 2026-09-11 10:59:35.102.
+	 Executed 33 tests, with 0 failures (0 unexpected) in 0.262 (0.263) seconds
+Test Suite 'ContractTests' started at 2026-09-11 10:59:35.102.
+Test Case '-[ChattyCoreTests.ContractTests testEqualTimestampsDoNotCollapseDifferentMessageIDs]' started.
+Test Case '-[ChattyCoreTests.ContractTests testEqualTimestampsDoNotCollapseDifferentMessageIDs]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.ContractTests testExistingAndroidFixturePageRetainsCursorAndRichAttachment]' started.
+Test Case '-[ChattyCoreTests.ContractTests testExistingAndroidFixturePageRetainsCursorAndRichAttachment]' passed (0.001 seconds).
+Test Case '-[ChattyCoreTests.ContractTests testHTMLRemainsLiteralContent]' started.
+Test Case '-[ChattyCoreTests.ContractTests testHTMLRemainsLiteralContent]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.ContractTests testLatestMikaSessionExcludesArchiveAndKeepsServerOrderOnTies]' started.
+Test Case '-[ChattyCoreTests.ContractTests testLatestMikaSessionExcludesArchiveAndKeepsServerOrderOnTies]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.ContractTests testMarkdownTableTaskListAndCodeRemainStructured]' started.
+Test Case '-[ChattyCoreTests.ContractTests testMarkdownTableTaskListAndCodeRemainStructured]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.ContractTests testMissingOptionalFieldsAndNullAttachmentsRemainCompatible]' started.
+Test Case '-[ChattyCoreTests.ContractTests testMissingOptionalFieldsAndNullAttachmentsRemainCompatible]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.ContractTests testProjectTotalsUseServiceCountsAndHandleEmptyProjects]' started.
+Test Case '-[ChattyCoreTests.ContractTests testProjectTotalsUseServiceCountsAndHandleEmptyProjects]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.ContractTests testReceiptRequiresServerIdentifiersAndPreservesUnboundAttachments]' started.
+Test Case '-[ChattyCoreTests.ContractTests testReceiptRequiresServerIdentifiersAndPreservesUnboundAttachments]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.ContractTests testUnknownSocketEventPreservesPayloadAndWireKeys]' started.
+Test Case '-[ChattyCoreTests.ContractTests testUnknownSocketEventPreservesPayloadAndWireKeys]' passed (0.000 seconds).
+Test Suite 'ContractTests' passed at 2026-09-11 10:59:35.105.
+	 Executed 9 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'FixtureClientTests' started at 2026-09-11 10:59:35.105.
+Test Case '-[ChattyCoreTests.FixtureClientTests testFixtureReadsOnlyLoopbackWithSyntheticScope]' started.
+Test Case '-[ChattyCoreTests.FixtureClientTests testFixtureReadsOnlyLoopbackWithSyntheticScope]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.FixtureClientTests testMalformedContractIsReported]' started.
+Test Case '-[ChattyCoreTests.FixtureClientTests testMalformedContractIsReported]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.FixtureClientTests testServerFailureDoesNotRetryOrDecodeAsSuccess]' started.
+Test Case '-[ChattyCoreTests.FixtureClientTests testServerFailureDoesNotRetryOrDecodeAsSuccess]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.FixtureClientTests testTransportCancellationIsPreserved]' started.
+Test Case '-[ChattyCoreTests.FixtureClientTests testTransportCancellationIsPreserved]' passed (0.000 seconds).
+Test Suite 'FixtureClientTests' passed at 2026-09-11 10:59:35.106.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'ChattyKitPackageTests.xctest' passed at 2026-09-11 10:59:35.106.
+	 Executed 51 tests, with 0 failures (0 unexpected) in 0.267 (0.270) seconds
+Test Suite 'All tests' passed at 2026-09-11 10:59:35.106.
+	 Executed 51 tests, with 0 failures (0 unexpected) in 0.267 (0.276) seconds
+◇ Test run started.
+↳ Testing Library Version: 1902
+↳ Target Platform: arm64e-apple-macos14.0
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.

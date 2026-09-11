@@ -1,0 +1,41 @@
+{
+  "source_commit": "c52ff217ff6bbbbdd3072bd7e7a1cc54a27dd4e0",
+  "feature_commit": "d158991a512ced9fbf222c8d51924770b5fcdec8",
+  "archive": ".tools/ios-testflight/0.1.0-3/Chatty.xcarchive",
+  "bundle_id": "ai.chatty.ios",
+  "version": "0.1.0",
+  "build": "3",
+  "team": "9247PC9936",
+  "scheme": "Chatty",
+  "configuration": "Release",
+  "signing_identity": "Apple Development: Benjamin Zhang (DN7SAK4V8K)",
+  "archive_creation_date": "2026-09-11 02:57:27 +0000",
+  "architectures": ["arm64"],
+  "fixture_markers_present": [],
+  "has_ats_exceptions": false,
+  "binary_sha256": "168df16b13bedc961de5cb69b50ced5b2c8cd704401573a41b8e899f9dd499ef",
+  "codesign_verify": "valid on disk; satisfies its Designated Requirement",
+  "archive_build_status": "succeeded",
+  "archive_warnings": [
+    "appintentsmetadataprocessor: Metadata extraction skipped. No AppIntents.framework dependency found."
+  ],
+  "cli_export_status": "failed_before_upload",
+  "cli_export_errors": [
+    "No Accounts",
+    "No signing certificate \"iOS Distribution\" found"
+  ],
+  "testflight_upload_status": "not_performed_missing_app_store_connect_account",
+  "upload_blocker": {
+    "observed_at": "2026-09-11T02:56:11Z",
+    "evidence": [
+      "xcodebuild -exportArchive -allowProvisioningUpdates: IDEProvisioningErrorDomain Code=23 \"No Accounts\"",
+      "no \"iOS Distribution\" signing certificate for team 9247PC9936 in the login keychain",
+      "Xcode preference DVTDeveloperAccountManagerAppleIDLists is empty (no Apple ID signed in)"
+    ],
+    "unblocks_with": [
+      "sign in to the Apple ID that owns team 9247PC9936 in Xcode Accounts settings, then distribute this archive from Organizer or re-run the CLI export",
+      "or configure an App Store Connect API key outside the repository and run the CLI export with -authenticationKeyPath/-authenticationKeyID/-authenticationKeyIssuerID"
+    ]
+  },
+  "organizer_placement": "~/Library/Developer/Xcode/Archives/2026-09-11/Chatty.xcarchive"
+}
