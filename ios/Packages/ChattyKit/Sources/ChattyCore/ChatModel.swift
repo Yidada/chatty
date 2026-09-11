@@ -36,6 +36,7 @@ import Observation
     @ObservationIgnored private var cursor: MessageCursor?
     @ObservationIgnored private var role: String?
     @ObservationIgnored private var draftLoaded = false
+    @ObservationIgnored private var newSessionPending = false
     @ObservationIgnored private var refreshing = false
     @ObservationIgnored private var refreshAgain = false
     @ObservationIgnored private var refreshJob: Task<Void, Never>?
@@ -63,7 +64,9 @@ import Observation
             guard let agent else { initialized = true; error = "此工作区没有可调用的 Mika。你可以在设置中切换工作区。"; return }
             let remembered = try? context.files.lastSession(account: context.user.id, workspace: context.workspace.id, agent: agent.id)
             if let existing = session, let fresh = allSessions.first(where: { $0.id == existing.id && $0.status != "archived" }) { session = fresh }
-            else { session = ChatSessions.restored(for: agent.id, rememberedId: remembered ?? nil, in: allSessions) }
+            // Stage C remembers the conversation the user was actually in; Stage B
+            // must not adopt the previous "latest" session while ⌘N is pending.
+            else if !newSessionPending { session = ChatSessions.restored(for: agent.id, rememberedId: remembered ?? nil, in: allSessions) }
             rememberSession(agentId: agent.id)
             if !draftLoaded {
                 let saved = try context.files.draft(account: context.user.id, workspace: context.workspace.id, agent: agent.id)
@@ -92,6 +95,21 @@ import Observation
             scrollRequest = UUID()
         } catch { self.error = await context.report(error) }
     }
+    /// ⌘N: leave the current conversation and start a fresh one. The draft and
+    /// attachments stay in the composer; the session itself is created by the
+    /// next send, so cancelling costs nothing. Until then refresh must not adopt
+    /// the previous "latest" session again.
+    public func startNewSession() {
+        guard context.active, initialized, agent != nil else { return }
+        guard !sending, !uncertain else { notice = "有正在发送或待核对的消息，先处理后再新建对话。"; return }
+        newSessionPending = true
+        session = nil
+        messages = []; pending = nil; cursor = nil; hasMore = false; traces = [:]; receiptRows = [:]
+        error = nil
+        notice = "已开始新的对话，发送后会创建会话。"
+        scrollRequest = UUID()
+    }
+    public var isStartingNewSession: Bool { newSessionPending }
     public func start() {
         foreground = true
         guard context.active, polling == nil else { return }
@@ -129,7 +147,7 @@ import Observation
                             notice = "原对话已归档或删除，下次发送将创建新的 Mika 对话。"; continue
                         }
                         session = fresh
-                    } else if let agent { session = ChatSessions.latest(for: agent.id, in: all); rememberSession(agentId: agent.id) }
+                    } else if let agent, !newSessionPending { session = ChatSessions.latest(for: agent.id, in: all); rememberSession(agentId: agent.id) }
                     try await syncMessages()
                     error = nil
                 } catch { self.error = await context.report(error) }
@@ -230,6 +248,15 @@ import Observation
             if !attachments.contains(where: { $0.id == file.id }) { attachments.append(file) }
         } catch { self.error = await context.report(error) }
     }
+    /// Composer drop target: Files / Photos / other apps. Validation lives in
+    /// `AttachmentImport` so a drop cannot bypass the picker's limits.
+    public func upload(fileURL: URL) async {
+        do { await upload(imported: try AttachmentImport.read(fileURL: fileURL)) }
+        catch { self.error = await context.report(error) }
+    }
+    public func upload(imported: ImportedAttachment) async {
+        await upload(data: imported.data, filename: imported.filename, contentType: imported.contentType)
+    }
     public var selectedProjectName: String {
         guard let selectedProjectId else { return "不指定项目" }
         return projects.first { $0.id == selectedProjectId }?.title ?? "原项目暂不可用"
@@ -324,7 +351,7 @@ import Observation
                         var body: [String: JSONValue] = ["agent_id": .string(agent.id)]
                         if let project = item.projectId { body["project_id"] = .string(project) }
                         let created: ChatSession = try await context.api.write("/api/chat/sessions", body: body)
-                        try context.check(); session = created; rememberSession(agentId: agent.id)
+                        try context.check(); session = created; newSessionPending = false; rememberSession(agentId: agent.id)
                     }
                     guard var current = session else { throw APIError.http(404) }
                     // Refresh responses can race this loop. Reaffirm each snapshot

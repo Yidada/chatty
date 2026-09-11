@@ -8,14 +8,19 @@ struct ChattyApp: App {
     // and never starts a second poller or socket.
     @State private var core = AppCore(configuration: .current)
     @State private var activity = SceneActivityMonitor.shared
+    // Stage B: menu bar and hardware-keyboard shortcuts. One bus per process;
+    // the visible window registers the concrete actions.
+    @StateObject private var commands = AppCommandCenter()
 
     var body: some Scene {
         WindowGroup(id: AppWindow.main, for: AppRoute.self) { route in
             root(route: route.wrappedValue)
                 .background(ChattyTheme.background)
                 .tint(ChattyTheme.accent)
+                .environmentObject(commands)
                 .task { activity.start() }
         }
+        .commands { ChattyCommands(center: commands) }
     }
 
     @ViewBuilder private func root(route: AppRoute?) -> some View {

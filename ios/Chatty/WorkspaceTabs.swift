@@ -22,6 +22,9 @@ struct WorkspaceTabs: View {
     @State private var linkNotice = false
     @State private var activity = SceneActivityMonitor.shared
     @Environment(\.openWindow) private var openWindow
+    // Stage B: the menu bar is process-wide, so the window that is on screen
+    // registers the concrete actions for it.
+    @EnvironmentObject private var commands: AppCommandCenter
 
     /// Identity of this window for restoration purposes. A window opened through
     /// `openWindow` carries its own route token; the first window uses "default".
@@ -83,6 +86,8 @@ struct WorkspaceTabs: View {
         .task {
             activity.start()
             restoreTab()
+            commands.registerWorkspaceWindow()
+            registerCommands()
             if activity.shouldKeepRunning { model.start() }
             await model.chat.initialize()
             session.rememberDraftScope(model)
@@ -93,6 +98,37 @@ struct WorkspaceTabs: View {
         // the instant between two windows swapping).
         .onChange(of: activity.shouldKeepRunning) { _, run in
             if run { model.start() } else { model.pause() }
+        }
+        // Sign-out and workspace switches still clear the menu; closing one of
+        // several windows does not, because the others are still using it.
+        .onDisappear { commands.unregisterWorkspaceWindow() }
+    }
+
+    /// The menu bar and shortcut table are scene-level. Registering here (and
+    /// clearing when the last workspace window leaves) keeps every item honest
+    /// about what is on screen.
+    private func registerCommands() {
+        commands.hasWorkspace = true
+        commands.selectTab = { value in tab.wrappedValue = value }
+        commands.openSettings = { showingSettings = true }
+        commands.newSession = { model.chat.startNewSession(); tab.wrappedValue = .chat }
+        commands.refresh = {
+            Task {
+                switch tab.wrappedValue {
+                case .activity: await model.activity.refresh()
+                case .chat: await model.chat.refresh()
+                case .projects: await model.projects.overview()
+                case .settings: break
+                }
+            }
+        }
+        commands.focusIssueSearch = {
+            tab.wrappedValue = .projects
+            commands.issueSearchRequest += 1
+        }
+        commands.cancel = {
+            if linked != nil { linked = nil }
+            else if showingSettings { showingSettings = false }
         }
     }
 
