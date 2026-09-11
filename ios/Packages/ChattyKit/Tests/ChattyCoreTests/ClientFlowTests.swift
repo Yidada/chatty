@@ -420,6 +420,62 @@ private final class FlowServer: @unchecked Sendable {
         XCTAssertEqual(rig.server.read { $0.batchBodies.count }, 1)
         XCTAssertFalse(activity.batching)
     }
+    /// A swipe is a one-id batch: it must travel the exact body the multi-select
+    /// path sends, and a server that silently skips the id must come back as
+    /// 未生效 with a retry, never as success.
+    func testActivityRowSwipeSubmitsTheSharedActionBodyAndReportsASilentSkip() async throws {
+        let rig = try FlowRig(); defer { rig.cleanup() }; await rig.login()
+        rig.server.mutate { $0.actionIssueID = "i0" }
+        let activity = try XCTUnwrap(rig.model.current?.activity); await activity.refresh()
+        let issue = try XCTUnwrap(activity.actions.first { $0.id == "i0" })
+        let complete = ActivityRowActions.forList(.pending).trailing
+        let done = try XCTUnwrap(complete.batchUpdate)
+        rig.server.mutate { $0.batchSkip = ["i0"] }
+        let skippedValue = await activity.batchUpdate(ids: [issue.id], update: done)
+        let skipped = try XCTUnwrap(skippedValue)
+        XCTAssertEqual(skipped.updated, 0); XCTAssertEqual(skipped.skipped, 1); XCTAssertEqual(skipped.failed, 0)
+        XCTAssertFalse(skipped.isFullSuccess, "updated 0 must never render as 成功")
+        XCTAssertEqual(skipped.retryIDs, ["i0"])
+        let body = try XCTUnwrap(rig.server.read { $0.batchBodies.first })
+        XCTAssertEqual(body["issue_ids"] as? [String], ["i0"])
+        let updates = try XCTUnwrap(body["updates"] as? [String: Any])
+        XCTAssertEqual(updates["status"] as? String, "done")
+        XCTAssertEqual(updates["suppress_run"] as? Bool, true)
+        XCTAssertEqual(updates.count, 2, "Only the fields the action means may reach the wire")
+        // Retrying resubmits the identical body, so a lost reply cannot
+        // double-apply the status change.
+        rig.server.mutate { $0.batchSkip = [] }
+        let retriedValue = await activity.retryLastBatch()
+        let retried = try XCTUnwrap(retriedValue)
+        XCTAssertTrue(retried.isFullSuccess)
+        let last = try XCTUnwrap(rig.server.read { $0.batchBodies.last })
+        XCTAssertEqual(last["issue_ids"] as? [String], ["i0"])
+        let lastUpdates = try XCTUnwrap(last["updates"] as? [String: Any])
+        XCTAssertEqual(lastUpdates["status"] as? String, "done")
+        XCTAssertEqual(lastUpdates["suppress_run"] as? Bool, true)
+        XCTAssertEqual(lastUpdates.count, 2, "A retry resubmits the identical body")
+        XCTAssertTrue(activity.actions.isEmpty, "The settled row converges from the reloaded server page")
+        // The other direction is the same path with the todo body.
+        let back = try XCTUnwrap(ActivityRowActions.forList(.pending).leading.batchUpdate)
+        XCTAssertEqual(back.json, ["status": .string("todo"), "suppress_run": .bool(true)])
+    }
+    /// The read pair is local-only: it must restore the red dot, persist the
+    /// change, and report only the rows it actually changed.
+    func testActivityRowMarkUnreadRestoresTheRedDotAndOnlyCountsRealChanges() async throws {
+        let rig = try FlowRig(); defer { rig.cleanup() }; await rig.login()
+        let activity = try XCTUnwrap(rig.model.current?.activity); await activity.refresh()
+        let issue = try XCTUnwrap(activity.recent.first)
+        XCTAssertTrue(activity.isUnread(issue))
+        XCTAssertEqual(activity.markRead(ids: [issue.id]), 1)
+        XCTAssertFalse(activity.isUnread(issue))
+        XCTAssertEqual(activity.markRead(ids: [issue.id]), 0, "Nothing changed, so nothing may be reported as marked")
+        XCTAssertEqual(activity.markUnread(ids: [issue.id]), 1)
+        XCTAssertTrue(activity.isUnread(issue), "The red dot comes back")
+        XCTAssertEqual(activity.markUnread(ids: [issue.id]), 0, "An already-unread row has nothing to restore")
+        XCTAssertNil(try rig.files.activityReads(account: "u1", workspace: "w1")[issue.id])
+        XCTAssertTrue(rig.server.read { $0.batchBodies }.isEmpty, "Read state is local-only: no status write may be sent")
+        XCTAssertTrue(activity.hasAttention)
+    }
     func testCredentialsNeverReachAuthOrForeignOrigin() throws {
         let client = APIClient(baseURL: URL(string:"https://api.example.test")!, token:"synthetic", workspace:"one")
         defer { client.invalidate() }

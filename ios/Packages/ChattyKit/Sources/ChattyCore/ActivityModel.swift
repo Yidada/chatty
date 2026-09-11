@@ -69,14 +69,42 @@ import Observation
         guard context.active, !ids.isEmpty else { return 0 }
         return store(Self.unique(recent + actions).filter { ids.contains($0.id) })
     }
+    public func markUnread(_ issue: Issue) { _ = clear([issue]) }
+    /// Restore the red dot by dropping the stored fingerprint. Also local-only,
+    /// and the exact inverse of `markRead`, so a single row can be put back
+    /// without pretending a business change happened.
+    @discardableResult
+    public func markUnread(ids: Set<String>) -> Int {
+        guard context.active, !ids.isEmpty else { return 0 }
+        return clear(Self.unique(recent + actions).filter { ids.contains($0.id) })
+    }
+    /// Returns how many fingerprints actually changed. A row that already held
+    /// this state is not counted, so the caller never reports "已标记" for a
+    /// write that changed nothing.
     private func store(_ issues: [Issue]) -> Int {
         guard context.active, !issues.isEmpty else { return 0 }
-        var next = reads
-        for issue in issues { next[issue.id] = Self.fingerprint(issue) }
+        var next = reads; var changed = 0
+        for issue in issues {
+            let fingerprint = Self.fingerprint(issue)
+            guard next[issue.id] != fingerprint else { continue }
+            next[issue.id] = fingerprint; changed += 1
+        }
+        guard changed > 0 else { return 0 }
         do {
             try context.files.saveActivityReads(next, account: context.user.id, workspace: context.workspace.id)
             reads = next; readError = nil
-            return issues.count
+            return changed
+        } catch { readError = "已读状态未保存，请重试。"; return 0 }
+    }
+    private func clear(_ issues: [Issue]) -> Int {
+        guard context.active, !issues.isEmpty else { return 0 }
+        var next = reads; var changed = 0
+        for issue in issues where next.removeValue(forKey: issue.id) != nil { changed += 1 }
+        guard changed > 0 else { return 0 }
+        do {
+            try context.files.saveActivityReads(next, account: context.user.id, workspace: context.workspace.id)
+            reads = next; readError = nil
+            return changed
         } catch { readError = "已读状态未保存，请重试。"; return 0 }
     }
     public func apply(_ issue: Issue) {

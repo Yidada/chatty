@@ -20,6 +20,9 @@ struct ActivityScreen: View {
         VStack(spacing: 0) {
             tabBar
             outcomeBanner
+            // Outside the `List`: a `ContentUnavailableView` inside a list row
+            // collapses, so the empty / error notice has to be its own block.
+            listNotice
             list
         }
         .navigationTitle("动态").background(ChattyTheme.background)
@@ -55,31 +58,49 @@ struct ActivityScreen: View {
         }
     }
 
+    /// A `List`, not a `ScrollView`/`LazyVStack`: system row swipe actions —
+    /// thresholds, rubber-banding and the full-swipe policy — only exist for
+    /// `List` rows. Outside a `List` the modifier is inert and a horizontal drag
+    /// falls through to the row's button, which navigates; hand-rolling a drag
+    /// recogniser would mean inventing the thresholds the spec forbids.
     private var list: some View {
-        ScrollView {
-            LazyVStack(spacing: 0) {
-                listNotice
-                ForEach(rows) { issue in
-                    activityRow(issue)
-                    Divider()
-                }
-                moreButton
-            }.padding(.horizontal, 24).padding(.bottom, selecting ? 140 : 20)
-        }.refreshable { await model.refresh() }.accessibilityIdentifier("activity.list")
+        List {
+            ForEach(rows) { issue in
+                rowElement(issue)
+                    .listRowInsets(rowInsets)
+                    .listRowBackground(ChattyTheme.background)
+            }
+            moreButton
+                .listRowInsets(rowInsets)
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
+        }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .background(ChattyTheme.background)
+        .environment(\.defaultMinListRowHeight, 0)
+        .contentMargins(.bottom, selecting ? 140 : 20, for: .scrollContent)
+        .refreshable { await model.refresh() }
+        .accessibilityIdentifier("activity.list")
     }
 
+    private var rowInsets: EdgeInsets { EdgeInsets(top: 0, leading: 24, bottom: 0, trailing: 24) }
+
     @ViewBuilder private var listNotice: some View {
-        if let error = pending ? model.actionError ?? model.error : model.error {
-            ErrorNotice(text: error, identifier: "activity.error").padding(.vertical, 12)
-            Button("重试") { Task { await model.refresh() } }.frame(minHeight: 44)
-        }
-        if let error = model.readError { ErrorNotice(text: error, identifier: "activity.readError") }
-        if model.loading && rows.isEmpty { ProgressView("读取项目动态…").padding(30) }
-        if !model.loading && rows.isEmpty && model.error == nil && (!pending || model.actionError == nil) {
-            ContentUnavailableView(pending ? "当前没有待处理事项" : "暂时没有项目动态",
-                systemImage: pending ? "checkmark.circle" : "tray",
-                description: Text(pending ? "项目里的工作会持续显示在新进展中。" : "所有可访问项目的事项变化都会显示在这里。"))
-        }
+        VStack(spacing: 0) {
+            if let error = pending ? model.actionError ?? model.error : model.error {
+                ErrorNotice(text: error, identifier: "activity.error").padding(.vertical, 12)
+                Button("重试") { Task { await model.refresh() } }.frame(minHeight: 44)
+            }
+            if let error = model.readError { ErrorNotice(text: error, identifier: "activity.readError") }
+            if model.loading && rows.isEmpty { ProgressView("读取项目动态…").padding(30) }
+            if !model.loading && rows.isEmpty && model.error == nil && (!pending || model.actionError == nil) {
+                ContentUnavailableView(pending ? "当前没有待处理事项" : "暂时没有项目动态",
+                    systemImage: pending ? "checkmark.circle" : "tray",
+                    description: Text(pending ? "项目里的工作会持续显示在新进展中。" : "所有可访问项目的事项变化都会显示在这里。"))
+                    .padding(.top, 40)
+            }
+        }.padding(.horizontal, 24)
     }
 
     @ViewBuilder private var moreButton: some View {
@@ -96,10 +117,19 @@ struct ActivityScreen: View {
     private var selection: SelectionSet { pending ? actionSelection : recentSelection }
     private var availableIDs: [String] { rows.map(\.id) }
 
-    /// Pointer parity for the feed rows: the same status actions the detail
-    /// screen exposes, plus a shareable link.
+    /// Pointer parity (Stage B): the row's own actions come first, carrying the
+    /// same names as the swipe buttons, so the right-click menu and the gesture
+    /// cannot drift into two descriptions of one operation.
     @ViewBuilder private func issueMenu(_ issue: Issue) -> some View {
-        if model.category(issue) == "in_review", let done = model.statuses.first(where: { $0.category == "done" })?.key {
+        if !selecting {
+            ForEach(rowActions.ordered) { action in
+                Button(action.title, systemImage: action.systemImage) { perform(action, on: issue) }
+            }
+        }
+        // The Stage B approval shortcut stays on the recent list, where the row
+        // actions are the read pair. On the pending list it is now the same
+        // operation as 验收完成, so it is not repeated there.
+        if !pending, model.category(issue) == "in_review", let done = model.statuses.first(where: { $0.category == "done" })?.key {
             Button("验收通过", systemImage: "checkmark.circle") { apply(done, for: issue) }
         }
         if !model.statuses.isEmpty {
@@ -115,20 +145,84 @@ struct ActivityScreen: View {
         Task { if let updated = await projects.setStatus(status, for: issue.id) { model.apply(updated) } }
     }
 
+    /// The row's leading / trailing pair, declared once per list in ChattyCore
+    /// and shared by the gesture, the VoiceOver custom actions and the menu.
+    private var rowActions: ActivityRowActions { .forList(pending ? .pending : .recent) }
+
+    /// The row as the `List` sees it. A `List` collapses a row into one
+    /// accessibility element, so the row identity has to sit on this container:
+    /// an identifier on the button inside the cell is not published. In
+    /// selection mode the row gesture is owned by selection, so the swipe
+    /// actions — and the custom actions that mirror them — are not attached.
+    @ViewBuilder private func rowElement(_ issue: Issue) -> some View {
+        activityRow(issue).accessibilityIdentifier("activity.issue.\(issue.id)")
+    }
+
     @ViewBuilder private func activityRow(_ issue: Issue) -> some View {
         // One view type in both modes. Swapping between Button and NavigationLink
         // for the same row identity left a stale accessibility element behind
         // after leaving selection mode, so browse-mode navigation goes through
         // the enclosing stack's destination instead.
         let chosen = selecting && selection.contains(issue.id)
-        Button { activate(issue) } label: { rowLabel(issue) }
+        let row = Button { activate(issue) } label: { rowLabel(issue) }
             .buttonStyle(.plain)
             .hoverEffect(.highlight)
             .contextMenu { issueMenu(issue) }
-            .accessibilityIdentifier("activity.issue.\(issue.id)")
             .accessibilityAddTraits(chosen ? .isSelected : [])
             .accessibilityValue(selecting ? (chosen ? "已选中" : "未选中") : "")
             .accessibilityHint(selecting ? "轻点切换选中状态" : "轻点查看事项详情")
+        if selecting {
+            // Selection mode owns horizontal drags; a revealed swipe button
+            // would be a second way to change state while a batch is being
+            // assembled, so the gesture (and its VoiceOver mirror) is simply
+            // not attached.
+            row
+        } else {
+            // VoiceOver cannot swipe a row, so every gesture action is also a
+            // custom action under the same name.
+            row
+                .accessibilityAction(named: Text(rowActions.trailing.title)) { perform(rowActions.trailing, on: issue) }
+                .accessibilityAction(named: Text(rowActions.leading.title)) { perform(rowActions.leading, on: issue) }
+                .swipeActions(edge: .trailing, allowsFullSwipe: rowActions.trailing.allowsFullSwipe) {
+                    swipeButton(rowActions.trailing, issue)
+                }
+                .swipeActions(edge: .leading, allowsFullSwipe: rowActions.leading.allowsFullSwipe) {
+                    swipeButton(rowActions.leading, issue)
+                }
+        }
+    }
+
+    private func swipeButton(_ action: ActivityRowAction, _ issue: Issue) -> some View {
+        Button { perform(action, on: issue) } label: {
+            Label(action.title, systemImage: action.systemImage)
+        }
+        .tint(action.emphasis == .primary ? ChattyTheme.accent : .orange)
+        .accessibilityIdentifier("activity.swipe.\(action.id).\(issue.id)")
+    }
+
+    /// Runs one row action. Status changes go down the multi-select path
+    /// (`POST /api/issues/batch-update`, chunked, no optimistic update, silent
+    /// server skips reported as 未生效 with a retry entry); the read pair only
+    /// writes the local fingerprint and says so when nothing changed.
+    private func perform(_ action: ActivityRowAction, on issue: Issue) {
+        guard !selecting, !model.batching else { return }
+        if let update = action.batchUpdate {
+            readNote = nil
+            Task { _ = await model.batchUpdate(ids: [issue.id], update: update) }
+            return
+        }
+        switch action.kind {
+        case .markRead:
+            readNote = model.markRead(ids: [issue.id]) > 0
+                ? "已标记「\(issue.title)」为已读。"
+                : "「\(issue.title)」已是最新已读状态。"
+        case .markUnread:
+            readNote = model.markUnread(ids: [issue.id]) > 0
+                ? "已恢复「\(issue.title)」的未读标记。"
+                : "「\(issue.title)」没有可恢复的已读记录。"
+        case .complete, .returnToTodo:
+            break
+        }
     }
 
     private func activate(_ issue: Issue) {

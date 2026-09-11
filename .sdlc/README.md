@@ -20,6 +20,11 @@ instructions are in [the workflow guide](../docs/sdlc-workflow.md).
   [执行计划](changes/20260910-ios-activity-batch-actions/plan.md)、
   [验证记录](changes/20260910-ios-activity-batch-actions/evidence.md)。
   多选、批量已读，以及待处理页批量验收完成 / 退回待办（`POST /api/issues/batch-update`）。
+- [iOS 动态逐行滑动操作](changes/20260911-ios-activity-row-swipe/intent.md):
+  [执行计划](changes/20260911-ios-activity-row-swipe/plan.md)、
+  [验证记录](changes/20260911-ios-activity-row-swipe/evidence.md)。
+  两个列表的逐行左滑 / 右滑动作，共用同一套动作定义并复用批量通路；含全滑策略、选择态禁用、
+  指针菜单与 iPad 常规宽度证据。本轮同时把 CLE-85 的批量层重新落到最新 `main`。
 - [Android native experience](changes/20260905-native-experience-without-multica-web-exits/intent.md).
 - [Android V3 performance baseline](changes/20260906-android-v3-performance-baseline/intent.md):
   migrated baseline preparation and samples. The migration does not create new
