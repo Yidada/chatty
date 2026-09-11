@@ -19,6 +19,7 @@ import hashlib
 import json
 import os
 import shutil
+import socket
 import subprocess
 import sys
 import time
@@ -38,6 +39,27 @@ HOST_METHODS = ['interactive', 'network']
 ALL_METHODS = INSTRUMENTED_METHODS + HOST_METHODS
 SETTINGS_KEYS = [('system', 'peak_refresh_rate'), ('system', 'min_refresh_rate'), ('global', 'low_power'),
                  ('global', 'window_animation_scale'), ('global', 'transition_animation_scale'), ('global', 'animator_duration_scale')]
+# The app and the Macrobenchmark test both speak to this port on the device; it is
+# compiled into the benchmark build and intentionally fixed. Only the host side of
+# the adb reverse mapping is selectable, so an unrelated local service squatting on
+# 8765 cannot block a capture.
+DEVICE_FIXTURE_PORT = 8765
+
+
+def reverse_spec(host_port, device_port=DEVICE_FIXTURE_PORT):
+    """adb reverse arguments mapping the device's fixed fixture port to a chosen host port."""
+    return ['reverse', f'tcp:{device_port}', f'tcp:{host_port}']
+
+
+def host_port_available(port):
+    """True when nothing on this host holds 127.0.0.1:<port>; a failed bind means busy."""
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
+        probe.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        try:
+            probe.bind(('127.0.0.1', port))
+        except OSError:
+            return False
+        return True
 
 
 def parse_am_start_total_time(text):
@@ -61,9 +83,16 @@ def main():
     parser.add_argument('--interactive-iterations', type=int, default=10)
     parser.add_argument('--network-launches', type=int, default=3)
     parser.add_argument('--probe-timeout', type=float, default=20.0)
+    parser.add_argument('--host-port', type=int, default=DEVICE_FIXTURE_PORT,
+                        help='host port for the fixture; the device side stays on %d' % DEVICE_FIXTURE_PORT)
     args = parser.parse_args()
     if args.rounds < 1:
         parser.error('--rounds must be positive')
+    if not 1 <= args.host_port <= 65535:
+        parser.error('--host-port must be a valid TCP port')
+    if not host_port_available(args.host_port):
+        parser.error('host port %d is already in use; pass --host-port <free port> '
+                     '(the device side stays on %d)' % (args.host_port, DEVICE_FIXTURE_PORT))
     out = Path(args.output).resolve()
     out.mkdir(parents=True, exist_ok=False)
     adb = os.environ.get('ADB', shutil.which('adb') or str(Path.home() / 'Android/Sdk/platform-tools/adb'))
@@ -80,7 +109,7 @@ def main():
         return cmd([adb, '-s', args.serial] + parts, name, timeout, allow_failure)
 
     def request(path, data=None):
-        req = urllib.request.Request('http://127.0.0.1:8765' + path,
+        req = urllib.request.Request('http://127.0.0.1:%d' % args.host_port + path,
             data=json.dumps(data).encode() if data is not None else None,
             headers={'Content-Type': 'application/json'})
         with urllib.request.urlopen(req, timeout=5) as response:
@@ -236,6 +265,7 @@ def main():
               'compilation': 'None for Macrobenchmark; system-default for standalone PSS'
                              if set(args.methods) - {'memory'} else 'system-default (standalone PSS)',
               'r8': False, 'rounds': args.rounds, 'methods': args.methods,
+              'fixture_host_port': args.host_port, 'fixture_device_port': DEVICE_FIXTURE_PORT,
               'budget_grade': False,
               'budget_grade_note': 'true only when every snapshot met battery 40-80%, thermal NONE, fixed 60 Hz, battery saver off'}
     try:
@@ -258,18 +288,20 @@ def main():
                     source_hashes[str(source.relative_to(ROOT))] = hashlib.sha256(source.read_bytes()).hexdigest()
         (out / 'source-sha256.json').write_text(json.dumps(source_hashes, indent=2))
         device(['reverse', '--list'], 'reverse-before.txt')
-        if 'tcp:8765' in (out / 'reverse-before.txt').read_text():
-            raise RuntimeError('Port 8765 already reversed; stop its owner before capture')
+        if 'tcp:%d' % DEVICE_FIXTURE_PORT in (out / 'reverse-before.txt').read_text():
+            raise RuntimeError('Device port %d already reversed; stop its owner before capture' % DEVICE_FIXTURE_PORT)
         with (out / 'fixture.log').open('w') as log:
-            fixture = subprocess.Popen([sys.executable, str(Path(__file__).with_name('fixture.py')), '--scenario', args.scenario], stdout=log, stderr=subprocess.STDOUT)
+            fixture = subprocess.Popen([sys.executable, str(Path(__file__).with_name('fixture.py')),
+                                        '--scenario', args.scenario, '--port', str(args.host_port)],
+                                       stdout=log, stderr=subprocess.STDOUT)
             for _ in range(50):
-                if fixture.poll() is not None: raise RuntimeError('Fixture failed to bind')
+                if fixture.poll() is not None: raise RuntimeError('Fixture failed to bind on host port %d' % args.host_port)
                 try:
                     data = request('/__manifest'); break
                 except OSError: time.sleep(.1)
             else: raise RuntimeError('Fixture not ready')
         (out / 'fixture-manifest.json').write_text(json.dumps(data, indent=2))
-        device(['reverse', 'tcp:8765', 'tcp:8765'], 'reverse.txt')
+        device(reverse_spec(args.host_port), 'reverse.txt')
         reverse_added = True
         for path in [ROOT / 'android/app/build/outputs/apk/benchmark/app-benchmark.apk', ROOT / 'android/macrobenchmark/build/outputs/apk/benchmark/macrobenchmark-benchmark.apk']:
             status[path.name + '_sha256'] = hashlib.sha256(path.read_bytes()).hexdigest()
@@ -317,7 +349,7 @@ def main():
                 try: energy_snapshot('final')
                 except Exception: pass
             if reverse_added:
-                device(['reverse', '--remove', 'tcp:8765'], 'reverse-cleanup.txt', allow_failure=True)
+                device(['reverse', '--remove', 'tcp:%d' % DEVICE_FIXTURE_PORT], 'reverse-cleanup.txt', allow_failure=True)
         finally:
             (out / 'result.json').write_text(json.dumps(status, indent=2))
             (out / 'summary.json').write_text(measure.summarize_capture(out).to_json() + '\n')

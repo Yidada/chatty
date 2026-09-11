@@ -31,7 +31,7 @@ python3 scripts/perf/soak.py --serial <Pixel-serial> --output <dir> --iterations
 python3 scripts/perf/cache_policy.py
 ```
 
-The collector installs `ai.chatty.app.benchmark` and a separate self-instrumenting test APK. It clears only the disposable benchmark package, logs in using synthetic email/code via UI, owns a loopback fixture and adb reverse mapping, and terminates both before returning. Never point it at the production/debug package. Output must be a new directory. Do not share port 8765 with another test run. Unlock the Pixel and keep its screen on before running; no PIN or real token is required.
+The collector installs `ai.chatty.app.benchmark` and a separate self-instrumenting test APK. It clears only the disposable benchmark package, logs in using synthetic email/code via UI, owns a loopback fixture and adb reverse mapping, and terminates both before returning. Never point it at the production/debug package. Output must be a new directory. Do not share port 8765 with another test run: the fixture's host port is selectable with `--host-port <free port>` (the device side stays on 8765, which the benchmark build hardcodes), and the collector refuses to start when the chosen host port is taken. Unlock the Pixel and keep its screen on before running; no PIN or real token is required.
 
 The app variant is based on release, non-debuggable, profileable, debug-signed, with unchanged R8=false and dependencies falling back to release. Cleartext is limited to localhost in this variant only. No production behavior or caching strategy changes. `CompilationMode.None()` is recorded explicitly; comparison runs must keep this mode. No Baseline Profile is installed by this change.
 

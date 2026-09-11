@@ -9,7 +9,11 @@ Stage 2b, so every device number below is still UNMEASURED.
 - **Waiting object:** Benjamin's exclusive Pixel 6 Pro test window.
 - **Unlock conditions:** Pixel 6 Pro attached and unlocked with the screen on; battery 40-80%;
   thermal status `NONE` and stable; fixed 60 Hz (`peak_refresh_rate` = `min_refresh_rate` = 60);
-  battery saver off; no other adb automation against the device; port 8765 not already reversed.
+  battery saver off; no other adb automation against the device; device port 8765 not already reversed.
+- **Host port:** the fixture listens on the host side of the adb reverse mapping. It defaults to 8765
+  and can be moved with `--host-port <free port>` when an unrelated local process owns 8765; the
+  device side stays on 8765 because the benchmark build and the Macrobenchmark test both hardcode it.
+  The collector refuses to start when the chosen host port is taken and names the flag to use.
 - **Checkpoint discipline:** after every session, record on this issue the commit, APK hashes,
   device build, dataset manifest, valid/invalid sample counts, raw evidence, gate results and the
   still-UNMEASURED items. A session whose `result.json` reports `budget_grade: false` produces
