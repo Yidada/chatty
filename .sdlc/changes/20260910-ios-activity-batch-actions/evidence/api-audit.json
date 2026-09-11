@@ -1,0 +1,77 @@
+{
+  "change": "20260910-ios-activity-batch-actions",
+  "issue": "CLE-85",
+  "recorded_at": "2026-09-10",
+  "fixture_port": 8791,
+  "note": "本机 8765/8766/8767 已被其他进程占用，按 ios/README 的 CHATTY_FIXTURE_PORT 约定改用 8791；两个原生流程各自在全新 fixture 实例上运行。",
+  "runs": [
+    {
+      "name": "happy-path",
+      "flow": "tests/device/ios/v2-activity-batch.ad",
+      "replay": ".sdlc/changes/20260910-ios-activity-batch-actions/evidence/batch-replay.json",
+      "replay_result": {"success": true, "steps": 25, "healed": 0},
+      "assertions": [
+        "wait label=\"已选 1 项\"",
+        "wait label=\"已标记 1 项为已读。\"",
+        "wait label=\"已选 2 项\"",
+        "wait label=\"已提交 2 项，全部成功。\"",
+        "wait label=\"当前没有待处理事项\""
+      ],
+      "server_audit": {
+        "scope": "u1:fixture",
+        "issue_writes": [],
+        "batch_writes": [
+          {
+            "issue_ids": ["i0", "i54"],
+            "updates": {"status": "done", "suppress_run": true},
+            "updated": 2,
+            "skipped": []
+          }
+        ]
+      },
+      "screenshots": [
+        "evidence/01-selection-mode.png",
+        "evidence/02-batch-read-note.png",
+        "evidence/03-pending-select-all.png",
+        "evidence/04-batch-done-success.png"
+      ]
+    },
+    {
+      "name": "partial-skip-and-retry",
+      "flow": "tests/device/ios/v2-activity-batch-partial.ad",
+      "control": {"activity_scenario": true, "batch_skip": ["i0"]},
+      "replay": ".sdlc/changes/20260910-ios-activity-batch-actions/evidence/batch-partial-replay.json",
+      "replay_result": {"success": true, "steps": 17, "healed": 0},
+      "assertions": [
+        "wait label=\"已选 2 项\"",
+        "wait label=\"已提交 2 项：成功 1，未生效 1。\"",
+        "重试入口再次提交后仍显示 \"已提交 2 项：成功 1，未生效 1。\""
+      ],
+      "server_audit": {
+        "scope": "u1:fixture",
+        "issue_writes": [],
+        "batch_writes": [
+          {"issue_ids": ["i0", "i54"], "updates": {"status": "done", "suppress_run": true}, "updated": 1, "skipped": ["i0"]},
+          {"issue_ids": ["i0", "i54"], "updates": {"status": "done", "suppress_run": true}, "updated": 1, "skipped": ["i0"]}
+        ]
+      },
+      "screenshots": [
+        "evidence/05-pending-selected.png",
+        "evidence/06-batch-partial-result.png",
+        "evidence/07-batch-partial-retry.png"
+      ]
+    },
+    {
+      "name": "browse-mode-navigation",
+      "note": "选择态改造后普通浏览仍能进入事项详情，未截图断言，按 UI 变更记录。",
+      "assertions": [
+        "点击 activity.issue.i1 后出现 \"现在的情况\"、\"和 Mika 继续\"、\"目标与记录\""
+      ],
+      "screenshots": ["evidence/08-browse-mode-detail.png"]
+    }
+  ],
+  "tests": {
+    "swift": {"log": "evidence/swift-tests.log", "executed": 51, "failures": 0, "baseline_before_change": 42},
+    "simulator": {"log": "evidence/simulator-tests.log", "executed": 5, "skipped": 1, "failures": 0}
+  }
+}

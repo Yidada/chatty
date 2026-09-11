@@ -16,6 +16,13 @@ import Observation
     public private(set) var actionError: String?
     public private(set) var readError: String?
     public private(set) var reads: [String: String] = [:]
+    /// True while a batch submission owns the wire. Guards double submission;
+    /// the status write itself is idempotent, so a lost reply is retryable.
+    public private(set) var batching = false
+    public private(set) var batchProgress = 0
+    public private(set) var batchProgressTotal = 0
+    public private(set) var batchResult: BatchResult?
+    @ObservationIgnored private var lastBatch: (ids: [String], update: IssueBatchUpdate)?
     @ObservationIgnored private let context: WorkspaceContext
     @ObservationIgnored private var recentOffset = 0
     @ObservationIgnored private var actionOffset = 0
@@ -51,13 +58,26 @@ import Observation
         "\(issue.lastActivityAt ?? issue.updatedAt ?? String(issue.revision ?? 0))|\(issue.status)"
     }
     public func isUnread(_ issue: Issue) -> Bool { reads[issue.id] != Self.fingerprint(issue) }
-    public func markRead(_ issue: Issue) {
-        guard context.active else { return }
-        var next = reads; next[issue.id] = Self.fingerprint(issue)
+    public func markRead(_ issue: Issue) { _ = store([issue]) }
+    /// Batch read: one protected-storage write for the whole selection, so a
+    /// partially written red-dot state cannot appear.
+    public func markRead(_ issues: [Issue]) { _ = store(issues) }
+    /// Mark the loaded rows whose ids are selected. Ids that left the page are
+    /// skipped rather than guessed: the fingerprint needs the current row.
+    @discardableResult
+    public func markRead(ids: Set<String>) -> Int {
+        guard context.active, !ids.isEmpty else { return 0 }
+        return store(Self.unique(recent + actions).filter { ids.contains($0.id) })
+    }
+    private func store(_ issues: [Issue]) -> Int {
+        guard context.active, !issues.isEmpty else { return 0 }
+        var next = reads
+        for issue in issues { next[issue.id] = Self.fingerprint(issue) }
         do {
             try context.files.saveActivityReads(next, account: context.user.id, workspace: context.workspace.id)
             reads = next; readError = nil
-        } catch { readError = "已读状态未保存，请重试。" }
+            return issues.count
+        } catch { readError = "已读状态未保存，请重试。"; return 0 }
     }
     public func apply(_ issue: Issue) {
         guard context.active else { return }
@@ -71,14 +91,69 @@ import Observation
         markRead(issue)
         scheduleRefresh()
     }
+    /// `POST /api/issues/batch-update`, one small chunk at a time.
+    ///
+    /// The endpoint answers `{"updated": N}` and silently skips ids it cannot
+    /// resolve or is not allowed to touch, so the result tracks success /
+    /// skip / failure separately and never reports a partial write as a full
+    /// one. Neither list is updated optimistically: after submitting, the model
+    /// re-reads from the server and only then mirrors `apply`'s mark-read side
+    /// effect for the chunks the server answered.
+    @discardableResult
+    public func batchUpdate(ids: [String], update: IssueBatchUpdate) async -> BatchResult? {
+        guard context.active, !batching, update.hasMutation else { return nil }
+        let ordered = BatchChunking.unique(ids)
+        guard !ordered.isEmpty else { return nil }
+        batching = true; batchResult = nil
+        let chunks = BatchChunking.chunks(ordered)
+        batchProgressTotal = chunks.count; batchProgress = 0
+        defer { batching = false; batchProgress = 0; batchProgressTotal = 0 }
+        var accumulator = BatchAccumulator()
+        for chunk in chunks {
+            if !context.active { return nil }
+            do {
+                let reply: BatchUpdateReply = try await context.api.write(
+                    "/api/issues/batch-update",
+                    body: ["issue_ids": .array(chunk.map { .string($0) }), "updates": .object(update.json)]
+                )
+                try context.check()
+                accumulator.record(chunk: chunk, updated: reply.updated)
+            } catch {
+                guard context.active, !(error is CancellationError), (error as? URLError)?.code != .cancelled else { return nil }
+                let message = await context.report(error) ?? DisplayText.error(error)
+                accumulator.recordFailure(chunk: chunk, message: message)
+            }
+            batchProgress += 1
+        }
+        let result = accumulator.result()
+        batchResult = result
+        lastBatch = (result.retryIDs, update)
+        await refresh(force: true)
+        if accumulator.hasAccepted { _ = markRead(ids: Set(accumulator.acceptedIssueIDs)) }
+        return result
+    }
+    /// Re-submit the chunks that were not confirmed. Each chunk is idempotent,
+    /// so a retry can never double-apply a status change.
+    @discardableResult
+    public func retryLastBatch() async -> BatchResult? {
+        guard let last = lastBatch, !last.ids.isEmpty else { return nil }
+        return await batchUpdate(ids: last.ids, update: last.update)
+    }
+    public func clearBatchOutcome() {
+        batchResult = nil; lastBatch = nil; batchProgress = 0; batchProgressTotal = 0
+    }
     private var actionKeys: String { Array(Set(statuses.filter { ["in_review", "blocked"].contains($0.category) }.map(\.key) + ["in_review", "blocked"])).sorted().joined(separator: ",") }
     private func page(offset: Int, actions: Bool) async throws -> IssuePage {
         var query = [URLQueryItem(name: "limit", value: "50"), .init(name: "offset", value: String(offset)), .init(name: "sort", value: "last_activity"), .init(name: "direction", value: "desc")]
         if actions { query.append(.init(name: "statuses", value: actionKeys)) }
         return try await context.api.get("/api/issues", query: query)
     }
-    public func refresh() async {
-        guard context.active, !loading else { return }
+    public func refresh() async { await refresh(force: false) }
+    /// `force` lets a batch discard an in-flight poll refresh (its generation
+    /// stops matching) so the lists converge on the state the batch just wrote
+    /// instead of on a snapshot taken before it.
+    public func refresh(force: Bool) async {
+        guard context.active, force || !loading else { return }
         generation += 1; let g = generation
         loading = true; defer { if g == generation { loading = false } }
         do {

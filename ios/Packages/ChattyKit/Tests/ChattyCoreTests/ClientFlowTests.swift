@@ -45,7 +45,12 @@ private final class FlowServer: @unchecked Sendable {
         var queueSupported = false
         var activeTask = false
         var holdSend: DispatchSemaphore?
-        var activityScenario = false
+        var actionIssueID: String?
+        var batchStatus = 200
+        var batchSkip: Set<String> = []
+        var issueStatuses: [String: String] = [:]
+        var holdBatch: DispatchSemaphore?
+        var batchBodies: [[String: Any]] = []
         var issueQueries: [[String: String]] = []
         var requests: [(String, String, String?, [String: Any])] = []
         var sent: [[String: Any]] = []
@@ -54,6 +59,9 @@ private final class FlowServer: @unchecked Sendable {
     func read<T>(_ block: (State) -> T) -> T { lock.withLock { block(state) } }
     func gate(_ request: URLRequest) -> DispatchSemaphore? {
         lock.withLock {
+            if request.httpMethod == "POST", request.url?.path == "/api/issues/batch-update" {
+                defer { state.holdBatch = nil }; return state.holdBatch
+            }
             guard request.httpMethod == "POST", request.url?.path.hasSuffix("/messages") == true else { return nil }
             defer { state.holdSend = nil }; return state.holdSend
         }
@@ -136,6 +144,19 @@ private final class FlowServer: @unchecked Sendable {
                 if let keys = query.first(where: { $0.name == "statuses" })?.value?.components(separatedBy: ",") { rows = rows.filter { keys.contains($0["status"] as? String ?? "") } }
                 return try reply(["issues":Array(rows.dropFirst(offset).prefix(50)),"total":rows.count])
             }
+            if path == "/api/issues/batch-update", method == "POST" {
+                state.batchBodies.append(body)
+                guard state.batchStatus == 200 else { return try reply([:], state.batchStatus) }
+                let ids = body["issue_ids"] as? [String] ?? []
+                let updates = body["updates"] as? [String: Any] ?? [:]
+                guard !ids.isEmpty else { return try reply([:], 400) }
+                // Mirrors BatchUpdateIssues: no mutation field short-circuits to
+                // updated 0, and unresolvable/forbidden ids are skipped silently.
+                guard !updates.isEmpty else { return try reply(["updated": 0]) }
+                let applied = ids.filter { !state.batchSkip.contains($0) }
+                if let status = updates["status"] as? String { for id in applied { state.issueStatuses[id] = status } }
+                return try reply(["updated": applied.count])
+            }
             if path.hasPrefix("/api/issues/") {
                 if method == "PUT" {
                     if state.issueConflict { state.revision += 1; return try reply([:], 409) }
@@ -147,7 +168,10 @@ private final class FlowServer: @unchecked Sendable {
         }
     }
     private func issue(_ i: Int) -> [String: Any] {
-        ["id":"i\(i)","identifier":"FLOW-\(i)","title":"Issue \(i)","status":state.activityScenario && i == 54 ? "custom" : state.issueStatus,"revision":state.revision,"creator_id":"another-member","creator_type":"human","project_id":"p1"]
+        let id = "i\(i)"
+        let status = state.issueStatuses[id] ?? (state.actionIssueID == id ? "custom" : state.issueStatus)
+        return ["id": id, "identifier": "FLOW-\(i)", "title": "Issue \(i)", "status": status, "revision": state.revision,
+                "creator_id": "another-member", "creator_type": "human", "project_id": "p1"]
     }
 }
 
@@ -275,7 +299,7 @@ private final class FlowServer: @unchecked Sendable {
     }
     func testActivityIncludesOtherCreatorsAndOlderActionsWithSeparateReadState() async throws {
         let rig = try FlowRig(); defer { rig.cleanup() }; await rig.login()
-        rig.server.mutate { $0.activityScenario = true }
+        rig.server.mutate { $0.actionIssueID = "i54" }
         let activity = try XCTUnwrap(rig.model.current?.activity); await activity.refresh()
         XCTAssertEqual(activity.recent.count, 50); XCTAssertEqual(activity.actions.map(\.id), ["i54"])
         XCTAssertTrue(activity.recent.allSatisfy { $0.creatorId == "another-member" })
@@ -294,6 +318,107 @@ private final class FlowServer: @unchecked Sendable {
         XCTAssertEqual(try rig.files.activityReads(account: "u1", workspace: "w1")[action.id], ActivityModel.fingerprint(action))
         XCTAssertTrue(try rig.files.activityReads(account: "u2", workspace: "w1").isEmpty)
         XCTAssertTrue(try rig.files.activityReads(account: "u1", workspace: "w2").isEmpty)
+    }
+    func testActivityBatchStatusConvergesFromServerAndMarksTouchedRowsRead() async throws {
+        let rig = try FlowRig(); defer { rig.cleanup() }; await rig.login()
+        // i0 sits in the first recent page and in the pending list, so one batch
+        // must converge both lists from the server reply.
+        rig.server.mutate { $0.actionIssueID = "i0" }
+        let activity = try XCTUnwrap(rig.model.current?.activity); await activity.refresh()
+        XCTAssertEqual(activity.actions.map(\.id), ["i0"]); XCTAssertTrue(activity.isUnread(try XCTUnwrap(activity.actions.first)))
+        let submitted = await activity.batchUpdate(ids: ["i0"], update: .completion())
+        let result = try XCTUnwrap(submitted)
+        XCTAssertEqual(result.requested, 1); XCTAssertEqual(result.updated, 1)
+        XCTAssertEqual(result.skipped, 0); XCTAssertEqual(result.failed, 0)
+        XCTAssertTrue(result.isFullSuccess); XCTAssertFalse(result.canRetry)
+        XCTAssertFalse(activity.batching, "The in-flight guard must clear after the batch")
+        let body = try XCTUnwrap(rig.server.read { $0.batchBodies.first })
+        XCTAssertEqual(body["issue_ids"] as? [String], ["i0"])
+        let updates = try XCTUnwrap(body["updates"] as? [String: Any])
+        XCTAssertEqual(updates["status"] as? String, "done"); XCTAssertEqual(updates["suppress_run"] as? Bool, true)
+        XCTAssertEqual(updates.count, 2, "Only the fields the action means may reach the wire")
+        // Converged from the server response, not from a local optimistic guess:
+        // the row left the pending list because the reloaded page no longer
+        // matches the in_review / blocked filter, and the recent row carries the
+        // server's new status.
+        XCTAssertTrue(activity.actions.isEmpty); XCTAssertEqual(activity.actionTotal, 0)
+        let row = try XCTUnwrap(activity.recent.first { $0.id == "i0" })
+        XCTAssertEqual(row.status, "done", "recent shows the server status, never a locally assumed one")
+        // The touched row is marked read against its refreshed fingerprint, and
+        // the mark is persisted rather than kept in memory.
+        XCTAssertFalse(activity.isUnread(row))
+        XCTAssertEqual(try rig.files.activityReads(account: "u1", workspace: "w1")["i0"]?.hasSuffix("|done"), true)
+        await activity.refresh()
+        XCTAssertFalse(activity.isUnread(try XCTUnwrap(activity.recent.first { $0.id == "i0" })), "Read state survives a refresh")
+    }
+    func testActivityBatchReportsSkippedRowsAsUnfinishedAndRetriesTheSameChunk() async throws {
+        let rig = try FlowRig(); defer { rig.cleanup() }; await rig.login()
+        rig.server.mutate { $0.actionIssueID = "i0" }
+        let activity = try XCTUnwrap(rig.model.current?.activity); await activity.refresh()
+        rig.server.mutate { $0.batchSkip = ["i0"] }
+        let submitted = await activity.batchUpdate(ids: ["i0"], update: .completion())
+        let result = try XCTUnwrap(submitted)
+        XCTAssertEqual(result.updated, 0); XCTAssertEqual(result.skipped, 1); XCTAssertEqual(result.failed, 0)
+        XCTAssertFalse(result.isFullSuccess, "updated 0 must never read as success")
+        XCTAssertEqual(result.unfinished, 1); XCTAssertTrue(result.summary.contains("未生效 1"))
+        XCTAssertEqual(result.retryIDs, ["i0"])
+        XCTAssertEqual(activity.actions.map(\.id), ["i0"], "A skipped row keeps its place in the pending list")
+        XCTAssertTrue(activity.isUnread(try XCTUnwrap(activity.actions.first)), "Nothing changed, so the row must stay unread")
+        rig.server.mutate { $0.batchSkip = [] }
+        let retried = await activity.retryLastBatch()
+        let retry = try XCTUnwrap(retried)
+        XCTAssertTrue(retry.isFullSuccess); XCTAssertEqual(retry.updated, 1)
+        XCTAssertEqual(rig.server.read { $0.batchBodies.count }, 2)
+        XCTAssertEqual(rig.server.read { $0.batchBodies.last?["issue_ids"] as? [String] }, ["i0"], "Retry resubmits the unanswered chunk exactly")
+        XCTAssertTrue(activity.actions.isEmpty)
+    }
+    func testActivityBatchFailureIsReportedAndChunksAtTwenty() async throws {
+        let rig = try FlowRig(); defer { rig.cleanup() }; await rig.login()
+        let activity = try XCTUnwrap(rig.model.current?.activity); await activity.refresh()
+        rig.server.mutate { $0.batchStatus = 503 }
+        let rejected = await activity.batchUpdate(ids: Array(activity.recent.prefix(3)).map(\.id), update: .completion())
+        let failed = try XCTUnwrap(rejected)
+        XCTAssertEqual(failed.failed, 3); XCTAssertEqual(failed.updated, 0); XCTAssertEqual(failed.skipped, 0)
+        XCTAssertFalse(failed.isFullSuccess); XCTAssertTrue(failed.canRetry)
+        XCTAssertFalse(failed.messages.isEmpty, "A rejected chunk must carry a reason")
+        XCTAssertFalse(activity.recent.contains { $0.status == "done" }, "A rejected batch applies nothing, locally or remotely")
+        XCTAssertEqual(activity.recent.count, 50, "A failed batch changes no local row")
+        // 45 ids must go out as 20 / 20 / 5, never one oversized request.
+        rig.server.mutate { $0.batchStatus = 200; $0.batchBodies = [] }
+        let ids = Array(activity.recent.prefix(45)).map(\.id)
+        XCTAssertTrue(ids.allSatisfy { id in activity.recent.first { $0.id == id }.map { activity.isUnread($0) } == true },
+                      "Rows start unread so the mark-read side effect is observable")
+        let chunked = await activity.batchUpdate(ids: ids, update: .init(priority: "high"))
+        let result = try XCTUnwrap(chunked)
+        XCTAssertTrue(result.isFullSuccess); XCTAssertEqual(result.updated, 45)
+        let bodies = rig.server.read { $0.batchBodies }
+        XCTAssertEqual(bodies.map { ($0["issue_ids"] as? [String])?.count ?? 0 }, [20, 20, 5])
+        XCTAssertEqual(bodies.flatMap { $0["issue_ids"] as? [String] ?? [] }, ids, "Chunking must preserve order")
+        XCTAssertTrue(bodies.allSatisfy { ($0["updates"] as? [String: Any])?["priority"] as? String == "high" })
+        XCTAssertTrue(ids.allSatisfy { id in activity.recent.first { $0.id == id }.map { !activity.isUnread($0) } == true },
+                      "Every applied row is marked read, mirroring apply()")
+        XCTAssertTrue(activity.recent.dropFirst(45).allSatisfy { activity.isUnread($0) }, "Untouched rows keep their red dot")
+    }
+    func testActivityBatchRejectsASecondSubmitWhileOneIsInFlight() async throws {
+        let rig = try FlowRig(); defer { rig.cleanup() }; await rig.login()
+        let activity = try XCTUnwrap(rig.model.current?.activity); await activity.refresh()
+        let gate = DispatchSemaphore(value: 0); defer { gate.signal() }
+        rig.server.mutate { $0.holdBatch = gate }
+        let ids = Array(activity.recent.prefix(2)).map(\.id)
+        let first = Task { await activity.batchUpdate(ids: ids, update: .completion()) }
+        try await waitFor { rig.server.read { $0.batchBodies.count } == 1 }
+        XCTAssertTrue(activity.batching)
+        let second = await activity.batchUpdate(ids: ids, update: .completion())
+        XCTAssertNil(second, "A second submit while the first is in flight must be refused")
+        let midFlightRetry = await activity.retryLastBatch()
+        XCTAssertNil(midFlightRetry, "No chunk has been answered yet, so there is nothing to retry")
+        XCTAssertEqual(rig.server.read { $0.batchBodies.count }, 1, "No duplicate write may be sent")
+        gate.signal()
+        let finished = await first.value
+        let result = try XCTUnwrap(finished)
+        XCTAssertTrue(result.isFullSuccess)
+        XCTAssertEqual(rig.server.read { $0.batchBodies.count }, 1)
+        XCTAssertFalse(activity.batching)
     }
     func testCredentialsNeverReachAuthOrForeignOrigin() throws {
         let client = APIClient(baseURL: URL(string:"https://api.example.test")!, token:"synthetic", workspace:"one")
