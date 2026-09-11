@@ -3,6 +3,7 @@ import ChattyCore
 import PhotosUI
 import UniformTypeIdentifiers
 import CoreTransferable
+import UIKit
 
 struct ChatScreen: View {
     @Bindable var model: ChatModel
@@ -14,8 +15,12 @@ struct ChatScreen: View {
     @State private var confirmUncertain = false
     @State private var followingBottom = true
     @State private var initialBottom = true
+    @State private var dropTargeted = false
+    @State private var showProjectPicker = false
     @FocusState private var draftFocused: Bool
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @EnvironmentObject private var commands: AppCommandCenter
 
     var body: some View {
         VStack(spacing: 0) {
@@ -48,8 +53,12 @@ struct ChatScreen: View {
                             } label: { if model.loadingOlder { ProgressView() } else { Text("加载更早消息") } }
                             .frame(maxWidth: .infinity, minHeight: 44).disabled(model.loadingOlder).accessibilityIdentifier("chat.older")
                         }
-                        if model.initialized && model.messages.isEmpty && model.agent != nil {
-                            ContentUnavailableView("和 Mika 开始工作", systemImage: "sparkles", description: Text("输入你的需求，Mika 会接着处理。"))
+                        if model.initialized && model.messages.isEmpty {
+                            if model.agent == nil {
+                                ContentUnavailableView("当前工作区还没有可对话的 Mika", systemImage: "sparkles", description: Text("可在「设置 › Agents」查看工作区里的 Agent，或切换工作区。"))
+                            } else {
+                                ContentUnavailableView("和 Mika 开始工作", systemImage: "sparkles", description: Text("输入你的需求，Mika 会接着处理。"))
+                            }
                         }
                         ForEach(model.messages) { message in
                             MessageRow(message: message, model: model, context: context).id(message.id)
@@ -95,8 +104,17 @@ struct ChatScreen: View {
                 }
             }
         }
-        .task { await model.setVisible(true) }
-        .onDisappear { Task { await model.setVisible(false) } }
+        .task {
+            await model.setVisible(true)
+            commands.send = { [model] in Task { await model.send() } }
+            commands.focusComposer = { draftFocused = true }
+            commands.canSend = model.canSend
+        }
+        .onChange(of: model.canSend) { _, value in commands.canSend = value }
+        .onDisappear {
+            Task { await model.setVisible(false) }
+            commands.send = nil; commands.canSend = false; commands.focusComposer = nil
+        }
         .navigationTitle("Mika").navigationBarTitleDisplayMode(.inline)
         .background(ChattyTheme.background)
         .toolbar {
@@ -139,14 +157,7 @@ struct ChatScreen: View {
     private var composer: some View {
         VStack(spacing: 10) {
             HStack {
-                Menu {
-                    Button("不指定项目") { model.selectProject(nil) }
-                    ForEach(model.projects) { project in Button(project.title) { model.selectProject(project.id) } }
-                    Divider()
-                    Button("刷新项目") { Task { await model.loadProjects() } }
-                } label: {
-                    Label(model.selectedProjectName, systemImage: "folder").font(.callout).lineLimit(1).frame(minHeight: 44)
-                }.accessibilityIdentifier("chat.projectPicker")
+                if horizontalSizeClass == .regular { projectPickerPopover } else { projectPickerMenu }
                 Spacer()
             }.padding(.horizontal, 24)
             if let error = model.projectError { Text(error).font(.caption).foregroundStyle(.secondary).padding(.horizontal, 24) }
@@ -177,6 +188,53 @@ struct ChatScreen: View {
                 }.disabled(!model.canSend).accessibilityLabel("发送").accessibilityIdentifier("chat.send")
             }.padding(8).background(ChattyTheme.surface, in: RoundedRectangle(cornerRadius: 28)).padding(.horizontal, 12)
         }.padding(.vertical, 8).background(ChattyTheme.background)
+            .dropDestination(for: DroppedAttachment.self) { items, _ in
+                guard let item = items.first else { return false }
+                Task { await model.upload(imported: item.imported) }
+                return true
+            } isTargeted: { dropTargeted = $0 }
+            .overlay {
+                if dropTargeted {
+                    RoundedRectangle(cornerRadius: 20).strokeBorder(ChattyTheme.accent, style: StrokeStyle(lineWidth: 2, dash: [7]))
+                        .background(ChattyTheme.accent.opacity(0.08), in: RoundedRectangle(cornerRadius: 20))
+                        .overlay { Label("松手即可添加附件", systemImage: "plus.circle").font(.callout).foregroundStyle(ChattyTheme.accent) }
+                        .allowsHitTesting(false).accessibilityIdentifier("chat.dropTarget")
+                }
+            }
+    }
+    private var projectPickerLabel: some View {
+        Label(model.selectedProjectName, systemImage: "folder").font(.callout).lineLimit(1).frame(minHeight: 44)
+    }
+    private var projectPickerMenu: some View {
+        Menu {
+            projectPickerRows
+        } label: { projectPickerLabel }.accessibilityIdentifier("chat.projectPicker")
+    }
+    /// Regular width keeps the context: a popover anchored to the composer button
+    /// instead of a full sheet. Selection and persistence stay on ChatModel.
+    private var projectPickerPopover: some View {
+        Button { showProjectPicker = true } label: { projectPickerLabel }
+            .accessibilityIdentifier("chat.projectPicker")
+            .popover(isPresented: $showProjectPicker, arrowEdge: .bottom) {
+                List {
+                    Button { model.selectProject(nil); showProjectPicker = false } label: { projectRow("不指定项目", selected: model.selectedProjectId == nil) }
+                    ForEach(model.projects) { project in
+                        Button { model.selectProject(project.id); showProjectPicker = false } label: { projectRow(project.title, selected: model.selectedProjectId == project.id) }
+                    }
+                    Button("刷新项目") { Task { await model.loadProjects() } }
+                }
+                .frame(minWidth: 280, minHeight: 220)
+                .accessibilityIdentifier("chat.projectPopover")
+            }
+    }
+    private func projectRow(_ title: String, selected: Bool) -> some View {
+        HStack { Text(title); Spacer(); if selected { Image(systemName: "checkmark").foregroundStyle(ChattyTheme.accent) } }
+    }
+    @ViewBuilder private var projectPickerRows: some View {
+        Button("不指定项目") { model.selectProject(nil) }
+        ForEach(model.projects) { project in Button(project.title) { model.selectProject(project.id) } }
+        Divider()
+        Button("刷新项目") { Task { await model.loadProjects() } }
     }
 }
 
@@ -210,11 +268,16 @@ private struct MessageRow: View {
                 }
             }
         }.frame(maxWidth: .infinity, alignment: .leading)
+            .contextMenu {
+                if let content = message.content?.trimmingCharacters(in: .whitespacesAndNewlines), !content.isEmpty {
+                    Button("复制文本", systemImage: "doc.on.doc") { UIPasteboard.general.string = content }
+                }
+            }
             .accessibilityElement(children: .contain).accessibilityIdentifier("message.\(message.id)")
     }
     private func suggestionsView(_ actions: [QuickAction]) -> some View {
         ForEach(Array(actions.enumerated()), id: \.offset) { _, action in
-            Button(action.label) { model.setDraft(action.prompt) }.buttonStyle(.bordered).frame(minHeight: 44).disabled(model.sending).accessibilityIdentifier("chat.suggestion")
+            Button(action.label) { model.setDraft(action.prompt) }.buttonStyle(.bordered).frame(minHeight: 44).hoverEffect(.highlight).disabled(model.sending).accessibilityIdentifier("chat.suggestion")
         }
     }
 }
@@ -257,6 +320,21 @@ private struct PickedPhoto: Transferable {
             guard values.isRegularFile == true else { throw APIError.unsafeFile }
             guard (values.fileSize ?? Int.max) <= APIClient.maximumFileBytes else { throw APIError.oversizedFile }
             return PickedPhoto(data: try Data(contentsOf: received.file, options: .mappedIfSafe), name: received.file.lastPathComponent, contentType: values.contentType?.preferredMIMEType ?? "application/octet-stream")
+        }
+    }
+}
+
+/// Drop payload for the composer. Files/other apps arrive as file URLs; apps
+/// that only publish image data (Photos) fall back to the data representation.
+/// Both routes run through `AttachmentImport`, the same validator the picker uses.
+struct DroppedAttachment: Transferable {
+    let imported: ImportedAttachment
+    static var transferRepresentation: some TransferRepresentation {
+        FileRepresentation(importedContentType: .item) { received in
+            DroppedAttachment(imported: try AttachmentImport.read(fileURL: received.file))
+        }
+        DataRepresentation(importedContentType: .image) { data in
+            DroppedAttachment(imported: try AttachmentImport.prepared(data: data, filename: "image.png", contentType: "image/png"))
         }
     }
 }

@@ -6,51 +6,49 @@ struct AppConfiguration {
     let isFixture: Bool
     var hint: String?
     static let production = AppConfiguration(baseURL: URL(string: "https://api.multica.ai/")!, isFixture: false)
+    static var current: AppConfiguration {
+        #if CHATTY_FIXTURE
+        .fixture
+        #else
+        .production
+        #endif
+    }
 }
 
 struct AppBootstrap: View {
-    let configuration: AppConfiguration
-    @State private var model: SessionModel?
-    @State private var failure: String?
+    let core: AppCore
+    var route: AppRoute?
 
     var body: some View {
         Group {
-            if let model {
+            if let model = core.session {
                 VStack(spacing: 0) {
-                    if configuration.isFixture {
+                    if core.configuration.isFixture {
                         Label("测试工作区 · 合成数据", systemImage: "flask")
                             .font(.caption).foregroundStyle(ChattyTheme.accent).padding(.vertical, 6)
                             .accessibilityIdentifier("fixture.banner")
                     }
-                    SessionRootView(model: model, hint: configuration.hint)
+                    SessionRootView(model: model, hint: core.configuration.hint, route: route)
                 }
-            } else if let failure {
+            } else if let failure = core.failure {
                 ContentUnavailableView { Label("暂时无法启动", systemImage: "lock.trianglebadge.exclamationmark") }
-                    description: { Text(failure) } actions: { Button("重试", action: prepare) }
+                    description: { Text(failure) } actions: { Button("重试", action: core.prepare) }
             } else { ProgressView("准备工作区…") }
         }
         .background(ChattyTheme.background)
         .tint(ChattyTheme.accent)
-        .task { prepare() }
-    }
-    private func prepare() {
-        guard model == nil else { return }
-        do {
-            let identity = Bundle.main.bundleIdentifier ?? "ai.chatty.ios"
-            let files = try ProtectedStorage(identifier: identity)
-            model = SessionModel(baseURL: configuration.baseURL, vault: KeychainVault(service: identity), files: files)
-            failure = nil
-        } catch { failure = error.localizedDescription }
+        .task { core.prepare() }
     }
 }
 
 struct SessionRootView: View {
     @Bindable var model: SessionModel
     let hint: String?
+    var route: AppRoute?
     var body: some View {
         Group {
             if model.restoring { ProgressView("恢复登录…") }
-            else if let workspace = model.current { WorkspaceTabs(model: workspace, session: model).id(workspace.id) }
+            else if let workspace = model.current { WorkspaceTabs(model: workspace, session: model, route: route).id(workspace.id) }
             else if model.authenticated && model.recoveryScope != nil { OfflineDraftView(model: model) }
             else if model.authenticated { WorkspacePicker(model: model) }
             else { LoginView(model: model, hint: hint) }
@@ -98,7 +96,7 @@ struct LoginView: View {
                     }
                     Text("验证码仅用于这次登录。登录凭据保存在此设备的安全存储中。").font(.footnote).foregroundStyle(.secondary)
                     if model.error?.contains("未完全清理") == true { Button("重试清理本机数据") { model.signOut() } }
-                }.padding(28).padding(.top, 40)
+                }.padding(28).padding(.top, 40).readableColumn()
             }
             .scrollDismissesKeyboard(.interactively)
             .background(ChattyTheme.background)
@@ -158,7 +156,7 @@ struct OfflineDraftView: View {
                     if let error = model.error { ErrorNotice(text: error, identifier: "offline.error") }
                     Button { Task { await model.loadAccount() } } label: { Text(model.busy ? "正在重连…" : "重试连接").frame(minHeight: 44) }
                         .buttonStyle(.borderedProminent).disabled(model.busy).accessibilityIdentifier("offline.retry")
-                }.padding(24)
+                }.padding(24).readableColumn()
             }.scrollDismissesKeyboard(.interactively).background(ChattyTheme.background).navigationTitle("本机草稿")
                 .toolbar { Button("退出登录", role: .destructive) { model.signOut() } }
         }
@@ -181,4 +179,14 @@ private struct ForegroundRefresh: ViewModifier {
 }
 extension View {
     func onForegroundRefresh(_ action: @escaping @MainActor () async -> Void) -> some View { modifier(ForegroundRefresh(action: action)) }
+}
+
+/// 常规宽度（iPad 全屏 / 分屏宽窗）下的可读列宽上限。紧凑宽度下可用宽度本身小于该值，
+/// 布局与不施加修饰符时逐点一致，因此这里不需要 userInterfaceIdiom 判断。
+private let readableColumnWidth: CGFloat = 560
+
+private extension View {
+    func readableColumn(maxWidth: CGFloat = readableColumnWidth) -> some View {
+        frame(maxWidth: maxWidth, alignment: .leading).frame(maxWidth: .infinity)
+    }
 }

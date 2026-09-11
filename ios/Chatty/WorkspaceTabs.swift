@@ -9,30 +9,53 @@ enum LinkedScreen: Identifiable {
 struct WorkspaceTabs: View {
     let model: WorkspaceModel
     let session: SessionModel
-    @State private var tab: AppTab = .activity
+    var route: AppRoute?
+
+    // Per-window scene state. Two windows keep independent selections, and the
+    // system restores them when the window comes back after the app is killed
+    // (`@SceneStorage` is not enough: a force quit loses it, and the restored
+    // window would otherwise re-apply the tab it was originally opened with).
+    @State private var storedTab = AppTab.activity.rawValue
+    @State private var restoredTab = false
     @State private var showingSettings = false
     @State private var linked: LinkedScreen?
     @State private var linkNotice = false
-    @Environment(\.scenePhase) private var scenePhase
+    @State private var activity = SceneActivityMonitor.shared
+    @Environment(\.openWindow) private var openWindow
+    // Stage B: the menu bar is process-wide, so the window that is on screen
+    // registers the concrete actions for it.
+    @EnvironmentObject private var commands: AppCommandCenter
+
+    /// Identity of this window for restoration purposes. A window opened through
+    /// `openWindow` carries its own route token; the first window uses "default".
+    private var sceneKey: String { route?.token.uuidString ?? "default" }
+
+    private var tab: Binding<AppTab> {
+        Binding(get: { AppTab(rawValue: storedTab) ?? .activity }, set: { storedTab = $0.rawValue })
+    }
 
     var body: some View {
-        TabView(selection: $tab) {
-            Tab("动态", systemImage: "waveform.path", value: .activity) {
+        TabView(selection: tab) {
+            Tab("动态", systemImage: "waveform.path", value: AppTab.activity) {
                 NavigationStack {
                     ActivityScreen(model: model.activity, projects: model.projects, context: model.context, discuss: discuss)
                         .toolbar { profileButton }
                 }
             }.badge(model.activity.hasAttention ? Text(" ") : nil)
-            Tab("Mika", systemImage: "sparkles", value: .chat) {
-                NavigationStack { ChatScreen(model: model.chat, context: model.context).toolbar { profileButton } }
+            Tab("Mika", systemImage: "sparkles", value: AppTab.chat) {
+                NavigationStack {
+                    ChatScreen(model: model.chat, context: model.context)
+                        .toolbar { profileButton; newWindowButton }
+                }
             }
-            Tab("项目", systemImage: "folder", value: .projects) {
+            Tab("项目", systemImage: "folder", value: AppTab.projects) {
                 NavigationStack {
                     ProjectsScreen(model: model.projects, context: model.context, onViewed: model.activity.markRead, onChanged: model.activity.apply, discuss: discuss)
-                        .toolbar { profileButton }
+                        .toolbar { profileButton; newWindowButton }
                 }
             }
         }
+        .tabViewStyle(.sidebarAdaptable)
         .environment(\.openURL, OpenURLAction { url in
             switch NativeLink.resolve(url.absoluteString, api: model.context.api.baseURL, workspace: model.context.workspace.slug) {
             case .issue(let id): linked = .issue(id); return .handled
@@ -61,16 +84,72 @@ struct WorkspaceTabs: View {
         }
         .alert("此链接暂不支持在当前页面打开", isPresented: $linkNotice) { Button("知道了", role: .cancel) {} } message: { Text("请从项目或设置中查看对应资源。") }
         .task {
-            if scenePhase == .active { model.activity.start() }
+            activity.start()
+            restoreTab()
+            commands.registerWorkspaceWindow()
+            registerCommands()
+            if activity.shouldKeepRunning { model.start() }
             await model.chat.initialize()
             session.rememberDraftScope(model)
-            if scenePhase == .active { model.start() }
         }
-        .onChange(of: scenePhase) { _, phase in
-            if phase == .active { model.start() } else { model.pause() }
+        .onChange(of: storedTab) { _, value in persistTab(value) }
+        // Scene driven, not view driven: with several windows the shared poller
+        // and socket must stop only when the last window goes away (and not for
+        // the instant between two windows swapping).
+        .onChange(of: activity.shouldKeepRunning) { _, run in
+            if run { model.start() } else { model.pause() }
         }
-        .onDisappear { model.pause() }
+        // Sign-out and workspace switches still clear the menu; closing one of
+        // several windows does not, because the others are still using it.
+        .onDisappear { commands.unregisterWorkspaceWindow() }
     }
+
+    /// The menu bar and shortcut table are scene-level. Registering here (and
+    /// clearing when the last workspace window leaves) keeps every item honest
+    /// about what is on screen.
+    private func registerCommands() {
+        commands.hasWorkspace = true
+        commands.selectTab = { value in tab.wrappedValue = value }
+        commands.openSettings = { showingSettings = true }
+        commands.newSession = { model.chat.startNewSession(); tab.wrappedValue = .chat }
+        commands.refresh = {
+            Task {
+                switch tab.wrappedValue {
+                case .activity: await model.activity.refresh()
+                case .chat: await model.chat.refresh()
+                case .projects: await model.projects.overview()
+                case .settings: break
+                }
+            }
+        }
+        commands.focusIssueSearch = {
+            tab.wrappedValue = .projects
+            commands.issueSearchRequest += 1
+        }
+        commands.cancel = {
+            if linked != nil { linked = nil }
+            else if showingSettings { showingSettings = false }
+        }
+    }
+
+    /// A restored window returns to the tab the user left it on; a window just
+    /// opened through `openWindow` starts on the tab it was asked for.
+    private func restoreTab() {
+        guard !restoredTab else { return }
+        restoredTab = true
+        if let saved = try? model.context.files.sceneTab(window: sceneKey), let tab = AppTab(rawValue: saved) {
+            storedTab = tab.rawValue
+        } else if let route {
+            storedTab = route.tab.rawValue
+            persistTab(storedTab)
+        }
+    }
+
+    private func persistTab(_ value: String) {
+        guard restoredTab else { return }
+        try? model.context.files.saveSceneTab(value, window: sceneKey)
+    }
+
     private var profileButton: some ToolbarContent {
         ToolbarItem(placement: .topBarTrailing) {
             Button { showingSettings = true } label: {
@@ -81,10 +160,19 @@ struct WorkspaceTabs: View {
             }.accessibilityLabel("个人与设置").accessibilityIdentifier("profile.open")
         }
     }
+    private var newWindowButton: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            Button("在新窗口打开", systemImage: "rectangle.badge.plus") {
+                openWindow(id: AppWindow.main, value: AppRoute(tab: tab.wrappedValue))
+            }
+            .frame(minWidth: 44, minHeight: 44)
+            .accessibilityIdentifier("window.open")
+        }
+    }
     private func discuss(_ issue: Issue) {
         linked = nil
         model.chat.prepareIssueDiscussion(issue)
-        tab = .chat
+        storedTab = AppTab.chat.rawValue
     }
 
 }

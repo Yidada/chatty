@@ -1,0 +1,186 @@
+diff --git a/ios/Chatty.xcodeproj/project.pbxproj b/ios/Chatty.xcodeproj/project.pbxproj
+index 56c2f7a..96948b9 100644
+--- a/ios/Chatty.xcodeproj/project.pbxproj
++++ b/ios/Chatty.xcodeproj/project.pbxproj
+@@ -239,7 +239,7 @@
+ 				"PRODUCT_NAME" = "$(TARGET_NAME)";
+ 				"PRODUCT_BUNDLE_IDENTIFIER" = "ai.chatty.ios";
+ 				"CODE_SIGN_STYLE" = "Automatic";
+-				"TARGETED_DEVICE_FAMILY" = "1";
++				"TARGETED_DEVICE_FAMILY" = "1,2";
+ 				"SUPPORTED_PLATFORMS" = "iphoneos iphonesimulator";
+ 				"SWIFT_VERSION" = "6.0";
+ 				"IPHONEOS_DEPLOYMENT_TARGET" = "26.0";
+@@ -261,7 +261,7 @@
+ 				"PRODUCT_NAME" = "$(TARGET_NAME)";
+ 				"PRODUCT_BUNDLE_IDENTIFIER" = "ai.chatty.ios";
+ 				"CODE_SIGN_STYLE" = "Automatic";
+-				"TARGETED_DEVICE_FAMILY" = "1";
++				"TARGETED_DEVICE_FAMILY" = "1,2";
+ 				"SUPPORTED_PLATFORMS" = "iphoneos iphonesimulator";
+ 				"SWIFT_VERSION" = "6.0";
+ 				"IPHONEOS_DEPLOYMENT_TARGET" = "26.0";
+@@ -418,7 +418,7 @@
+ 				"PRODUCT_NAME" = "$(TARGET_NAME)";
+ 				"PRODUCT_BUNDLE_IDENTIFIER" = "ai.chatty.ios.fixture";
+ 				"CODE_SIGN_STYLE" = "Automatic";
+-				"TARGETED_DEVICE_FAMILY" = "1";
++				"TARGETED_DEVICE_FAMILY" = "1,2";
+ 				"SUPPORTED_PLATFORMS" = "iphoneos iphonesimulator";
+ 				"SWIFT_VERSION" = "6.0";
+ 				"IPHONEOS_DEPLOYMENT_TARGET" = "26.0";
+@@ -441,7 +441,7 @@
+ 				"PRODUCT_NAME" = "$(TARGET_NAME)";
+ 				"PRODUCT_BUNDLE_IDENTIFIER" = "ai.chatty.ios.fixture";
+ 				"CODE_SIGN_STYLE" = "Automatic";
+-				"TARGETED_DEVICE_FAMILY" = "1";
++				"TARGETED_DEVICE_FAMILY" = "1,2";
+ 				"SUPPORTED_PLATFORMS" = "iphoneos iphonesimulator";
+ 				"SWIFT_VERSION" = "6.0";
+ 				"IPHONEOS_DEPLOYMENT_TARGET" = "26.0";
+@@ -530,7 +530,7 @@
+ 				"PRODUCT_NAME" = "$(TARGET_NAME)";
+ 				"PRODUCT_BUNDLE_IDENTIFIER" = "ai.chatty.ios.fixture.tests";
+ 				"CODE_SIGN_STYLE" = "Automatic";
+-				"TARGETED_DEVICE_FAMILY" = "1";
++				"TARGETED_DEVICE_FAMILY" = "1,2";
+ 				"SUPPORTED_PLATFORMS" = "iphoneos iphonesimulator";
+ 				"SWIFT_VERSION" = "6.0";
+ 				"IPHONEOS_DEPLOYMENT_TARGET" = "26.0";
+@@ -553,7 +553,7 @@
+ 				"PRODUCT_NAME" = "$(TARGET_NAME)";
+ 				"PRODUCT_BUNDLE_IDENTIFIER" = "ai.chatty.ios.fixture.tests";
+ 				"CODE_SIGN_STYLE" = "Automatic";
+-				"TARGETED_DEVICE_FAMILY" = "1";
++				"TARGETED_DEVICE_FAMILY" = "1,2";
+ 				"SUPPORTED_PLATFORMS" = "iphoneos iphonesimulator";
+ 				"SWIFT_VERSION" = "6.0";
+ 				"IPHONEOS_DEPLOYMENT_TARGET" = "26.0";
+diff --git a/ios/Chatty/ChattyApp.swift b/ios/Chatty/ChattyApp.swift
+index 0037165..ef628c0 100644
+--- a/ios/Chatty/ChattyApp.swift
++++ b/ios/Chatty/ChattyApp.swift
+@@ -5,11 +5,27 @@ struct ChattyApp: App {
+     var body: some Scene {
+         WindowGroup {
+             #if CHATTY_FIXTURE
+-            if ProcessInfo.processInfo.arguments.contains("--p0-preview") { FixtureRootView() }
+-            else { AppBootstrap(configuration: .fixture) }
++            // Experiment harness (CLE-84 design validation, fixture-only):
++            // `--design-lab-regular` forces a regular horizontal size class so the
++            // proposed regular-width layout can be captured on a simulator whose
++            // default window is compact. Never compiled into the Chatty target.
++            if ProcessInfo.processInfo.arguments.contains("--design-lab-regular") {
++                bootstrap.environment(\.horizontalSizeClass, .regular)
++            } else {
++                bootstrap
++            }
+             #else
+-            AppBootstrap(configuration: .production)
++            bootstrap
+             #endif
+         }
+     }
++
++    @ViewBuilder private var bootstrap: some View {
++        #if CHATTY_FIXTURE
++        if ProcessInfo.processInfo.arguments.contains("--p0-preview") { FixtureRootView() }
++        else { AppBootstrap(configuration: .fixture) }
++        #else
++        AppBootstrap(configuration: .production)
++        #endif
++    }
+ }
+diff --git a/ios/Chatty/WorkspaceTabs.swift b/ios/Chatty/WorkspaceTabs.swift
+index 2c061ec..6e03701 100644
+--- a/ios/Chatty/WorkspaceTabs.swift
++++ b/ios/Chatty/WorkspaceTabs.swift
+@@ -33,6 +33,7 @@ struct WorkspaceTabs: View {
+                 }
+             }
+         }
++        .tabViewStyle(.sidebarAdaptable)
+         .environment(\.openURL, OpenURLAction { url in
+             switch NativeLink.resolve(url.absoluteString, api: model.context.api.baseURL, workspace: model.context.workspace.slug) {
+             case .issue(let id): linked = .issue(id); return .handled
+diff --git a/ios/Config/Chatty-Info.plist b/ios/Config/Chatty-Info.plist
+index fb2f4ed..dd1f462 100644
+--- a/ios/Config/Chatty-Info.plist
++++ b/ios/Config/Chatty-Info.plist
+@@ -25,13 +25,23 @@
+ 	<key>UIApplicationSceneManifest</key>
+ 	<dict>
+ 		<key>UIApplicationSupportsMultipleScenes</key>
+-		<false/>
++		<true/>
+ 	</dict>
+ 	<key>UILaunchScreen</key>
+ 	<dict/>
+ 	<key>UISupportedInterfaceOrientations</key>
+ 	<array>
+ 		<string>UIInterfaceOrientationPortrait</string>
++		<string>UIInterfaceOrientationPortraitUpsideDown</string>
++		<string>UIInterfaceOrientationLandscapeLeft</string>
++		<string>UIInterfaceOrientationLandscapeRight</string>
++	</array>
++	<key>UISupportedInterfaceOrientations~ipad</key>
++	<array>
++		<string>UIInterfaceOrientationPortrait</string>
++		<string>UIInterfaceOrientationPortraitUpsideDown</string>
++		<string>UIInterfaceOrientationLandscapeLeft</string>
++		<string>UIInterfaceOrientationLandscapeRight</string>
+ 	</array>
+ </dict>
+ </plist>
+diff --git a/ios/Config/ChattyFixture-Info.plist b/ios/Config/ChattyFixture-Info.plist
+index 06f5e4e..0472034 100644
+--- a/ios/Config/ChattyFixture-Info.plist
++++ b/ios/Config/ChattyFixture-Info.plist
+@@ -32,7 +32,7 @@
+ 	<key>UIApplicationSceneManifest</key>
+ 	<dict>
+ 		<key>UIApplicationSupportsMultipleScenes</key>
+-		<false/>
++		<true/>
+ 	</dict>
+ 	<key>UIFileSharingEnabled</key>
+ 	<true/>
+@@ -41,6 +41,16 @@
+ 	<key>UISupportedInterfaceOrientations</key>
+ 	<array>
+ 		<string>UIInterfaceOrientationPortrait</string>
++		<string>UIInterfaceOrientationPortraitUpsideDown</string>
++		<string>UIInterfaceOrientationLandscapeLeft</string>
++		<string>UIInterfaceOrientationLandscapeRight</string>
++	</array>
++	<key>UISupportedInterfaceOrientations~ipad</key>
++	<array>
++		<string>UIInterfaceOrientationPortrait</string>
++		<string>UIInterfaceOrientationPortraitUpsideDown</string>
++		<string>UIInterfaceOrientationLandscapeLeft</string>
++		<string>UIInterfaceOrientationLandscapeRight</string>
+ 	</array>
+ </dict>
+ </plist>
+diff --git a/scripts/generate-ios-project.py b/scripts/generate-ios-project.py
+index bfedb60..d971e08 100644
+--- a/scripts/generate-ios-project.py
++++ b/scripts/generate-ios-project.py
+@@ -33,7 +33,7 @@ for name in ('Chatty','ChattyFixture','ChattyFixtureTests'):
+   dep=obj(name+product,'XCSwiftPackageProductDependency',package=package,productName=product);deps.append(dep);frameworks.append(obj(name+product+'build','PBXBuildFile',productRef=dep))
+  fw=obj(name+'frameworks','PBXFrameworksBuildPhase',buildActionMask='2147483647',files=frameworks,runOnlyForDeploymentPostprocessing='0')
+  res=obj(name+'resources','PBXResourcesBuildPhase',buildActionMask='2147483647',files=[] if test else [obj(name+'assets-build','PBXBuildFile',fileRef=assets),obj(name+'privacy-build','PBXBuildFile',fileRef=privacy)],runOnlyForDeploymentPostprocessing='0')
+- settings={'PRODUCT_NAME':'$(TARGET_NAME)','PRODUCT_BUNDLE_IDENTIFIER':'ai.chatty.ios'+('.fixture.tests' if test else '.fixture' if fixture else ''),'CODE_SIGN_STYLE':'Automatic','TARGETED_DEVICE_FAMILY':'1','SUPPORTED_PLATFORMS':'iphoneos iphonesimulator','SWIFT_VERSION':'6.0','IPHONEOS_DEPLOYMENT_TARGET':'26.0','LD_RUNPATH_SEARCH_PATHS':['$(inherited)','@executable_path/Frameworks'],'MARKETING_VERSION':'0.1.0','CURRENT_PROJECT_VERSION':'2'}
++ settings={'PRODUCT_NAME':'$(TARGET_NAME)','PRODUCT_BUNDLE_IDENTIFIER':'ai.chatty.ios'+('.fixture.tests' if test else '.fixture' if fixture else ''),'CODE_SIGN_STYLE':'Automatic','TARGETED_DEVICE_FAMILY':'1,2','SUPPORTED_PLATFORMS':'iphoneos iphonesimulator','SWIFT_VERSION':'6.0','IPHONEOS_DEPLOYMENT_TARGET':'26.0','LD_RUNPATH_SEARCH_PATHS':['$(inherited)','@executable_path/Frameworks'],'MARKETING_VERSION':'0.1.0','CURRENT_PROJECT_VERSION':'2'}
+  if test:settings.update(GENERATE_INFOPLIST_FILE='YES',TEST_HOST='$(BUILT_PRODUCTS_DIR)/ChattyFixture.app/ChattyFixture',BUNDLE_LOADER='$(TEST_HOST)')
+  else:settings.update(INFOPLIST_FILE='Config/'+name+'-Info.plist',ASSETCATALOG_COMPILER_APPICON_NAME='AppIcon')
+  if fixture:settings['SWIFT_ACTIVE_COMPILATION_CONDITIONS']='$(inherited) CHATTY_FIXTURE'
+@@ -53,7 +53,7 @@ p=root/'Chatty.xcodeproj';p.mkdir(exist_ok=True)
+ (p/'project.pbxproj').write_text('// !$*UTF8*$!\n'+encode({'archiveVersion':'1','classes':{},'objectVersion':'56','objects':objects,'rootObject':project})+'\n')
+ (root/'Config').mkdir(exist_ok=True)
+ for name in ('Chatty','ChattyFixture'):
+- info={'CFBundleDevelopmentRegion':'$(DEVELOPMENT_LANGUAGE)','CFBundleExecutable':'$(EXECUTABLE_NAME)','CFBundleIdentifier':'$(PRODUCT_BUNDLE_IDENTIFIER)','CFBundleInfoDictionaryVersion':'6.0','CFBundleName':'$(PRODUCT_NAME)','CFBundleDisplayName':'Chatty Test' if name.endswith('Fixture') else 'Chatty','CFBundlePackageType':'APPL','CFBundleShortVersionString':'$(MARKETING_VERSION)','CFBundleVersion':'$(CURRENT_PROJECT_VERSION)','LSRequiresIPhoneOS':True,'UIApplicationSceneManifest':{'UIApplicationSupportsMultipleScenes':False},'UILaunchScreen':{},'UISupportedInterfaceOrientations':['UIInterfaceOrientationPortrait']}
++ info={'CFBundleDevelopmentRegion':'$(DEVELOPMENT_LANGUAGE)','CFBundleExecutable':'$(EXECUTABLE_NAME)','CFBundleIdentifier':'$(PRODUCT_BUNDLE_IDENTIFIER)','CFBundleInfoDictionaryVersion':'6.0','CFBundleName':'$(PRODUCT_NAME)','CFBundleDisplayName':'Chatty Test' if name.endswith('Fixture') else 'Chatty','CFBundlePackageType':'APPL','CFBundleShortVersionString':'$(MARKETING_VERSION)','CFBundleVersion':'$(CURRENT_PROJECT_VERSION)','LSRequiresIPhoneOS':True,'UIApplicationSceneManifest':{'UIApplicationSupportsMultipleScenes':True},'UILaunchScreen':{},'UISupportedInterfaceOrientations':['UIInterfaceOrientationPortrait','UIInterfaceOrientationPortraitUpsideDown','UIInterfaceOrientationLandscapeLeft','UIInterfaceOrientationLandscapeRight'],'UISupportedInterfaceOrientations~ipad':['UIInterfaceOrientationPortrait','UIInterfaceOrientationPortraitUpsideDown','UIInterfaceOrientationLandscapeLeft','UIInterfaceOrientationLandscapeRight']}
+  if name.endswith('Fixture'):
+   info['NSAppTransportSecurity']={'NSAllowsLocalNetworking':True}
+   info['UIFileSharingEnabled']=True

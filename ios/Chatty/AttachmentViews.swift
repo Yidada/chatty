@@ -22,7 +22,10 @@ struct InlineImageView: View {
             if let image {
                 Button { showing = true } label: {
                     Image(uiImage: image).resizable().scaledToFit().frame(maxHeight: 300).clipShape(RoundedRectangle(cornerRadius: 16))
-                }.buttonStyle(.plain).accessibilityLabel(alt.isEmpty ? "查看图片" : alt).accessibilityIdentifier("attachment.inlineImage")
+                }.buttonStyle(.plain)
+                    .hoverEffect(.lift)
+                    .draggable(Image(uiImage: image))
+                    .accessibilityLabel(alt.isEmpty ? "查看图片" : alt).accessibilityIdentifier("attachment.inlineImage")
             } else if let error {
                 VStack(alignment: .leading) { Text(alt.isEmpty ? "图片" : alt).font(.caption); Text(error).font(.caption).foregroundStyle(.secondary); Button("重试加载图片") { retry += 1 } }
             } else { ProgressView("加载图片…") }
@@ -34,7 +37,9 @@ struct InlineImageView: View {
                 guard let value = thumbnail(data) else { throw APIError.unsafeFile }; image = value; error = nil
             } catch { self.error = await context.report(error) }
         }
-        .fullScreenCover(isPresented: $showing) { if let image { ImagePreview(image: image, title: alt) } }
+        // R4: a full-screen cover fills an iPad screen and loses context. A sheet
+        // is a form sheet at regular width and the familiar cover at compact width.
+        .sheet(isPresented: $showing) { if let image { ImagePreview(image: image, title: alt) } }
     }
 }
 
@@ -47,6 +52,8 @@ struct AttachmentButton: View {
     @State private var showImage = false
     @State private var file: PreviewFile?
     @State private var retainedFile: URL?
+    @State private var shareItems: [Any] = []
+    @State private var sharing = false
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Button {
@@ -60,13 +67,36 @@ struct AttachmentButton: View {
                     }
                     Spacer(minLength: 8); Image(systemName: "arrow.down.doc").foregroundStyle(.secondary)
                 }.frame(minHeight: 44).padding(12).background(ChattyTheme.surface, in: RoundedRectangle(cornerRadius: 14))
-            }.buttonStyle(.plain).disabled(loading).accessibilityIdentifier("attachment.\(attachment.id)")
+            }.buttonStyle(.plain).hoverEffect(.lift)
+                .draggable(AttachmentExport(attachment: attachment, api: context.api)) {
+                    Label(attachment.filename, systemImage: "doc")
+                }
+                .disabled(loading)
+                .contextMenu {
+                    Button("分享…", systemImage: "square.and.arrow.up") { Task { await share() } }
+                    Button("打开", systemImage: "arrow.up.forward.app") { Task { await open() } }
+                }
+                .accessibilityIdentifier("attachment.\(attachment.id)")
             if let error { Text(error).font(.caption).foregroundStyle(.secondary) }
         }
         .sheet(item: $file) { value in FilePreview(url: value.url, title: attachment.filename) }
+        .sheet(isPresented: $sharing, onDismiss: { shareItems = [] }) { ShareSheet(items: shareItems) }
         .onChange(of: file) { _, value in if value == nil { cleanup() } }
         .onDisappear { cleanup() }
-        .fullScreenCover(isPresented: $showImage, onDismiss: { image = nil }) { if let image { ImagePreview(image: image, title: attachment.filename) } }
+        .sheet(isPresented: $showImage, onDismiss: { image = nil }) { if let image { ImagePreview(image: image, title: attachment.filename) } }
+    }
+    /// Share sheet entry: materialize the remote attachment locally first, so the
+    /// receiving app gets real content instead of a URL it cannot read.
+    private func share() async {
+        guard !loading else { return }
+        do {
+            let (metadata, data) = try await context.api.attachmentData(attachment); try context.check()
+            cleanup()
+            let url = try context.files.preview(data, filename: metadata.filename)
+            retainedFile = url
+            shareItems = [url]
+            sharing = true
+        } catch { self.error = await context.report(error) }
     }
     private func cleanup() {
         if let retainedFile { try? context.files.removePreview(retainedFile); self.retainedFile = nil }
@@ -96,9 +126,37 @@ struct ImagePreview: View {
         NavigationStack {
             ZoomableImage(image: image).ignoresSafeArea(edges: .bottom)
                 .navigationTitle(title.isEmpty ? "图片" : title).navigationBarTitleDisplayMode(.inline)
-                .toolbar { ToolbarItem(placement: .cancellationAction) { Button("关闭") { dismiss() }.accessibilityIdentifier("preview.close") } }
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) { Button("关闭") { dismiss() }.accessibilityIdentifier("preview.close") }
+                    ToolbarItem(placement: .primaryAction) {
+                        ShareLink(item: Image(uiImage: image), preview: SharePreview(title.isEmpty ? "图片" : title, image: Image(uiImage: image)))
+                            .accessibilityLabel("分享或保存图片")
+                    }
+                }
         }
     }
+}
+
+/// Drag-out payload for a remote attachment. The file is materialized on demand,
+/// so dragging works even though the attachment only exists on the server.
+struct AttachmentExport: Transferable {
+    let attachment: Attachment
+    let api: APIClient
+    static var transferRepresentation: some TransferRepresentation {
+        DataRepresentation(exportedContentType: .data) { item in
+            try await item.api.attachmentData(item.attachment).1
+        }
+    }
+}
+
+/// `ShareLink` needs its item up front; the context menu downloads first and then
+/// presents the standard activity sheet.
+struct ShareSheet: UIViewControllerRepresentable {
+    let items: [Any]
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: items, applicationActivities: nil)
+    }
+    func updateUIViewController(_ controller: UIActivityViewController, context: Context) {}
 }
 
 private struct ZoomableImage: UIViewRepresentable {
