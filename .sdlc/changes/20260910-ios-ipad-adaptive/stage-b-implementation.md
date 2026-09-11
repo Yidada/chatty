@@ -3,6 +3,7 @@
 - 父任务：CLE-88「Chatty iOS：iPad / iPadOS 自适应实现」阶段 B「输入与效率（快捷键 / 指针 / 拖放）」。
 - 设计依据：[spec.md](spec.md) §6.1 键盘与菜单栏、§6.2 指针、§6.3 Apple Pencil、§5 逐屏表（图片预览 R4、项目关联入口 D4-4）、[plan.md](plan.md) Stage 2。
 - 起点：`main` `7a71575`（A 阶段 PR #8 已合入）。
+- 交付：PR [Yidada/chatty#9](https://github.com/Yidada/chatty/pull/9)（分支 `agent/ipad/01a08e81-b`，源提交 `87ff8f5`，标题带 CLE-90，未用 `Closes`）。
 - 环境：Xcode 26.6 (17F113)、iOS 26.5 SDK、iPad Air 13-inch (M4) 模拟器（1024 × 1366 pt，regular）、iPhone 17e 模拟器（390 × 844 pt，compact）、`scripts/ios-fixture.py` 合成服务（端口 8766，独立实例）。
 
 本文件只记录**已实测**的结果；未执行或无法在本环境执行的项在 §7 明确列出。
