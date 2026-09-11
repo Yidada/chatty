@@ -15,7 +15,7 @@
     "ios": {
       "build": "58 shared tests and signed Release archive passed",
       "build_number": 3,
-      "distribution": "Uploaded to Apple; tester-group availability awaits App Store Connect login"
+      "distribution": "Testing; assigned to existing internal group; device installation not verified"
     },
     "macos": {
       "build": "58 shared tests and signed universal Release archive passed",
