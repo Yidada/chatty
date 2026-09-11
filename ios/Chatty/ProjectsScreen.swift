@@ -1,5 +1,6 @@
 import SwiftUI
 import ChattyCore
+import UIKit
 
 struct ProjectsScreen: View {
     let model: ProjectsModel
@@ -22,8 +23,8 @@ struct ProjectsScreen: View {
                             Text(project.title).font(.body.weight(.medium))
                             if let description = project.description, !description.isEmpty { Text(description).font(.callout).foregroundStyle(.secondary).lineLimit(2) }
                         }
-                    }.padding(.vertical, 10)
-                }.accessibilityIdentifier("project.\(project.id)")
+                    }.padding(.vertical, 10).contentShape(Rectangle())
+                }.hoverEffect(.highlight).accessibilityIdentifier("project.\(project.id)")
             }
             if model.projects.isEmpty && !model.loading && model.error == nil { ContentUnavailableView("还没有项目", systemImage: "folder") }
             NavigationLink {
@@ -47,6 +48,8 @@ struct IssuesScreen: View {
     var discuss: ((Issue) -> Void)? = nil
     @State private var query = ""
     @State private var status: String?
+    @FocusState private var searchFocused: Bool
+    @EnvironmentObject private var commands: AppCommandCenter
     private var searchKey: String { "\(projectId)|\(query)|\(status ?? "")" }
     var body: some View {
         List {
@@ -62,8 +65,10 @@ struct IssuesScreen: View {
                             Text(issue.title).font(.body).fixedSize(horizontal: false, vertical: true)
                             Spacer(minLength: 0)
                             Text(model.statusName(issue.status)).font(.caption).foregroundStyle(ChattyTheme.accent)
-                        }.padding(.vertical, 10)
-                    }.accessibilityIdentifier("issue.\(issue.id)")
+                        }.padding(.vertical, 10).contentShape(Rectangle())
+                    }.hoverEffect(.highlight)
+                        .contextMenu { issueMenu(issue) }
+                        .accessibilityIdentifier("issue.\(issue.id)")
                 }
                 if model.offset < model.total && !model.loading {
                     Button { Task { await model.more() } } label: {
@@ -75,6 +80,8 @@ struct IssuesScreen: View {
         .listStyle(.plain).scrollContentBackground(.hidden).background(ChattyTheme.background)
         .navigationTitle(title).navigationBarTitleDisplayMode(.inline)
         .searchable(text: $query, prompt: "搜索事项").autocorrectionDisabled()
+        .searchFocused($searchFocused)
+        .onChange(of: commands.issueSearchRequest) { _, _ in searchFocused = true }
         .toolbar {
             Menu {
                 Button("全部状态") { status = nil }
@@ -87,6 +94,24 @@ struct IssuesScreen: View {
             if !query.isEmpty { do { try await Task.sleep(for: .milliseconds(250)) } catch { return } }
             await model.loadIssues(project: projectId, query: query, status: status)
         }
+    }
+    /// Right-click / long-press parity for list rows. Status changes go through
+    /// `ProjectsModel.setStatus`, the same guarded path as the detail screen.
+    @ViewBuilder private func issueMenu(_ issue: Issue) -> some View {
+        if model.category(issue) == "in_review", let done = model.doneStatus {
+            Button("验收通过", systemImage: "checkmark.circle") { apply(done, to: issue) }
+        }
+        if !model.statuses.isEmpty {
+            Menu("更改状态", systemImage: "arrow.triangle.2.circlepath") {
+                ForEach(model.statuses) { entry in Button(entry.name) { apply(entry.key, to: issue) } }
+            }
+        }
+        Button("复制链接", systemImage: "link") {
+            UIPasteboard.general.string = NativeLink.issueLink(workspace: context.workspace.slug, identifier: issue.identifier)
+        }
+    }
+    private func apply(_ status: String, to issue: Issue) {
+        Task { if let updated = await model.setStatus(status, for: issue.id) { onChanged(updated) } }
     }
 }
 

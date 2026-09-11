@@ -1,5 +1,6 @@
 import SwiftUI
 import ChattyCore
+import UIKit
 
 struct ActivityScreen: View {
     let model: ActivityModel
@@ -45,8 +46,11 @@ struct ActivityScreen: View {
                                     Text(issue.title).font(.body.weight(.medium)).foregroundStyle(.primary).fixedSize(horizontal: false, vertical: true)
                                     Text(model.summary(issue)).font(.callout).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
                                 }.frame(maxWidth: .infinity, alignment: .leading)
-                            }.padding(.vertical, 20)
-                        }.buttonStyle(.plain).accessibilityIdentifier("activity.issue.\(issue.id)")
+                            }.padding(.vertical, 20).contentShape(Rectangle())
+                        }.buttonStyle(.plain)
+                            .hoverEffect(.highlight)
+                            .contextMenu { issueMenu(issue) }
+                            .accessibilityIdentifier("activity.issue.\(issue.id)")
                         Divider()
                     }
                     if model.hasMore(actions: pending) {
@@ -60,6 +64,24 @@ struct ActivityScreen: View {
         .navigationTitle("动态").background(ChattyTheme.background)
     }
     private var rows: [Issue] { pending ? model.actions : model.recent }
+    /// Pointer parity for the feed rows: the same status actions the detail
+    /// screen exposes, plus a shareable link.
+    @ViewBuilder private func issueMenu(_ issue: Issue) -> some View {
+        if model.category(issue) == "in_review", let done = model.statuses.first(where: { $0.category == "done" })?.key {
+            Button("验收通过", systemImage: "checkmark.circle") { apply(done, to: issue) }
+        }
+        if !model.statuses.isEmpty {
+            Menu("更改状态", systemImage: "arrow.triangle.2.circlepath") {
+                ForEach(model.statuses) { entry in Button(entry.name) { apply(entry.key, to: issue) } }
+            }
+        }
+        Button("复制链接", systemImage: "link") {
+            UIPasteboard.general.string = NativeLink.issueLink(workspace: context.workspace.slug, identifier: issue.identifier)
+        }
+    }
+    private func apply(_ status: String, to issue: Issue) {
+        Task { if let updated = await projects.setStatus(status, for: issue.id) { model.apply(updated) } }
+    }
     private func activityTab(_ title: String, selected: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Text(title).font(.body.weight(selected ? .medium : .regular))
