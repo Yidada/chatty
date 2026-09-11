@@ -1,4 +1,5 @@
 context platform=ios kind=simulator
+# 键盘工具栏已无「收起键盘」按钮（CLE-97）：直接点下一个目标，键盘不阻挡交互。
 open "ai.chatty.ios.fixture"
 wait "id=\"auth.email\""
 fill "id=\"auth.email\"" "ios@example.test"
@@ -9,7 +10,6 @@ press "id=\"workspace.w1\""
 wait stable 1000 10000
 wait "id=\"chat.attach\""
 fill "id=\"chat.draft\"" "WORKSPACE_ONE_DRAFT"
-press "role=\"button\" label=\"收起键盘\""
 press "role=\"button\" label=\"设置\""
 press "id=\"settings.workspaces\""
 wait stable 1000 10000
@@ -18,7 +18,6 @@ wait stable 1000 10000
 wait "role=\"statictext\" label=\"第二工作区 · 历史消息 54\""
 screenshot ".sdlc/changes/20260905-complete-ios-v1-native-client-p1-through-p5/evidence/v1/workspace-two.png"
 fill "id=\"chat.draft\"" "WORKSPACE_TWO_DRAFT"
-press "role=\"button\" label=\"收起键盘\""
 press "role=\"button\" label=\"设置\""
 press "id=\"settings.workspaces\""
 wait stable 1000 10000

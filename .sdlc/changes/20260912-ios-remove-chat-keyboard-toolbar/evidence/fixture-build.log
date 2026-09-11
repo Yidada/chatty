@@ -1,0 +1,27 @@
+** BUILD SUCCEEDED **
+--- tail of full log ---
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --timestamp\=none --generate-entitlement-der /Users/benjamin/multica_workspaces/clematis-ai-ac1a5aa20d9b/cle-97-42c9e4eafa71/workdir/chatty/.tools/ios-derived-data/Build/Products/Debug-iphonesimulator/ChattyFixture.app/__preview.dylib
+
+CodeSign /Users/benjamin/multica_workspaces/clematis-ai-ac1a5aa20d9b/cle-97-42c9e4eafa71/workdir/chatty/.tools/ios-derived-data/Build/Products/Debug-iphonesimulator/ChattyFixture.app (in target 'ChattyFixture' from project 'Chatty')
+    cd /Users/benjamin/multica_workspaces/clematis-ai-ac1a5aa20d9b/cle-97-42c9e4eafa71/workdir/chatty/ios
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --timestamp\=none --generate-entitlement-der /Users/benjamin/multica_workspaces/clematis-ai-ac1a5aa20d9b/cle-97-42c9e4eafa71/workdir/chatty/.tools/ios-derived-data/Build/Products/Debug-iphonesimulator/ChattyFixture.app
+
+RegisterExecutionPolicyException /Users/benjamin/multica_workspaces/clematis-ai-ac1a5aa20d9b/cle-97-42c9e4eafa71/workdir/chatty/.tools/ios-derived-data/Build/Products/Debug-iphonesimulator/ChattyFixture.app (in target 'ChattyFixture' from project 'Chatty')
+    cd /Users/benjamin/multica_workspaces/clematis-ai-ac1a5aa20d9b/cle-97-42c9e4eafa71/workdir/chatty/ios
+    builtin-RegisterExecutionPolicyException /Users/benjamin/multica_workspaces/clematis-ai-ac1a5aa20d9b/cle-97-42c9e4eafa71/workdir/chatty/.tools/ios-derived-data/Build/Products/Debug-iphonesimulator/ChattyFixture.app
+
+Validate /Users/benjamin/multica_workspaces/clematis-ai-ac1a5aa20d9b/cle-97-42c9e4eafa71/workdir/chatty/.tools/ios-derived-data/Build/Products/Debug-iphonesimulator/ChattyFixture.app (in target 'ChattyFixture' from project 'Chatty')
+    cd /Users/benjamin/multica_workspaces/clematis-ai-ac1a5aa20d9b/cle-97-42c9e4eafa71/workdir/chatty/ios
+    builtin-validationUtility /Users/benjamin/multica_workspaces/clematis-ai-ac1a5aa20d9b/cle-97-42c9e4eafa71/workdir/chatty/.tools/ios-derived-data/Build/Products/Debug-iphonesimulator/ChattyFixture.app -shallow-bundle -infoplist-subpath Info.plist
+
+Touch /Users/benjamin/multica_workspaces/clematis-ai-ac1a5aa20d9b/cle-97-42c9e4eafa71/workdir/chatty/.tools/ios-derived-data/Build/Products/Debug-iphonesimulator/ChattyFixture.app (in target 'ChattyFixture' from project 'Chatty')
+    cd /Users/benjamin/multica_workspaces/clematis-ai-ac1a5aa20d9b/cle-97-42c9e4eafa71/workdir/chatty/ios
+    /usr/bin/touch -c /Users/benjamin/multica_workspaces/clematis-ai-ac1a5aa20d9b/cle-97-42c9e4eafa71/workdir/chatty/.tools/ios-derived-data/Build/Products/Debug-iphonesimulator/ChattyFixture.app
+
+** BUILD SUCCEEDED **
+
