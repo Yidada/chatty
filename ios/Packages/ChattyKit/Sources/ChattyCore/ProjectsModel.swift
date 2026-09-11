@@ -123,6 +123,15 @@ import Observation
             }
         }
     }
+    /// Pointer/context-menu path for list rows: read the row's detail first, then
+    /// go through the exact same guarded update the detail screen uses. Returns
+    /// the updated issue so callers can refresh the feed they are showing.
+    @discardableResult
+    public func setStatus(_ key: String, for issueId: String) async -> Issue? {
+        await loadDetail(id: issueId)
+        await changeStatus(key)
+        return detailError == nil ? detail : nil
+    }
     public func loadTimeline(id: String) async {
         guard context.active, !loadingTimeline else { return }
         let g = detailGeneration; loadingTimeline = true

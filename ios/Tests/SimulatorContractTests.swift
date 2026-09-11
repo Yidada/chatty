@@ -63,4 +63,35 @@ final class SimulatorContractTests: XCTestCase {
         XCTAssertEqual(try files.draft(account:"u1",workspace:"w1",agent:"mika").text, "")
         XCTAssertTrue(try files.activityReads(account:"u1",workspace:"w1").isEmpty)
     }
+    // MARK: - Stage B (CLE-90): composer drops and shareable issue links
+
+    func testAttachmentImportRejectsEmptyAndOversizedData() throws {
+        XCTAssertThrowsError(try AttachmentImport.prepared(data: Data(), filename: "a.txt", contentType: "text/plain")) {
+            XCTAssertEqual($0 as? APIError, .unsafeFile)
+        }
+        XCTAssertThrowsError(try AttachmentImport.prepared(data: Data(count: APIClient.maximumFileBytes + 1), filename: "b.bin", contentType: "")) {
+            XCTAssertEqual($0 as? APIError, .oversizedFile)
+        }
+        let normalized = try AttachmentImport.prepared(data: Data("hi".utf8), filename: "", contentType: "")
+        XCTAssertEqual(normalized.filename, "attachment")
+        XCTAssertEqual(normalized.contentType, "application/octet-stream")
+        let named = try AttachmentImport.prepared(data: Data("hi".utf8), filename: "note.txt", contentType: "text/plain")
+        XCTAssertEqual(named.filename, "note.txt"); XCTAssertEqual(named.contentType, "text/plain")
+    }
+
+    func testAttachmentImportReadsDroppedFileURL() throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("dropped-\(UUID().uuidString).txt")
+        try Data("dropped payload".utf8).write(to: url)
+        defer { try? FileManager.default.removeItem(at: url) }
+        let imported = try AttachmentImport.read(fileURL: url)
+        XCTAssertEqual(imported.data, Data("dropped payload".utf8))
+        XCTAssertEqual(imported.filename, url.lastPathComponent)
+        XCTAssertFalse(imported.contentType.isEmpty)
+    }
+
+    func testSharedIssueLinkResolvesBackToTheNativeRoute() throws {
+        let link = NativeLink.issueLink(workspace: "one", identifier: "MUL-7")
+        XCTAssertEqual(link, "https://app.multica.ai/one/issues/MUL-7")
+        XCTAssertEqual(NativeLink.resolve(link, api: URL(string: "https://api.multica.ai")!, workspace: "one"), .issue("MUL-7"))
+    }
 }

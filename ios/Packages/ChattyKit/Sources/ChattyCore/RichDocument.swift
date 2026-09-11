@@ -87,4 +87,10 @@ public enum NativeLink: Equatable, Sendable {
         guard url.scheme == "https" else { return .unavailable }
         return .external(url)
     }
+
+    /// Canonical shareable link for an issue. `resolve(_:api:workspace:)` accepts
+    /// the same shape, so a copied link re-enters the native app as an issue.
+    public static func issueLink(workspace: String, identifier: String) -> String {
+        "https://app.multica.ai/\(APIClient.segment(workspace))/issues/\(APIClient.segment(identifier))"
+    }
 }

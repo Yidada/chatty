@@ -14,6 +14,7 @@ struct WorkspaceTabs: View {
     @State private var linked: LinkedScreen?
     @State private var linkNotice = false
     @Environment(\.scenePhase) private var scenePhase
+    @EnvironmentObject private var commands: AppCommandCenter
 
     var body: some View {
         TabView(selection: $tab) {
@@ -62,6 +63,7 @@ struct WorkspaceTabs: View {
         }
         .alert("此链接暂不支持在当前页面打开", isPresented: $linkNotice) { Button("知道了", role: .cancel) {} } message: { Text("请从项目或设置中查看对应资源。") }
         .task {
+            registerCommands()
             if scenePhase == .active { model.activity.start() }
             await model.chat.initialize()
             session.rememberDraftScope(model)
@@ -70,7 +72,33 @@ struct WorkspaceTabs: View {
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { model.start() } else { model.pause() }
         }
-        .onDisappear { model.pause() }
+        .onDisappear { model.pause(); commands.clearWorkspaceCommands() }
+    }
+    /// The menu bar and shortcut table are scene-level. Registering here (and
+    /// clearing on disappear) keeps every item honest about what is on screen.
+    private func registerCommands() {
+        commands.hasWorkspace = true
+        commands.selectTab = { value in tab = value }
+        commands.openSettings = { showingSettings = true }
+        commands.newSession = { model.chat.startNewSession(); tab = .chat }
+        commands.refresh = {
+            Task {
+                switch tab {
+                case .activity: await model.activity.refresh()
+                case .chat: await model.chat.refresh()
+                case .projects: await model.projects.overview()
+                case .settings: break
+                }
+            }
+        }
+        commands.focusIssueSearch = {
+            tab = .projects
+            commands.issueSearchRequest += 1
+        }
+        commands.cancel = {
+            if linked != nil { linked = nil }
+            else if showingSettings { showingSettings = false }
+        }
     }
     private var profileButton: some ToolbarContent {
         ToolbarItem(placement: .topBarTrailing) {

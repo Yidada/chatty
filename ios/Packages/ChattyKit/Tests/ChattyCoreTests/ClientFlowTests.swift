@@ -516,4 +516,66 @@ private final class FlowServer: @unchecked Sendable {
         XCTAssertEqual(NativeLink.resolve("javascript:alert(1)",api:api,workspace:"one"),.unavailable)
         XCTAssertEqual(NativeLink.resolve("//evil.test/issues/i1",api:api,workspace:"one"),.unavailable)
     }
+    // MARK: - Stage B (CLE-90): menu commands and composer drops
+
+    func testNewSessionDefersSessionCreationUntilTheNextSend() async throws {
+        let rig = try FlowRig(); defer { rig.cleanup() }; await rig.login()
+        let chat = try XCTUnwrap(rig.model.current?.chat)
+        try await waitFor { !chat.messages.isEmpty }
+        XCTAssertNotNil(chat.session)
+        func sessionPosts() -> Int { rig.server.read { $0.requests.filter { $0.0 == "POST" && $0.1 == "/api/chat/sessions" }.count } }
+        let before = sessionPosts()
+        chat.startNewSession()
+        XCTAssertTrue(chat.isStartingNewSession)
+        await chat.refresh()
+        XCTAssertNil(chat.session, "A pending new session must not re-adopt the previous conversation")
+        XCTAssertTrue(chat.messages.isEmpty)
+        XCTAssertEqual(sessionPosts(), before, "⌘N itself must not create a server session")
+        chat.setDraft("新的对话"); XCTAssertTrue(chat.canSend); await chat.send()
+        XCTAssertFalse(chat.isStartingNewSession)
+        XCTAssertEqual(sessionPosts(), before + 1)
+        XCTAssertEqual(rig.server.read { $0.sent.count }, 1)
+        XCTAssertEqual(chat.messages.last?.content, "新的对话")
+    }
+    func testNewSessionIsRefusedWhileASendIsUnconfirmed() async throws {
+        let rig = try FlowRig(); defer { rig.cleanup() }; await rig.login()
+        let chat = try XCTUnwrap(rig.model.current?.chat)
+        let gate = DispatchSemaphore(value: 0); defer { gate.signal() }
+        rig.server.mutate { $0.queueSupported = true; $0.holdSend = gate }
+        chat.setDraft("in flight"); let first = Task { await chat.send() }
+        try await waitFor { rig.server.read { $0.sent.count } == 1 }
+        let session = chat.session?.id
+        chat.startNewSession()
+        XCTAssertFalse(chat.isStartingNewSession)
+        XCTAssertEqual(chat.session?.id, session)
+        XCTAssertEqual(chat.notice, "有正在发送或待核对的消息，先处理后再新建对话。")
+        gate.signal(); await first.value
+    }
+    func testDroppedFileUsesTheSameValidationAndUploadPathAsThePicker() async throws {
+        let rig = try FlowRig(); defer { rig.cleanup() }; await rig.login()
+        let chat = try XCTUnwrap(rig.model.current?.chat)
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("dropped-\(UUID().uuidString).txt")
+        try Data("dropped payload".utf8).write(to: url)
+        defer { try? FileManager.default.removeItem(at: url) }
+        await chat.upload(fileURL: url)
+        XCTAssertEqual(chat.attachments.map(\.id), ["upload1"])
+        XCTAssertNil(chat.error)
+        let oversized = FileManager.default.temporaryDirectory.appendingPathComponent("big-\(UUID().uuidString).bin")
+        try Data(count: APIClient.maximumFileBytes + 1).write(to: oversized)
+        defer { try? FileManager.default.removeItem(at: oversized) }
+        await chat.upload(fileURL: oversized)
+        XCTAssertTrue(chat.attachments.map(\.id) == ["upload1"], "An oversized drop must be rejected before upload")
+        XCTAssertEqual(chat.error, APIError.oversizedFile.errorDescription)
+    }
+    func testAttachmentImportLimitsAndSharedIssueLink() throws {
+        XCTAssertThrowsError(try AttachmentImport.prepared(data: Data(), filename: "a.txt", contentType: "text/plain")) {
+            XCTAssertEqual($0 as? APIError, .unsafeFile)
+        }
+        XCTAssertThrowsError(try AttachmentImport.prepared(data: Data(count: APIClient.maximumFileBytes + 1), filename: "b.bin", contentType: "")) {
+            XCTAssertEqual($0 as? APIError, .oversizedFile)
+        }
+        let link = NativeLink.issueLink(workspace: "one", identifier: "MUL-7")
+        XCTAssertEqual(link, "https://app.multica.ai/one/issues/MUL-7")
+        XCTAssertEqual(NativeLink.resolve(link, api: URL(string: "https://api.multica.ai")!, workspace: "one"), .issue("MUL-7"))
+    }
 }
