@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "change_id": "20260911-macos-native-chatty-and-dmg-acceptance",
+  "title": "macOS native Chatty and DMG acceptance",
+  "risk": "R3",
+  "current_stage": "closed",
+  "status": "complete",
+  "required_artifacts": [
+    "intent.md",
+    "spec.md",
+    "plan.md",
+    "evidence.md",
+    "review.md",
+    "decisions.md",
+    "risk.md",
+    "rollback.md",
+    "approvals.md"
+  ],
+  "gates": {
+    "spec": "approved",
+    "plan": "approved",
+    "production": "not_required"
+  },
+  "created_at": "2026-09-11T05:46:24Z",
+  "updated_at": "2026-09-11T06:15:19Z",
+  "delivery": "local",
+  "approval_records": {
+    "spec": {
+      "actor": "Project owner",
+      "note": "2026-09-11 用户明确回复：批准这版规格与计划，继续开发到 DMG；覆盖 spec.md v1 与 risk/rollback 的 Mac 本地交付范围。",
+      "recorded_at": "2026-09-11T05:49:16Z",
+      "fingerprint": "ff9d1ac10a74338cb56cea1bc18aea8e81ad99d83df6ea908e5d58f1dba37b4d"
+    },
+    "plan": {
+      "actor": "Project owner",
+      "note": "2026-09-11 用户明确回复：批准这版规格与计划，继续开发到 DMG；覆盖 plan.md v1 的实现、测试、签名、打包与安装验证。 隐私提交：risk.md 负责人姓名替换为 Project owner，保留原批准指纹；产品范围不变。",
+      "recorded_at": "2026-09-11T05:49:16Z",
+      "fingerprint": "e07278f752d59e2769c4a8436758190cf55dc1e7e9a7719ee694f777cc83249b",
+      "pre_redaction_fingerprint": "1eaba13ae95383219a6d3ced5a6fb9a9177d35633f9d0bea37f985709f41764a"
+    }
+  },
+  "closed_at": "2026-09-11T06:15:19Z"
+}

@@ -83,6 +83,8 @@ public struct DraftRecoveryScope: Codable, Sendable {
         try path.setResourceValues(values)
         #if os(iOS)
         try manager.setAttributes([.protectionKey: FileProtectionType.complete], ofItemAtPath: url.path)
+        #elseif os(macOS)
+        try manager.setAttributes([.posixPermissions: 0o700], ofItemAtPath: url.path)
         #endif
     }
     private func key(_ source: String) -> String { SHA256.hash(data: Data(source.utf8)).map { String(format: "%02x", $0) }.joined() }
@@ -91,6 +93,9 @@ public struct DraftRecoveryScope: Codable, Sendable {
         try data.write(to: url, options: [.atomic, .completeFileProtection])
         #else
         try data.write(to: url, options: .atomic)
+        #if os(macOS)
+        try manager.setAttributes([.posixPermissions: 0o600], ofItemAtPath: url.path)
+        #endif
         #endif
         var url = url; var values = URLResourceValues(); values.isExcludedFromBackup = true; try url.setResourceValues(values)
     }

@@ -1,0 +1,2592 @@
+{
+  "scopes": {
+    "u1:fixture": {
+      "calls": [
+        {
+          "method": "GET",
+          "path": "/api/me",
+          "authenticated": false,
+          "workspace": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/workspaces",
+          "authenticated": true,
+          "workspace": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/me",
+          "authenticated": true,
+          "workspace": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/agents",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/workspaces/w1/members",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/messages/page",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/pending-task",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/messages/page",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/pending-task",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/pending-task",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/messages/page",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues/i0",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "POST",
+          "path": "/api/chat/sessions/s1/read",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "PATCH",
+          "path": "/api/chat/sessions/s1",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "POST",
+          "path": "/api/chat/sessions/s1/messages",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/pending-task",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/messages/page",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tasks/t1/messages",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "POST",
+          "path": "/api/chat/sessions/s1/read",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/messages/page",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/pending-task",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tasks/t1/messages",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/messages/page",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/pending-task",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "POST",
+          "path": "/api/chat/sessions/s1/read",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "PATCH",
+          "path": "/api/chat/sessions/s1",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "POST",
+          "path": "/api/chat/sessions/s1/messages",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/pending-task",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/messages/page",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tasks/t2/messages",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "POST",
+          "path": "/api/chat/sessions/s1/read",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/messages/page",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/pending-task",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tasks/t2/messages",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "PATCH",
+          "path": "/api/chat/sessions/s1",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "POST",
+          "path": "/api/chat/sessions/s1/messages",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/pending-task",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/messages/page",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tasks/t2/messages",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "POST",
+          "path": "/api/chat/sessions/s1/read",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/pending-task",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/messages/page",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tasks/t2/messages",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/messages/page",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/pending-task",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tasks/t3/messages",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "POST",
+          "path": "/api/chat/sessions/s1/read",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/messages/page",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/pending-task",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tasks/t3/messages",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/pending-task",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/messages/page",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tasks/t3/messages",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/messages/page",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/pending-task",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "POST",
+          "path": "/api/chat/sessions/s1/read",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "PATCH",
+          "path": "/api/chat/sessions/s1",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "POST",
+          "path": "/api/chat/sessions/s1/messages",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/messages/page",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/pending-task",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "PATCH",
+          "path": "/api/chat/sessions/s1",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "POST",
+          "path": "/api/chat/sessions/s1/messages",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/pending-task",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/messages/page",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tasks/t5/messages",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "POST",
+          "path": "/api/chat/sessions/s1/read",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/pending-task",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/messages/page",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "PATCH",
+          "path": "/api/chat/sessions/s1",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "POST",
+          "path": "/api/chat/sessions/s1/messages",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/messages/page",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/pending-task",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tasks/t6/messages",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "POST",
+          "path": "/api/chat/sessions/s1/read",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/pending-task",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/messages/page",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/pending-task",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/messages/page",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "POST",
+          "path": "/api/chat/sessions/s1/read",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/attachments/file1",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/workspaces",
+          "authenticated": true,
+          "workspace": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/me",
+          "authenticated": true,
+          "workspace": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/workspaces/w1/members",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/agents",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/pending-task",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/messages/page",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/pending-task",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/messages/page",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/messages/page",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/sessions/s1/pending-task",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "POST",
+          "path": "/api/chat/sessions/s1/read",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/projects",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issue-statuses",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        },
+        {
+          "method": "GET",
+          "path": "/api/issues",
+          "authenticated": true,
+          "workspace": "fixture"
+        }
+      ],
+      "send_count": 6,
+      "issue_writes": [],
+      "deliveries": [
+        {
+          "content": "Mac A：项目快照",
+          "project_id": "p2",
+          "attachment_ids": [],
+          "at": 1789106407.504682
+        },
+        {
+          "content": "Mac B：连续发送",
+          "project_id": "p1",
+          "attachment_ids": [],
+          "at": 1789106435.5164402
+        },
+        {
+          "content": "Mac C：第三条",
+          "project_id": "p1",
+          "attachment_ids": [],
+          "at": 1789106437.443527
+        },
+        {
+          "content": "Mac 延迟 A",
+          "project_id": "p1",
+          "attachment_ids": [],
+          "at": 1789106483.595157
+        },
+        {
+          "content": "Mac 延迟 B",
+          "project_id": "p1",
+          "attachment_ids": [],
+          "at": 1789106503.67705
+        },
+        {
+          "content": "Mac 延迟 C",
+          "project_id": "p1",
+          "attachment_ids": [],
+          "at": 1789106523.719263
+        }
+      ],
+      "project_writes": [
+        {
+          "project_id": "p2"
+        },
+        {
+          "project_id": "p1"
+        },
+        {
+          "project_id": "p1"
+        },
+        {
+          "project_id": "p1"
+        },
+        {
+          "project_id": "p1"
+        },
+        {
+          "project_id": "p1"
+        }
+      ],
+      "issue_queries": [
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "project_id": [
+            "p1"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "project_id": [
+            "p1"
+          ],
+          "q": [
+            "权限"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ]
+        },
+        {
+          "limit": [
+            "50"
+          ],
+          "offset": [
+            "0"
+          ],
+          "sort": [
+            "last_activity"
+          ],
+          "direction": [
+            "desc"
+          ],
+          "statuses": [
+            "blocked,in_review,qa_custom"
+          ]
+        }
+      ],
+      "active_sockets": 1,
+      "uploads": []
+    },
+    "u1:fixture-two": {
+      "calls": [],
+      "send_count": 0,
+      "issue_writes": [],
+      "deliveries": [],
+      "project_writes": [],
+      "issue_queries": [],
+      "active_sockets": 0,
+      "uploads": []
+    },
+    "u2:fixture": {
+      "calls": [],
+      "send_count": 0,
+      "issue_writes": [],
+      "deliveries": [],
+      "project_writes": [],
+      "issue_queries": [],
+      "active_sockets": 0,
+      "uploads": []
+    },
+    "u2:fixture-two": {
+      "calls": [],
+      "send_count": 0,
+      "issue_writes": [],
+      "deliveries": [],
+      "project_writes": [],
+      "issue_queries": [],
+      "active_sockets": 0,
+      "uploads": []
+    }
+  },
+  "auth_calls": [
+    {
+      "path": "/auth/send-code",
+      "authorization_header_present": false
+    },
+    {
+      "path": "/auth/verify-code",
+      "authorization_header_present": false
+    }
+  ],
+  "ws_events": [
+    {
+      "event": "open",
+      "workspace": "fixture",
+      "token_in_url": false
+    },
+    {
+      "event": "authenticated",
+      "workspace": "fixture",
+      "user": "u1",
+      "active_in_scope": 1,
+      "active_total": 1
+    },
+    {
+      "event": "close",
+      "workspace": "fixture"
+    },
+    {
+      "event": "open",
+      "workspace": "fixture",
+      "token_in_url": false
+    },
+    {
+      "event": "authenticated",
+      "workspace": "fixture",
+      "user": "u1",
+      "active_in_scope": 1,
+      "active_total": 1
+    }
+  ]
+}

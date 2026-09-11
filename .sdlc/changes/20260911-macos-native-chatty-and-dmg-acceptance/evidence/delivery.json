@@ -1,0 +1,21 @@
+{
+  "version": "0.1.0 (1)",
+  "sha256": "ce496988e5fe6f4524676438d2decbeeaf3867eb59ca9fb03a8e74bf1e3a897d",
+  "bytes": 3366318,
+  "notary_id": "[private notarization reference]",
+  "architectures": [
+    "arm64",
+    "x86_64"
+  ],
+  "fixture_markers_absent": [
+    "synthetic-device-fixture-token",
+    "CHATTY_FIXTURE_PORT",
+    "fixture.banner"
+  ],
+  "send_count": 6,
+  "delayed_intervals_seconds": [
+    20.0818932056427,
+    20.042212963104248
+  ],
+  "production_launch": "CUA: Chatty login page auth.email and auth.sendCode; independent logged-out session"
+}
