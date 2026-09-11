@@ -204,6 +204,35 @@ class EnvironmentTest(unittest.TestCase):
         self.assertIn('thermal_none', gate['blocking'])
         self.assertIn('battery_saver_off', gate['blocking'])
 
+    # Android 17 (SDK 37) Pixel 6 Pro, awake on the notification shade.
+    POLICY_ANDROID_17_LOCKED = (
+        'WINDOW MANAGER POLICY STATE (dumpsys window policy)\n'
+        '    mKeyguardOccluded=false mPendingKeyguardOccluded=false\n'
+        '    KeyguardServiceDelegate\n'
+        '      showing=true\n'
+        '      inputRestricted=true\n'
+        '      occluded=false\n'
+        '      trusted=false\n'
+        '      dreaming=false\n')
+    POLICY_ANDROID_17_UNLOCKED = (POLICY_ANDROID_17_LOCKED
+                                  .replace('showing=true', 'showing=false')
+                                  .replace('inputRestricted=true', 'inputRestricted=false'))
+    POLICY_ANDROID_16_LOCKED = '    mIsShowing=true mCanDismissKeyguard=true\n    mKeyguardOccluded=false\n'
+    POLICY_ANDROID_16_UNLOCKED = '    mIsShowing=false mCanDismissKeyguard=true\n    mKeyguardOccluded=false\n'
+
+    def test_keyguard_detects_android_17_delegate_state(self):
+        self.assertTrue(m.keyguard_locked(self.POLICY_ANDROID_17_LOCKED))
+        self.assertFalse(m.keyguard_locked(self.POLICY_ANDROID_17_UNLOCKED))
+
+    def test_keyguard_keeps_android_16_field_support(self):
+        self.assertTrue(m.keyguard_locked(self.POLICY_ANDROID_16_LOCKED))
+        self.assertFalse(m.keyguard_locked(self.POLICY_ANDROID_16_UNLOCKED))
+        self.assertFalse(m.keyguard_locked(''))
+        self.assertFalse(m.keyguard_locked(None))
+
+    def test_keyguard_ignores_unrelated_boolean_fields(self):
+        self.assertFalse(m.keyguard_locked('      occluded=true\n      dreaming=true\n      trusted=false\n'))
+
 
 class MemoryAndEnergyTest(unittest.TestCase):
     APP_SUMMARY = 'App Summary\n                       Pss(KB)\nTOTAL PSS:           151100\n'

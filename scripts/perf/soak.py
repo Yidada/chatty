@@ -144,7 +144,7 @@ def main():
         if model != 'Pixel 6 Pro':
             raise RuntimeError('Required Pixel 6 Pro not selected')
         policy = cmd(['shell', 'dumpsys', 'window', 'policy'], 'keyguard-before.txt')
-        if 'mIsShowing=true' in policy:
+        if measure.keyguard_locked(policy):
             raise RuntimeError('Pixel is locked; user must unlock before soak')
         cmd(['shell', 'pm', 'path', PKG], 'package-path.txt')
         if 'package:' not in (out / 'package-path.txt').read_text():

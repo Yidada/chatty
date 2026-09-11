@@ -205,6 +205,22 @@ def _group_by(items, key):
     return groups
 
 
+def keyguard_locked(policy_text):
+    """Detect a locked device from ``dumpsys window policy`` across Android versions.
+
+    Android 16 exposed the state as ``mIsShowing=true``; Android 17 reports it in
+    the ``KeyguardServiceDelegate`` block as ``showing=true`` /
+    ``inputRestricted=true`` and no longer contains ``mIsShowing``. A locked
+    device silently invalidates startup and UI-path captures, so the preflight
+    must not depend on one version's field names.
+    """
+    for line in (policy_text or '').splitlines():
+        match = re.match(r'[ \t]*(mIsShowing|mInputRestricted|showing)[ \t]*=[ \t]*(\S+)', line)
+        if match and match.group(2).lower() == 'true':
+            return True
+    return False
+
+
 def parse_battery_level(text):
     """``dumpsys battery`` -> percentage, or None when the section is absent."""
     match = re.search(r'^\s*level:\s*(\d+)\s*$', text, re.MULTILINE)

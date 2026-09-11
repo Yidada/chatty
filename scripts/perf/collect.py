@@ -244,7 +244,7 @@ def main():
         if model != 'Pixel 6 Pro':
             raise RuntimeError('Required Pixel 6 Pro not selected')
         policy = device(['shell', 'dumpsys', 'window', 'policy'], 'keyguard-before.txt')
-        if 'mIsShowing=true' in policy:
+        if measure.keyguard_locked(policy):
             raise RuntimeError('Pixel is locked; user must unlock before capture')
         device(['shell', 'getprop', 'ro.build.fingerprint'], 'fingerprint.txt')
         device(['shell', 'getprop', 'ro.build.version.sdk'], 'sdk.txt')
