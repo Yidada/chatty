@@ -203,7 +203,7 @@
 
 | 编号 | 风险 | 证据/影响 | 应对 |
 | --- | --- | --- | --- |
-| R1 | **iPadOS 26 按 bundle id 记忆窗口几何**：iPhone-only 时期留下的 635×1376 窗口，在升级为通用 App 后仍被沿用，用户看到的仍是窄窗 + 底部 Tab，而不是全屏双栏 | 实测：同一 iPad、同一 bundle `ai.chatty.ios.fixture`，改为通用 App 后窗口仍为 635×1376；换全新 bundle id 重新安装后才是 1032×1376 全屏 | ① 代码无法直接清除该记录，需在实现阶段做技术验证（`UIApplicationSupportsMultipleScenes` 变化或 `UIRequiresFullScreen` 是否触发重算）；② 无论能否重算，**紧凑宽度都必须完整可用**，因此本风险不阻塞设计；③ 若确认无法重算，写入升级说明：建议用户重装或手动全屏 |
+| R1 | **iPadOS 26 按 bundle id 记忆窗口几何**：iPhone-only 时期留下的 635×1376 窗口，在升级为通用 App 后仍被沿用，用户看到的仍是窄窗 + 底部 Tab，而不是全屏双栏 | 实测：同一 iPad、同一 bundle `ai.chatty.ios.fixture`，改为通用 App 后窗口仍为 635×1376；换全新 bundle id 重新安装后才是 1032×1376 全屏 | ① 代码无法直接清除该记录，需在实现阶段做技术验证（`UIApplicationSupportsMultipleScenes` 变化或 `UIRequiresFullScreen` 是否触发重算）；② 无论能否重算，**紧凑宽度都必须完整可用**，因此本风险不阻塞设计；③ 若确认无法重算，写入升级说明：建议用户重装或手动全屏。**阶段 A 实测结论：升级、卸载重装、`UIApplicationSupportsMultipleScenes` 都不会重算；记录在系统 FrontBoard 库中，App 无法清除；仅 `UIRequiresFullScreen = true` 能强制全屏但会禁用分屏。详见 [stage-a-implementation.md](stage-a-implementation.md) §4** |
 | R2 | iPhone Plus/Max 横屏进入 regular，手机上出现侧栏 | 平台规则；`iPhone 17 Pro Max` 横屏 hSC = regular | 不特判 idiom（遵守 D2）；按 Apple 自家 App 的行为接受侧栏，并在真机复核竖排 Tab 不塌陷。若验收判定不可接受，备选：仅在 `verticalSizeClass == .regular`（iPad 全屏/分屏）时启用侧栏 |
 | R3 | 多窗口 / 分屏切换触发 `.onDisappear`（`WorkspaceTabs.swift:72`），误停轮询与实时连接 | 代码事实 | 把 `pause()` 的触发条件从视图消失改为「场景不再活跃」（`scenePhase` + `UIApplication.shared.connectedScenes` 的活跃场景数），并补单元测试 |
 | R4 | `fullScreenCover`（`AttachmentViews.swift:37`、`:69`）在 iPad 上整屏覆盖，观感与上下文丢失 | 代码事实 | 改为 `sheet`；regular 下系统给 form sheet，紧凑下仍是全屏 sheet，行为一致 |
