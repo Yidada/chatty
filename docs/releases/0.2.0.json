@@ -1,0 +1,11 @@
+{
+  "version": "0.2.0",
+  "activity_contract": "1.1",
+  "web_source_revision": "cf11b82cf1713d92495992bf362fd466c5e0edfd",
+  "channels": {
+    "web": {"build": "record separately", "distribution": "requires confirmed Sites deployment"},
+    "android": {"build": "81 unit tests, lintDebug and assembleDebug passed", "distribution": "debug-signed acceptance APK available; synthetic Pixel device loop passed"},
+    "ios": {"build": "record separately", "distribution": "requires TestFlight processing and tester-group availability"},
+    "macos": {"build": "record separately", "distribution": "requires signed and notarized DMG with installation verification"}
+  }
+}
