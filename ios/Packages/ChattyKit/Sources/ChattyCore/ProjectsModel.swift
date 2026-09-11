@@ -91,28 +91,33 @@ import Observation
             try context.check(); guard g == detailGeneration else { return }; detail = row
         } catch { if g == detailGeneration { detailError = await context.report(error) } }
     }
-    public func changeStatus(_ key: String) async {
+    @discardableResult public func changeStatus(_ key: String) async -> Bool {
         guard context.active, !saving, !loadingDetail, detailError == nil, let row = detail,
-              row.status != key, statuses.contains(where: { $0.key == key }) else { return }
+              row.status != key, statuses.contains(where: { $0.key == key }) else { return false }
+        guard let revision = row.revision, revision >= 0 else { detailError = "任务版本缺失，请重新读取后再修改。"; return false }
         let g = detailGeneration; saving = true; detailError = nil
         defer { saving = false }
         do {
             var body: [String: JSONValue] = ["status": .string(key), "suppress_run": .bool(true)]
             if let revision = row.revision { body["expected_revision"] = .number(Double(revision)) }
             let updated: Issue = try await context.api.write("/api/issues/\(APIClient.segment(row.id))", method: "PUT", body: body)
-            try context.check(); guard g == detailGeneration else { return }; detail = updated
+            try context.check(); guard g == detailGeneration else { return false }
+            guard Self.validTransitionReceipt(updated, from: row, target: key, targetCategory: statuses.first { $0.key == key }?.category) else {
+                detailError = "服务器尚未确认目标状态，请重新读取核对。"; return false
+            }
+            detail = updated
             issues = issues.map { $0.id == updated.id ? updated : $0 }.filter { filter == nil || $0.status == filter }
             do {
                 let fresh: Issue = try await context.api.get("/api/issues/\(APIClient.segment(row.id))")
                 let page: ProjectPage = try await context.api.get("/api/projects"); try context.check()
-                guard g == detailGeneration else { return }; detail = fresh; projects = page.projects
+                guard g == detailGeneration else { return false }; detail = fresh; projects = page.projects
                 if let selectedProject { await loadIssues(project: selectedProject, query: query, status: filter) }
             } catch {
                 _ = await context.report(error)
                 if context.active { detailError = "状态已提交，但刷新未完成。请重新读取核对，避免重复提交。" }
             }
         } catch {
-            guard g == detailGeneration, context.active else { return }
+            guard g == detailGeneration, context.active else { return false }
             let message = await context.report(error)
             if let message { detailError = message + " 请重新读取核对，避免重复提交。" }
             if error as? APIError == .http(409) {
@@ -122,6 +127,13 @@ import Observation
                 } catch { }
             }
         }
+        return detailError == nil && detail?.status == key
+    }
+    static func validTransitionReceipt(_ updated: Issue, from row: Issue, target: String, targetCategory: String?) -> Bool {
+        guard updated.id == row.id, updated.status == target,
+              let old = row.revision, old >= 0, let revision = updated.revision, revision > old else { return false }
+        if targetCategory == "done" { return (updated.statusCategory ?? targetCategory) == "done" }
+        return true
     }
     /// Pointer/context-menu path for list rows: read the row's detail first, then
     /// go through the exact same guarded update the detail screen uses. Returns
@@ -129,8 +141,8 @@ import Observation
     @discardableResult
     public func setStatus(_ key: String, for issueId: String) async -> Issue? {
         await loadDetail(id: issueId)
-        await changeStatus(key)
-        return detailError == nil ? detail : nil
+        let changed = await changeStatus(key)
+        return changed ? detail : nil
     }
     public func loadTimeline(id: String) async {
         guard context.active, !loadingTimeline else { return }

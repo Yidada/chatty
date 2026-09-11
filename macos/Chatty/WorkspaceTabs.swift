@@ -29,7 +29,7 @@ struct WorkspaceTabs: View {
                     HStack {
                         Label("动态", systemImage: "waveform.path")
                         Spacer()
-                        if model.activity.hasAttention { Circle().fill(.red).frame(width: 7, height: 7).accessibilityLabel("有新动态或待处理").accessibilityIdentifier("sidebar.attention") }
+                        if model.activity.hasAttention { Circle().fill(.red).frame(width: 7, height: 7).accessibilityLabel("有未读动态").accessibilityIdentifier("sidebar.attention") }
                     }.tag(AppTab.activity).accessibilityIdentifier("nav.activity")
                     Label("Mika", systemImage: "sparkles").tag(AppTab.chat).accessibilityIdentifier("nav.chat")
                     Label("项目", systemImage: "folder").tag(AppTab.projects).accessibilityIdentifier("nav.projects")

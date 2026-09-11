@@ -28,7 +28,8 @@ import Observation
         do { reads = try context.files.activityReads(account: context.user.id, workspace: context.workspace.id) }
         catch { readError = "已读状态暂时无法恢复，请重试。" }
     }
-    public var hasAttention: Bool { actionTotal > 0 || recent.contains(where: isUnread) }
+    public var unreadCount: Int { Self.unique(recent + actions).filter(isUnread).count }
+    public var hasAttention: Bool { unreadCount > 0 }
     public func hasMore(actions: Bool) -> Bool { actions ? actionOffset < actionTotal : recentOffset < recentTotal }
     public func projectName(_ id: String?) -> String { projects.first { $0.id == id }?.title ?? "未归属项目" }
     public func statusName(_ issue: Issue) -> String { statuses.first { $0.key == issue.status }?.name ?? DisplayText.status(issue.status) }
@@ -91,7 +92,7 @@ import Observation
                 let catalog = try await catalogRequest; try context.check()
                 statuses = catalog.statuses.filter { $0.archivedAt == nil }; actionError = nil
             } catch {
-                actionError = await context.report(error).map { "待处理状态目录未能更新：" + $0 }
+                actionError = await context.report(error).map { "待关注状态目录未能更新：" + $0 }
             }
             let first = try await recentRequest; try context.check()
             guard g == generation else { return }

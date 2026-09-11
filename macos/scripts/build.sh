@@ -8,7 +8,7 @@ python3 "$macos_root/scripts/generate-project.py"
 xcodebuild -project "$macos_root/Chatty.xcodeproj" -scheme Chatty -configuration Release \
   -destination 'generic/platform=macOS' \
   -derivedDataPath "$repo_root/.tools/macos-chatty/release-derived" \
-  -archivePath "$repo_root/.tools/macos-chatty/Chatty-0.1.0.xcarchive" \
+  -archivePath "$repo_root/.tools/macos-chatty/Chatty-0.2.0.xcarchive" \
   ARCHS='arm64 x86_64' ONLY_ACTIVE_ARCH=NO DEVELOPMENT_TEAM="$CHATTY_DEVELOPMENT_TEAM" \
   CODE_SIGN_STYLE=Manual \
   CODE_SIGN_IDENTITY="$CHATTY_SIGN_IDENTITY" archive

@@ -3,7 +3,7 @@
 set -euo pipefail
 macos_root="$(cd "$(dirname "$0")/.." && pwd)"
 repo_root="$(cd "$macos_root/.." && pwd)"
-app_path="${1:-$repo_root/.tools/macos-chatty/Chatty-0.1.0.xcarchive/Products/Applications/Chatty.app}"
+app_path="${1:-$repo_root/.tools/macos-chatty/Chatty-0.2.0.xcarchive/Products/Applications/Chatty.app}"
 : "${CHATTY_SIGN_IDENTITY:?Set your Developer ID signing identity locally}"
 identity="$CHATTY_SIGN_IDENTITY"
 test -d "$app_path/Contents"

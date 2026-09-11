@@ -99,9 +99,11 @@ struct IssueScreen: View {
     var discuss: ((Issue) -> Void)? = nil
     @State private var selectedStatus = ""
     @State private var expanded = false
+    @State private var statusFeedback: String?
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
+                if let statusFeedback { Text(statusFeedback).foregroundStyle(ChattyTheme.accent).accessibilityIdentifier("issue.feedback") }
                 if model.loadingDetail { ProgressView("读取最新详情…").frame(maxWidth: .infinity) }
                 if let error = model.detailError {
                     ErrorNotice(text: error, identifier: "issue.error")
@@ -154,19 +156,24 @@ struct IssueScreen: View {
         .task(id: issueId) { await reload() }
     }
     private func reload() async {
-        selectedStatus = ""
+        selectedStatus = ""; statusFeedback = nil
         if model.statuses.isEmpty { await model.overview() }
         await model.loadDetail(id: issueId)
         if model.detailError == nil, let row = model.detail, row.id == issueId || row.identifier == issueId { onViewed(row) }
     }
     private func updateStatus(_ status: String) async {
-        await model.changeStatus(status); selectedStatus = ""
-        if model.detailError == nil, let row = model.detail, row.status == status { onChanged(row) }
+        let previous = model.detail.map { model.category($0) }
+        statusFeedback = nil
+        let changed = await model.changeStatus(status); selectedStatus = ""
+        if changed, model.detailError == nil, let row = model.detail, row.status == status {
+            onChanged(row)
+            statusFeedback = model.category(row) == "done" ? "已验收" : previous == "blocked" && model.category(row) == "in_progress" ? "阻塞已解除，任务继续进行" : "状态已更新"
+        }
     }
     private func summary(_ issue: Issue) -> String {
         switch model.category(issue) {
         case "in_review": "事项已进入审核。确认交付符合预期后，可以完成验收。"
-        case "blocked": "事项当前受阻，可以向 Mika 补充信息或确认下一步。"
+        case "blocked": "事项当前受阻，可以向 Mika 补充信息或确认下一步。讨论不会自动解除阻塞。"
         case "done": "事项已经完成。"
         case "in_progress": "事项正在推进，新的变化会显示在动态里。"
         default: "当前状态：\(model.statusName(issue.status))。"

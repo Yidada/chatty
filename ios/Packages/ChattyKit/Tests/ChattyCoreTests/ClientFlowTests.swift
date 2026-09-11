@@ -295,6 +295,36 @@ private final class FlowServer: @unchecked Sendable {
         XCTAssertTrue(try rig.files.activityReads(account: "u2", workspace: "w1").isEmpty)
         XCTAssertTrue(try rig.files.activityReads(account: "u1", workspace: "w2").isEmpty)
     }
+    func testReadActionsRemainPendingWithoutNotificationDot() async throws {
+        let rig = try FlowRig(); defer { rig.cleanup() }; await rig.login()
+        rig.server.mutate { $0.activityScenario = true }
+        let activity = try XCTUnwrap(rig.model.current?.activity); await activity.refresh()
+        for issue in activity.recent + activity.actions { activity.markRead(issue) }
+        XCTAssertEqual(activity.actionTotal, 1)
+        XCTAssertEqual(activity.unreadCount, 0)
+        XCTAssertFalse(activity.hasAttention)
+        rig.server.mutate { $0.revision += 1 }; await activity.refresh()
+        XCTAssertEqual(activity.unreadCount, 51)
+        await activity.more(actions: false)
+        XCTAssertEqual(activity.unreadCount, 55, "The action also appears in recent and must only count once")
+    }
+    func testTransitionReceiptsRequireServerStatusAndNewRevision() throws {
+        func row(_ status: String, _ revision: Int?, category: String? = nil) throws -> Issue {
+            var json: [String: Any] = ["id":"a", "identifier":"T-1", "title":"Example", "status":status]
+            json["revision"] = revision; json["statusCategory"] = category
+            return try JSONDecoder().decode(Issue.self, from: JSONSerialization.data(withJSONObject: json))
+        }
+        let old = try row("in_review", 2)
+        XCTAssertTrue(ProjectsModel.validTransitionReceipt(try row("accepted", 3, category: "done"), from: old, target: "accepted", targetCategory: "done"))
+        for invalid in [try row("in_review", 3), try row("accepted", nil), try row("accepted", 2), try row("accepted", 3, category: "in_review")] {
+            XCTAssertFalse(ProjectsModel.validTransitionReceipt(invalid, from: old, target: "accepted", targetCategory: "done"))
+        }
+    }
+    func testActivityFingerprintUsesSemanticTimestampThenFallbacks() throws {
+        let json = Data(#"{"id":"a","identifier":"T-1","title":"Example","status":"blocked","revision":2,"updatedAt":"u","lastActivityAt":"a"}"#.utf8)
+        let row = try JSONDecoder().decode(Issue.self, from: json)
+        XCTAssertEqual(ActivityModel.fingerprint(row), "a|blocked")
+    }
     func testCredentialsNeverReachAuthOrForeignOrigin() throws {
         let client = APIClient(baseURL: URL(string:"https://api.example.test")!, token:"synthetic", workspace:"one")
         defer { client.invalidate() }
