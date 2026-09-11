@@ -22,6 +22,7 @@ struct WorkspaceTabs: View {
     @State private var linkNotice = false
     @State private var activity = SceneActivityMonitor.shared
     @Environment(\.openWindow) private var openWindow
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     // Stage B: the menu bar is process-wide, so the window that is on screen
     // registers the concrete actions for it.
     @EnvironmentObject private var commands: AppCommandCenter
@@ -35,6 +36,41 @@ struct WorkspaceTabs: View {
     }
 
     var body: some View {
+        tabShell
+            // spec §5「深链资源 Sheet = 改」：常规宽度改为 popover，紧凑宽度保持
+            // 原有 Sheet；`NativeLink` 的解析逻辑不变。
+            .modifier(LinkedScreenPresentation(linked: $linked, usesPopover: horizontalSizeClass == .regular) { destination in
+                linkedScreen(destination)
+            })
+            .sheet(isPresented: $showingSettings) {
+                NavigationStack {
+                    SettingsScreen(session: session, resources: model.resources, context: model.context)
+                        .toolbar { ToolbarItem(placement: .cancellationAction) { Button("关闭") { showingSettings = false }.accessibilityIdentifier("settings.close") } }
+                }
+            }
+            .alert("此链接暂不支持在当前页面打开", isPresented: $linkNotice) { Button("知道了", role: .cancel) {} } message: { Text("请从项目或设置中查看对应资源。") }
+            .task {
+                activity.start()
+                restoreTab()
+                commands.registerWorkspaceWindow()
+                registerCommands()
+                if activity.shouldKeepRunning { model.start() }
+                await model.chat.initialize()
+                session.rememberDraftScope(model)
+            }
+            .onChange(of: storedTab) { _, value in persistTab(value) }
+            // Scene driven, not view driven: with several windows the shared poller
+            // and socket must stop only when the last window goes away (and not for
+            // the instant between two windows swapping).
+            .onChange(of: activity.shouldKeepRunning) { _, run in
+                if run { model.start() } else { model.pause() }
+            }
+            // Sign-out and workspace switches still clear the menu; closing one of
+            // several windows does not, because the others are still using it.
+            .onDisappear { commands.unregisterWorkspaceWindow() }
+    }
+
+    private var tabShell: some View {
         TabView(selection: tab) {
             Tab("动态", systemImage: "waveform.path", value: AppTab.activity) {
                 NavigationStack {
@@ -65,43 +101,20 @@ struct WorkspaceTabs: View {
             default: linkNotice = true; return .handled
             }
         })
-        .sheet(isPresented: $showingSettings) {
-            NavigationStack {
-                SettingsScreen(session: session, resources: model.resources, context: model.context)
-                    .toolbar { ToolbarItem(placement: .cancellationAction) { Button("关闭") { showingSettings = false }.accessibilityIdentifier("settings.close") } }
-            }
+    }
+
+    /// Content of a deep-linked resource. Shared by the regular-width popover and
+    /// the compact-width sheet so both presentations stay identical.
+    @ViewBuilder private func linkedScreen(_ destination: LinkedScreen) -> some View {
+        NavigationStack {
+            Group {
+                switch destination {
+                case .attachment(let id): LinkedAttachmentScreen(id: id, context: model.context)
+                case .issue(let id): IssueScreen(model: model.projects, context: model.context, issueId: id, onViewed: model.activity.markRead, onChanged: model.activity.apply, discuss: discuss)
+                case .project(let id): IssuesScreen(model: model.projects, context: model.context, projectId: id, title: "项目事项", onViewed: model.activity.markRead, onChanged: model.activity.apply, discuss: discuss)
+                }
+            }.toolbar { ToolbarItem(placement: .cancellationAction) { Button("关闭") { linked = nil } } }
         }
-        .sheet(item: $linked) { destination in
-            NavigationStack {
-                Group {
-                    switch destination {
-                    case .attachment(let id): LinkedAttachmentScreen(id: id, context: model.context)
-                    case .issue(let id): IssueScreen(model: model.projects, context: model.context, issueId: id, onViewed: model.activity.markRead, onChanged: model.activity.apply, discuss: discuss)
-                    case .project(let id): IssuesScreen(model: model.projects, context: model.context, projectId: id, title: "项目事项", onViewed: model.activity.markRead, onChanged: model.activity.apply, discuss: discuss)
-                    }
-                }.toolbar { ToolbarItem(placement: .cancellationAction) { Button("关闭") { linked = nil } } }
-            }
-        }
-        .alert("此链接暂不支持在当前页面打开", isPresented: $linkNotice) { Button("知道了", role: .cancel) {} } message: { Text("请从项目或设置中查看对应资源。") }
-        .task {
-            activity.start()
-            restoreTab()
-            commands.registerWorkspaceWindow()
-            registerCommands()
-            if activity.shouldKeepRunning { model.start() }
-            await model.chat.initialize()
-            session.rememberDraftScope(model)
-        }
-        .onChange(of: storedTab) { _, value in persistTab(value) }
-        // Scene driven, not view driven: with several windows the shared poller
-        // and socket must stop only when the last window goes away (and not for
-        // the instant between two windows swapping).
-        .onChange(of: activity.shouldKeepRunning) { _, run in
-            if run { model.start() } else { model.pause() }
-        }
-        // Sign-out and workspace switches still clear the menu; closing one of
-        // several windows does not, because the others are still using it.
-        .onDisappear { commands.unregisterWorkspaceWindow() }
     }
 
     /// The menu bar and shortcut table are scene-level. Registering here (and
@@ -175,4 +188,28 @@ struct WorkspaceTabs: View {
         storedTab = AppTab.chat.rawValue
     }
 
+}
+
+/// Regular width presents a deep-linked resource as a popover so the workspace
+/// shell (sidebar + list) stays visible behind it; compact width — iPhone,
+/// Slide Over, narrow Split View — keeps the previous full sheet, so behaviour
+/// there is unchanged. A deep link has no source view to hang off, so the
+/// anchor is pinned to the centre of the shell instead of the default
+/// `.rect(.bounds)`, which would clamp the popover into a screen corner. The
+/// explicit minimum size is required because a screen built on `ScrollView` has
+/// no intrinsic popover size.
+private struct LinkedScreenPresentation<Destination: View>: ViewModifier {
+    @Binding var linked: LinkedScreen?
+    let usesPopover: Bool
+    let destination: (LinkedScreen) -> Destination
+
+    func body(content: Content) -> some View {
+        if usesPopover {
+            content.popover(item: $linked, attachmentAnchor: .point(.center)) {
+                destination($0).frame(minWidth: 420, minHeight: 520)
+            }
+        } else {
+            content.sheet(item: $linked) { destination($0) }
+        }
+    }
 }

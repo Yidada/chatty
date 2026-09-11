@@ -183,9 +183,10 @@ extension View {
 
 /// 常规宽度（iPad 全屏 / 分屏宽窗）下的可读列宽上限。紧凑宽度下可用宽度本身小于该值，
 /// 布局与不施加修饰符时逐点一致，因此这里不需要 userInterfaceIdiom 判断。
-private let readableColumnWidth: CGFloat = 560
+/// 供登录、离线草稿与事项详情等长正文页面共用（spec §5 逐屏表）。
+let readableColumnWidth: CGFloat = 560
 
-private extension View {
+extension View {
     func readableColumn(maxWidth: CGFloat = readableColumnWidth) -> some View {
         frame(maxWidth: maxWidth, alignment: .leading).frame(maxWidth: .infinity)
     }
