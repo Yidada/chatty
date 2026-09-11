@@ -55,5 +55,5 @@ error: exportArchive No signing certificate "iOS Distribution" found
 ## 尚未完成
 
 1. `0.1.0 (3)` 的上传与 Apple 处理状态核对。
-2. 中文 What to Test 说明与 `Benjamin Internal` 内测组分配（沿用既有链路，未改动内测成员）。
+2. 上传后保存中文 What to Test 说明（已备好 [testflight-notes.zh-Hans.txt](testflight-notes.zh-Hans.txt)），并把构建加入既有 `Benjamin Internal` 内测组（本轮未改动内测成员）。
 3. 真机安装与真实账号体验验证。
