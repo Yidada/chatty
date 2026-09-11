@@ -33,6 +33,7 @@ struct WorkspaceTabs: View {
                 }
             }
         }
+        .tabViewStyle(.sidebarAdaptable)
         .environment(\.openURL, OpenURLAction { url in
             switch NativeLink.resolve(url.absoluteString, api: model.context.api.baseURL, workspace: model.context.workspace.slug) {
             case .issue(let id): linked = .issue(id); return .handled
