@@ -50,14 +50,18 @@ No failed preparation counts as a slow launch; no missing meminfo process counts
 
 ## Remaining gates and next checkpoint
 
+CLE-86 turned the instrumentation column below into executable measurement paths (see
+`instrumentation.md`); the numbers remain UNMEASURED until the controlled window in `run-plan.md`.
+
 | Item | State / wait owner / unlock / next check |
 | --- | --- |
-| Fixed-condition B0 and numerical T | NO_BUDGET; Mika coordinates with Benjamin; Pixel at 40–80%, thermal NONE/stable, fixed 60 Hz and exclusive test window; repeat equal-condition rounds before optimization decisions |
-| Startup to composer readiness | UNMEASURED; Mika instrumentation follow-up; define timing boundary beyond UI assertions; next device capture |
-| Network DNS/TLS/TTFB/end-to-end latency | UNMEASURED; measurement integration + designated test service; next network capture; fixture-handler time is not a substitute |
-| Cache hit/DB/query calibration | UNMEASURED; baseline has no business cache; isolated cache prototype/measurement before rollout |
-| S2 all-page/live-event rendering, S3 traversal, S4 fault correctness | UNMEASURED on device; data/control fixtures ready; add exact UI paths in next controlled window |
-| Peak PSS/leaks, offline convergence, energy, 24h soak | UNMEASURED; scenario instrumentation + reserved duration; next checkpoint: concrete run plan/owner/time before execution |
+| Fixed-condition B0 and numerical T | NO_BUDGET; Mika coordinates with Benjamin; Pixel at 40–80%, thermal NONE/stable, fixed 60 Hz and exclusive test window; repeat equal-condition rounds before optimization decisions. Decision rule and measurement floor proposed in `budget-proposal.md`. |
+| Startup to composer readiness | Instrumentation ready (`collect.py --methods interactive`, one record per process); UNMEASURED on device; next device capture |
+| Network DNS/TLS/TTFB/end-to-end latency | App-side phase probe ready (`--methods network`); TCP/TTFB/end-to-end measurable on loopback, DNS/TLS need a designated HTTPS service via `-PchattyBenchmarkBaseUrl`; UNMEASURED on device |
+| Cache hit/DB/query calibration | Policy model ready (`cache_policy.py`); baseline has no business cache, so device cache-hit/DB/query/PSS stay UNMEASURED pending the isolated Room prototype |
+| S2 all-page/live-event rendering, S3 traversal, S4 fault correctness | UI paths now defined (`s2Pagination`, `s2LiveEvent`, `s3Traversal`, `s4FaultCorrectness`); never executed on a device; next controlled window |
+| Peak PSS/leaks, energy, 24h soak, degraded network | `soak.py` owns the sampling, energy proxy, crash/ANR counting and degraded-network window; 24h owner/duration recorded in `soak-plan.json`; not yet run |
+| Offline convergence to cached content | UNMEASURED; baseline has no offline read-only UI (Stage 3); the soak runner deliberately does not assert a banner that does not exist |
 
 CLE-70 remains the overall V3 tracker. PR #2 was closed only after migration; #3 no longer carries parent close intent; #4 does not close CLE-70/CLE-73 on merge. The collector owns and cleans its fixture/reverse mapping before returning.
 
