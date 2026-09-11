@@ -54,7 +54,7 @@ p=root/'Chatty.xcodeproj';p.mkdir(exist_ok=True)
 (root/'Config').mkdir(exist_ok=True)
 orientations=['UIInterfaceOrientationPortrait','UIInterfaceOrientationPortraitUpsideDown','UIInterfaceOrientationLandscapeLeft','UIInterfaceOrientationLandscapeRight']
 for name in ('Chatty','ChattyFixture'):
- info={'CFBundleDevelopmentRegion':'$(DEVELOPMENT_LANGUAGE)','CFBundleExecutable':'$(EXECUTABLE_NAME)','CFBundleIdentifier':'$(PRODUCT_BUNDLE_IDENTIFIER)','CFBundleInfoDictionaryVersion':'6.0','CFBundleName':'$(PRODUCT_NAME)','CFBundleDisplayName':'Chatty Test' if name.endswith('Fixture') else 'Chatty','CFBundlePackageType':'APPL','CFBundleShortVersionString':'$(MARKETING_VERSION)','CFBundleVersion':'$(CURRENT_PROJECT_VERSION)','LSRequiresIPhoneOS':True,'UIApplicationSceneManifest':{'UIApplicationSupportsMultipleScenes':False},'UILaunchScreen':{},'UISupportedInterfaceOrientations':orientations,'UISupportedInterfaceOrientations~ipad':orientations}
+ info={'CFBundleDevelopmentRegion':'$(DEVELOPMENT_LANGUAGE)','CFBundleExecutable':'$(EXECUTABLE_NAME)','CFBundleIdentifier':'$(PRODUCT_BUNDLE_IDENTIFIER)','CFBundleInfoDictionaryVersion':'6.0','CFBundleName':'$(PRODUCT_NAME)','CFBundleDisplayName':'Chatty Test' if name.endswith('Fixture') else 'Chatty','CFBundlePackageType':'APPL','CFBundleShortVersionString':'$(MARKETING_VERSION)','CFBundleVersion':'$(CURRENT_PROJECT_VERSION)','LSRequiresIPhoneOS':True,'UIApplicationSceneManifest':{'UIApplicationSupportsMultipleScenes':True},'UILaunchScreen':{},'UISupportedInterfaceOrientations':orientations,'UISupportedInterfaceOrientations~ipad':orientations}
  if name.endswith('Fixture'):
   info['NSAppTransportSecurity']={'NSAllowsLocalNetworking':True}
   info['UIFileSharingEnabled']=True

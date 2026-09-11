@@ -128,6 +128,29 @@ public struct DraftRecoveryScope: Codable, Sendable {
     public func saveWorkspace(_ id: String, account: String) throws {
         try write(Data(id.utf8), to: root.appendingPathComponent("workspace-" + key(account)))
     }
+    /// Restores the conversation the user was last in, so relaunch and window
+    /// restoration return to the same Mika session instead of guessing from
+    /// `updated_at` (which two devices can tie on).
+    public func lastSession(account: String, workspace: String, agent: String) throws -> String? {
+        let path = root.appendingPathComponent("session-" + key("\(account)/\(workspace)/\(agent)"))
+        guard manager.fileExists(atPath: path.path) else { return nil }
+        let value = try String(contentsOf: path, encoding: .utf8)
+        return value.isEmpty ? nil : value
+    }
+    public func saveLastSession(_ id: String?, account: String, workspace: String, agent: String) throws {
+        try write(Data((id ?? "").utf8), to: root.appendingPathComponent("session-" + key("\(account)/\(workspace)/\(agent)")))
+    }
+    /// Per-window scene state (which tab a window was last on). Keyed by the
+    /// window the system restored, so two windows keep independent selections.
+    public func sceneTab(window: String) throws -> String? {
+        let path = root.appendingPathComponent("scene-tab-" + key(window))
+        guard manager.fileExists(atPath: path.path) else { return nil }
+        let value = try String(contentsOf: path, encoding: .utf8)
+        return value.isEmpty ? nil : value
+    }
+    public func saveSceneTab(_ value: String, window: String) throws {
+        try write(Data(value.utf8), to: root.appendingPathComponent("scene-tab-" + key(window)))
+    }
     public func preview(_ data: Data, filename: String) throws -> URL {
         try cleanupExpired()
         let name = URL(fileURLWithPath: filename).lastPathComponent
