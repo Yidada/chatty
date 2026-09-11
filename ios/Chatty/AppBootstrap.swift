@@ -98,7 +98,7 @@ struct LoginView: View {
                     }
                     Text("验证码仅用于这次登录。登录凭据保存在此设备的安全存储中。").font(.footnote).foregroundStyle(.secondary)
                     if model.error?.contains("未完全清理") == true { Button("重试清理本机数据") { model.signOut() } }
-                }.padding(28).padding(.top, 40)
+                }.padding(28).padding(.top, 40).readableColumn()
             }
             .scrollDismissesKeyboard(.interactively)
             .background(ChattyTheme.background)
@@ -158,7 +158,7 @@ struct OfflineDraftView: View {
                     if let error = model.error { ErrorNotice(text: error, identifier: "offline.error") }
                     Button { Task { await model.loadAccount() } } label: { Text(model.busy ? "正在重连…" : "重试连接").frame(minHeight: 44) }
                         .buttonStyle(.borderedProminent).disabled(model.busy).accessibilityIdentifier("offline.retry")
-                }.padding(24)
+                }.padding(24).readableColumn()
             }.scrollDismissesKeyboard(.interactively).background(ChattyTheme.background).navigationTitle("本机草稿")
                 .toolbar { Button("退出登录", role: .destructive) { model.signOut() } }
         }
@@ -181,4 +181,14 @@ private struct ForegroundRefresh: ViewModifier {
 }
 extension View {
     func onForegroundRefresh(_ action: @escaping @MainActor () async -> Void) -> some View { modifier(ForegroundRefresh(action: action)) }
+}
+
+/// 常规宽度（iPad 全屏 / 分屏宽窗）下的可读列宽上限。紧凑宽度下可用宽度本身小于该值，
+/// 布局与不施加修饰符时逐点一致，因此这里不需要 userInterfaceIdiom 判断。
+private let readableColumnWidth: CGFloat = 560
+
+private extension View {
+    func readableColumn(maxWidth: CGFloat = readableColumnWidth) -> some View {
+        frame(maxWidth: maxWidth, alignment: .leading).frame(maxWidth: .infinity)
+    }
 }

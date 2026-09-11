@@ -59,6 +59,7 @@ struct FixtureRootView: View {
                     .accessibilityIdentifier("tab.settings")
                 }
             }
+            .tabViewStyle(.sidebarAdaptable)
         }
         .background(ChattyTheme.background)
         .tint(ChattyTheme.accent)

@@ -48,8 +48,12 @@ struct ChatScreen: View {
                             } label: { if model.loadingOlder { ProgressView() } else { Text("加载更早消息") } }
                             .frame(maxWidth: .infinity, minHeight: 44).disabled(model.loadingOlder).accessibilityIdentifier("chat.older")
                         }
-                        if model.initialized && model.messages.isEmpty && model.agent != nil {
-                            ContentUnavailableView("和 Mika 开始工作", systemImage: "sparkles", description: Text("输入你的需求，Mika 会接着处理。"))
+                        if model.initialized && model.messages.isEmpty {
+                            if model.agent == nil {
+                                ContentUnavailableView("当前工作区还没有可对话的 Mika", systemImage: "sparkles", description: Text("可在「设置 › Agents」查看工作区里的 Agent，或切换工作区。"))
+                            } else {
+                                ContentUnavailableView("和 Mika 开始工作", systemImage: "sparkles", description: Text("输入你的需求，Mika 会接着处理。"))
+                            }
                         }
                         ForEach(model.messages) { message in
                             MessageRow(message: message, model: model, context: context).id(message.id)
