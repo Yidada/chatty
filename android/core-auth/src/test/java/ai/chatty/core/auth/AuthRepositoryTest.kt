@@ -18,6 +18,7 @@ class AuthRepositoryTest {
         override suspend fun sendCode(body: CodeRequest) {}
         override suspend fun verifyCode(body: VerifyRequest) = LoginResponse(issuedToken)
         override suspend fun workspaces() = listOf(Workspace("w1", "test", "Test"))
+        override suspend fun me() = ChatUser("u1")
     }
     private val auth = AuthRepository(api,store)
     @Test fun verifyPersistsTokenAndWorkspaceSelection() = runBlocking {

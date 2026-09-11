@@ -13,21 +13,54 @@ class ProjectsControllerTest {
         var issue = row; var writes = 0; var update: IssueUpdate? = null; var offset = -1; var noProject: Boolean? = null
         var gate: CompletableDeferred<Unit>? = null
         var catalogFails = false
+        var conflict = false
+        var responseStatus: String? = null
         var pages: List<Issue>? = null
         var detailGate: CompletableDeferred<Unit>? = null
+        override suspend fun me() = ChatUser("u1")
         override suspend fun projects() = ProjectPage(listOf(Project("p1", "Project", issue_count=125, done_count=25)), 1)
-        override suspend fun statuses(): StatusCatalog { if (catalogFails) throw java.io.IOException("catalog unavailable"); return StatusCatalog(listOf(IssueStatusEntry("todo", "待开始", "todo"), IssueStatusEntry("qa_custom", "内部验收", "in_review"))) }
-        override suspend fun issues(project: String?, noProject: Boolean?, limit: Int, offset: Int, query: String?, status: String?): IssuePage {
+        override suspend fun statuses(): StatusCatalog { if (catalogFails) throw java.io.IOException("catalog unavailable"); return StatusCatalog(listOf(IssueStatusEntry("todo", "待开始", "todo"), IssueStatusEntry("qa_custom", "内部验收", "in_review"), IssueStatusEntry("done_custom", "完成", "done"), IssueStatusEntry("blocked", "受阻", "blocked"), IssueStatusEntry("in_progress", "进行中", "in_progress"))) }
+        override suspend fun issues(project: String?, noProject: Boolean?, limit: Int, offset: Int, query: String?, status: String?, statuses: String?, sort: String?, direction: String?): IssuePage {
             this.offset = offset; this.noProject = noProject
             pages?.let { return IssuePage(it.drop(offset).take(limit), it.size) }
             if (project == "slow") gate?.await()
             return if (offset == 0) IssuePage(listOf(issue.copy(project_id = project)), 2) else IssuePage(listOf(issue, issue.copy(id="i2")), 2)
         }
         override suspend fun issue(id: String): Issue { detailGate?.await(); return pages?.find { it.id == id } ?: issue }
-        override suspend fun updateIssue(id: String, body: IssueUpdate): Issue { writes++; update = body; gate?.await(); issue = issue.copy(status=body.status); return issue }
+        override suspend fun updateIssue(id: String, body: IssueUpdate): Issue { writes++; update = body; gate?.await(); if (conflict) throw retrofit2.HttpException(retrofit2.Response.error<Issue>(409, okhttp3.ResponseBody.create(null, "conflict"))); issue = issue.copy(status=responseStatus ?: body.status, revision=(issue.revision ?: 0) + 1); return issue }
         override suspend fun runtimes() = emptyList<RuntimeDevice>()
         override suspend fun agents() = emptyList<ChatAgent>()
         override suspend fun squads() = emptyList<Squad>()
+    }
+    @Test fun directDetailLoadsCustomStatusCatalog() = runTest {
+        val api = Fake(); api.issue = api.row.copy(status = "qa_custom")
+        val c = ProjectsController(api, this); c.detail(api.issue); advanceUntilIdle()
+        assertTrue(c.state.value.statuses.any { it.key == "done_custom" })
+        assertNull(c.state.value.detailError)
+    }
+    @Test fun acceptanceRequiresConfirmedDoneCategory() = runTest {
+        val api = Fake(); api.issue = api.row.copy(status = "qa_custom")
+        val c = ProjectsController(api, this); c.overview(); advanceUntilIdle(); c.detail(api.issue); advanceUntilIdle()
+        api.responseStatus = "qa_custom"; c.changeStatus("done_custom"); advanceUntilIdle()
+        assertNotEquals("已验收", c.state.value.actionNotice)
+        api.responseStatus = "done_custom"; c.detail(api.issue); advanceUntilIdle(); c.changeStatus("done_custom"); advanceUntilIdle()
+        assertEquals("已验收", c.state.value.actionNotice)
+    }
+    @Test fun conflictRefreshesWithoutSuccessNotice() = runTest {
+        val api = Fake(); api.issue = api.row.copy(status = "qa_custom")
+        val c = ProjectsController(api, this); c.overview(); advanceUntilIdle(); c.detail(api.issue); advanceUntilIdle()
+        api.conflict = true; api.issue = api.issue.copy(status = "blocked", revision = 9)
+        c.changeStatus("done_custom"); advanceUntilIdle()
+        assertEquals(9L, c.state.value.detail?.revision)
+        assertEquals("blocked", c.state.value.detail?.status)
+        assertNull(c.state.value.actionNotice)
+        assertNotNull(c.state.value.detailError)
+    }
+    @Test fun unblockedFeedbackDoesNotClaimCompletion() = runTest {
+        val api = Fake(); api.issue = api.row.copy(status = "blocked")
+        val c = ProjectsController(api, this); c.overview(); advanceUntilIdle(); c.detail(api.issue); advanceUntilIdle()
+        c.changeStatus("in_progress"); advanceUntilIdle()
+        assertEquals("阻塞已解除，任务继续进行", c.state.value.actionNotice)
     }
     @Test fun catalogFailureDoesNotHideProjectsOrEnableEdits() = runTest {
         val api=Fake();api.catalogFails=true;val c=ProjectsController(api,this);c.overview();advanceUntilIdle()

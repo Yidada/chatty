@@ -3,9 +3,11 @@ import ai.chatty.core.model.*
 import retrofit2.http.*
 
 interface WorkspaceApi {
+    @GET("api/me") suspend fun me(): ChatUser
     @GET("api/projects") suspend fun projects(): ProjectPage
     @GET("api/issues") suspend fun issues(@Query("project_id") project: String? = null, @Query("include_no_project") noProject: Boolean? = null,
-        @Query("limit") limit: Int = 50, @Query("offset") offset: Int = 0, @Query("q") query: String? = null, @Query("status") status: String? = null): IssuePage
+        @Query("limit") limit: Int = 50, @Query("offset") offset: Int = 0, @Query("q") query: String? = null, @Query("status") status: String? = null,
+        @Query("statuses") statuses: String? = null, @Query("sort") sort: String? = null, @Query("direction") direction: String? = null): IssuePage
     @GET("api/issues/{id}") suspend fun issue(@Path("id") id: String): Issue
     @PUT("api/issues/{id}") suspend fun updateIssue(@Path("id") id: String, @Body body: IssueUpdate): Issue
     @GET("api/issue-statuses") suspend fun statuses(): StatusCatalog

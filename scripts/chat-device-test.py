@@ -49,11 +49,18 @@ try:
  control(status=503);s.tap('刷新对话');time.sleep(1)
  s.expect('暂时无法连接，请重试。草稿已保留。');s.shot('rest-error')
  control(status=200);s.tap('刷新对话');s.expect('连接模型服务失败，请检查网络后重试。')
+ # Non-blocking conversation: a follow-up sent mid-reply queues and is shown in the tray.
+ control(slow=True)
+ fill('chat-draft','queue-a');hide();s.tap('发送')
+ fill('chat-draft','queue-b');hide();s.tap('发送')
+ s.expect('待发消息 · 1');s.shot('queue')
+ s.expect('CHATTY_CHAT_OK · queue-a');s.expect('CHATTY_CHAT_OK · queue-b');s.shot('queue-replies')
+ control(slow=False)
  calls=json.load(urllib.request.urlopen(FIXTURE+'/__calls'))
- assert calls['send_count']==2,calls['send_count']
+ assert calls['send_count']==4,calls['send_count']
  assert all(c['authenticated'] for c in calls['calls'])
  (s.evidence/'fixture-calls.json').write_text(json.dumps(calls,ensure_ascii=False,indent=2))
- s.checks.append('PASS: rich content, fresh attachment preview, quick action, two sends, traces, reconnect, drafts, cold start, cursor, Mika-only navigation')
+ s.checks.append('PASS: rich content, fresh attachment preview, quick action, two sends, traces, reconnect, drafts, cold start, cursor, Mika-only navigation, non-blocking queue')
  print(s.checks[-1]);print(s.evidence)
 except Exception:
  s.checks.append('FAIL: chat loop incomplete');s.shot('failure');raise

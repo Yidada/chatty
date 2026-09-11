@@ -3,6 +3,7 @@ package ai.chatty.app
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ai.chatty.core.auth.AuthRepository
+import ai.chatty.core.model.ChatUser
 import ai.chatty.core.model.Workspace
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -17,7 +18,7 @@ data class AuthState(
     val restoring: Boolean = true, val loggedIn: Boolean = false,
     val busy: Boolean = false, val codeSent: Boolean = false,
     val workspaces: List<Workspace> = emptyList(), val selected: Workspace? = null,
-    val workspacePicker: Boolean = false,
+    val workspacePicker: Boolean = false, val me: ChatUser? = null, val loginEmail: String? = null,
     val error: String? = null
 )
 
@@ -51,7 +52,7 @@ class AuthViewModel @Inject constructor(private val auth: AuthRepository) : View
     }
     fun sendCode(email: String) = action {
         auth.sendCode(email)
-        mutable.update { it.copy(codeSent = true) }
+        mutable.update { it.copy(codeSent = true, loginEmail = email.trim()) }
     }
     fun verify(email: String, code: String) = action { auth.verify(email, code) }
     fun changeEmail() { mutable.update { it.copy(codeSent = false, error = null) } }
@@ -62,7 +63,8 @@ class AuthViewModel @Inject constructor(private val auth: AuthRepository) : View
         loadJob = viewModelScope.launch {
             try {
                 val workspaces = auth.workspaces()
-                mutable.update { it.copy(workspaces = workspaces, selected = workspaces.find { w -> w.slug == auth.lastWorkspace }) }
+                val me = runCatching { auth.me() }.getOrNull()
+                mutable.update { it.copy(workspaces = workspaces, selected = workspaces.find { w -> w.slug == auth.lastWorkspace }, me = me ?: it.me) }
             } catch (e: CancellationException) { throw e }
             catch (e: Exception) {
                 if (auth.token.value != null) mutable.update { it.copy(error = errorText(e)) }

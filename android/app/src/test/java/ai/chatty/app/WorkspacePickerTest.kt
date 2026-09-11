@@ -30,6 +30,7 @@ class WorkspacePickerTest {
         override suspend fun workspaces(): List<Workspace> { gate?.await(); return listOf(first, second) }
         override suspend fun sendCode(body: CodeRequest) = Unit
         override suspend fun verifyCode(body: VerifyRequest) = LoginResponse("fixture")
+        override suspend fun me(): ChatUser = ChatUser("u1")
     }
     private fun model(api: Api, store: Store) = AuthViewModel(AuthRepository(api, store)).also { owner.put("auth", it) }
     @Before fun setup() { Dispatchers.setMain(dispatcher) }

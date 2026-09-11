@@ -11,12 +11,18 @@ import org.junit.Assert.*
 @OptIn(ExperimentalCoroutinesApi::class)
 class ChatControllerTest {
     private class Fake : ChatApi {
-        val session = ChatSession("s1", "mika", "Fixture")
+        var session = ChatSession("s1", "mika", "Fixture")
         var rows = listOf(ChatMessage("a0", "s1", "assistant", "Hello", created_at = "2026-01-02"))
         var older = listOf(ChatMessage("a-1", "s1", "assistant", "Earlier", created_at = "2026-01-01"))
         var receiptAttachments: List<String>? = null
         var sends = 0; var fail = false; var gate: CompletableDeferred<Unit>? = null
         var pendingTask = PendingTask(); var cursor: String? = null
+        var supportsQueue = false
+        var queued = mutableListOf<QueuedTask>()
+        val messageByTask = mutableMapOf<String, String>()
+        var cancelResponse: CancelTaskResponse = CancelTaskResponse()
+        var prioritizeActive: String? = null
+        var clearCalls = 0
         override suspend fun sessions() = listOf(session)
         var agentRows = listOf(ChatAgent("mika", "Renamed", system_key = "mika", owner_id = "u1", runtime_id = "r1"))
         var agentGate: CompletableDeferred<Unit>? = null
@@ -28,17 +34,51 @@ class ChatControllerTest {
             return agentRows
         }
         override suspend fun me() = ChatUser("u1")
+        var projectRows = listOf(Project("p1", "Project One"), Project("p2", "Project Two"))
+        var mismatchProject = false
+        var sessionPatches = 0
+        override suspend fun projects() = ProjectPage(projectRows, projectRows.size)
+        override suspend fun updateSession(id: String, body: ChatSessionUpdate): ChatSession {
+            sessionPatches++
+            session = session.copy(project_id = if (mismatchProject) "other" else body.project_id)
+            return session
+        }
         override suspend fun members(id: String) = memberRows
-        override suspend fun create(body: NewChat) = session
+        override suspend fun create(body: NewChat) = session.copy(project_id = body.project_id)
         override suspend fun messages(id: String, limit: Int, beforeTime: String?, beforeId: String?): MessagePage {
             cursor = beforeId
             return if (beforeId == null) MessagePage(rows, true, MessageCursor("a0", "2026-01-02")) else MessagePage(older + rows.take(1))
         }
         override suspend fun send(id: String, body: SendMessage): SendReceipt {
             sends++; gate?.await(); if (fail) throw java.io.IOException("response lost")
-            rows = rows + ChatMessage("u2", "s1", "user", body.content, "t1", "2026-01-03")
-            pendingTask = PendingTask("t1", "running")
-            return SendReceipt("u2", "t1", "2026-01-03", attachment_ids = receiptAttachments)
+            val tid = "t$sends"; val mid = "u${sends + 1}"
+            messageByTask[tid] = mid
+            rows = rows + ChatMessage(mid, "s1", "user", body.content, tid, "2026-01-03")
+            val active = pendingTask.task_id
+            val isQueued = active != null && active != tid
+            if (isQueued) queued += QueuedTask(tid, "queued", "2026-01-03", mid, body.content)
+            else { queued = mutableListOf(); pendingTask = PendingTask(tid, "running", "2026-01-03", supports_queue = supportsQueue) }
+            if (isQueued) pendingTask = pendingTask.copy(supports_queue = supportsQueue, queued_tasks = queued.toList())
+            return SendReceipt(mid, tid, "2026-01-03", queued = isQueued, supports_queue = supportsQueue, attachment_ids = receiptAttachments)
+        }
+        override suspend fun prioritize(id: String, taskId: String): PrioritizeQueuedResponse {
+            val idx = queued.indexOfFirst { it.task_id == taskId }
+            if (idx > 0) queued = (listOf(queued[idx]) + queued.filterIndexed { i, _ -> i != idx }).toMutableList()
+            return PrioritizeQueuedResponse(taskId, prioritizeActive)
+        }
+        override suspend fun clearQueued(id: String) { clearCalls++; queued = mutableListOf(); pendingTask = pendingTask.copy(queued_tasks = emptyList()) }
+        override suspend fun cancelTask(taskId: String, expectedStatus: String?, chatSessionId: String?, queueAction: String?): CancelTaskResponse {
+            messageByTask[taskId]?.let { mid -> rows = rows.filterNot { it.id == mid } }
+            if (pendingTask.task_id == taskId) {
+                val next = queued.firstOrNull()
+                queued = queued.drop(1).toMutableList()
+                pendingTask = if (next != null) PendingTask(next.task_id, next.status, next.created_at, supports_queue = supportsQueue, queued_tasks = queued.toList())
+                    else PendingTask(supports_queue = supportsQueue)
+            } else {
+                queued = queued.filterNot { it.task_id == taskId }.toMutableList()
+                pendingTask = pendingTask.copy(queued_tasks = queued.toList())
+            }
+            return cancelResponse
         }
         override suspend fun pending(id: String) = pendingTask
         override suspend fun markRead(id: String) {}
@@ -50,8 +90,11 @@ class ChatControllerTest {
     }
     private class Drafts : ChatDrafts {
         val data = mutableMapOf<String, String>()
+        val projects = mutableMapOf<String, String>()
         override suspend fun read(key: String) = data[key].orEmpty()
         override suspend fun write(key: String, value: String) { data[key] = value }
+        override suspend fun readProject(key: String): String? = projects[key]
+        override suspend fun writeProject(key: String, value: String?) { if (value == null) projects.remove(key) else projects[key] = value }
     }
     @Test fun missingMikaCannotSendToAnotherAgent() = runTest {
         val api = Fake(); api.agentRows = listOf(ChatAgent("other", "Other Agent", owner_id="u1", runtime_id="r1"))
@@ -194,5 +237,109 @@ class ChatControllerTest {
         assertTrue(stripQuickProtocol("example\n```quick-actions\n{}\n```\nmore").endsWith("more"))
         assertNull(safeWebLink("javascript:alert(1)", "https://api.multica.ai/"))
         assertFalse(redactTrace("Bearer abcdefghijk").contains("abcdefghijk"))
+    }
+    @Test fun sendWhileRunningQueuesFollowUpAndKeepsHead() = runTest {
+        val api = Fake(); api.supportsQueue = true
+        val c = ChatController(api, Drafts(), Workspace("w", "slug", "Test"), this)
+        c.initialize(); advanceUntilIdle()
+        c.draft("one"); c.send(); advanceUntilIdle()
+        c.draft("two"); assertTrue(c.state.value.canSend)
+        c.send(); advanceUntilIdle()
+        assertEquals(2, api.sends); assertEquals("t1", c.state.value.pending.task_id)
+        assertEquals(listOf("t2"), c.state.value.queuedTasks.map { it.task_id })
+        assertFalse(c.state.value.canSend)
+        val visible = hideQueuedMessages(c.state.value.messages, c.state.value.pending)
+        assertFalse(visible.any { it.content == "two" }); assertTrue(visible.any { it.content == "one" })
+    }
+    @Test fun sendBlockedWhileRunningWithoutQueueSupport() = runTest {
+        val api = Fake()
+        val c = ChatController(api, Drafts(), Workspace("w", "slug", "Test"), this)
+        c.initialize(); advanceUntilIdle(); c.draft("one"); c.send(); advanceUntilIdle()
+        c.draft("two"); assertFalse(c.state.value.canSend); c.send(); advanceUntilIdle()
+        assertEquals(1, api.sends)
+    }
+    @Test fun stopRestoresDraftAndRemovesMessage() = runTest {
+        val api = Fake(); api.supportsQueue = true
+        api.cancelResponse = CancelTaskResponse(CancelledChatMessage("s1", "u2", "one", true))
+        val c = ChatController(api, Drafts(), Workspace("w", "slug", "Test"), this)
+        c.initialize(); advanceUntilIdle(); c.draft("one"); c.send(); advanceUntilIdle()
+        assertTrue(c.state.value.canStop); c.stopCurrent(); advanceUntilIdle()
+        assertNull(c.state.value.pending.task_id); assertEquals("one", c.state.value.draft)
+        assertFalse(c.state.value.messages.any { it.id == "u2" })
+    }
+    @Test fun editQueuedAppendsToExistingDraftAndRemovesQueueRow() = runTest {
+        val api = Fake(); api.supportsQueue = true
+        api.cancelResponse = CancelTaskResponse(CancelledChatMessage("s1", "u3", "two", true))
+        val c = ChatController(api, Drafts(), Workspace("w", "slug", "Test"), this)
+        c.initialize(); advanceUntilIdle(); c.draft("one"); c.send(); advanceUntilIdle()
+        c.draft("two"); c.send(); advanceUntilIdle(); c.draft("keep")
+        c.editQueued("t2"); advanceUntilIdle()
+        assertEquals("keep\n\ntwo", c.state.value.draft); assertTrue(c.state.value.queuedTasks.isEmpty())
+        assertFalse(c.state.value.messages.any { it.id == "u3" })
+    }
+    @Test fun removeQueuedDropsMessageWithoutRestore() = runTest {
+        val api = Fake(); api.supportsQueue = true
+        val c = ChatController(api, Drafts(), Workspace("w", "slug", "Test"), this)
+        c.initialize(); advanceUntilIdle(); c.draft("one"); c.send(); advanceUntilIdle()
+        c.draft("two"); c.send(); advanceUntilIdle()
+        c.removeQueued("t2"); advanceUntilIdle()
+        assertTrue(c.state.value.queuedTasks.isEmpty()); assertEquals("", c.state.value.draft)
+    }
+    @Test fun clearQueuedRemovesAllQueuedRows() = runTest {
+        val api = Fake(); api.supportsQueue = true
+        val c = ChatController(api, Drafts(), Workspace("w", "slug", "Test"), this)
+        c.initialize(); advanceUntilIdle(); c.draft("one"); c.send(); advanceUntilIdle()
+        c.draft("two"); c.send(); advanceUntilIdle(); c.draft("three"); c.send(); advanceUntilIdle()
+        assertEquals(2, c.state.value.queuedTasks.size)
+        c.clearQueued(); advanceUntilIdle()
+        assertEquals(1, api.clearCalls); assertTrue(c.state.value.queuedTasks.isEmpty())
+    }
+    @Test fun sendQueuedNowPrioritizesAndStopsActive() = runTest {
+        val api = Fake(); api.supportsQueue = true; api.prioritizeActive = "t1"
+        api.cancelResponse = CancelTaskResponse(CancelledChatMessage("s1", "u2", "one", true))
+        val c = ChatController(api, Drafts(), Workspace("w", "slug", "Test"), this)
+        c.initialize(); advanceUntilIdle(); c.draft("one"); c.send(); advanceUntilIdle()
+        c.draft("two"); c.send(); advanceUntilIdle()
+        c.sendQueuedNow("t2"); advanceUntilIdle()
+        assertEquals("t2", c.state.value.pending.task_id); assertTrue(c.state.value.queuedTasks.isEmpty())
+        assertEquals("one", c.state.value.draft)
+    }
+    @Test fun queuedLifecycleEventsConvergeQueue() = runTest {
+        val api = Fake(); api.supportsQueue = true
+        val c = ChatController(api, Drafts(), Workspace("w", "slug", "Test"), this)
+        c.initialize(); advanceUntilIdle()
+        fun event(type: String, payload: String) = c.onEvent(Json.parseToJsonElement("""{"type":"$type","payload":$payload}""").jsonObject)
+        event("task:queued", """{"chat_session_id":"s1","task_id":"t9","status":"queued"}""")
+        assertEquals("t9", c.state.value.pending.task_id)
+        event("task:dispatch", """{"chat_session_id":"s1","task_id":"t9","status":"dispatched"}""")
+        assertEquals("dispatched", c.state.value.pending.status)
+        event("task:completed", """{"chat_session_id":"s1","task_id":"t9","status":"completed"}""")
+        advanceUntilIdle(); assertNull(c.state.value.pending.task_id)
+    }
+    @Test fun projectSelectionIsPatchedBeforeSend() = runTest {
+        val api = Fake(); api.session = ChatSession("s1", "mika", "Fixture", project_id = "p1")
+        val c = ChatController(api, Drafts(), Workspace("w", "slug", "Test"), this)
+        c.initialize(); advanceUntilIdle()
+        assertEquals("p1", c.state.value.selectedProjectId)
+        c.selectProject("p2"); advanceUntilIdle()
+        assertEquals("Project Two", c.state.value.selectedProjectName)
+        c.draft("hello"); c.send(); advanceUntilIdle()
+        assertEquals(1, api.sessionPatches); assertEquals(1, api.sends)
+        assertEquals("p2", c.state.value.session?.project_id)
+    }
+    @Test fun unconfirmedProjectBlocksSend() = runTest {
+        val api = Fake(); api.session = ChatSession("s1", "mika", "Fixture", project_id = "p1"); api.mismatchProject = true
+        val c = ChatController(api, Drafts(), Workspace("w", "slug", "Test"), this)
+        c.initialize(); advanceUntilIdle(); c.selectProject("p2"); c.draft("hello"); c.send(); advanceUntilIdle()
+        assertEquals(0, api.sends)
+        assertTrue(c.state.value.error.orEmpty().contains("项目归属"))
+    }
+    @Test fun projectSelectionPersistsWithDraftKeyAndClearsOnSend() = runTest {
+        val api = Fake(); val drafts = Drafts()
+        val c = ChatController(api, drafts, Workspace("w", "slug", "Test"), this)
+        c.initialize(); advanceUntilIdle(); c.selectProject("p2"); advanceUntilIdle()
+        assertEquals("p2", drafts.projects["w:s1"])
+        c.draft("hello"); c.send(); advanceUntilIdle()
+        assertNull(drafts.projects["w:s1"])
     }
 }

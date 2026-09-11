@@ -2,9 +2,9 @@ package ai.chatty.app
 
 import ai.chatty.core.ui.ChattyTheme
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ChatBubbleOutline
+import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.FolderOpen
-import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Notifications
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -31,6 +31,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.isActive
+import androidx.lifecycle.repeatOnLifecycle
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -42,23 +44,80 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChattyShell(workspace: ai.chatty.core.model.Workspace, credentials: ai.chatty.core.network.CredentialStore, switchWorkspace: () -> Unit, signOut: () -> Unit) {
-    var tab by rememberSaveable { mutableStateOf("对话") }
-    Scaffold(bottomBar = {
-        NavigationBar(containerColor = MaterialTheme.colorScheme.surface, tonalElevation = 0.dp) {
-            listOf("对话", "项目", "设置").forEach { title ->
-                NavigationBarItem(selected = tab == title, onClick = { tab = title }, icon = { Icon(when (title) { "对话" -> Icons.Outlined.ChatBubbleOutline; "项目" -> Icons.Outlined.FolderOpen; else -> Icons.Outlined.Settings }, null, Modifier.size(23.dp)) }, label = { Text(title, style = MaterialTheme.typography.labelMedium) },
-                    colors = NavigationBarItemDefaults.colors(selectedIconColor = MaterialTheme.colorScheme.primary, selectedTextColor = MaterialTheme.colorScheme.primary, indicatorColor = MaterialTheme.colorScheme.primaryContainer, unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant, unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant))
+fun ChattyShell(workspace: ai.chatty.core.model.Workspace, credentials: ai.chatty.core.network.CredentialStore, me: ai.chatty.core.model.ChatUser?, loginEmail: String?, switchWorkspace: () -> Unit, signOut: () -> Unit) {
+    var tab by rememberSaveable { mutableStateOf("动态") }
+    var showSettings by rememberSaveable { mutableStateOf(false) }
+    var pendingIssue by remember { mutableStateOf<ai.chatty.core.model.Issue?>(null) }
+    var discussIssue by remember { mutableStateOf<ai.chatty.core.model.Issue?>(null) }
+    val avatarLabel = (me?.name?.takeIf { it.isNotBlank() } ?: me?.email?.takeIf { it.isNotBlank() } ?: loginEmail).orEmpty().trim()
+    val initial = avatarLabel.firstOrNull()?.toString()?.uppercase() ?: "我"
+    // The activity controller lives with the shell so its attention state (and the tab badge) stays
+    // live even while another tab is visible, matching the iOS workspace model.
+    val appContext = androidx.compose.ui.platform.LocalContext.current.applicationContext
+    val shellScope = rememberCoroutineScope()
+    val token by credentials.token.collectAsStateWithLifecycle()
+    val account = remember(token) { java.security.MessageDigest.getInstance("SHA-256").digest(token.orEmpty().toByteArray()).joinToString("") { "%02x".format(it) } }
+    val activityController = remember(workspace.id, account) {
+        ai.chatty.feature.inbox.ActivityController(
+            ai.chatty.core.network.scopedWorkspaceApi(BuildConfig.API_BASE_URL, credentials, workspace.slug),
+            ai.chatty.feature.inbox.AndroidActivityReads(appContext, account), workspace.id, shellScope)
+    }
+    val activityState by activityController.state.collectAsStateWithLifecycle()
+    val lifecycle = androidx.lifecycle.compose.LocalLifecycleOwner.current.lifecycle
+    LaunchedEffect(activityController, lifecycle) {
+        lifecycle.repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.STARTED) {
+            activityController.refresh()
+            while (isActive) { kotlinx.coroutines.delay(30000); activityController.refresh() }
+        }
+    }
+    val attention = activityState.hasAttention
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
+        topBar = {
+            TopAppBar(
+                title = { Text(workspace.name, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant) },
+                actions = { ProfileButton(initial) { showSettings = true } },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
+            )
+        },
+        bottomBar = {
+            NavigationBar(containerColor = MaterialTheme.colorScheme.surface, tonalElevation = 0.dp) {
+                listOf(
+                    "动态" to Icons.Outlined.Notifications,
+                    "Mika" to Icons.Outlined.AutoAwesome,
+                    "项目" to Icons.Outlined.FolderOpen
+                ).forEach { (title, icon) ->
+                    NavigationBarItem(selected = tab == title, onClick = { tab = title }, icon = {
+                        if (title == "动态" && attention) BadgedBox(badge = { Badge() }) { Icon(icon, null, Modifier.size(23.dp)) }
+                        else Icon(icon, null, Modifier.size(23.dp))
+                    }, label = { Text(title, style = MaterialTheme.typography.labelMedium) },
+                        colors = NavigationBarItemDefaults.colors(selectedIconColor = MaterialTheme.colorScheme.primary, selectedTextColor = MaterialTheme.colorScheme.primary, indicatorColor = MaterialTheme.colorScheme.primaryContainer, unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant, unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant))
+                }
             }
         }
-    }) { padding ->
+    ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding)) {
             // Keep each flow's owner in composition; only the active flow renders UI.
-            ai.chatty.feature.chat.ChatRoute(workspace, credentials, BuildConfig.API_BASE_URL, active = tab == "对话")
-            ai.chatty.feature.workspace.ProjectsRoute(workspace, credentials, BuildConfig.API_BASE_URL, active = tab == "项目")
-            ai.chatty.feature.workspace.SettingsRoute(workspace, credentials, BuildConfig.API_BASE_URL, switchWorkspace, signOut, active = tab == "设置")
+            ai.chatty.feature.inbox.ActivityRoute(activityController, workspace, active = tab == "动态", onOpenIssue = { issue -> pendingIssue = issue; tab = "项目" })
+            ai.chatty.feature.chat.ChatRoute(workspace, credentials, BuildConfig.API_BASE_URL, active = tab == "Mika", openIssue = discussIssue, onIssueOpened = { discussIssue = null })
+            ai.chatty.feature.workspace.ProjectsRoute(workspace, credentials, BuildConfig.API_BASE_URL, active = tab == "项目", openIssue = pendingIssue, onIssueOpened = { pendingIssue = null }, onDiscussIssue = { issue -> discussIssue = issue; tab = "Mika" }, onIssueViewed = activityController::apply)
         }
+    }
+    if (showSettings) {
+        ModalBottomSheet(onDismissRequest = { showSettings = false }, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
+            Box(Modifier.fillMaxHeight(0.92f)) {
+                ai.chatty.feature.workspace.SettingsRoute(workspace, credentials, BuildConfig.API_BASE_URL, switchWorkspace, signOut, active = true)
+            }
+        }
+    }
+}
+
+@Composable
+private fun ProfileButton(initial: String, onClick: () -> Unit) {
+    Surface(shape = androidx.compose.foundation.shape.CircleShape, color = MaterialTheme.colorScheme.primaryContainer, modifier = Modifier.size(36.dp).padding(end = 4.dp).clickable(onClick = onClick).testTag("profile.open")) {
+        Box(contentAlignment = Alignment.Center) { Text(initial, color = MaterialTheme.colorScheme.onPrimaryContainer, style = MaterialTheme.typography.titleSmall) }
     }
 }
 
@@ -72,7 +131,7 @@ fun AuthRoot(credentials: ai.chatty.core.network.CredentialStore, vm: AuthViewMo
             state.restoring -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
             !state.loggedIn -> LoginScreen(state, vm)
             state.selected != null -> key(token, state.selected!!.id) {
-                ChattyShell(state.selected!!, credentials, vm::switchWorkspace, vm::signOut)
+                ChattyShell(state.selected!!, credentials, state.me, state.loginEmail, vm::switchWorkspace, vm::signOut)
             }
             else -> Column(Modifier.fillMaxSize().safeDrawingPadding().padding(24.dp).verticalScroll(rememberScrollState())) {
                 Spacer(Modifier.height(32.dp))

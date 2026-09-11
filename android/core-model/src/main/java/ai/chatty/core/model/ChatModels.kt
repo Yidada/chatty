@@ -8,7 +8,8 @@ import kotlinx.serialization.json.JsonObject
     val id: String, val agent_id: String, val title: String = "",
     val status: String = "active", val pinned: Boolean = false,
     val has_unread: Boolean = false, val unread_count: Int = 0,
-    val last_message: ChatPreview? = null, val created_at: String = "", val updated_at: String = ""
+    val last_message: ChatPreview? = null, val created_at: String = "", val updated_at: String = "",
+    val project_id: String? = null
 )
 @Serializable data class ChatPreview(val content: String = "", val role: String = "assistant", val created_at: String = "", val failure_reason: String? = null)
 @Serializable data class ChatMessage(
@@ -22,12 +23,17 @@ import kotlinx.serialization.json.JsonObject
 @Serializable data class QuickAction(val label: String, val prompt: String, val primary: Boolean = false)
 @Serializable data class MessageCursor(val id: String, val created_at: String)
 @Serializable data class MessagePage(val messages: List<ChatMessage>, val has_more: Boolean = false, val next_cursor: MessageCursor? = null)
-@Serializable data class NewChat(val agent_id: String)
+@Serializable data class NewChat(val agent_id: String, val project_id: String? = null)
+@Serializable data class ChatSessionUpdate(val project_id: String?)
 @Serializable data class SendMessage(val content: String, val attachment_ids: List<String> = emptyList())
 @Serializable data class SendReceipt(val message_id: String, val task_id: String, val created_at: String, val queued: Boolean = false, val supports_queue: Boolean = false, val attachment_ids: List<String>? = null)
 @Serializable data class QueuedTask(val task_id: String, val status: String = "queued", val created_at: String = "", val message_id: String? = null, val content: String? = null)
 @Serializable data class PendingTask(val task_id: String? = null, val status: String? = null, val created_at: String? = null,
     val wait_reason: String? = null, val supports_queue: Boolean = false, val queued_tasks: List<QueuedTask>? = emptyList())
+@Serializable data class PrioritizeQueuedResponse(val task_id: String, val active_task_id: String? = null)
+@Serializable data class CancelledChatMessage(val chat_session_id: String = "", val message_id: String = "", val content: String = "",
+    val restore_to_input: Boolean = false, val attachments: List<Attachment>? = emptyList())
+@Serializable data class CancelTaskResponse(val cancelled_chat_message: CancelledChatMessage? = null)
 // server/pkg/protocol/messages.go TaskMessagePayload. Unknown type/input stay inspectable.
 @Serializable data class TaskTrace(val task_id: String = "", val seq: Int = 0, val type: String = "activity.generic",
     val tool: String? = null, val content: String? = null, val input: JsonObject? = null, val output: String? = null,
@@ -38,5 +44,5 @@ import kotlinx.serialization.json.JsonObject
     val runtime_bound: Boolean? = null, val archived_at: String? = null,
     val owner_id: String? = null, val permission_mode: String = "private", val invocation_targets: List<InvocationTarget>? = emptyList())
 @Serializable data class InvocationTarget(val target_type: String, val target_id: String)
-@Serializable data class ChatUser(val id: String)
+@Serializable data class ChatUser(val id: String, val name: String? = null, val email: String? = null)
 @Serializable data class ChatMember(val user_id: String, val role: String)

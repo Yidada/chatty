@@ -31,6 +31,29 @@ class ChatApiTest {
         assertEquals("t1", result.task_id); val r = server.takeRequest()
         assertTrue(r.body.readUtf8().contains("\"attachment_ids\":[\"f1\"]")); assertEquals("POST", r.method)
     }
+    @Test fun apiRequestsAdvertiseDraftRestoreCapability() = runBlocking {
+        server.enqueue(MockResponse().setBody("[]"))
+        createChatApi(server.url("/").toString(), store, "w").sessions()
+        assertEquals("chat-draft-restore-v1", server.takeRequest().getHeader("X-Client-Capabilities"))
+    }
+    @Test fun cancelTaskUsesQueuedScopeAndQueueAction() = runBlocking {
+        server.enqueue(MockResponse().setBody("""{"cancelled_chat_message":{"chat_session_id":"s","message_id":"m","content":"hi","restore_to_input":true}}"""))
+        val result = createChatApi(server.url("/").toString(), store, "w")
+            .cancelTask("t1", expectedStatus = "queued", chatSessionId = "s", queueAction = "edit")
+        assertEquals("hi", result.cancelled_chat_message?.content); assertTrue(result.cancelled_chat_message?.restore_to_input == true)
+        val req = server.takeRequest(); assertEquals("/api/tasks/t1/cancel", req.requestUrl?.encodedPath)
+        assertEquals("queued", req.requestUrl?.queryParameter("expected_status")); assertEquals("edit", req.requestUrl?.queryParameter("queue_action"))
+        assertEquals("s", req.requestUrl?.queryParameter("chat_session_id"))
+    }
+    @Test fun prioritizeAndClearQueuedUseWireRoutes() = runBlocking {
+        val api = createChatApi(server.url("/").toString(), store, "w")
+        server.enqueue(MockResponse().setBody("""{"task_id":"t2","active_task_id":"t1"}"""))
+        assertEquals("t1", api.prioritize("s", "t2").active_task_id)
+        var req = server.takeRequest(); assertEquals("/api/chat/sessions/s/queued-tasks/t2/prioritize", req.requestUrl?.encodedPath); assertEquals("POST", req.method)
+        server.enqueue(MockResponse().setResponseCode(204))
+        api.clearQueued("s")
+        req = server.takeRequest(); assertEquals("DELETE", req.method); assertEquals("/api/chat/sessions/s/queued-tasks", req.requestUrl?.encodedPath)
+    }
     @Test fun socketAuthenticatesInFirstFrameWithoutUrlCredential() = runBlocking {
         val frames = LinkedBlockingQueue<String>()
         server.enqueue(MockResponse().withWebSocketUpgrade(object : WebSocketListener() {

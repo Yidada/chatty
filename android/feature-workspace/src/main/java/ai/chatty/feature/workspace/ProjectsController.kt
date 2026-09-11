@@ -17,7 +17,7 @@ fun requestError(e: Exception) = when ((e as? HttpException)?.code()) {
 }
 data class ProjectsState(val projects: List<Project> = emptyList(), val statuses: List<IssueStatusEntry> = emptyList(), val selected: String? = null,
     val issues: List<Issue> = emptyList(), val total: Int = 0, val offset: Int = 0, val query: String = "", val filter: String? = null,
-    val loading: Boolean = false, val loadingMore: Boolean = false, val error: String? = null, val detail: Issue? = null, val detailLoading: Boolean = false, val saving: Boolean = false, val detailError: String? = null)
+    val loading: Boolean = false, val loadingMore: Boolean = false, val error: String? = null, val detail: Issue? = null, val detailLoading: Boolean = false, val saving: Boolean = false, val detailError: String? = null, val actionNotice: String? = null)
 class ProjectsController(private val api: WorkspaceApi, private val scope: CoroutineScope) {
     private val mutable = MutableStateFlow(ProjectsState()); val state = mutable.asStateFlow()
     private var generation = 0; private var load: Job? = null; private var detailGeneration = 0
@@ -77,9 +77,13 @@ class ProjectsController(private val api: WorkspaceApi, private val scope: Corou
         }
     }
     fun detail(issue: Issue) {
-        val g = ++detailGeneration; mutable.update { it.copy(detail = issue, detailLoading = true, detailError = null) }
+        val g = ++detailGeneration; mutable.update { it.copy(detail = issue, detailLoading = true, detailError = null, actionNotice = null) }
         scope.launch {
-            try { val fresh = api.issue(issue.id); if (g == detailGeneration) mutable.update { it.copy(detail = fresh) } }
+            try {
+                val fresh = api.issue(issue.id)
+                val catalog = if (state.value.statuses.isEmpty()) api.statuses().statuses.filter { it.archived_at == null } else state.value.statuses
+                if (g == detailGeneration) mutable.update { it.copy(detail = fresh, statuses = catalog) }
+            }
             catch (e: CancellationException) { throw e } catch (e: Exception) { if (g == detailGeneration) mutable.update { it.copy(detailError = requestError(e)) } }
             finally { if (g == detailGeneration) mutable.update { it.copy(detailLoading = false) } }
         }
@@ -88,15 +92,31 @@ class ProjectsController(private val api: WorkspaceApi, private val scope: Corou
     fun changeStatus(key: String) {
         val s = state.value; val issue = s.detail ?: return
         if (s.saving || s.detailLoading || s.detailError != null || key == issue.status || s.statuses.none { it.key == key }) return
-        mutable.update { it.copy(saving = true, detailError = null) }
+        mutable.update { it.copy(saving = true, detailError = null, actionNotice = null) }
         scope.launch {
             try {
                 val updated = api.updateIssue(issue.id, IssueUpdate(key, suppress_run = true, expected_revision = issue.revision))
-                mutable.update { it.copy(detail = updated, issues = it.issues.map { row -> if (row.id == updated.id) updated else row }.filter { row -> it.filter == null || row.status == it.filter }) }
+                val previousCategory = issue.status_category ?: s.statuses.find { it.key == issue.status }?.category ?: issue.status
+                val updatedCategory = updated.status_category ?: s.statuses.find { it.key == updated.status }?.category ?: updated.status
+                if (updated.id != issue.id || updated.status != key || updated.revision == null || issue.revision == null || (updated.revision ?: 0) <= (issue.revision ?: 0) || (s.statuses.find { it.key == key }?.category == "done" && updatedCategory != "done")) {
+                    mutable.update { it.copy(actionNotice = null, detailError = "服务器回执未确认本次修改，请重新读取状态核对。") }
+                    return@launch
+                }
+                val notice = when {
+                    previousCategory == "in_review" && updatedCategory == "done" -> "已验收"
+                    previousCategory == "blocked" && updatedCategory == "in_progress" -> "阻塞已解除，任务继续进行"
+                    else -> "状态已更新：${statusName(updated.status, s.statuses)}"
+                }
+                mutable.update { it.copy(detail = updated, actionNotice = notice, issues = it.issues.map { row -> if (row.id == updated.id) updated else row }.filter { row -> it.filter == null || row.status == it.filter }) }
                 // Aggregate counts are server-owned. A failed count refresh doesn't retry the write.
                 runCatching { api.projects() }.getOrNull()?.let { page -> mutable.update { it.copy(projects = page.projects) } }
                 state.value.selected?.let { loadIssues(it, state.value.query, state.value.filter, retain = true) }
-            } catch (e: CancellationException) { throw e } catch (e: Exception) { mutable.update { it.copy(detailError = requestError(e) + " 请重新读取状态核对，避免重复提交。") } }
+            } catch (e: CancellationException) { throw e } catch (e: Exception) {
+                if ((e as? HttpException)?.code() == 409) {
+                    val fresh = runCatching { api.issue(issue.id) }.getOrNull()
+                    mutable.update { it.copy(detail = fresh ?: it.detail, actionNotice = null, detailError = "内容已被更新，未提交本次修改。请核对最新状态后重试。") }
+                } else mutable.update { it.copy(actionNotice = null, detailError = requestError(e) + " 请重新读取状态核对，避免重复提交。") }
+            }
             finally { mutable.update { it.copy(saving = false) } }
         }
     }

@@ -53,6 +53,23 @@ def finish(task,session,text):
             PENDING.pop(session,None)
     broadcast('chat:done',dict(msg,message_id=msg['id']))
 
+def cancel_task(tid,action):
+    info=TASKS.get(tid);sid=info['session'] if info else None;mid=info['message_id'] if info else None
+    cur=PENDING.get(sid) if sid else None
+    CANCELLED.add(tid)
+    if cur and cur.get('task_id')==tid:
+        q=cur.get('queued_tasks') or []
+        if q:
+            nxt=q.pop(0)
+            PENDING[sid]={'task_id':nxt['task_id'],'status':'running','created_at':nxt['created_at'],'supports_queue':True,'queued_tasks':q}
+            threading.Thread(target=finish,args=(nxt['task_id'],sid,nxt.get('content','')),daemon=True).start()
+        else:
+            PENDING.pop(sid,None)
+    elif cur:
+        cur['queued_tasks']=[x for x in cur.get('queued_tasks',[]) if x['task_id']!=tid]
+    if mid:MESSAGES[:]=[x for x in MESSAGES if x['id']!=mid]
+    return {'cancelled_chat_message':{'chat_session_id':sid,'message_id':mid,'content':info.get('content','') if info else '','restore_to_input':action!='remove'}}
+
 class API(BaseHTTPRequestHandler):
     protocol_version='HTTP/1.1'
     def log_message(self,*args):pass
@@ -130,6 +147,34 @@ class API(BaseHTTPRequestHandler):
                 PENDING[sid]={'task_id':tid,'status':'running','created_at':now,'supports_queue':True,'queued_tasks':[]};queued=False
                 threading.Thread(target=finish,args=(tid,sid,body['content']),daemon=True).start()
             return self.reply(200,{'message_id':mid,'task_id':tid,'created_at':now,'queued':queued,'supports_queue':True})
+        m=re.fullmatch('/api/tasks/([^/]+)/cancel',self.path)
+        if m:
+            q=parse_qs(urlsplit(self.path).query);tid=m[1];action=q.get('queue_action',[None])[0];expected=q.get('expected_status',[None])[0]
+            info=TASKS.get(tid);sid=info['session'] if info else None;cur=PENDING.get(sid) if sid else None
+            if expected=='queued' and (not cur or not any(x['task_id']==tid for x in cur.get('queued_tasks',[]))):
+                return self.reply(409,{'error':'task is no longer queued'})
+            return self.reply(200,cancel_task(tid,action))
+        m=re.fullmatch('/api/chat/sessions/([^/]+)/queued-tasks/([^/]+)/prioritize',self.path)
+        if m:
+            sid,tid=m[1],m[2];cur=PENDING.get(sid)
+            if not cur:return self.reply(409,{'error':'there is no active reply to replace'})
+            q=cur.get('queued_tasks',[]);idx=next((i for i,x in enumerate(q) if x['task_id']==tid),None)
+            if idx is None:return self.reply(409,{'error':'task is no longer queued'})
+            cur['queued_tasks']=[q[idx]]+[x for i,x in enumerate(q) if i!=idx]
+            return self.reply(200,{'task_id':tid,'active_task_id':cur.get('task_id')})
+        self.reply(404,{'error':'unknown route'})
+    def do_DELETE(self):
+        self.raw()
+        if not self.auth():return
+        m=re.fullmatch('/api/chat/sessions/([^/]+)/queued-tasks',urlsplit(self.path).path)
+        if m:
+            sid=m[1];cur=PENDING.get(sid)
+            if cur:
+                for x in cur.get('queued_tasks',[]):
+                    CANCELLED.add(x['task_id'])
+                    MESSAGES[:]=[mm for mm in MESSAGES if mm['id']!=x.get('message_id')]
+                cur['queued_tasks']=[]
+            return self.reply(204,{})
         self.reply(404,{'error':'unknown route'})
     def do_PUT(self):
         body=json.loads(self.raw() or '{}')

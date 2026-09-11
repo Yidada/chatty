@@ -34,7 +34,7 @@ import ai.chatty.core.network.*
 import kotlinx.coroutines.*
 
 @Composable
-fun ProjectsRoute(workspace: Workspace, credentials: CredentialStore, base: String, active: Boolean = true) {
+fun ProjectsRoute(workspace: Workspace, credentials: CredentialStore, base: String, active: Boolean = true, openIssue: Issue? = null, onIssueOpened: () -> Unit = {}, onDiscussIssue: (Issue) -> Unit = {}, onIssueViewed: (Issue) -> Unit = {}) {
     val scope = rememberCoroutineScope()
     val api = remember(workspace.id, base) { scopedWorkspaceApi(base, credentials, workspace.slug) }
     // Retrofit proxies do not provide reflexive equals; never use them as Compose keys.
@@ -56,12 +56,18 @@ fun ProjectsRoute(workspace: Workspace, credentials: CredentialStore, base: Stri
         }
     }
     if (!active) return
+    LaunchedEffect(openIssue?.id) {
+        openIssue?.let { controller.detail(it); onIssueOpened() }
+    }
     BackHandler(state.detail != null || state.selected != null) {
         if (state.detail != null) controller.closeDetail() else controller.overview()
     }
+    LaunchedEffect(state.detail, state.detailLoading, state.detailError) {
+        if (!state.detailLoading && state.detailError == null) state.detail?.let(onIssueViewed)
+    }
     val issue = state.detail
     if (issue != null) {
-        IssueDetail(state, controller, issue, detailScroll)
+        IssueDetail(state, controller, issue, detailScroll, onDiscussIssue)
         return
     }
     savedUi.SaveableStateProvider("project-list") {
@@ -115,7 +121,7 @@ fun ProjectsRoute(workspace: Workspace, credentials: CredentialStore, base: Stri
                             state.statuses.forEach { entry -> DropdownMenuItem(text = { Text(entry.name) }, onClick = { filters = false; controller.select(state.selected, query, entry.key) }) }
                         }
                     }
-                    Text("共 ${state.total} 个 · 已加载 ${state.issues.size} 个", Modifier.padding(bottom = 12.dp), color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.labelSmall)
+                    Text("全部事项 · 包含所有发起人 · 共 ${state.total} 个 · 已加载 ${state.issues.size} 个", Modifier.padding(bottom = 12.dp), color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.labelSmall)
                 }
                 LazyColumn(Modifier.weight(1f).testTag("issues-list"), state = issuesScroll, contentPadding = PaddingValues(horizontal = 24.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     items(state.issues, key = { it.id }) { issue ->
@@ -141,7 +147,7 @@ fun ProjectsRoute(workspace: Workspace, credentials: CredentialStore, base: Stri
 }
 
 @Composable
-private fun IssueDetail(state: ProjectsState, controller: ProjectsController, issue: Issue, scroll: ScrollState) {
+private fun IssueDetail(state: ProjectsState, controller: ProjectsController, issue: Issue, scroll: ScrollState, onDiscussIssue: (Issue) -> Unit) {
     var menu by remember(issue.id) { mutableStateOf(false) }
     Column(Modifier.fillMaxSize().testTag("issue-detail")) {
         PageHeader(issue.identifier, "Issue 详情", "返回 Issues", controller::closeDetail) {
@@ -150,6 +156,14 @@ private fun IssueDetail(state: ProjectsState, controller: ProjectsController, is
         if (state.detailLoading || state.saving) LinearProgressIndicator(Modifier.fillMaxWidth())
         Column(Modifier.fillMaxWidth().weight(1f).verticalScroll(scroll).padding(horizontal = 24.dp).padding(bottom = 24.dp), verticalArrangement = Arrangement.spacedBy(20.dp)) {
             SelectionContainer { Text(issue.title, style = MaterialTheme.typography.headlineSmall) }
+            Text(issueSummary(issue, state.statuses), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            val doneKey = doneStatusKey(state.statuses)
+            if (issueCategory(issue, state.statuses) == "in_review" && doneKey != null) {
+                Button(onClick = { controller.changeStatus(doneKey) }, enabled = !state.saving && !state.detailLoading && state.detailError == null, modifier = Modifier.fillMaxWidth().testTag("issue.approve")) { Text("验收通过") }
+            }
+            state.actionNotice?.let { Text(it, color = MaterialTheme.colorScheme.primary, modifier = Modifier.testTag("issue.action-notice")) }
+            if (issueCategory(issue, state.statuses) == "blocked") Text("讨论不会自动解除阻塞。补充信息后，需任务状态更新才会移出待关注。", style = MaterialTheme.typography.bodySmall)
+            OutlinedButton(onClick = { onDiscussIssue(issue) }, modifier = Modifier.fillMaxWidth().testTag("issue.discuss")) { Text("有修改意见，和 Mika 说") }
             Surface(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(20.dp)) {
                 Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     Box {
@@ -174,6 +188,13 @@ private fun IssueDetail(state: ProjectsState, controller: ProjectsController, is
 }
 
 private fun priorityName(value: String) = when(value) { "urgent" -> "紧急"; "high" -> "高"; "medium" -> "中"; "low" -> "低"; else -> "无" }
+private fun issueCategory(issue: Issue, statuses: List<IssueStatusEntry>) = issue.status_category ?: statuses.find { it.key == issue.status }?.category ?: issue.status
+private fun doneStatusKey(statuses: List<IssueStatusEntry>) = statuses.find { it.category == "done" }?.key ?: statuses.find { it.key == "done" || it.key == "completed" }?.key
+private fun issueSummary(issue: Issue, statuses: List<IssueStatusEntry>) = when (issueCategory(issue, statuses)) {
+    "in_review" -> "已进入审核，等待确认。"; "blocked" -> "当前受阻，需要进一步处理。"; "done" -> "事项已完成。"
+    "cancelled" -> "事项已取消。"; "in_progress" -> "事项正在推进。"; "todo" -> "事项已记录，等待开始。"
+    else -> "当前状态：${statusName(issue.status, statuses)}"
+}
 private data class ResourceRow(val id: String, val title: String, val subtitle: String, val facts: List<Pair<String, String>>)
 @Composable
 fun SettingsRoute(workspace: Workspace, credentials: CredentialStore, base: String, switchWorkspace: () -> Unit, signOut: () -> Unit, active: Boolean = true) {

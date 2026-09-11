@@ -22,6 +22,7 @@ interface MulticaApi {
     @POST("auth/send-code") suspend fun sendCode(@Body body: CodeRequest)
     @POST("auth/verify-code") suspend fun verifyCode(@Body body: VerifyRequest): LoginResponse
     @GET("api/workspaces") suspend fun workspaces(): List<Workspace>
+    @GET("api/me") suspend fun me(): ChatUser
 }
 
 /** Credentials are attached only to the configured API origin; redirects are disabled. */
@@ -33,6 +34,8 @@ class SessionInterceptor(private val store: CredentialStore) : Interceptor {
         if (authenticated) {
             token?.let { request.header("Authorization", "Bearer $it") }
             store.workspaceSlug?.let { request.header("X-Workspace-Slug", it) }
+            // Opt in to durable server-side draft restore for cancelled chat sends.
+            request.header("X-Client-Capabilities", "chat-draft-restore-v1")
         }
         val response = chain.proceed(request.build())
         // A late response for a replaced credential must not log out the new session.

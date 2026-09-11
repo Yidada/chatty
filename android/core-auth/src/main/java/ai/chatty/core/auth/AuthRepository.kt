@@ -15,6 +15,7 @@ class AuthRepository(private val api: MulticaApi, private val store: CredentialS
         withContext(Dispatchers.IO) { store.saveToken(result.token) }
     }
     suspend fun workspaces() = api.workspaces()
+    suspend fun me() = api.me()
     suspend fun select(workspace: Workspace) = withContext(Dispatchers.IO) { store.workspaceSlug = workspace.slug }
     suspend fun signOut() = withContext(Dispatchers.IO) {
         store.saveToken(null)

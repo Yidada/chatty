@@ -6,6 +6,8 @@ import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.ArrowUpward
+import androidx.compose.material.icons.outlined.FolderOpen
+import androidx.compose.material.icons.outlined.Stop
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.foundation.BorderStroke
@@ -62,12 +64,16 @@ private data class ChatResources(val api: ChatApi, val base: String, val token: 
 private val LocalChatResources = staticCompositionLocalOf<ChatResources?> { null }
 private val Context.chatDraftStore by preferencesDataStore("chat_drafts")
 class AndroidChatDrafts(private val context: Context, private val account: String) : ChatDrafts {
-    override suspend fun read(key: String) = context.chatDraftStore.data.first()[stringPreferencesKey("$account:$key")].orEmpty()
-    override suspend fun write(key: String, value: String) { context.chatDraftStore.edit { if (value.isEmpty()) it.remove(stringPreferencesKey("$account:$key")) else it[stringPreferencesKey("$account:$key")] = value } }
+    private fun key(name: String) = stringPreferencesKey("$account:$name")
+    private fun projectKey(name: String) = stringPreferencesKey("$account:$name:project")
+    override suspend fun read(key: String) = context.chatDraftStore.data.first()[key(key)].orEmpty()
+    override suspend fun write(key: String, value: String) { context.chatDraftStore.edit { if (value.isEmpty()) it.remove(key(key)) else it[key(key)] = value } }
+    override suspend fun readProject(key: String): String? = context.chatDraftStore.data.first()[projectKey(key)]
+    override suspend fun writeProject(key: String, value: String?) { context.chatDraftStore.edit { if (value == null) it.remove(projectKey(key)) else it[projectKey(key)] = value } }
 }
 
 @Composable
-fun ChatRoute(workspace: Workspace, credentials: CredentialStore, baseUrl: String, active: Boolean = true) {
+fun ChatRoute(workspace: Workspace, credentials: CredentialStore, baseUrl: String, active: Boolean = true, openIssue: Issue? = null, onIssueOpened: () -> Unit = {}) {
     val context = LocalContext.current.applicationContext
     val scope = rememberCoroutineScope()
     // Credentials are never written to draft keys; a one-way digest separates accounts on this device.
@@ -88,6 +94,9 @@ fun ChatRoute(workspace: Workspace, credentials: CredentialStore, baseUrl: Strin
         }
     }
     val state by controller.state.collectAsStateWithLifecycle()
+    LaunchedEffect(openIssue?.id) {
+        openIssue?.let { controller.prepareIssueDiscussion(it); onIssueOpened() }
+    }
     val resources = remember(workspace.id, token) { ChatResources(createChatApi(baseUrl, credentials, workspace.slug), baseUrl, token, workspace.slug) }
     val savedUi = androidx.compose.runtime.saveable.rememberSaveableStateHolder()
     if (active) savedUi.SaveableStateProvider("chat") {
@@ -112,8 +121,9 @@ private fun ChatScreen(state: ChatState, controller: ChatController, baseUrl: St
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) runCatching { controller.upload(uploadPart(context, uri)) }.onFailure { localError = it.message ?: "无法读取附件" }
     }
-    LaunchedEffect(state.messages.lastOrNull()?.id, state.pending.task_id) {
-        if (followLatest && !state.loadingOlder && state.messages.isNotEmpty()) list.animateScrollToItem((list.layoutInfo.totalItemsCount - 1).coerceAtLeast(0))
+    val visibleMessages = hideQueuedMessages(state.messages, state.pending).filterNot { it.message_kind == "onboarding_kickoff" }
+    LaunchedEffect(visibleMessages.lastOrNull()?.id, state.pending.task_id) {
+        if (followLatest && !state.loadingOlder && visibleMessages.isNotEmpty()) list.animateScrollToItem((list.layoutInfo.totalItemsCount - 1).coerceAtLeast(0))
     }
     Column(Modifier.fillMaxSize().imePadding()) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -127,14 +137,14 @@ private fun ChatScreen(state: ChatState, controller: ChatController, baseUrl: St
         if (state.loading) LinearProgressIndicator(Modifier.fillMaxWidth())
         LazyColumn(state = list, modifier = Modifier.weight(1f).fillMaxWidth().testTag("chat-messages"), contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp), verticalArrangement = Arrangement.spacedBy(24.dp)) {
             if (state.hasMore) item("older") { TextButton(onClick = controller::older, enabled = !state.loadingOlder) { Text(if (state.loadingOlder) "正在加载…" else "加载更早消息") } }
-            if (state.messages.isEmpty() && !state.loading) item("empty") {
+            if (visibleMessages.isEmpty() && !state.loading) item("empty") {
                 Column(Modifier.fillMaxWidth().padding(vertical = 64.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                     Icon(Icons.Outlined.AutoAwesome, null, Modifier.size(44.dp), tint = MaterialTheme.colorScheme.primary)
                     Text("和 Mika 聊聊", Modifier.padding(top = 24.dp), style = MaterialTheme.typography.headlineMedium)
                     Text("一个想法，就从这里开始。", Modifier.padding(top = 12.dp), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
-            items(state.messages.filterNot { it.message_kind == "onboarding_kickoff" }, key = { if (it.role == "assistant" && it.task_id != null) "task:${it.task_id}" else "message:${it.id}" }) { message ->
+            items(visibleMessages, key = { if (it.role == "assistant" && it.task_id != null) "task:${it.task_id}" else "message:${it.id}" }) { message ->
                 MessageRow(message, state.traces[message.task_id], baseUrl, { message.task_id?.let(controller::loadTrace) }, { controller.draft(it) })
             }
             val pendingId = state.pending.task_id
@@ -159,13 +169,59 @@ private fun ChatScreen(state: ChatState, controller: ChatController, baseUrl: St
         state.attachments.forEach { a -> Row(Modifier.padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
             Text(a.filename, Modifier.weight(1f), maxLines = 1); TextButton(onClick = { controller.removeAttachment(a.id) }, enabled = !state.sending) { Text("移除") }
         } }
+        if (state.queuedTasks.isNotEmpty()) QueueTray(state.queuedTasks, state.pending.status, state.sending, controller)
+        ProjectPicker(state, controller)
         Surface(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp), shape = RoundedCornerShape(28.dp), color = MaterialTheme.colorScheme.surface, border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant), shadowElevation = 1.dp) {
             Row(Modifier.fillMaxWidth().padding(6.dp), verticalAlignment = Alignment.Bottom) {
                 ActionIcon(Icons.Outlined.Add, "附件", { launcher.launch(arrayOf("*/*")) }, !state.sending && !state.loading && state.session?.status != "archived")
                 TextField(state.draft, controller::draft, Modifier.weight(1f).testTag("chat-draft"), placeholder = { Text("和 Mika 聊聊…") }, maxLines = 5, enabled = !state.sending,
                     colors = TextFieldDefaults.colors(focusedContainerColor = Color.Transparent, unfocusedContainerColor = Color.Transparent, disabledContainerColor = Color.Transparent, focusedIndicatorColor = Color.Transparent, unfocusedIndicatorColor = Color.Transparent, disabledIndicatorColor = Color.Transparent))
+                if (state.canStop) ActionIcon(Icons.Outlined.Stop, "停止", controller::stopCurrent, state.canStop, Modifier.testTag("chat-stop"))
                 FilledIconButton(onClick = { followLatest = true; keyboard?.hide(); controller.send() }, enabled = state.canSend, modifier = Modifier.size(48.dp).testTag("chat-send")) {
                     Icon(Icons.Outlined.ArrowUpward, if (state.sending) "发送中" else "发送", Modifier.size(24.dp))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ProjectPicker(state: ChatState, controller: ChatController) {
+    var menu by remember { mutableStateOf(false) }
+    Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Box {
+            AssistChip(onClick = { menu = true }, enabled = state.session?.status != "archived" && !state.sending,
+                label = { Text(state.selectedProjectName, maxLines = 1) },
+                leadingIcon = { Icon(Icons.Outlined.FolderOpen, null, Modifier.size(16.dp)) })
+            DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
+                DropdownMenuItem(text = { Text("不指定项目") }, onClick = { menu = false; controller.selectProject(null) })
+                state.projects.forEach { project -> DropdownMenuItem(text = { Text(project.title) }, onClick = { menu = false; controller.selectProject(project.id) }) }
+                HorizontalDivider()
+                DropdownMenuItem(text = { Text("刷新项目") }, onClick = { menu = false; controller.loadProjects() })
+            }
+        }
+        state.projectError?.let { Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
+    }
+}
+
+@Composable
+private fun QueueTray(tasks: List<QueuedTask>, headStatus: String?, busy: Boolean, controller: ChatController) {
+    // "Send now" only makes sense while a reply is actually dispatchable; mirror the server's gate.
+    val canSteer = headStatus in listOf("dispatched", "running", "waiting_local_directory")
+    Surface(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).testTag("chat-queue"), shape = RoundedCornerShape(16.dp), color = MaterialTheme.colorScheme.surfaceVariant) {
+        Column(Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Text("待发消息 · ${tasks.size}", Modifier.weight(1f), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+                TextButton(onClick = controller::clearQueued, enabled = !busy) { Text("清空", style = MaterialTheme.typography.labelSmall) }
+            }
+            tasks.forEach { task ->
+                Column(Modifier.fillMaxWidth().padding(vertical = 2.dp)) {
+                    Text(task.content?.trim().orEmpty().ifBlank { "已排队的消息" }, maxLines = 2, style = MaterialTheme.typography.bodyMedium)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        TextButton(onClick = { controller.sendQueuedNow(task.task_id) }, enabled = canSteer && !busy) { Text("立即发送", style = MaterialTheme.typography.labelSmall) }
+                        TextButton(onClick = { controller.editQueued(task.task_id) }, enabled = !busy) { Text("编辑", style = MaterialTheme.typography.labelSmall) }
+                        TextButton(onClick = { controller.removeQueued(task.task_id) }, enabled = !busy) { Text("删除", style = MaterialTheme.typography.labelSmall) }
+                    }
                 }
             }
         }
