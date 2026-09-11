@@ -59,6 +59,17 @@ public enum ChatSessions {
                 return (candidate.updatedAt ?? "") > (selected.updatedAt ?? "") ? candidate : selected
             }
     }
+
+    /// Scene restoration entry point: the conversation the user was last in wins
+    /// over "most recently updated", which two clients can tie on or which can
+    /// move because of work started elsewhere. Falls back to `latest` when the
+    /// remembered conversation is gone, archived, or belongs to another agent.
+    public static func restored(for agentId: String, rememberedId: String?, in sessions: [ChatSession]) -> ChatSession? {
+        guard let rememberedId,
+              let remembered = sessions.first(where: { $0.id == rememberedId && $0.agentId == agentId && $0.status != "archived" })
+        else { return latest(for: agentId, in: sessions) }
+        return remembered
+    }
 }
 
 public struct ChatMessage: Decodable, Identifiable, Sendable {

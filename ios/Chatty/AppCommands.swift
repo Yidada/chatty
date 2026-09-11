@@ -21,6 +21,16 @@ final class AppCommandCenter: ObservableObject {
     var openSettings: (() -> Void)?
     var cancel: (() -> Void)?
 
+    /// How many workspace windows are on screen. The menu bar is process-wide
+    /// (Stage C can show the same shell in several windows), so clearing has to
+    /// wait for the last one to leave.
+    private var liveWindows = 0
+    func registerWorkspaceWindow() { liveWindows += 1 }
+    func unregisterWorkspaceWindow() {
+        liveWindows = max(0, liveWindows - 1)
+        if liveWindows == 0 { clearWorkspaceCommands() }
+    }
+
     /// Called when the workspace shell leaves the hierarchy (sign-out, switch
     /// workspace) so stale closures cannot fire against an invalidated model.
     func clearWorkspaceCommands() {

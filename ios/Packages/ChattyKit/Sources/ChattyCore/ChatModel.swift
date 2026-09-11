@@ -29,6 +29,7 @@ import Observation
     @ObservationIgnored public var onWorkspaceEvent: ((SocketEvent) -> Void)?
     @ObservationIgnored private let context: WorkspaceContext
     @ObservationIgnored private var visible = false
+    @ObservationIgnored private var visibleCount = 0
     @ObservationIgnored private var foreground = true
     @ObservationIgnored private var markingRead = false
     @ObservationIgnored private var markedMessage: String?
@@ -61,8 +62,12 @@ import Observation
             role = allMembers.first(where: { $0.userId == context.user.id })?.role
             agent = allAgents.first { $0.systemKey == "mika" && AgentPermission.canChat($0, userId: context.user.id, role: role) }
             guard let agent else { initialized = true; error = "此工作区没有可调用的 Mika。你可以在设置中切换工作区。"; return }
+            let remembered = try? context.files.lastSession(account: context.user.id, workspace: context.workspace.id, agent: agent.id)
             if let existing = session, let fresh = allSessions.first(where: { $0.id == existing.id && $0.status != "archived" }) { session = fresh }
-            else if !newSessionPending { session = ChatSessions.latest(for: agent.id, in: allSessions) }
+            // Stage C remembers the conversation the user was actually in; Stage B
+            // must not adopt the previous "latest" session while ⌘N is pending.
+            else if !newSessionPending { session = ChatSessions.restored(for: agent.id, rememberedId: remembered ?? nil, in: allSessions) }
+            rememberSession(agentId: agent.id)
             if !draftLoaded {
                 let saved = try context.files.draft(account: context.user.id, workspace: context.workspace.id, agent: agent.id)
                 draft = saved.text; uncertain = saved.uncertain
@@ -138,10 +143,11 @@ import Observation
                     if let current = session {
                         guard let fresh = all.first(where: { $0.id == current.id && $0.status != "archived" }) else {
                             session = nil; messages = []; pending = nil; cursor = nil; hasMore = false; traces = [:]; receiptRows = [:]
+                            rememberSession(agentId: current.agentId)
                             notice = "原对话已归档或删除，下次发送将创建新的 Mika 对话。"; continue
                         }
                         session = fresh
-                    } else if let agent, !newSessionPending { session = ChatSessions.latest(for: agent.id, in: all) }
+                    } else if let agent, !newSessionPending { session = ChatSessions.latest(for: agent.id, in: all); rememberSession(agentId: agent.id) }
                     try await syncMessages()
                     error = nil
                 } catch { self.error = await context.report(error) }
@@ -169,7 +175,13 @@ import Observation
         if let taskId = task.taskId { await loadTrace(taskId) }
         await markRead()
     }
-    public func setVisible(_ value: Bool) async { visible = value; if value { await markRead() } }
+    /// Reference counted: several windows can show the same shared conversation,
+    /// so one window disappearing must not clear the read state for the others.
+    public func setVisible(_ value: Bool) async {
+        visibleCount = max(0, visibleCount + (value ? 1 : -1))
+        visible = visibleCount > 0
+        if visible { await markRead() }
+    }
     private func markRead() async {
         guard foreground, visible, context.active, !markingRead, let session, let last = messages.last?.id, last != markedMessage else { return }
         markingRead = true; defer { markingRead = false }
@@ -196,6 +208,11 @@ import Observation
     private func persistDraft() throws {
         guard let agent else { return }
         try context.files.saveDraft(DraftRecord(text: draft, uncertain: uncertain, projectId: selectedProjectId, projectSelectionSet: true, outbox: outbox), account: context.user.id, workspace: context.workspace.id, agent: agent.id)
+    }
+    /// Scene restoration: keep the conversation the user is actually in.
+    private func rememberSession(agentId: String) {
+        do { try context.files.saveLastSession(session?.id, account: context.user.id, workspace: context.workspace.id, agent: agentId) }
+        catch { self.error = "会话位置暂时无法保存，请保持应用打开。" }
     }
     public func acknowledgeUncertain() {
         guard context.active, !sending else { return }
@@ -334,7 +351,7 @@ import Observation
                         var body: [String: JSONValue] = ["agent_id": .string(agent.id)]
                         if let project = item.projectId { body["project_id"] = .string(project) }
                         let created: ChatSession = try await context.api.write("/api/chat/sessions", body: body)
-                        try context.check(); session = created; newSessionPending = false
+                        try context.check(); session = created; newSessionPending = false; rememberSession(agentId: agent.id)
                     }
                     guard var current = session else { throw APIError.http(404) }
                     // Refresh responses can race this loop. Reaffirm each snapshot

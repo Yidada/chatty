@@ -17,6 +17,6 @@ enum ChattyTheme {
     static let surface = Color(uiColor: .secondarySystemGroupedBackground)
 }
 
-enum AppTab: String, CaseIterable, Hashable {
+enum AppTab: String, CaseIterable, Hashable, Codable {
     case activity, chat, projects, settings
 }

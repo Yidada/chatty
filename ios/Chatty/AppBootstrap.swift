@@ -6,51 +6,49 @@ struct AppConfiguration {
     let isFixture: Bool
     var hint: String?
     static let production = AppConfiguration(baseURL: URL(string: "https://api.multica.ai/")!, isFixture: false)
+    static var current: AppConfiguration {
+        #if CHATTY_FIXTURE
+        .fixture
+        #else
+        .production
+        #endif
+    }
 }
 
 struct AppBootstrap: View {
-    let configuration: AppConfiguration
-    @State private var model: SessionModel?
-    @State private var failure: String?
+    let core: AppCore
+    var route: AppRoute?
 
     var body: some View {
         Group {
-            if let model {
+            if let model = core.session {
                 VStack(spacing: 0) {
-                    if configuration.isFixture {
+                    if core.configuration.isFixture {
                         Label("测试工作区 · 合成数据", systemImage: "flask")
                             .font(.caption).foregroundStyle(ChattyTheme.accent).padding(.vertical, 6)
                             .accessibilityIdentifier("fixture.banner")
                     }
-                    SessionRootView(model: model, hint: configuration.hint)
+                    SessionRootView(model: model, hint: core.configuration.hint, route: route)
                 }
-            } else if let failure {
+            } else if let failure = core.failure {
                 ContentUnavailableView { Label("暂时无法启动", systemImage: "lock.trianglebadge.exclamationmark") }
-                    description: { Text(failure) } actions: { Button("重试", action: prepare) }
+                    description: { Text(failure) } actions: { Button("重试", action: core.prepare) }
             } else { ProgressView("准备工作区…") }
         }
         .background(ChattyTheme.background)
         .tint(ChattyTheme.accent)
-        .task { prepare() }
-    }
-    private func prepare() {
-        guard model == nil else { return }
-        do {
-            let identity = Bundle.main.bundleIdentifier ?? "ai.chatty.ios"
-            let files = try ProtectedStorage(identifier: identity)
-            model = SessionModel(baseURL: configuration.baseURL, vault: KeychainVault(service: identity), files: files)
-            failure = nil
-        } catch { failure = error.localizedDescription }
+        .task { core.prepare() }
     }
 }
 
 struct SessionRootView: View {
     @Bindable var model: SessionModel
     let hint: String?
+    var route: AppRoute?
     var body: some View {
         Group {
             if model.restoring { ProgressView("恢复登录…") }
-            else if let workspace = model.current { WorkspaceTabs(model: workspace, session: model).id(workspace.id) }
+            else if let workspace = model.current { WorkspaceTabs(model: workspace, session: model, route: route).id(workspace.id) }
             else if model.authenticated && model.recoveryScope != nil { OfflineDraftView(model: model) }
             else if model.authenticated { WorkspacePicker(model: model) }
             else { LoginView(model: model, hint: hint) }

@@ -119,6 +119,12 @@ class API(BASE.API):
                 row['revision'] += 1
                 row['last_activity_at'] = time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime())
                 module.broadcast('issue:updated', {'issue_id':row['id']})
+            if body.get('promote_session'):
+                # Scene restoration check: make another session the most recently
+                # updated one, so "restore where I was" and "pick the newest"
+                # give different answers.
+                row = next((s for s in module.SESSIONS if s['id'] == body['promote_session']), None)
+                if row: row['updated_at'] = time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime())
         match = re.fullmatch('/api/chat/sessions/([^/]+)/messages', path)
         if match:
             session = next((s for s in module.SESSIONS if s['id'] == match[1]), {})
