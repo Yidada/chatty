@@ -18,6 +18,13 @@ instructions are in [the workflow guide](../docs/sdlc-workflow.md).
 - [Android V3 performance baseline](changes/20260906-android-v3-performance-baseline/intent.md):
   migrated baseline preparation and samples. The migration does not create new
   approvals or change the acceptance status recorded in the intent and results.
+- [iOS dynamic feed and continuous Mika send](changes/20260910-ios-activity-mika-flow/intent.md):
+  implementation and its own `evidence/` records.
+- [iPad / iPadOS adaptive design](changes/20260910-ios-ipad-adaptive/intent.md):
+  [design specification](changes/20260910-ios-ipad-adaptive/spec.md),
+  [implementation split](changes/20260910-ios-ipad-adaptive/plan.md),
+  [verification](changes/20260910-ios-ipad-adaptive/evidence.md). Design stage
+  only; no product code change is included.
 
 ## Historical records
 
