@@ -11,3 +11,8 @@ __pycache__/
 **/.swiftpm/
 **/xcuserdata/
 *.xcuserstate
+
+# Local browser evidence and independent Sites checkout
+.playwright-cli/
+output/
+/web/

@@ -366,3 +366,9 @@ Benjamin 已于 2026-09-06 批准 1A–6A，CLE-73 执行 Stage 2；真实 B0 �
 - Multica read-only: `server/internal/realtime/hub.go`
 - Multica read-only: `server/pkg/db/queries/chat.sql`
 - Multica read-only: `server/pkg/protocol/events.go`
+
+## 18. 2026-09-09 用户体验需求续接
+
+用户 反馈 Pixel 日常操作存在多余步骤与卡顿，要求 AI-Native SDLC 驱动。目标为减少等待、重复加载和操作中断；先测启动到可操作、切 Tab/返回、刷新时发送可用性、长对话和弱网恢复。
+
+最小交付为代表性体验诊断、瓶颈排序和首个修复建议。既有 1A–6A 保持；产品优化仍须先完成 B0/T 验收。具体标准见 [spec.md](spec.md)，执行顺序见 [plan.md](plan.md)，当前协调器状态见 [state.json](state.json)。历史 Stage 2 基线准备与当前协调器需求设计阶段分别记录。

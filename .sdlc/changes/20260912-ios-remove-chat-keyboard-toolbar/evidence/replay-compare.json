@@ -1,0 +1,38 @@
+[
+  {
+    "name": "base-v1-core",
+    "ok": false,
+    "code": "REPLAY_DIVERGENCE",
+    "step": 13,
+    "reason": "wait_target_absent",
+    "action": "wait \"id=\\\"attachment.file1\\\"\"",
+    "source_line": 15
+  },
+  {
+    "name": "new-v1-core",
+    "ok": false,
+    "code": "REPLAY_DIVERGENCE",
+    "step": 13,
+    "reason": "wait_target_absent",
+    "action": "wait \"id=\\\"attachment.file1\\\"\"",
+    "source_line": 15
+  },
+  {
+    "name": "base-v1-workspaces",
+    "ok": false,
+    "code": "REPLAY_DIVERGENCE",
+    "step": 9,
+    "reason": "wait_target_absent",
+    "action": "wait \"id=\\\"chat.attach\\\"\"",
+    "source_line": 10
+  },
+  {
+    "name": "new-v1-workspaces",
+    "ok": false,
+    "code": "REPLAY_DIVERGENCE",
+    "step": 9,
+    "reason": "wait_target_absent",
+    "action": "wait \"id=\\\"chat.attach\\\"\"",
+    "source_line": 11
+  }
+]

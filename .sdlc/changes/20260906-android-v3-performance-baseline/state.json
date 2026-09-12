@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "change_id": "20260906-android-v3-performance-baseline",
+  "title": "Pixel 日常操作流畅性与缓存加载优化",
+  "risk": "R3",
+  "current_stage": "design",
+  "status": "active",
+  "required_artifacts": [
+    "intent.md",
+    "spec.md",
+    "plan.md",
+    "evidence.md",
+    "review.md",
+    "decisions.md",
+    "risk.md",
+    "rollback.md",
+    "approvals.md"
+  ],
+  "gates": {
+    "spec": "pending",
+    "plan": "pending",
+    "production": "not_required"
+  },
+  "created_at": "2026-09-09T03:55:38.936845Z",
+  "updated_at": "2026-09-09T03:55:49Z",
+  "delivery": "local",
+  "approval_records": {},
+  "trigger": "2026-09-09 用户要求 AI-Native SDLC 驱动体验优化；承接 CLE-70/CLE-73 与 1A–6A",
+  "risk_justification": "消息持久化涉及敏感数据，刷新优化涉及发送权限；整体按 R3。"
+}

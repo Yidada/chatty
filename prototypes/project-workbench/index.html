@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#173c2c">
+<title>Chatty — 项目工作台</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%23173c2c'/%3E%3Cpath d='M12 12h16v12H18l-6 6z' fill='%23d9edba'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="styles.css"><script defer src="app.js"></script>
+</head>
+<body>
+<div class="app-shell">
+<aside class="sidebar" aria-label="应用导航">
+<a href="#/desk" class="brand"><span class="brand-mark">c<span></span></span><span>chatty<span class="brand-sub">你的项目，持续向前。</span></span></a>
+<div class="workspace-label">WORKSPACE</div>
+<div class="workspace-name"><span class="workspace-avatar">B</span><span>用户’s workspace<small>个人工作空间</small></span></div>
+<nav id="desktop-nav"></nav>
+<div class="sidebar-bottom"><div class="sync-state"><span></span> 交互体验版</div><p>示例数据 · 保存在当前浏览器</p><button class="quiet-button" data-action="reset">重置体验数据</button><div class="profile"><span class="avatar">B</span><span>用户<small>项目负责人</small></span><span class="profile-dot"></span></div></div>
+</aside>
+<div class="main-shell">
+<header class="topbar"><div class="mobile-brand">chatty<span>体验版</span></div><div class="breadcrumb" id="breadcrumb">工作空间 <span>/</span> 工作台</div><div class="top-actions"><button class="button quiet" data-action="simulate" id="simulate-button"></button><a href="#/mika" class="button primary" id="talk-link"></a></div></header>
+<main id="content" tabindex="-1"></main>
+</div>
+<nav id="mobile-nav" aria-label="移动导航"></nav>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+<div id="modal-root"></div>
+</body></html>

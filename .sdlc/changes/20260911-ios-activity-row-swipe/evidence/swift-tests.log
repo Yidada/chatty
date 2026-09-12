@@ -1,0 +1,184 @@
+[0/1] Planning build
+Building for debugging...
+[0/3] Write sources
+[1/3] Write swift-version--58304C5D6DBC2206.txt
+[3/5] Compiling ChattyCoreTests ActivityRowActionsTests.swift
+[4/5] Emitting module ChattyCoreTests
+[4/6] Write Objects.LinkFileList
+[5/6] Linking ChattyKitPackageTests
+Build complete! (1.68s)
+Test Suite 'All tests' started at 2026-09-11 23:05:19.508.
+Test Suite 'ChattyKitPackageTests.xctest' started at 2026-09-11 23:05:19.515.
+Test Suite 'ActivityRowActionsTests' started at 2026-09-11 23:05:19.515.
+Test Case '-[ChattyCoreTests.ActivityRowActionsTests testEveryActionHasAStableUniqueIdentifierTitleAndIcon]' started.
+Test Case '-[ChattyCoreTests.ActivityRowActionsTests testEveryActionHasAStableUniqueIdentifierTitleAndIcon]' passed (0.002 seconds).
+Test Case '-[ChattyCoreTests.ActivityRowActionsTests testOnlyMarkReadMayRunOnAFullSwipe]' started.
+Test Case '-[ChattyCoreTests.ActivityRowActionsTests testOnlyMarkReadMayRunOnAFullSwipe]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.ActivityRowActionsTests testPendingListSwipesCompleteForwardAndReturnBack]' started.
+Test Case '-[ChattyCoreTests.ActivityRowActionsTests testPendingListSwipesCompleteForwardAndReturnBack]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.ActivityRowActionsTests testRecentListSwipesOnlyWriteTheLocalReadState]' started.
+Test Case '-[ChattyCoreTests.ActivityRowActionsTests testRecentListSwipesOnlyWriteTheLocalReadState]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.ActivityRowActionsTests testStatusActionsCarryTheExactBatchBodyAndEmphasis]' started.
+Test Case '-[ChattyCoreTests.ActivityRowActionsTests testStatusActionsCarryTheExactBatchBodyAndEmphasis]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.ActivityRowActionsTests testVoiceOverMirrorNamesMatchTheGesturePair]' started.
+Test Case '-[ChattyCoreTests.ActivityRowActionsTests testVoiceOverMirrorNamesMatchTheGesturePair]' passed (0.000 seconds).
+Test Suite 'ActivityRowActionsTests' passed at 2026-09-11 23:05:19.518.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.003 (0.003) seconds
+Test Suite 'BatchOperationsTests' started at 2026-09-11 23:05:19.518.
+Test Case '-[ChattyCoreTests.BatchOperationsTests testAccumulatorSeparatesSkipsFromFailuresAndClampsOverReports]' started.
+Test Case '-[ChattyCoreTests.BatchOperationsTests testAccumulatorSeparatesSkipsFromFailuresAndClampsOverReports]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.BatchOperationsTests testBatchChunkingKeepsOrderDropsBlanksAndCapsAtTwenty]' started.
+Test Case '-[ChattyCoreTests.BatchOperationsTests testBatchChunkingKeepsOrderDropsBlanksAndCapsAtTwenty]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.BatchOperationsTests testBatchRequestCarriesOnlyIntendedFieldsAndMarksSuppressRun]' started.
+Test Case '-[ChattyCoreTests.BatchOperationsTests testBatchRequestCarriesOnlyIntendedFieldsAndMarksSuppressRun]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.BatchOperationsTests testResultNeverReportsZeroAppliedAsSuccessAndHasNoRetryWhenEverythingLanded]' started.
+Test Case '-[ChattyCoreTests.BatchOperationsTests testResultNeverReportsZeroAppliedAsSuccessAndHasNoRetryWhenEverythingLanded]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.BatchOperationsTests testSelectionTogglesSelectsAllAndPrunesRowsThatLeftThePage]' started.
+Test Case '-[ChattyCoreTests.BatchOperationsTests testSelectionTogglesSelectsAllAndPrunesRowsThatLeftThePage]' passed (0.000 seconds).
+Test Suite 'BatchOperationsTests' passed at 2026-09-11 23:05:19.519.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'ClientFlowTests' started at 2026-09-11 23:05:19.519.
+Test Case '-[ChattyCoreTests.ClientFlowTests testAcceptedSendWithFailedRefreshIsNeverTurnedIntoRetry]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testAcceptedSendWithFailedRefreshIsNeverTurnedIntoRetry]' passed (0.017 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testActivityBatchFailureIsReportedAndChunksAtTwenty]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testActivityBatchFailureIsReportedAndChunksAtTwenty]' passed (0.008 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testActivityBatchRejectsASecondSubmitWhileOneIsInFlight]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testActivityBatchRejectsASecondSubmitWhileOneIsInFlight]' passed (0.018 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testActivityBatchReportsSkippedRowsAsUnfinishedAndRetriesTheSameChunk]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testActivityBatchReportsSkippedRowsAsUnfinishedAndRetriesTheSameChunk]' passed (0.007 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testActivityBatchStatusConvergesFromServerAndMarksTouchedRowsRead]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testActivityBatchStatusConvergesFromServerAndMarksTouchedRowsRead]' passed (0.007 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testActivityIncludesOtherCreatorsAndOlderActionsWithSeparateReadState]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testActivityIncludesOtherCreatorsAndOlderActionsWithSeparateReadState]' passed (0.007 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testActivityRowMarkUnreadRestoresTheRedDotAndOnlyCountsRealChanges]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testActivityRowMarkUnreadRestoresTheRedDotAndOnlyCountsRealChanges]' passed (0.005 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testActivityRowSwipeSubmitsTheSharedActionBodyAndReportsASilentSkip]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testActivityRowSwipeSubmitsTheSharedActionBodyAndReportsASilentSkip]' passed (0.007 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testAttachmentImportLimitsAndSharedIssueLink]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testAttachmentImportLimitsAndSharedIssueLink]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testAttachmentReceiptControlsRemovalAndNeverGuessesBinding]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testAttachmentReceiptControlsRemovalAndNeverGuessesBinding]' passed (0.018 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testBackgroundHoldsFollowersWhileInFlightReceiptCompletes]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testBackgroundHoldsFollowersWhileInFlightReceiptCompletes]' passed (0.020 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testColdOfflineRecoveryKeepsDraftWithoutCreatingAuthorizedWorkspace]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testColdOfflineRecoveryKeepsDraftWithoutCreatingAuthorizedWorkspace]' passed (0.008 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testColdQueueRequiresExplicitResumeAndKeepsComposerSeparate]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testColdQueueRequiresExplicitResumeAndKeepsComposerSeparate]' passed (0.011 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testConsecutiveSendsSnapshotProjectsAndFilesWhileFirstReceiptIsHeld]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testConsecutiveSendsSnapshotProjectsAndFilesWhileFirstReceiptIsHeld]' passed (0.023 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testCredentialsNeverReachAuthOrForeignOrigin]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testCredentialsNeverReachAuthOrForeignOrigin]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testDoubleSendProducesOneWriteAndReceiptClearsDraft]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testDoubleSendProducesOneWriteAndReceiptClearsDraft]' passed (0.006 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testDroppedFileUsesTheSameValidationAndUploadPathAsThePicker]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testDroppedFileUsesTheSameValidationAndUploadPathAsThePicker]' passed (0.020 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testExpiredSignedURLRefreshesMetadataWithoutSendingCredentials]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testExpiredSignedURLRefreshesMetadataWithoutSendingCredentials]' passed (0.006 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testFailedStatusCatalogKeepsProjectsAndDisablesEditing]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testFailedStatusCatalogKeepsProjectsAndDisablesEditing]' passed (0.004 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testFailureLabelsAndTraceRedactionKeepSecretsOutOfPresentation]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testFailureLabelsAndTraceRedactionKeepSecretsOutOfPresentation]' passed (0.001 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testHistoryUsesBothCursorsAndKeepsEqualTimestampMessages]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testHistoryUsesBothCursorsAndKeepsEqualTimestampMessages]' passed (0.004 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testIdenticalTextRemainsTwoSeparateMessagesAfterReceipts]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testIdenticalTextRemainsTwoSeparateMessagesAfterReceipts]' passed (0.021 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testInvalidCodeDoesNotPersistCredentialsAndValidCodeLoadsAccount]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testInvalidCodeDoesNotPersistCredentialsAndValidCodeLoadsAccount]' passed (0.002 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testIssueConflictReadsFreshRevisionWithoutRepeatingWrite]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testIssueConflictReadsFreshRevisionWithoutRepeatingWrite]' passed (0.005 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testIssuePaginationAndOneRevisionProtectedSuppressedWrite]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testIssuePaginationAndOneRevisionProtectedSuppressedWrite]' passed (0.006 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testLegacyActiveRunQueuesLocallyUntilRunFinishes]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testLegacyActiveRunQueuesLocallyUntilRunFinishes]' passed (0.007 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testNewSessionDefersSessionCreationUntilTheNextSend]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testNewSessionDefersSessionCreationUntilTheNextSend]' passed (0.006 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testNewSessionIsRefusedWhileASendIsUnconfirmed]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testNewSessionIsRefusedWhileASendIsUnconfirmed]' passed (0.020 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testOnlyCurrent401ClearsCredentials]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testOnlyCurrent401ClearsCredentials]' passed (0.005 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testOversizeUploadIsRejectedBeforeAnyNetworkWrite]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testOversizeUploadIsRejectedBeforeAnyNetworkWrite]' passed (0.004 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testProjectPermissionFailureStopsPostAndExplicitRetryPreservesSnapshot]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testProjectPermissionFailureStopsPostAndExplicitRetryPreservesSnapshot]' passed (0.008 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testProtectedPreviewsAndAccountDraftsArePurgedOnLogout]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testProtectedPreviewsAndAccountDraftsArePurgedOnLogout]' passed (0.002 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testReadReceiptOnlyWhileChatIsVisibleAndDeduplicatesRefreshes]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testReadReceiptOnlyWhileChatIsVisibleAndDeduplicatesRefreshes]' passed (0.006 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testRichInlineStylesNestedListsAndUnsafeLinks]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testRichInlineStylesNestedListsAndUnsafeLinks]' passed (0.001 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testUnavailableMikaCannotSendEvenWhenDisplayNameMatches]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testUnavailableMikaCannotSendEvenWhenDisplayNameMatches]' passed (0.002 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testUnknownReceiptCanOnlyRetryAfterExplicitReview]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testUnknownReceiptCanOnlyRetryAfterExplicitReview]' passed (0.009 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testUnknownReceiptSurvivesRefreshAndColdModelWithoutResending]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testUnknownReceiptSurvivesRefreshAndColdModelWithoutResending]' passed (0.009 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testV1UncertainDraftMigratesWithoutBecomingANewSend]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testV1UncertainDraftMigratesWithoutBecomingANewSend]' passed (0.024 seconds).
+Test Case '-[ChattyCoreTests.ClientFlowTests testWorkspaceDraftIsolationAndOldScopeCannotSend]' started.
+Test Case '-[ChattyCoreTests.ClientFlowTests testWorkspaceDraftIsolationAndOldScopeCannotSend]' passed (0.009 seconds).
+Test Suite 'ClientFlowTests' passed at 2026-09-11 23:05:19.865.
+	 Executed 39 tests, with 0 failures (0 unexpected) in 0.344 (0.346) seconds
+Test Suite 'ContractTests' started at 2026-09-11 23:05:19.865.
+Test Case '-[ChattyCoreTests.ContractTests testEqualTimestampsDoNotCollapseDifferentMessageIDs]' started.
+Test Case '-[ChattyCoreTests.ContractTests testEqualTimestampsDoNotCollapseDifferentMessageIDs]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.ContractTests testExistingAndroidFixturePageRetainsCursorAndRichAttachment]' started.
+Test Case '-[ChattyCoreTests.ContractTests testExistingAndroidFixturePageRetainsCursorAndRichAttachment]' passed (0.001 seconds).
+Test Case '-[ChattyCoreTests.ContractTests testHTMLRemainsLiteralContent]' started.
+Test Case '-[ChattyCoreTests.ContractTests testHTMLRemainsLiteralContent]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.ContractTests testLatestMikaSessionExcludesArchiveAndKeepsServerOrderOnTies]' started.
+Test Case '-[ChattyCoreTests.ContractTests testLatestMikaSessionExcludesArchiveAndKeepsServerOrderOnTies]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.ContractTests testMarkdownTableTaskListAndCodeRemainStructured]' started.
+Test Case '-[ChattyCoreTests.ContractTests testMarkdownTableTaskListAndCodeRemainStructured]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.ContractTests testMissingOptionalFieldsAndNullAttachmentsRemainCompatible]' started.
+Test Case '-[ChattyCoreTests.ContractTests testMissingOptionalFieldsAndNullAttachmentsRemainCompatible]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.ContractTests testProjectTotalsUseServiceCountsAndHandleEmptyProjects]' started.
+Test Case '-[ChattyCoreTests.ContractTests testProjectTotalsUseServiceCountsAndHandleEmptyProjects]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.ContractTests testReceiptRequiresServerIdentifiersAndPreservesUnboundAttachments]' started.
+Test Case '-[ChattyCoreTests.ContractTests testReceiptRequiresServerIdentifiersAndPreservesUnboundAttachments]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.ContractTests testUnknownSocketEventPreservesPayloadAndWireKeys]' started.
+Test Case '-[ChattyCoreTests.ContractTests testUnknownSocketEventPreservesPayloadAndWireKeys]' passed (0.000 seconds).
+Test Suite 'ContractTests' passed at 2026-09-11 23:05:19.868.
+	 Executed 9 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+Test Suite 'FixtureClientTests' started at 2026-09-11 23:05:19.868.
+Test Case '-[ChattyCoreTests.FixtureClientTests testFixtureReadsOnlyLoopbackWithSyntheticScope]' started.
+Test Case '-[ChattyCoreTests.FixtureClientTests testFixtureReadsOnlyLoopbackWithSyntheticScope]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.FixtureClientTests testMalformedContractIsReported]' started.
+Test Case '-[ChattyCoreTests.FixtureClientTests testMalformedContractIsReported]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.FixtureClientTests testServerFailureDoesNotRetryOrDecodeAsSuccess]' started.
+Test Case '-[ChattyCoreTests.FixtureClientTests testServerFailureDoesNotRetryOrDecodeAsSuccess]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.FixtureClientTests testTransportCancellationIsPreserved]' started.
+Test Case '-[ChattyCoreTests.FixtureClientTests testTransportCancellationIsPreserved]' passed (0.001 seconds).
+Test Suite 'FixtureClientTests' passed at 2026-09-11 23:05:19.870.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.001 (0.002) seconds
+Test Suite 'MacStorageTests' started at 2026-09-11 23:05:19.870.
+Test Case '-[ChattyCoreTests.MacStorageTests testPrivatePermissionsSurviveAtomicReplacementAndAccountIsolation]' started.
+Test Case '-[ChattyCoreTests.MacStorageTests testPrivatePermissionsSurviveAtomicReplacementAndAccountIsolation]' passed (0.003 seconds).
+Test Suite 'MacStorageTests' passed at 2026-09-11 23:05:19.873.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.003 (0.003) seconds
+Test Suite 'SceneStateTests' started at 2026-09-11 23:05:19.873.
+Test Case '-[ChattyCoreTests.SceneStateTests testClosingOneOfTwoWindowsKeepsTheSharedConnectionAlive]' started.
+Test Case '-[ChattyCoreTests.SceneStateTests testClosingOneOfTwoWindowsKeepsTheSharedConnectionAlive]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.SceneStateTests testEachWindowKeepsItsOwnRestoredTab]' started.
+Test Case '-[ChattyCoreTests.SceneStateTests testEachWindowKeepsItsOwnRestoredTab]' passed (0.001 seconds).
+Test Case '-[ChattyCoreTests.SceneStateTests testFirstActiveSceneStartsAndExtraWindowsKeepRunning]' started.
+Test Case '-[ChattyCoreTests.SceneStateTests testFirstActiveSceneStartsAndExtraWindowsKeepRunning]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.SceneStateTests testIdleLaunchDoesNotStartNetworking]' started.
+Test Case '-[ChattyCoreTests.SceneStateTests testIdleLaunchDoesNotStartNetworking]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.SceneStateTests testLastWindowLeavingPausesAndReturningRestarts]' started.
+Test Case '-[ChattyCoreTests.SceneStateTests testLastWindowLeavingPausesAndReturningRestarts]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.SceneStateTests testRememberedConversationFallsBackWhenGoneArchivedOrForeign]' started.
+Test Case '-[ChattyCoreTests.SceneStateTests testRememberedConversationFallsBackWhenGoneArchivedOrForeign]' passed (0.000 seconds).
+Test Case '-[ChattyCoreTests.SceneStateTests testRememberedConversationIsScopedAndClearedWithTheAccount]' started.
+Test Case '-[ChattyCoreTests.SceneStateTests testRememberedConversationIsScopedAndClearedWithTheAccount]' passed (0.002 seconds).
+Test Case '-[ChattyCoreTests.SceneStateTests testRememberedConversationWinsOverNewerTimestamp]' started.
+Test Case '-[ChattyCoreTests.SceneStateTests testRememberedConversationWinsOverNewerTimestamp]' passed (0.000 seconds).
+Test Suite 'SceneStateTests' passed at 2026-09-11 23:05:19.877.
+	 Executed 8 tests, with 0 failures (0 unexpected) in 0.004 (0.005) seconds
+Test Suite 'ChattyKitPackageTests.xctest' passed at 2026-09-11 23:05:19.877.
+	 Executed 72 tests, with 0 failures (0 unexpected) in 0.359 (0.363) seconds
+Test Suite 'All tests' passed at 2026-09-11 23:05:19.877.
+	 Executed 72 tests, with 0 failures (0 unexpected) in 0.359 (0.369) seconds
+◇ Test run started.
+↳ Testing Library Version: 1902
+↳ Target Platform: arm64e-apple-macos14.0
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.

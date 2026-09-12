@@ -4,7 +4,7 @@
 
 代码已提交并推送到 `main`：`cb7a30a942017bab01f8ccec67b2d4332eccae1f`。用户完成 Xcode 登录后，生产构建 `0.1.0 (2)` 已于 2026-09-10 20:10（Asia/Singapore）通过 Organizer 上传 Apple，分发方式为 **TestFlight Internal Only**。
 
-App Store Connect 网页仍需完成登录。Apple 处理结果、内测组分配和手机安装尚未核验，上传成功不代表已经可安装。
+App Store Connect 网页已登录并核验：构建 `2` 处理完成、合规问卷已补填、状态为 **Testing**，并已加入 **原内测组** 内测组；中文测试说明已保存在构建的 Test Information。手机安装与真实账号体验仍待独立验证。
 
 ## 交付内容
 
@@ -35,9 +35,7 @@ App Store Connect 网页仍需完成登录。Apple 处理结果、内测组分�
 
 ## 剩余发布步骤
 
-1. 完成 App Store Connect 网页登录并检查构建 `2` 的处理状态。
-2. 保存[中文测试说明](testflight-notes.zh-Hans.txt)。
-3. 将构建加入现有 Benjamin Internal 内测组，核对可测试状态。
-4. 手机安装与真实账号体验独立验证。
+1. `[internal tester]` 接受 TestFlight 邀请后在设备上安装并体验构建 `2`。
+2. 手机安装与真实账号体验独立验证构建 `2`（账号持有人）。
 
-目前未更改内测成员或通知设置。
+另有账户变更：App Store Connect 已加入新团队成员 `[internal tester]`（角色 Developer，仅授权 Chatty，已接受团队邀请），并已加入 **原内测组** 内测组，TestFlight 状态为 **Invited**（待接受安装邀请）。内测组现为 2 Testers · 2 Builds。目前未更改通知设置。

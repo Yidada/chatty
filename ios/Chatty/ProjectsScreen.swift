@@ -174,7 +174,10 @@ struct IssueScreen: View {
                         }.padding(.top, 18)
                     }.font(.callout).accessibilityIdentifier("issue.records")
                 }
-            }.padding(24).frame(maxWidth: .infinity, alignment: .leading)
+            }
+            // spec §5「事项详情 = 改」：正文收敛到可读列宽，紧凑宽度下可用宽度小于
+            // 560 pt，`.readableColumn()` 与不施加修饰符时逐点一致，零回归。
+            .padding(24).readableColumn()
         }
         .background(ChattyTheme.background).navigationTitle("事项").navigationBarTitleDisplayMode(.inline)
         .refreshable { await reload() }.onForegroundRefresh { await reload() }

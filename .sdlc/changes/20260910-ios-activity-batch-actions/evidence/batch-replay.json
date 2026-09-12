@@ -1,0 +1,29 @@
+{
+  "success": true,
+  "data": {
+    "replayed": 25,
+    "healed": 0,
+    "session": "chatty-c85-batch",
+    "sessionActive": false,
+    "artifactPaths": [
+      "/Users/benjamin/multica_workspaces/clematis-ai-ac1a5aa20d9b/cle-85-cdac75a95333/workdir/chatty/.sdlc/changes/20260910-ios-activity-batch-actions/evidence/01-selection-mode.png",
+      "/Users/benjamin/multica_workspaces/clematis-ai-ac1a5aa20d9b/cle-85-cdac75a95333/workdir/chatty/.sdlc/changes/20260910-ios-activity-batch-actions/evidence/02-batch-read-note.png",
+      "/Users/benjamin/multica_workspaces/clematis-ai-ac1a5aa20d9b/cle-85-cdac75a95333/workdir/chatty/.sdlc/changes/20260910-ios-activity-batch-actions/evidence/03-pending-select-all.png",
+      "/Users/benjamin/multica_workspaces/clematis-ai-ac1a5aa20d9b/cle-85-cdac75a95333/workdir/chatty/.sdlc/changes/20260910-ios-activity-batch-actions/evidence/04-batch-done-success.png"
+    ],
+    "snapshotDiagnostics": {
+      "stats": {
+        "count": 11,
+        "p50Ms": 270,
+        "p95Ms": 612,
+        "maxMs": 612,
+        "slowThresholdMs": 1500,
+        "platform": "ios",
+        "backends": {
+          "xctest": 11
+        }
+      }
+    },
+    "message": "Replayed 25 steps in 23.4s"
+  }
+}

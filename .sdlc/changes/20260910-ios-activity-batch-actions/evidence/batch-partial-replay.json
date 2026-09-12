@@ -1,0 +1,28 @@
+{
+  "success": true,
+  "data": {
+    "replayed": 17,
+    "healed": 0,
+    "session": "chatty-c85-partial",
+    "sessionActive": false,
+    "artifactPaths": [
+      "/Users/benjamin/multica_workspaces/clematis-ai-ac1a5aa20d9b/cle-85-cdac75a95333/workdir/chatty/.sdlc/changes/20260910-ios-activity-batch-actions/evidence/05-pending-selected.png",
+      "/Users/benjamin/multica_workspaces/clematis-ai-ac1a5aa20d9b/cle-85-cdac75a95333/workdir/chatty/.sdlc/changes/20260910-ios-activity-batch-actions/evidence/06-batch-partial-result.png",
+      "/Users/benjamin/multica_workspaces/clematis-ai-ac1a5aa20d9b/cle-85-cdac75a95333/workdir/chatty/.sdlc/changes/20260910-ios-activity-batch-actions/evidence/07-batch-partial-retry.png"
+    ],
+    "snapshotDiagnostics": {
+      "stats": {
+        "count": 7,
+        "p50Ms": 122,
+        "p95Ms": 594,
+        "maxMs": 594,
+        "slowThresholdMs": 1500,
+        "platform": "ios",
+        "backends": {
+          "xctest": 7
+        }
+      }
+    },
+    "message": "Replayed 17 steps in 9.0s"
+  }
+}

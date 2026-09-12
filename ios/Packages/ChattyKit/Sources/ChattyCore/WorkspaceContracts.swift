@@ -69,6 +69,9 @@ public struct IssueTimelineEntry: Decodable, Identifiable, Sendable {
     public let details: JSONValue?
 }
 public struct IssuePage: Decodable, Sendable { public let issues: [Issue]; public let total: Int }
+/// `POST /api/issues/batch-update` returns only a count. It never names the ids
+/// it skipped, so callers must not treat `updated` as a per-item receipt.
+public struct BatchUpdateReply: Decodable, Sendable { public let updated: Int }
 public struct IssueStatus: Decodable, Identifiable, Sendable {
     public let key: String
     public let name: String

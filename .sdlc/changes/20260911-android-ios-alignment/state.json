@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "change_id": "20260911-android-ios-alignment",
+  "title": "Android iOS alignment and performance hotspot fixes",
+  "risk": "R2",
+  "current_stage": "implementation",
+  "status": "in_progress",
+  "required_artifacts": [
+    "intent.md",
+    "spec.md",
+    "plan.md",
+    "evidence.md",
+    "review.md",
+    "decisions.md"
+  ],
+  "gates": {
+    "spec": "not_required",
+    "plan": "not_required",
+    "production": "not_required"
+  },
+  "created_at": "2026-09-11T00:00:00Z",
+  "updated_at": "2026-09-11T00:00:00Z",
+  "delivery": "local",
+  "approval_records": {},
+  "trigger": "2026-09-11 用户要求 Android 对齐 iOS 并完成性能优化；明确授权先优化、设备可用后补 B0"
+}

@@ -14,6 +14,17 @@ instructions are in [the workflow guide](../docs/sdlc-workflow.md).
   the original scope and design rationale. The recorded lifecycle remains Test.
 - [iOS P0](changes/20260905-ios-p0-native-foundation-and-fixture-device-loop/intent.md):
   completed foundation work and its own `evidence/p0/` records.
+- [iOS 动态与 Mika 连续发送](changes/20260910-ios-activity-mika-flow/intent.md):
+  动态 / Mika / 项目三页导航、工作区全量事项进展、已读红点与待处理，以及 Mika 连续交办。
+- [iOS 动态批量处理](changes/20260910-ios-activity-batch-actions/intent.md):
+  [执行计划](changes/20260910-ios-activity-batch-actions/plan.md)、
+  [验证记录](changes/20260910-ios-activity-batch-actions/evidence.md)。
+  多选、批量已读，以及待处理页批量验收完成 / 退回待办（`POST /api/issues/batch-update`）。
+- [iOS 动态逐行滑动操作](changes/20260911-ios-activity-row-swipe/intent.md):
+  [执行计划](changes/20260911-ios-activity-row-swipe/plan.md)、
+  [验证记录](changes/20260911-ios-activity-row-swipe/evidence.md)。
+  两个列表的逐行左滑 / 右滑动作，共用同一套动作定义并复用批量通路；含全滑策略、选择态禁用、
+  指针菜单与 iPad 常规宽度证据。本轮同时把 CLE-85 的批量层重新落到最新 `main`。
 - [Android native experience](changes/20260905-native-experience-without-multica-web-exits/intent.md).
 - [Android V3 performance baseline](changes/20260906-android-v3-performance-baseline/intent.md):
   migrated baseline preparation and samples. The migration does not create new
@@ -49,3 +60,12 @@ original bytes, including historical paths and approval fingerprints. Resolve ol
 paths with this table; do not interpret them as current runnable commands.
 Documentation links and executable paths use the new locations. Existing approval
 fingerprints describe the original approved documents, before path-only edits.
+
+## 本地补充工件与最新发布
+
+以下工件保留当时的阶段与验收记录；最新交付状态见[四端发布记录](../docs/releases/0.2.0.json)。
+
+- [20260906-android-v3-performance-baseline](changes/20260906-android-v3-performance-baseline/intent.md)
+- [20260909-android-nonblocking-chat-queue](changes/20260909-android-nonblocking-chat-queue/intent.md)
+- [20260910-web-project-progress-and-mika-intake-prototype](changes/20260910-web-project-progress-and-mika-intake-prototype/intent.md)
+- [20260911-android-ios-alignment](changes/20260911-android-ios-alignment/intent.md)
