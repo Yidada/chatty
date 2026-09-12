@@ -1,0 +1,66 @@
+# CLE-94 动态页逐行滑动操作：两个列表 × 两个方向 + 全滑策略 + 选择态禁用。
+# 前置：全新 scripts/ios-fixture.py（本轮回放用 CHATTY_FIXTURE_PORT=8777），且已 POST
+# /__control {"activity_scenario":true}；Fixture 应用已清空本机受保护目录，因此落在
+# 「选择工作区」页。行坐标来自 List 行自身的高度（108 pt，首行 y=264.67），
+# 只用于制造真实手势；断言仍走语义 id / 文案，不依赖坐标。
+context platform=ios device="iPhone Air" kind=simulator theme=unknown
+open "ai.chatty.ios.fixture"
+wait "id=\"workspace.w1\""
+press "id=\"workspace.w1\""
+wait "id=\"activity.issue.i0\""
+
+# 1) 新进展 · 左滑（trailing，主操作）→ 标记已读，只写本机指纹
+swipe 380 643 150 643
+wait "id=\"activity.swipe.markRead.i3\""
+screenshot ".sdlc/changes/20260911-ios-activity-row-swipe/evidence/01-recent-trailing-reveal.png"
+press "id=\"activity.swipe.markRead.i3\""
+wait "text=\"已标记「Issue 04」为已读。\""
+screenshot ".sdlc/changes/20260911-ios-activity-row-swipe/evidence/02-recent-marked-read.png"
+press "label=\"关闭\""
+
+# 2) 新进展 · 右滑（leading，次操作）→ 标为未读，恢复红点
+swipe 60 643 350 643
+wait "id=\"activity.swipe.markUnread.i3\""
+screenshot ".sdlc/changes/20260911-ios-activity-row-swipe/evidence/03-recent-leading-reveal.png"
+press "id=\"activity.swipe.markUnread.i3\""
+wait "text=\"已恢复「Issue 04」的未读标记。\""
+screenshot ".sdlc/changes/20260911-ios-activity-row-swipe/evidence/04-recent-marked-unread.png"
+press "label=\"关闭\""
+
+# 3) 待处理 · 左滑（主操作）→ 验收完成；改业务状态必须滑出按钮后点按
+press "id=\"activity.actions\""
+wait "id=\"activity.issue.i54\""
+screenshot ".sdlc/changes/20260911-ios-activity-row-swipe/evidence/05-pending-list.png"
+swipe 380 427 150 427
+wait "id=\"activity.swipe.complete.i54\""
+screenshot ".sdlc/changes/20260911-ios-activity-row-swipe/evidence/06-pending-trailing-reveal.png"
+press "id=\"activity.swipe.complete.i54\""
+wait "text=\"已提交 1 项，全部成功。\""
+screenshot ".sdlc/changes/20260911-ios-activity-row-swipe/evidence/07-pending-complete-success.png"
+press "label=\"关闭\""
+
+# 4) 全滑只对已读生效：待处理行的 验收完成 从最右拖到最左也不执行，只展开按钮。
+#    此时待处理只剩 i0（首行 y=318.67）。
+swipe 410 319 5 319
+wait "id=\"activity.swipe.complete.i0\""
+screenshot ".sdlc/changes/20260911-ios-activity-row-swipe/evidence/08-pending-full-swipe-not-executed.png"
+
+# 5) 待处理 · 右滑（次操作）→ 退回待办。第一次右滑先收起上一步展开的按钮，
+#    第二次才滑出 leading 动作（系统 List 的既有行为）。
+swipe 60 319 350 319
+swipe 60 319 350 319
+wait "id=\"activity.swipe.returnToTodo.i0\""
+screenshot ".sdlc/changes/20260911-ios-activity-row-swipe/evidence/09-pending-leading-reveal.png"
+press "id=\"activity.swipe.returnToTodo.i0\""
+wait "text=\"已提交 1 项，全部成功。\""
+screenshot ".sdlc/changes/20260911-ios-activity-row-swipe/evidence/10-pending-return-success.png"
+press "label=\"关闭\""
+
+# 6) 选择态下滑动手势禁用：横拖不展开任何行操作。
+press "id=\"activity.recent\""
+press "id=\"activity.select\""
+wait "id=\"activity.batch.count\""
+swipe 380 319 150 319
+screenshot ".sdlc/changes/20260911-ios-activity-row-swipe/evidence/11-selection-swipe-disabled.png"
+press "id=\"activity.select.done\""
+close

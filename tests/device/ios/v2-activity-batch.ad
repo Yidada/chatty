@@ -1,0 +1,29 @@
+# CLE-85 动态页批量处理：多选、批量已读、批量验收完成（全部成功路径）。
+# 前置：全新 scripts/ios-fixture.py，且已 POST /__control {"activity_scenario":true}；
+# 应用已登录（钥匙串保留）但本机受保护目录已清空，因此落在「选择工作区」页。
+context platform=ios device="iPhone 17 Pro" kind=simulator theme=unknown
+open "ai.chatty.ios.fixture"
+wait "id=\"workspace.w1\""
+press "id=\"workspace.w1\""
+wait "id=\"activity.issue.i0\""
+press "id=\"activity.select\""
+wait "id=\"activity.select.all\""
+press "id=\"activity.issue.i0\""
+wait "label=\"已选 1 项\""
+screenshot ".sdlc/changes/20260910-ios-activity-batch-actions/evidence/01-selection-mode.png"
+press "label=\"标记已读\""
+wait "label=\"已标记 1 项为已读。\""
+screenshot ".sdlc/changes/20260910-ios-activity-batch-actions/evidence/02-batch-read-note.png"
+press "label=\"关闭\""
+press "id=\"activity.actions\""
+wait "id=\"activity.issue.i0\""
+press "id=\"activity.select\""
+press "id=\"activity.select.all\""
+wait "label=\"已选 2 项\""
+screenshot ".sdlc/changes/20260910-ios-activity-batch-actions/evidence/03-pending-select-all.png"
+press "label=\"验收完成\""
+wait "label=\"已提交 2 项，全部成功。\""
+screenshot ".sdlc/changes/20260910-ios-activity-batch-actions/evidence/04-batch-done-success.png"
+wait "label=\"当前没有待处理事项\""
+press "label=\"关闭\""
+close

@@ -1,0 +1,21 @@
+# CLE-85 动态页批量处理：部分未生效的如实反馈与重试入口。
+# 前置：全新 scripts/ios-fixture.py，且已 POST
+# /__control {"activity_scenario":true,"batch_skip":["i0"]}，使 i0 被服务端静默跳过。
+context platform=ios device="iPhone 17 Pro" kind=simulator theme=unknown
+open "ai.chatty.ios.fixture"
+wait "id=\"workspace.w1\""
+press "id=\"workspace.w1\""
+wait "id=\"activity.issue.i0\""
+press "id=\"activity.actions\""
+wait "id=\"activity.issue.i0\""
+press "id=\"activity.select\""
+press "id=\"activity.select.all\""
+wait "label=\"已选 2 项\""
+screenshot ".sdlc/changes/20260910-ios-activity-batch-actions/evidence/05-pending-selected.png"
+press "label=\"验收完成\""
+wait "label=\"已提交 2 项：成功 1，未生效 1。\""
+screenshot ".sdlc/changes/20260910-ios-activity-batch-actions/evidence/06-batch-partial-result.png"
+press "label=\"重试未完成 1 项\""
+wait "label=\"已提交 2 项：成功 1，未生效 1。\""
+screenshot ".sdlc/changes/20260910-ios-activity-batch-actions/evidence/07-batch-partial-retry.png"
+close
