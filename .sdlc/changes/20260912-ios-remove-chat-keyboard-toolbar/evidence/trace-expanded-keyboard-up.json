@@ -1,0 +1,1408 @@
+{
+  "nodes": [
+    {
+      "label": "Chatty Test",
+      "rect": {
+        "width": 420,
+        "x": 0,
+        "y": 0,
+        "height": 912
+      },
+      "depth": 0,
+      "hittable": true,
+      "type": "Application",
+      "index": 0,
+      "enabled": true,
+      "ref": "e1"
+    },
+    {
+      "label": "Next keyboard",
+      "rect": {
+        "width": 420,
+        "x": 0,
+        "y": 0,
+        "height": 912
+      },
+      "depth": 1,
+      "hittable": true,
+      "type": "Window",
+      "parentIndex": 0,
+      "index": 1,
+      "enabled": true,
+      "ref": "e2"
+    },
+    {
+      "label": "Next keyboard",
+      "rect": {
+        "height": 345,
+        "y": 567,
+        "width": 420,
+        "x": 0
+      },
+      "depth": 3,
+      "hittable": true,
+      "type": "Other",
+      "parentIndex": 1,
+      "index": 2,
+      "enabled": true,
+      "ref": "e3"
+    },
+    {
+      "label": "Typing Predictions",
+      "rect": {
+        "height": 44,
+        "x": 0,
+        "y": 567,
+        "width": 420
+      },
+      "depth": 4,
+      "hittable": false,
+      "type": "Other",
+      "parentIndex": 2,
+      "index": 3,
+      "enabled": true,
+      "identifier": "SystemInputAssistantView",
+      "ref": "e4"
+    },
+    {
+      "rect": {
+        "x": 0,
+        "y": 567,
+        "width": 420,
+        "height": 44
+      },
+      "depth": 7,
+      "hittable": false,
+      "type": "ScrollView",
+      "parentIndex": 3,
+      "index": 4,
+      "enabled": true,
+      "ref": "e5"
+    },
+    {
+      "label": "I",
+      "rect": {
+        "x": 0,
+        "y": 567,
+        "width": 420,
+        "height": 44
+      },
+      "depth": 7,
+      "hittable": false,
+      "type": "Other",
+      "parentIndex": 3,
+      "index": 5,
+      "enabled": true,
+      "ref": "e6"
+    },
+    {
+      "label": "The",
+      "rect": {
+        "x": 140,
+        "y": 567,
+        "width": 140,
+        "height": 44
+      },
+      "depth": 8,
+      "hittable": false,
+      "type": "Other",
+      "parentIndex": 5,
+      "index": 6,
+      "enabled": true,
+      "ref": "e7"
+    },
+    {
+      "label": "I’m",
+      "rect": {
+        "x": 280,
+        "y": 567,
+        "width": 140,
+        "height": 44
+      },
+      "depth": 8,
+      "hittable": false,
+      "type": "Other",
+      "parentIndex": 5,
+      "index": 7,
+      "enabled": true,
+      "ref": "e8"
+    },
+    {
+      "label": "Padding-Left",
+      "rect": {
+        "x": 0,
+        "y": 611,
+        "width": 420,
+        "height": 243
+      },
+      "depth": 4,
+      "hittable": false,
+      "type": "Other",
+      "parentIndex": 2,
+      "index": 8,
+      "enabled": true,
+      "ref": "e9"
+    },
+    {
+      "label": "Padding-Left",
+      "rect": {
+        "x": 0,
+        "y": 611,
+        "width": 420,
+        "height": 243
+      },
+      "depth": 5,
+      "hittable": false,
+      "type": "Keyboard",
+      "parentIndex": 8,
+      "index": 9,
+      "enabled": true,
+      "ref": "e10"
+    },
+    {
+      "label": "Padding-Left",
+      "rect": {
+        "x": 0,
+        "y": 611,
+        "width": 0,
+        "height": 0
+      },
+      "depth": 7,
+      "hittable": false,
+      "type": "Key",
+      "parentIndex": 9,
+      "index": 10,
+      "enabled": true,
+      "ref": "e11"
+    },
+    {
+      "label": "Padding-Right",
+      "rect": {
+        "x": 0,
+        "y": 611,
+        "width": 0,
+        "height": 0
+      },
+      "depth": 7,
+      "hittable": false,
+      "type": "Key",
+      "parentIndex": 9,
+      "index": 11,
+      "enabled": true,
+      "ref": "e12"
+    },
+    {
+      "depth": 7,
+      "index": 12,
+      "label": "Q",
+      "rect": {
+        "x": 4.666666666666657,
+        "y": 618,
+        "width": 41,
+        "height": 56
+      },
+      "enabled": true,
+      "parentIndex": 9,
+      "hittable": false,
+      "type": "Key",
+      "ref": "e13"
+    },
+    {
+      "depth": 7,
+      "index": 13,
+      "label": "W",
+      "rect": {
+        "x": 45.66666666666666,
+        "y": 618,
+        "width": 41.33333333333334,
+        "height": 56
+      },
+      "enabled": true,
+      "parentIndex": 9,
+      "hittable": false,
+      "type": "Key",
+      "ref": "e14"
+    },
+    {
+      "depth": 7,
+      "index": 14,
+      "label": "E",
+      "rect": {
+        "x": 86.99999999999999,
+        "y": 618,
+        "width": 41.33333333333333,
+        "height": 56
+      },
+      "enabled": true,
+      "parentIndex": 9,
+      "hittable": false,
+      "type": "Key",
+      "ref": "e15"
+    },
+    {
+      "depth": 7,
+      "index": 15,
+      "label": "R",
+      "rect": {
+        "x": 128.33333333333331,
+        "y": 618,
+        "width": 41.33333333333334,
+        "height": 56
+      },
+      "enabled": true,
+      "parentIndex": 9,
+      "hittable": false,
+      "type": "Key",
+      "ref": "e16"
+    },
+    {
+      "depth": 7,
+      "index": 16,
+      "label": "T",
+      "rect": {
+        "x": 169.66666666666666,
+        "y": 618,
+        "width": 41.33333333333334,
+        "height": 56
+      },
+      "enabled": true,
+      "parentIndex": 9,
+      "hittable": false,
+      "type": "Key",
+      "ref": "e17"
+    },
+    {
+      "depth": 7,
+      "index": 17,
+      "label": "Y",
+      "rect": {
+        "x": 211,
+        "y": 618,
+        "width": 41.33333333333334,
+        "height": 56
+      },
+      "enabled": true,
+      "parentIndex": 9,
+      "hittable": false,
+      "type": "Key",
+      "ref": "e18"
+    },
+    {
+      "depth": 7,
+      "index": 18,
+      "label": "U",
+      "rect": {
+        "x": 252.33333333333337,
+        "y": 618,
+        "width": 41.333333333333314,
+        "height": 56
+      },
+      "enabled": true,
+      "parentIndex": 9,
+      "hittable": false,
+      "type": "Key",
+      "ref": "e19"
+    },
+    {
+      "depth": 7,
+      "index": 19,
+      "label": "I",
+      "rect": {
+        "x": 293.66666666666663,
+        "y": 618,
+        "width": 41.333333333333314,
+        "height": 56
+      },
+      "enabled": true,
+      "parentIndex": 9,
+      "hittable": false,
+      "type": "Key",
+      "ref": "e20"
+    },
+    {
+      "depth": 7,
+      "index": 20,
+      "label": "O",
+      "rect": {
+        "x": 335,
+        "y": 618,
+        "width": 41.333333333333314,
+        "height": 56
+      },
+      "enabled": true,
+      "parentIndex": 9,
+      "hittable": false,
+      "type": "Key",
+      "ref": "e21"
+    },
+    {
+      "depth": 7,
+      "index": 21,
+      "label": "P",
+      "rect": {
+        "x": 376.33333333333326,
+        "y": 618,
+        "width": 41.333333333333314,
+        "height": 56
+      },
+      "enabled": true,
+      "parentIndex": 9,
+      "hittable": false,
+      "type": "Key",
+      "ref": "e22"
+    },
+    {
+      "depth": 7,
+      "index": 22,
+      "label": "A",
+      "rect": {
+        "x": 24.99999999999999,
+        "height": 56,
+        "width": 41.33333333333334,
+        "y": 674
+      },
+      "enabled": true,
+      "parentIndex": 9,
+      "hittable": false,
+      "type": "Key",
+      "ref": "e23"
+    },
+    {
+      "depth": 7,
+      "index": 23,
+      "label": "S",
+      "rect": {
+        "x": 66.33333333333331,
+        "height": 56,
+        "width": 41.33333333333334,
+        "y": 674
+      },
+      "enabled": true,
+      "parentIndex": 9,
+      "hittable": false,
+      "type": "Key",
+      "ref": "e24"
+    },
+    {
+      "depth": 7,
+      "index": 24,
+      "label": "D",
+      "rect": {
+        "x": 107.66666666666666,
+        "height": 56,
+        "width": 41.33333333333334,
+        "y": 674
+      },
+      "enabled": true,
+      "parentIndex": 9,
+      "hittable": false,
+      "type": "Key",
+      "ref": "e25"
+    },
+    {
+      "depth": 7,
+      "index": 25,
+      "label": "F",
+      "rect": {
+        "x": 149,
+        "height": 56,
+        "width": 41.33333333333334,
+        "y": 674
+      },
+      "enabled": true,
+      "parentIndex": 9,
+      "hittable": false,
+      "type": "Key",
+      "ref": "e26"
+    },
+    {
+      "depth": 7,
+      "index": 26,
+      "label": "G",
+      "rect": {
+        "x": 190.33333333333334,
+        "height": 56,
+        "width": 41.33333333333334,
+        "y": 674
+      },
+      "enabled": true,
+      "parentIndex": 9,
+      "hittable": false,
+      "type": "Key",
+      "ref": "e27"
+    },
+    {
+      "depth": 7,
+      "index": 27,
+      "label": "H",
+      "rect": {
+        "x": 231.66666666666666,
+        "height": 56,
+        "width": 41.33333333333334,
+        "y": 674
+      },
+      "enabled": true,
+      "parentIndex": 9,
+      "hittable": false,
+      "type": "Key",
+      "ref": "e28"
+    },
+    {
+      "depth": 7,
+      "index": 28,
+      "label": "J",
+      "rect": {
+        "x": 273,
+        "height": 56,
+        "width": 41.333333333333314,
+        "y": 674
+      },
+      "enabled": true,
+      "parentIndex": 9,
+      "hittable": false,
+      "type": "Key",
+      "ref": "e29"
+    },
+    {
+      "depth": 7,
+      "index": 29,
+      "label": "K",
+      "rect": {
+        "x": 314.33333333333326,
+        "height": 56,
+        "width": 41.333333333333314,
+        "y": 674
+      },
+      "enabled": true,
+      "parentIndex": 9,
+      "hittable": false,
+      "type": "Key",
+      "ref": "e30"
+    },
+    {
+      "depth": 7,
+      "index": 30,
+      "label": "L",
+      "rect": {
+        "x": 355.66666666666663,
+        "height": 56,
+        "width": 41.333333333333314,
+        "y": 674
+      },
+      "enabled": true,
+      "parentIndex": 9,
+      "hittable": false,
+      "type": "Key",
+      "ref": "e31"
+    },
+    {
+      "depth": 7,
+      "index": 31,
+      "label": "shift",
+      "rect": {
+        "x": 4.666666666666657,
+        "height": 56,
+        "width": 53.666666666666664,
+        "y": 730
+      },
+      "enabled": true,
+      "selected": true,
+      "parentIndex": 9,
+      "identifier": "shift",
+      "type": "Button",
+      "hittable": false,
+      "ref": "e32"
+    },
+    {
+      "depth": 7,
+      "index": 32,
+      "label": "Z",
+      "rect": {
+        "x": 66.33333333333331,
+        "height": 56,
+        "width": 41.33333333333334,
+        "y": 730
+      },
+      "enabled": true,
+      "parentIndex": 9,
+      "hittable": false,
+      "type": "Key",
+      "ref": "e33"
+    },
+    {
+      "type": "Key",
+      "depth": 7,
+      "parentIndex": 9,
+      "enabled": true,
+      "index": 33,
+      "rect": {
+        "x": 107.66666666666666,
+        "height": 56,
+        "width": 41.33333333333334,
+        "y": 730
+      },
+      "hittable": false,
+      "label": "X",
+      "ref": "e34"
+    },
+    {
+      "type": "Key",
+      "depth": 7,
+      "parentIndex": 9,
+      "enabled": true,
+      "index": 34,
+      "rect": {
+        "x": 149,
+        "height": 56,
+        "width": 41.33333333333334,
+        "y": 730
+      },
+      "hittable": false,
+      "label": "C",
+      "ref": "e35"
+    },
+    {
+      "type": "Key",
+      "depth": 7,
+      "parentIndex": 9,
+      "enabled": true,
+      "index": 35,
+      "rect": {
+        "x": 190.33333333333334,
+        "height": 56,
+        "width": 41.33333333333334,
+        "y": 730
+      },
+      "hittable": false,
+      "label": "V",
+      "ref": "e36"
+    },
+    {
+      "type": "Key",
+      "depth": 7,
+      "parentIndex": 9,
+      "enabled": true,
+      "index": 36,
+      "rect": {
+        "x": 231.66666666666666,
+        "height": 56,
+        "width": 41.33333333333334,
+        "y": 730
+      },
+      "hittable": false,
+      "label": "B",
+      "ref": "e37"
+    },
+    {
+      "type": "Key",
+      "depth": 7,
+      "parentIndex": 9,
+      "enabled": true,
+      "index": 37,
+      "rect": {
+        "x": 273,
+        "height": 56,
+        "width": 41.333333333333314,
+        "y": 730
+      },
+      "hittable": false,
+      "label": "N",
+      "ref": "e38"
+    },
+    {
+      "type": "Key",
+      "depth": 7,
+      "parentIndex": 9,
+      "enabled": true,
+      "index": 38,
+      "rect": {
+        "x": 314.33333333333326,
+        "height": 56,
+        "width": 41.333333333333314,
+        "y": 730
+      },
+      "hittable": false,
+      "label": "M",
+      "ref": "e39"
+    },
+    {
+      "type": "Key",
+      "hittable": false,
+      "depth": 7,
+      "parentIndex": 9,
+      "enabled": true,
+      "index": 39,
+      "rect": {
+        "x": 363.66666666666663,
+        "height": 56,
+        "width": 54,
+        "y": 730
+      },
+      "identifier": "delete",
+      "label": "delete",
+      "ref": "e40"
+    },
+    {
+      "type": "Key",
+      "hittable": false,
+      "depth": 7,
+      "parentIndex": 9,
+      "enabled": true,
+      "index": 40,
+      "rect": {
+        "x": 4.666666666666657,
+        "height": 56,
+        "width": 51.333333333333336,
+        "y": 786
+      },
+      "identifier": "more",
+      "label": "numbers",
+      "ref": "e41"
+    },
+    {
+      "type": "Button",
+      "hittable": false,
+      "depth": 7,
+      "parentIndex": 9,
+      "enabled": true,
+      "index": 41,
+      "rect": {
+        "x": 56,
+        "height": 56,
+        "width": 51.66666666666666,
+        "y": 786
+      },
+      "identifier": "emoji",
+      "label": "Emoji",
+      "ref": "e42"
+    },
+    {
+      "type": "Key",
+      "depth": 7,
+      "parentIndex": 9,
+      "enabled": true,
+      "index": 42,
+      "identifier": "space",
+      "rect": {
+        "width": 206.66666666666669,
+        "height": 56,
+        "y": 786,
+        "x": 107.66666666666664
+      },
+      "hittable": false,
+      "ref": "e43"
+    },
+    {
+      "type": "Button",
+      "hittable": false,
+      "depth": 7,
+      "parentIndex": 9,
+      "enabled": true,
+      "index": 43,
+      "rect": {
+        "x": 314.33333333333326,
+        "y": 786,
+        "width": 103.33333333333331,
+        "height": 56
+      },
+      "identifier": "Return",
+      "label": "return",
+      "ref": "e44"
+    },
+    {
+      "type": "Button",
+      "depth": 5,
+      "parentIndex": 2,
+      "enabled": true,
+      "index": 44,
+      "value": "简体拼音",
+      "rect": {
+        "height": 68.73516393505099,
+        "width": 80.1346396795296,
+        "y": 843.6989567998571,
+        "x": 2.4525937651487624
+      },
+      "hittable": false,
+      "label": "Next keyboard",
+      "interactionBlocked": "covered",
+      "presentationHints": [
+        "covered"
+      ],
+      "ref": "e45"
+    },
+    {
+      "type": "Button",
+      "hittable": false,
+      "depth": 5,
+      "parentIndex": 2,
+      "enabled": true,
+      "index": 45,
+      "identifier": "dictation",
+      "rect": {
+        "height": 68.73516393505099,
+        "width": 80.13463967952958,
+        "y": 843.3656234665239,
+        "x": 337.41276655532164
+      },
+      "label": "Dictate",
+      "interactionBlocked": "covered",
+      "presentationHints": [
+        "covered"
+      ],
+      "ref": "e46"
+    },
+    {
+      "type": "Other",
+      "depth": 1,
+      "parentIndex": 0,
+      "enabled": true,
+      "index": 46,
+      "hittable": false,
+      "rect": {
+        "height": 912,
+        "width": 420,
+        "y": 0,
+        "x": 0
+      },
+      "label": "flask",
+      "ref": "e47"
+    },
+    {
+      "type": "Image",
+      "hittable": false,
+      "depth": 2,
+      "parentIndex": 46,
+      "enabled": true,
+      "index": 47,
+      "identifier": "fixture.banner",
+      "rect": {
+        "height": 12.333333969116211,
+        "width": 11.333333969116211,
+        "y": 75,
+        "x": 141.66666666666666
+      },
+      "label": "flask",
+      "ref": "e48"
+    },
+    {
+      "type": "StaticText",
+      "hittable": false,
+      "depth": 2,
+      "parentIndex": 46,
+      "enabled": true,
+      "index": 48,
+      "identifier": "fixture.banner",
+      "rect": {
+        "height": 14.333335876464844,
+        "width": 138.1666717529297,
+        "y": 74,
+        "x": 141.6666717529297
+      },
+      "label": "测试工作区 · 合成数据",
+      "ref": "e49"
+    },
+    {
+      "type": "Other",
+      "depth": 2,
+      "parentIndex": 46,
+      "enabled": true,
+      "index": 49,
+      "hittable": false,
+      "rect": {
+        "height": 817.6666666666666,
+        "width": 420,
+        "y": 94.33333333333333,
+        "x": 0
+      },
+      "label": "Tab Bar",
+      "ref": "e50"
+    },
+    {
+      "type": "Other",
+      "depth": 3,
+      "parentIndex": 49,
+      "enabled": true,
+      "index": 50,
+      "hittable": false,
+      "rect": {
+        "height": 817.6666666666666,
+        "width": 420,
+        "y": 94.33333333333333,
+        "x": 0
+      },
+      "label": "Mika",
+      "ref": "e51"
+    },
+    {
+      "type": "NavigationBar",
+      "hittable": false,
+      "depth": 4,
+      "parentIndex": 50,
+      "enabled": true,
+      "index": 51,
+      "identifier": "Mika",
+      "rect": {
+        "height": 53.999999999999986,
+        "width": 420,
+        "y": 104.33333333333333,
+        "x": 0
+      },
+      "label": "Mika",
+      "ref": "e52"
+    },
+    {
+      "enabled": true,
+      "hittable": false,
+      "label": "个人与设置",
+      "parentIndex": 51,
+      "identifier": "profile.open",
+      "type": "Button",
+      "depth": 7,
+      "rect": {
+        "y": 108.33333333333333,
+        "x": 276.6666666666667,
+        "width": 58,
+        "height": 35.999999999999986
+      },
+      "index": 52,
+      "ref": "e53"
+    },
+    {
+      "enabled": true,
+      "hittable": false,
+      "label": "在新窗口打开",
+      "parentIndex": 51,
+      "identifier": "window.open",
+      "type": "Button",
+      "depth": 5,
+      "rect": {
+        "y": 108.33333333333333,
+        "x": 350.6666666666667,
+        "width": 45.333333333333314,
+        "height": 35.999999999999986
+      },
+      "index": 53,
+      "ref": "e54"
+    },
+    {
+      "enabled": true,
+      "hittable": false,
+      "label": "不指定项目",
+      "parentIndex": 50,
+      "type": "Other",
+      "depth": 4,
+      "rect": {
+        "y": 94.33333333333333,
+        "x": 0,
+        "width": 420,
+        "height": 817.6666666666666
+      },
+      "index": 54,
+      "ref": "e55"
+    },
+    {
+      "enabled": true,
+      "hittable": false,
+      "label": "格式验证",
+      "parentIndex": 54,
+      "identifier": "chat.messages",
+      "type": "ScrollView",
+      "hiddenContentAbove": true,
+      "depth": 6,
+      "rect": {
+        "y": 158.33333333333348,
+        "x": 0,
+        "width": 420,
+        "height": 358.6666666666665
+      },
+      "index": 55,
+      "hiddenContentBelow": true,
+      "ref": "e56"
+    },
+    {
+      "enabled": true,
+      "hittable": false,
+      "label": "格式验证",
+      "parentIndex": 55,
+      "type": "Other",
+      "depth": 7,
+      "rect": {
+        "y": -2722,
+        "x": 0,
+        "width": 420,
+        "height": 3294
+      },
+      "index": 56,
+      "ref": "e57"
+    },
+    {
+      "enabled": true,
+      "hittable": false,
+      "label": "继续测试",
+      "parentIndex": 56,
+      "identifier": "chat.suggestion",
+      "type": "Button",
+      "depth": 10,
+      "rect": {
+        "y": 91.33333333333287,
+        "x": 20,
+        "width": 91.66666666666666,
+        "height": 34.333333333333485
+      },
+      "index": 57,
+      "ref": "e58"
+    },
+    {
+      "enabled": true,
+      "hittable": false,
+      "label": "KBCHECK",
+      "parentIndex": 56,
+      "identifier": "message.user-t1",
+      "type": "Other",
+      "depth": 9,
+      "rect": {
+        "y": 154.3333282470703,
+        "x": 294.3333435058594,
+        "width": 105.66665649414062,
+        "height": 48.333343505859375
+      },
+      "index": 58,
+      "ref": "e59"
+    },
+    {
+      "enabled": true,
+      "hittable": false,
+      "label": "CHATTY_CHAT_OK · KBCHECK",
+      "parentIndex": 56,
+      "identifier": "message.reply-t1",
+      "type": "Other",
+      "depth": 9,
+      "rect": {
+        "y": 226.6666717529297,
+        "x": 20,
+        "width": 380,
+        "height": 295.33331298828125
+      },
+      "index": 59,
+      "ref": "e60"
+    },
+    {
+      "enabled": true,
+      "hittable": false,
+      "label": "耗时 3.0 秒",
+      "parentIndex": 59,
+      "type": "StaticText",
+      "depth": 10,
+      "rect": {
+        "y": 259.00000000000074,
+        "x": 20,
+        "width": 60.33333333333333,
+        "height": 14.333333333333485
+      },
+      "index": 60,
+      "ref": "e61"
+    },
+    {
+      "enabled": true,
+      "hittable": false,
+      "label": "执行过程",
+      "parentIndex": 59,
+      "identifier": "trace.t1",
+      "type": "Button",
+      "depth": 10,
+      "rect": {
+        "y": 285.3333435058594,
+        "x": 20,
+        "width": 380,
+        "height": 185.33334350585938
+      },
+      "index": 61,
+      "ref": "e62"
+    },
+    {
+      "enabled": true,
+      "hittable": false,
+      "label": "circle.dotted",
+      "parentIndex": 59,
+      "identifier": "trace.t1",
+      "type": "Image",
+      "depth": 10,
+      "rect": {
+        "y": 323.66666666666634,
+        "x": 97.66666666666666,
+        "width": 12,
+        "height": 12
+      },
+      "index": 62,
+      "ref": "e63"
+    },
+    {
+      "index": 63,
+      "type": "StaticText",
+      "label": "1 · thinking",
+      "hittable": false,
+      "rect": {
+        "y": 322.6666564941406,
+        "x": 97.66666412353516,
+        "width": 82.33333587646484,
+        "height": 14.333343505859375
+      },
+      "depth": 10,
+      "parentIndex": 59,
+      "identifier": "trace.t1",
+      "enabled": true,
+      "ref": "e64"
+    },
+    {
+      "index": 64,
+      "type": "StaticText",
+      "label": "检查格式与上下文",
+      "hittable": false,
+      "rect": {
+        "y": 345.0000000000012,
+        "x": 96.66666666666667,
+        "width": 127.33333333333333,
+        "height": 19.333333333333485
+      },
+      "depth": 10,
+      "parentIndex": 59,
+      "identifier": "trace.t1",
+      "enabled": true,
+      "ref": "e65"
+    },
+    {
+      "index": 65,
+      "type": "Image",
+      "label": "circle.dotted",
+      "hittable": false,
+      "rect": {
+        "y": 379.33333333333286,
+        "x": 97.66666666666666,
+        "width": 12,
+        "height": 12
+      },
+      "depth": 10,
+      "parentIndex": 59,
+      "identifier": "trace.t1",
+      "enabled": true,
+      "ref": "e66"
+    },
+    {
+      "index": 66,
+      "type": "StaticText",
+      "label": "2 · fixture_check",
+      "hittable": false,
+      "rect": {
+        "y": 378.3333435058594,
+        "x": 97.66666412353516,
+        "width": 115.33333587646484,
+        "height": 14.333343505859375
+      },
+      "depth": 10,
+      "parentIndex": 59,
+      "identifier": "trace.t1",
+      "enabled": true,
+      "ref": "e67"
+    },
+    {
+      "index": 67,
+      "type": "StaticText",
+      "label": "{\"check\":\"synthetic only\"}",
+      "hittable": false,
+      "rect": {
+        "y": 400.6666666666677,
+        "x": 96.66666666666667,
+        "width": 193,
+        "height": 14.333333333333485
+      },
+      "depth": 10,
+      "parentIndex": 59,
+      "identifier": "trace.t1",
+      "enabled": true,
+      "ref": "e68"
+    },
+    {
+      "index": 68,
+      "type": "Image",
+      "label": "circle.dotted",
+      "hittable": false,
+      "rect": {
+        "y": 429.9999999999994,
+        "x": 97.66666666666666,
+        "width": 12,
+        "height": 12
+      },
+      "depth": 10,
+      "parentIndex": 59,
+      "identifier": "trace.t1",
+      "enabled": true,
+      "ref": "e69"
+    },
+    {
+      "index": 69,
+      "type": "StaticText",
+      "label": "3 · text",
+      "hittable": false,
+      "rect": {
+        "y": 429,
+        "x": 97.66666412353516,
+        "width": 60.666664123535156,
+        "height": 14.333343505859375
+      },
+      "depth": 10,
+      "parentIndex": 59,
+      "identifier": "trace.t1",
+      "enabled": true,
+      "ref": "e70"
+    },
+    {
+      "type": "Button",
+      "index": 70,
+      "label": "继续测试",
+      "hittable": false,
+      "rect": {
+        "x": 20,
+        "y": 487.66666666666634,
+        "width": 91.66666666666666,
+        "height": 34.33333333333354
+      },
+      "depth": 10,
+      "parentIndex": 59,
+      "identifier": "chat.suggestion",
+      "enabled": true,
+      "ref": "e71"
+    },
+    {
+      "index": 71,
+      "type": "Image",
+      "hittable": false,
+      "rect": {
+        "height": 228,
+        "width": 660,
+        "y": -19.66666666666667,
+        "x": -120
+      },
+      "depth": 7,
+      "parentIndex": 55,
+      "identifier": "AdditionalDimmingOverlay",
+      "enabled": true,
+      "ref": "e72"
+    },
+    {
+      "index": 72,
+      "type": "Button",
+      "label": "不指定项目",
+      "hittable": false,
+      "rect": {
+        "x": 24,
+        "width": 109.66666666666666,
+        "y": 525,
+        "height": 44
+      },
+      "depth": 6,
+      "parentIndex": 54,
+      "identifier": "chat.projectPicker",
+      "enabled": true,
+      "ref": "e73"
+    },
+    {
+      "hittable": false,
+      "index": 73,
+      "label": "Move",
+      "type": "Button",
+      "rect": {
+        "x": 24,
+        "width": 109.66666666666666,
+        "y": 525,
+        "height": 44
+      },
+      "depth": 7,
+      "parentIndex": 72,
+      "enabled": true,
+      "ref": "e74"
+    },
+    {
+      "index": 74,
+      "type": "Button",
+      "label": "添加附件",
+      "hittable": false,
+      "rect": {
+        "x": 20,
+        "width": 44,
+        "y": 589,
+        "height": 44
+      },
+      "depth": 6,
+      "parentIndex": 54,
+      "identifier": "chat.attach",
+      "enabled": true,
+      "ref": "e75"
+    },
+    {
+      "hittable": false,
+      "index": 75,
+      "label": "Add",
+      "type": "Button",
+      "rect": {
+        "x": 20,
+        "width": 44,
+        "y": 589,
+        "height": 44
+      },
+      "depth": 7,
+      "parentIndex": 74,
+      "enabled": true,
+      "ref": "e76"
+    },
+    {
+      "index": 76,
+      "type": "TextField",
+      "label": "PANEL_CHECK_DRAFT",
+      "value": "PANEL_CHECK_DRAFT",
+      "rect": {
+        "x": 74,
+        "width": 272,
+        "y": 599,
+        "height": 22
+      },
+      "hittable": false,
+      "depth": 6,
+      "identifier": "chat.draft",
+      "parentIndex": 54,
+      "enabled": true,
+      "ref": "e77"
+    },
+    {
+      "parentIndex": 54,
+      "rect": {
+        "x": 356,
+        "width": 44,
+        "y": 589,
+        "height": 44
+      },
+      "hittable": false,
+      "identifier": "chat.send",
+      "depth": 6,
+      "index": 77,
+      "enabled": true,
+      "type": "Button",
+      "label": "发送",
+      "ref": "e78"
+    },
+    {
+      "parentIndex": 49,
+      "rect": {
+        "x": 0,
+        "width": 420,
+        "y": 829,
+        "height": 83
+      },
+      "hittable": false,
+      "depth": 4,
+      "index": 78,
+      "type": "TabBar",
+      "enabled": true,
+      "label": "Tab Bar",
+      "ref": "e79"
+    },
+    {
+      "parentIndex": 78,
+      "rect": {
+        "x": 73,
+        "width": 274,
+        "y": 829,
+        "height": 62
+      },
+      "hittable": false,
+      "depth": 5,
+      "index": 79,
+      "type": "Other",
+      "enabled": true,
+      "label": "动态",
+      "ref": "e80"
+    },
+    {
+      "parentIndex": 79,
+      "rect": {
+        "x": 77,
+        "width": 94,
+        "y": 833,
+        "height": 54
+      },
+      "hittable": false,
+      "identifier": "waveform.path",
+      "depth": 6,
+      "index": 80,
+      "enabled": true,
+      "type": "Button",
+      "label": "动态",
+      "ref": "e81"
+    },
+    {
+      "parentIndex": 79,
+      "rect": {
+        "width": 94,
+        "height": 54,
+        "x": 163,
+        "y": 833
+      },
+      "hittable": false,
+      "identifier": "sparkles",
+      "depth": 6,
+      "index": 81,
+      "enabled": true,
+      "type": "Button",
+      "selected": true,
+      "label": "Mika",
+      "ref": "e82"
+    },
+    {
+      "parentIndex": 79,
+      "rect": {
+        "width": 94,
+        "height": 54,
+        "x": 249,
+        "y": 833
+      },
+      "hittable": false,
+      "identifier": "folder",
+      "depth": 6,
+      "index": 82,
+      "enabled": true,
+      "type": "Button",
+      "label": "项目",
+      "ref": "e83"
+    }
+  ],
+  "truncated": false,
+  "appName": "ai.chatty.ios.fixture",
+  "appBundleId": "ai.chatty.ios.fixture",
+  "visibility": {
+    "partial": true,
+    "visibleNodeCount": 82,
+    "totalNodeCount": 83,
+    "reasons": [
+      "offscreen-nodes",
+      "scroll-hidden-above",
+      "scroll-hidden-below"
+    ]
+  },
+  "snapshotQuality": {
+    "state": "healthy",
+    "backend": "tree"
+  },
+  "snapshotDiagnostics": {
+    "stats": {
+      "count": 58,
+      "p50Ms": 117,
+      "p95Ms": 172,
+      "maxMs": 348,
+      "slowThresholdMs": 1500,
+      "platform": "ios",
+      "backends": {
+        "xctest": 58
+      }
+    }
+  },
+  "refsGeneration": 826364
+}

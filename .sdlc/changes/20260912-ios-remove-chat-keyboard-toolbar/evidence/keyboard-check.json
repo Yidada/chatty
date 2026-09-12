@@ -1,0 +1,99 @@
+{
+  "steps": [
+    {
+      "step": "reach a known screen",
+      "ok": true,
+      "detail": "login"
+    },
+    {
+      "step": "keyboard is up with the composer focused",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "step": "no 收起键盘 element in the keyboard-up accessibility tree",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "step": "task trace opens with the keyboard up (v1-core replacement step)",
+      "ok": true,
+      "detail": "trace.t1"
+    },
+    {
+      "step": "settings sheet opens with the keyboard up (v1-workspaces replacement step)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "step": "settings › workspaces reachable with the keyboard up",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "step": "composer draft preserved after the settings panel",
+      "ok": true,
+      "detail": "['PANEL_CHECK_DRAFT']"
+    }
+  ],
+  "facts": {
+    "keyboard_visible": true,
+    "dismiss_button_present": false,
+    "keyboard_area_labels": [
+      "A",
+      "Add",
+      "B",
+      "C",
+      "D",
+      "Dictate",
+      "E",
+      "Emoji",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "K",
+      "L",
+      "M",
+      "Mika",
+      "Move",
+      "N",
+      "Next keyboard",
+      "O",
+      "P",
+      "Padding-Left",
+      "Padding-Right",
+      "Q",
+      "R",
+      "S",
+      "T",
+      "U",
+      "V",
+      "W",
+      "X",
+      "Y",
+      "Z",
+      "delete",
+      "fixture-note.txt, 32 bytes",
+      "numbers",
+      "return",
+      "shift",
+      "不指定项目",
+      "个人与设置",
+      "动态",
+      "发送",
+      "在新窗口打开",
+      "执行过程",
+      "添加附件",
+      "继续测试",
+      "项目"
+    ],
+    "trace_identifiers": [
+      "trace.t1"
+    ],
+    "draft_after_settings": [
+      "PANEL_CHECK_DRAFT"
+    ]
+  }
+}

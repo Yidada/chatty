@@ -117,9 +117,6 @@ struct ChatScreen: View {
         }
         .navigationTitle("Mika").navigationBarTitleDisplayMode(.inline)
         .background(ChattyTheme.background)
-        .toolbar {
-            ToolbarItemGroup(placement: .keyboard) { Spacer(); Button("收起键盘") { draftFocused = false } }
-        }
         .safeAreaInset(edge: .bottom, spacing: 0) { composer }
         .fileImporter(isPresented: $pickingFile, allowedContentTypes: [.data], allowsMultipleSelection: false) { result in
             Task {

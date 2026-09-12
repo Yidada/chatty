@@ -25,7 +25,7 @@ fill "id=\"chat.draft\"" "IOS_V1_LOOP_TWO"
 press "id=\"chat.send\""
 wait "label=\"CHATTY_CHAT_OK · IOS_V1_LOOP_TWO\""
 wait "label=\"CHATTY_CHAT_OK · IOS_V1_LOOP_TWO\""
-press "role=\"button\" label=\"收起键盘\""
+# 键盘工具栏已无「收起键盘」按钮（CLE-97）：收起由消息列表交互式滚动承担，键盘不阻挡后续点击。
 press "id=\"trace.t2\""
 screenshot ".sdlc/changes/20260905-complete-ios-v1-native-client-p1-through-p5/evidence/v1/chat-reply.png"
 press "role=\"button\" label=\"项目\""
