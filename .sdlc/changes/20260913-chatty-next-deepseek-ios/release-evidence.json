@@ -1,7 +1,7 @@
 {
-  "recordedAt": "2026-09-13T17:12:46.660049+08:00",
+  "recordedAt": "2026-09-13T17:24:44.573848+08:00",
   "sourceCommit": "6af51895cd5dcc473a2708e246bb3218bcf3e1e2",
-  "deliveryState": "ipa-ready-awaiting-apple-web-login",
+  "deliveryState": "git-pushed-testflight-awaiting-apple-login",
   "archive": {
     "sourceCommit": "6af51895cd5dcc473a2708e246bb3218bcf3e1e2",
     "scheme": "ChattyNext",
@@ -44,7 +44,9 @@
   },
   "remote": {
     "main": "7f4703eb385bdf5c716e31f7432caef78dbc9911",
-    "NextPresent": false
+    "NextPresent": true,
+    "pushedCommit": "4b844b6249e4ba7e8b42e9bc60385a6d410665cd",
+    "branchURL": "https://github.com/Yidada/chatty/tree/Next"
   },
   "appStoreConnect": {
     "bundleId": "ai.chatty.ios.next",
@@ -62,11 +64,15 @@
   ],
   "externalMutationsThisReleaseTurn": [
     "Registered ai.chatty.ios.next Bundle ID",
-    "Exported TestFlight Internal Only IPA using Xcode automatic distribution signing"
+    "Exported TestFlight Internal Only IPA using Xcode automatic distribution signing",
+    "Pushed Next branch to origin and configured upstream"
   ],
   "authorizedDelivery": {
-    "target": "independent Chatty Next TestFlight internal testing",
-    "source": "explicit user selection"
+    "targets": [
+      "git push origin Next",
+      "independent Chatty Next TestFlight internal testing"
+    ],
+    "source": "explicit user clarification"
   },
   "ipa": {
     "verifiedAt": "2026-09-13T17:12:11.676768+08:00",

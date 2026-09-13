@@ -74,3 +74,14 @@ node --test server/chatty-next-approval/review.test.js
 - 请求超时不会自动再次发送；快照和队列负责核对。无法确认时保留原始发送快照，并提供复制到新草稿的操作。
 
 实测记录与未完成验收见 [build.md](../.sdlc/changes/20260913-chatty-next-deepseek-ios/build.md)。真机语音质量、蜂窝网络和像素一致性尚未通过。
+
+## 发布与交付
+
+当前交付包括以下两项，分别记录完成状态：
+
+1. 将 `Next` 分支的代码和交付记录推送到 GitHub，核对远端提交与本地一致。
+2. 将独立应用 `ai.chatty.ios.next` 发布到 TestFlight 内部测试，确认目标构建完成 Apple 处理并分配给内部测试组。手机安装与启动单独验证。
+
+调用发布流程时默认执行这两项。创建 PR、合并主分支和公开 App Store 上架需有对应请求。首次创建 Apple 应用记录可能需要网页登录；API 认证与网页登录状态分别核对。
+
+本次产物、渠道进度与回退说明见 [release.md](../.sdlc/changes/20260913-chatty-next-deepseek-ios/release.md)。
