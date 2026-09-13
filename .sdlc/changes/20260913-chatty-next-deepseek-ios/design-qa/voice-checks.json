@@ -1,0 +1,67 @@
+{
+  "capturedAt": "2026-09-13T03:56:25.201Z",
+  "kind": "design-html-only",
+  "voiceParityAccepted": false,
+  "productTested": false,
+  "serviceInvoked": false,
+  "method": "CDP pointer events with buttons=1; ego keyboard and UI actions. Screenshots use dedicated static reading scenes so capture does not interrupt a held gesture.",
+  "checks": {
+    "holdShowsBlue": true,
+    "upwardShowsRed": true,
+    "cancelDoesNotSend": true,
+    "releaseSendsOnce": true,
+    "duplicateReleaseIgnored": true,
+    "spaceHolds": true,
+    "escapeCancels": true,
+    "spaceReleaseSends": true,
+    "textModeAndKeyboard": true,
+    "existingDraftRetained": true,
+    "staticRecordingWithDraft": true,
+    "modeReturnsToHold": true,
+    "pointerCancelDoesNotSend": true,
+    "blurCancels": true,
+    "modelSelectorWorks": true,
+    "workspaceSelectorWorks": true,
+    "workspaceConfirmsBeforeChange": true,
+    "workspaceCopiesDraft": true,
+    "offlineSelectorsDisabled": true,
+    "narrowNoOverflow": true,
+    "darkSelectorFits": true,
+    "emptyDoesNotSend": true,
+    "noPageErrors": true,
+    "touchStartsHold": true,
+    "touchMoveArmsCancel": true,
+    "touchCancelNoSend": true
+  },
+  "observations": {
+    "hold": {
+      "scene": "voice",
+      "holding": true,
+      "cancel": false,
+      "sends": 0,
+      "hint": "松手发送，上滑取消"
+    },
+    "cancelArmed": {
+      "scene": "voice",
+      "holding": true,
+      "cancel": true,
+      "sends": 0,
+      "hint": "松手取消"
+    },
+    "cancelled": {
+      "scene": "voice",
+      "holding": false,
+      "cancel": false,
+      "sends": 0,
+      "hint": null
+    },
+    "sent": {
+      "scene": "reply",
+      "holding": false,
+      "cancel": false,
+      "sends": 1,
+      "hint": null
+    }
+  },
+  "layoutRevision": "Fixed grid intrinsic minimum width; verified 390px layout and touch cancellation."
+}

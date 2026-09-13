@@ -1,0 +1,12 @@
+{
+  "kind": "design-html-only",
+  "voiceParityAccepted": false,
+  "checks": {
+    "scene": "voicePending",
+    "withdrawn": true,
+    "oldVoiceActionsAbsent": true,
+    "selectorsPresent": true
+  },
+  "status": "historical-superseded",
+  "supersededBy": "voice-checks.json"
+}

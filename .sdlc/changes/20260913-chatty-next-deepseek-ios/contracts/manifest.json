@@ -1,0 +1,88 @@
+{
+  "capturedAt": "2026-09-13T03:12:24.558088+00:00",
+  "evidenceKind": "installed-source-not-running-handshake",
+  "launcherVersion": "0.1.5-rc.1",
+  "files": [
+    {
+      "path": "/Users/benjamin/Library/Application Support/DeepSeek Harness/node_modules/@deepseek-ai/dsh-client-connection/lib/types/rpc.d.ts",
+      "packageVersion": "0.1.5-rc.2",
+      "sha256": "1777f212eb682fdadae99191bb60a21d09ed1adcf979d2ffce26a146e0f2a3b7"
+    },
+    {
+      "path": "/Users/benjamin/Library/Application Support/DeepSeek Harness/node_modules/@deepseek-ai/dsh-client-connection/lib/client.js",
+      "packageVersion": "0.1.5-rc.2",
+      "sha256": "319cc46762af6ccb7ac74c9bab37ab8377be212dad9de4dba1f892b7e5b4d8a1"
+    },
+    {
+      "path": "/Users/benjamin/Library/Application Support/DeepSeek Harness/node_modules/@deepseek-ai/dsh-client-connection/lib/types/browser-auth.d.ts",
+      "packageVersion": "0.1.5-rc.2",
+      "sha256": "6ae2c491dcfb1595091b1adaa9dde348863fe06e73d94c888b7377a6aa3bf382"
+    },
+    {
+      "path": "/Users/benjamin/Library/Application Support/DeepSeek Harness/node_modules/@deepseek-ai/dsh-api-gateway/lib/types/stream-protocol.d.ts",
+      "packageVersion": "0.1.5-rc.2",
+      "sha256": "a80a652f457dbf68d4b8deca6121189ed440e6aabe51f06edc295a7b27afb6ad"
+    },
+    {
+      "path": "/Users/benjamin/Library/Application Support/DeepSeek Harness/node_modules/@deepseek-ai/dsh-api-session-controller/lib/types/types.d.ts",
+      "packageVersion": "0.1.5-rc.2",
+      "sha256": "3ef41f9d0ca62475c666a4dd664c390c55fff4106b8f399ede344e259524974d"
+    },
+    {
+      "path": "/Users/benjamin/Library/Application Support/DeepSeek Harness/node_modules/@deepseek-ai/dsh-api-session-controller/lib/typert.host.js",
+      "packageVersion": "0.1.5-rc.2",
+      "sha256": "ba696e6c85f616045e04f13cbdff9b47ea7acb6aa550c8e946fed830647292a1"
+    },
+    {
+      "path": "/Users/benjamin/Library/Application Support/DeepSeek Harness/node_modules/@deepseek-ai/dsh-api-session-controller/lib/index.js",
+      "packageVersion": "0.1.5-rc.2",
+      "sha256": "16ecb48f33996efe72868f1603223214430634c5ac4c3e8fe9060bf240e990ff"
+    },
+    {
+      "path": "/Users/benjamin/Library/Application Support/DeepSeek Harness/node_modules/@deepseek-ai/dsh-client-file-upload/lib/index.js",
+      "packageVersion": "0.1.5-rc.2",
+      "sha256": "3c664a5e2b6d1fe452c1168029c2f2c49d48e22a329dcdcdb1259f73f8e90f44"
+    },
+    {
+      "path": "/Users/benjamin/Library/Application Support/DeepSeek Harness/node_modules/@deepseek-ai/dsh-client-file-upload/lib/types/types.d.ts",
+      "packageVersion": "0.1.5-rc.2",
+      "sha256": "68919d5fe46028fcb5981f06635d68d2d4a6429be91cb203f399034631b09953"
+    },
+    {
+      "path": "/Users/benjamin/Library/Application Support/DeepSeek Harness/node_modules/@deepseek-ai/dsh-llm/lib/types/assistant-stream.d.ts",
+      "packageVersion": "0.1.5-rc.2",
+      "sha256": "0bb9bdf2ae67cf51e1a08742238b6780d0dded4786b8ae9c970e1b452b29ddaa"
+    },
+    {
+      "path": "/Users/benjamin/Library/Application Support/DeepSeek Harness/node_modules/@deepseek-ai/dsh-user-approval/lib/types/types.d.ts",
+      "packageVersion": "0.1.5-rc.2",
+      "sha256": "b19ff1c6d53097aa5f860b94e36e101735d306477a9c299389e1b62146fad984"
+    },
+    {
+      "path": "/Users/benjamin/Library/Application Support/DeepSeek Harness/node_modules/@deepseek-ai/dsh-user-questions/lib/types/types.d.ts",
+      "packageVersion": "0.1.5-rc.2",
+      "sha256": "11daf8fb79f6205e77973eea1dd00aea97edab0e38e7dbad5f1964ed2bd43f60"
+    },
+    {
+      "path": "/Users/benjamin/Library/Application Support/DeepSeek Harness/node_modules/@deepseek-ai/dsh-api-remotes/lib/types/remote-events.d.ts",
+      "packageVersion": "0.1.5-rc.2",
+      "sha256": "8e64c31690fff3ef8f6ec19f6f22d0554ddc7b0748a53726e0c7fe7a2095bb6f"
+    },
+    {
+      "path": "/Users/benjamin/Library/Application Support/DeepSeek Harness/node_modules/@deepseek-ai/dsh-api-workspace-controller/lib/types/types.d.ts",
+      "packageVersion": "0.1.5-rc.2",
+      "sha256": "9fca2017e0a98a0c1ee897c77c06664106eaa6daec97916ab65b39e54bb7659d"
+    },
+    {
+      "path": "/Users/benjamin/Library/Application Support/DeepSeek Harness/node_modules/@deepseek-ai/dsh-api-workspace-controller/lib/typert.remote-client.d.ts",
+      "packageVersion": "0.1.5-rc.2",
+      "sha256": "bbb3b018c85ba8c06f1b254a98bdb3bdaff6065186d873cd7ff286565ecc3911"
+    },
+    {
+      "path": "/Users/benjamin/Library/Application Support/DeepSeek Harness/node_modules/@deepseek-ai/dsh-api-workspace-controller/lib/typert.host.js",
+      "packageVersion": "0.1.5-rc.2",
+      "sha256": "c8b5d56c4fabe495bc08505829c95f528754f368d5c0005894eda31a3abc059e"
+    }
+  ],
+  "selectorRevisionAt": "2026-09-13T03:23:29.598684+00:00"
+}

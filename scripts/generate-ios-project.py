@@ -10,41 +10,49 @@ def cfgs(key,base):
  refs=[]
  for mode in ('Debug','Release'):
   settings={**base,'SWIFT_OPTIMIZATION_LEVEL':'-Onone' if mode=='Debug' else '-O','DEBUG_INFORMATION_FORMAT':'dwarf' if mode=='Debug' else 'dwarf-with-dsym'}
-  if mode=='Debug':settings.update(ENABLE_TESTABILITY='YES',ONLY_ACTIVE_ARCH='YES')
+  if mode=='Debug':
+   settings.update(ENABLE_TESTABILITY='YES',ONLY_ACTIVE_ARCH='YES')
+   if key.startswith('ChattyNext'):settings['SWIFT_ACTIVE_COMPILATION_CONDITIONS']=settings.get('SWIFT_ACTIVE_COMPILATION_CONDITIONS','$(inherited)')+' DEBUG'
   refs.append(obj(key+mode,'XCBuildConfiguration',buildSettings=settings,name=mode))
  return obj(key+'configs','XCConfigurationList',buildConfigurations=refs,defaultConfigurationIsVisible='0',defaultConfigurationName='Release')
 files={}
-for folder in ('Chatty','Fixture','Tests'):
+for folder in ('Chatty','Fixture','Tests','ChattyNext','NextTests'):
  for p in sorted((root/folder).glob('*.swift')):
   files[str(p.relative_to(root))]=obj(str(p.relative_to(root)),'PBXFileReference',lastKnownFileType='sourcecode.swift',path=p.name,sourceTree='<group>')
-groups=[obj(folder+'group','PBXGroup',children=[v for k,v in files.items() if k.startswith(folder+'/')],path=folder,sourceTree='<group>') for folder in ('Chatty','Fixture','Tests')]
+groups=[obj(folder+'group','PBXGroup',children=[v for k,v in files.items() if k.startswith(folder+'/')],path=folder,sourceTree='<group>') for folder in ('Chatty','Fixture','Tests','ChattyNext','NextTests')]
 assets=obj('app-assets','PBXFileReference',lastKnownFileType='folder.assetcatalog',path='Chatty/Assets.xcassets',sourceTree='<group>')
 privacy=obj('app-privacy','PBXFileReference',lastKnownFileType='text.xml',path='Config/PrivacyInfo.xcprivacy',sourceTree='<group>')
 package=obj('package','XCLocalSwiftPackageReference',relativePath='Packages/ChattyKit')
+nextpackage=obj('nextpackage','XCLocalSwiftPackageReference',relativePath='Packages/ChattyNextKit')
 productrefs=[];targets=[]
-for name in ('Chatty','ChattyFixture','ChattyFixtureTests'):
- test=name.endswith('Tests'); fixture=name=='ChattyFixture'
+for name in ('Chatty','ChattyFixture','ChattyFixtureTests','ChattyNext','ChattyNextFixture','ChattyNextFixtureTests'):
+ test=name.endswith('Tests'); fixture=name.endswith('Fixture'); nextapp=name.startswith('ChattyNext')
  ext='xctest' if test else 'app'
  prod=obj(name+'product','PBXFileReference',explicitFileType='wrapper.cfbundle' if test else 'wrapper.application',includeInIndex='0',path=name+'.'+ext,sourceTree='BUILT_PRODUCTS_DIR');productrefs.append(prod)
  paths=[k for k in files if k.startswith('Tests/' if test else 'Chatty/') or (fixture and k.startswith('Fixture/'))]
+ if nextapp:
+  paths=[k for k in files if k.startswith('NextTests/' if test else 'ChattyNext/') or (not test and k in ['Chatty/ComposerText.swift','Chatty/RichContentView.swift','Chatty/Theme.swift'])]
  sources=obj(name+'sources','PBXSourcesBuildPhase',buildActionMask='2147483647',files=[obj(name+k,'PBXBuildFile',fileRef=files[k]) for k in paths],runOnlyForDeploymentPostprocessing='0')
  deps=[];frameworks=[]
- for product in (['ChattyCore','ChattyFixtureSupport'] if fixture else ['ChattyCore']):
-  dep=obj(name+product,'XCSwiftPackageProductDependency',package=package,productName=product);deps.append(dep);frameworks.append(obj(name+product+'build','PBXBuildFile',productRef=dep))
+ for product in (['ChattyCore','ChattyNextCore'] if nextapp else ['ChattyCore','ChattyFixtureSupport'] if fixture else ['ChattyCore']):
+  dep=obj(name+product,'XCSwiftPackageProductDependency',package=nextpackage if product=='ChattyNextCore' else package,productName=product);deps.append(dep);frameworks.append(obj(name+product+'build','PBXBuildFile',productRef=dep))
  fw=obj(name+'frameworks','PBXFrameworksBuildPhase',buildActionMask='2147483647',files=frameworks,runOnlyForDeploymentPostprocessing='0')
  res=obj(name+'resources','PBXResourcesBuildPhase',buildActionMask='2147483647',files=[] if test else [obj(name+'assets-build','PBXBuildFile',fileRef=assets),obj(name+'privacy-build','PBXBuildFile',fileRef=privacy)],runOnlyForDeploymentPostprocessing='0')
  settings={'PRODUCT_NAME':'$(TARGET_NAME)','PRODUCT_BUNDLE_IDENTIFIER':'ai.chatty.ios'+('.fixture.tests' if test else '.fixture' if fixture else ''),'CODE_SIGN_STYLE':'Automatic','TARGETED_DEVICE_FAMILY':'1,2','SUPPORTED_PLATFORMS':'iphoneos iphonesimulator','SWIFT_VERSION':'6.0','IPHONEOS_DEPLOYMENT_TARGET':'26.0','LD_RUNPATH_SEARCH_PATHS':['$(inherited)','@executable_path/Frameworks'],'MARKETING_VERSION':'0.2.0','CURRENT_PROJECT_VERSION':'11'}
- if test:settings.update(GENERATE_INFOPLIST_FILE='YES',TEST_HOST='$(BUILT_PRODUCTS_DIR)/ChattyFixture.app/ChattyFixture',BUNDLE_LOADER='$(TEST_HOST)')
+ if nextapp:settings['PRODUCT_BUNDLE_IDENTIFIER']='ai.chatty.ios.next'+('.fixture.tests' if test else '.fixture' if fixture else '')
+ host='ChattyNextFixture' if nextapp else 'ChattyFixture'
+ if test:settings.update(GENERATE_INFOPLIST_FILE='YES',TEST_HOST=f'$(BUILT_PRODUCTS_DIR)/{host}.app/{host}',BUNDLE_LOADER='$(TEST_HOST)')
  else:settings.update(INFOPLIST_FILE='Config/'+name+'-Info.plist',ASSETCATALOG_COMPILER_APPICON_NAME='AppIcon')
  if fixture:settings['SWIFT_ACTIVE_COMPILATION_CONDITIONS']='$(inherited) CHATTY_FIXTURE'
+ if nextapp:settings['SWIFT_ACTIVE_COMPILATION_CONDITIONS']='$(inherited) CHATTY_NEXT'+(' CHATTY_NEXT_FIXTURE' if fixture else '')
  targetdeps=[]
  if test:
-  proxy=obj('testproxy','PBXContainerItemProxy',containerPortal=uid('project'),proxyType='1',remoteGlobalIDString=uid('ChattyFixturetarget'),remoteInfo='ChattyFixture')
-  targetdeps=[obj('testdependency','PBXTargetDependency',target=uid('ChattyFixturetarget'),targetProxy=proxy)]
+  proxy=obj(('next' if nextapp else '')+'testproxy','PBXContainerItemProxy',containerPortal=uid('project'),proxyType='1',remoteGlobalIDString=uid(host+'target'),remoteInfo=host)
+  targetdeps=[obj(('next' if nextapp else '')+'testdependency','PBXTargetDependency',target=uid(host+'target'),targetProxy=proxy)]
  targets.append(obj(name+'target','PBXNativeTarget',buildConfigurationList=cfgs(name,settings),buildPhases=[sources,fw,res],buildRules=[],dependencies=targetdeps,name=name,packageProductDependencies=deps,productName=name,productReference=prod,productType='com.apple.product-type.bundle.unit-test' if test else 'com.apple.product-type.application'))
 products=obj('products','PBXGroup',children=productrefs,name='Products',sourceTree='<group>')
 main=obj('main','PBXGroup',children=groups+[assets,privacy,products],sourceTree='<group>')
-project=obj('project','PBXProject',attributes={'BuildIndependentTargetsInParallel':'YES','LastUpgradeCheck':'2660'},buildConfigurationList=cfgs('project',{'SDKROOT':'iphoneos','SWIFT_VERSION':'6.0','SWIFT_STRICT_CONCURRENCY':'complete','CLANG_ENABLE_MODULES':'YES','IPHONEOS_DEPLOYMENT_TARGET':'26.0'}),compatibilityVersion='Xcode 14.0',developmentRegion='en',hasScannedForEncodings='0',knownRegions=['en','Base','zh-Hans'],mainGroup=main,packageReferences=[package],productRefGroup=products,projectDirPath='',projectRoot='',targets=targets)
+project=obj('project','PBXProject',attributes={'BuildIndependentTargetsInParallel':'YES','LastUpgradeCheck':'2660'},buildConfigurationList=cfgs('project',{'SDKROOT':'iphoneos','SWIFT_VERSION':'6.0','SWIFT_STRICT_CONCURRENCY':'complete','CLANG_ENABLE_MODULES':'YES','IPHONEOS_DEPLOYMENT_TARGET':'26.0'}),compatibilityVersion='Xcode 14.0',developmentRegion='en',hasScannedForEncodings='0',knownRegions=['en','Base','zh-Hans'],mainGroup=main,packageReferences=[package,nextpackage],productRefGroup=products,projectDirPath='',projectRoot='',targets=targets)
 def encode(x,level=0):
  if isinstance(x,dict):return '{\n'+''.join('\t'*(level+1)+json.dumps(k)+' = '+encode(v,level+1)+';\n' for k,v in x.items())+'\t'*level+'}'
  if isinstance(x,list):return '('+', '.join(encode(v,level) for v in x)+')'
@@ -53,8 +61,10 @@ p=root/'Chatty.xcodeproj';p.mkdir(exist_ok=True)
 (p/'project.pbxproj').write_text('// !$*UTF8*$!\n'+encode({'archiveVersion':'1','classes':{},'objectVersion':'56','objects':objects,'rootObject':project})+'\n')
 (root/'Config').mkdir(exist_ok=True)
 orientations=['UIInterfaceOrientationPortrait','UIInterfaceOrientationPortraitUpsideDown','UIInterfaceOrientationLandscapeLeft','UIInterfaceOrientationLandscapeRight']
-for name in ('Chatty','ChattyFixture'):
+for name in ('Chatty','ChattyFixture','ChattyNext','ChattyNextFixture'):
  info={'CFBundleDevelopmentRegion':'$(DEVELOPMENT_LANGUAGE)','CFBundleExecutable':'$(EXECUTABLE_NAME)','CFBundleIdentifier':'$(PRODUCT_BUNDLE_IDENTIFIER)','CFBundleInfoDictionaryVersion':'6.0','CFBundleName':'$(PRODUCT_NAME)','CFBundleDisplayName':'Chatty Test' if name.endswith('Fixture') else 'Chatty','CFBundlePackageType':'APPL','CFBundleShortVersionString':'$(MARKETING_VERSION)','CFBundleVersion':'$(CURRENT_PROJECT_VERSION)','LSRequiresIPhoneOS':True,'ITSAppUsesNonExemptEncryption':False,'UIApplicationSceneManifest':{'UIApplicationSupportsMultipleScenes':True},'UILaunchScreen':{},'UISupportedInterfaceOrientations':orientations,'UISupportedInterfaceOrientations~ipad':orientations}
+ if name.startswith('ChattyNext'):
+  info.update(CFBundleDisplayName='Chatty Next Test' if name.endswith('Fixture') else 'Chatty Next', NSMicrophoneUsageDescription='按住说话，将语音转换成要发送给 Mac 的消息。', NSSpeechRecognitionUsageDescription='将语音转换为消息文字。', NSCameraUsageDescription='拍照后将图片附在消息中。')
  if name.endswith('Fixture'):
   info['NSAppTransportSecurity']={'NSAllowsLocalNetworking':True}
   info['UIFileSharingEnabled']=True
@@ -62,8 +72,9 @@ for name in ('Chatty','ChattyFixture'):
  (root/'Config'/f'{name}-Info.plist').write_bytes(plistlib.dumps(info))
 schemes=p/'xcshareddata/xcschemes';schemes.mkdir(parents=True,exist_ok=True)
 def ref(name):return f'<BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="{uid(name+"target")}" BuildableName="{name}.app" BlueprintName="{name}" ReferencedContainer="container:Chatty.xcodeproj"/>'
-for name in ('Chatty','ChattyFixture'):
- testable=f'<Testables><TestableReference skipped="NO"><BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="{uid("ChattyFixtureTeststarget")}" BuildableName="ChattyFixtureTests.xctest" BlueprintName="ChattyFixtureTests" ReferencedContainer="container:Chatty.xcodeproj"/></TestableReference></Testables>' if name.endswith('Fixture') else '<Testables/>'
+for name in ('Chatty','ChattyFixture','ChattyNext','ChattyNextFixture'):
+ testname=name+'Tests'
+ testable=f'<Testables><TestableReference skipped="NO"><BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="{uid(testname+"target")}" BuildableName="{testname}.xctest" BlueprintName="{testname}" ReferencedContainer="container:Chatty.xcodeproj"/></TestableReference></Testables>' if name.endswith('Fixture') else '<Testables/>'
  (schemes/(name+'.xcscheme')).write_text(f'''<?xml version="1.0" encoding="UTF-8"?>
 <Scheme LastUpgradeVersion="2660" version="1.3">
 <BuildAction parallelizeBuildables="YES" buildImplicitDependencies="YES"><BuildActionEntries><BuildActionEntry buildForTesting="YES" buildForRunning="YES" buildForProfiling="YES" buildForArchiving="YES" buildForAnalyzing="YES">{ref(name)}</BuildActionEntry></BuildActionEntries></BuildAction>

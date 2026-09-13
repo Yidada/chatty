@@ -1,0 +1,164 @@
+{
+  "referenceDevice": "iPhone 15 Pro",
+  "iosVersion": "27.0",
+  "deepseekInstalledVersion": "2.4.5",
+  "language": "zh-CN (observed interface)",
+  "textSize": null,
+  "displayZoom": null,
+  "capturedAt": "2026-09-13T03:51:46.092354+00:00",
+  "deviceCaptureCompleted": false,
+  "states": [
+    {
+      "id": "welcome",
+      "deviceScreenshot": "reference/deepseek-2.4.5-voice-idle.png",
+      "recording": null,
+      "status": "device-observed"
+    },
+    {
+      "id": "history",
+      "deviceScreenshot": null,
+      "recording": null,
+      "status": "awaiting-device-reference"
+    },
+    {
+      "id": "keyboard",
+      "deviceScreenshot": "reference/deepseek-2.4.5-text-keyboard.png",
+      "recording": null,
+      "status": "device-observed"
+    },
+    {
+      "id": "recording",
+      "deviceScreenshot": "reference/deepseek-2.4.5-recording.png",
+      "recording": null,
+      "status": "device-observed"
+    },
+    {
+      "id": "voice-after-input",
+      "deviceScreenshot": null,
+      "recording": null,
+      "status": "device-observed-main-flow",
+      "note": "Valid release submitted recognized text and entered reply in live observation; no extra review step. Not covered by USB recording; timing unmeasured."
+    },
+    {
+      "id": "thinking",
+      "deviceScreenshot": null,
+      "recording": null,
+      "status": "awaiting-device-reference"
+    },
+    {
+      "id": "streaming",
+      "deviceScreenshot": null,
+      "recording": null,
+      "status": "awaiting-device-reference"
+    },
+    {
+      "id": "complete",
+      "deviceScreenshot": null,
+      "recording": null,
+      "status": "awaiting-device-reference"
+    },
+    {
+      "id": "message-menu",
+      "deviceScreenshot": null,
+      "recording": null,
+      "status": "awaiting-device-reference"
+    },
+    {
+      "id": "attachments",
+      "deviceScreenshot": null,
+      "recording": null,
+      "status": "awaiting-device-reference"
+    },
+    {
+      "id": "dark",
+      "deviceScreenshot": null,
+      "recording": null,
+      "status": "awaiting-device-reference"
+    },
+    {
+      "id": "offline",
+      "deviceScreenshot": null,
+      "recording": null,
+      "status": "awaiting-device-reference"
+    },
+    {
+      "id": "voice-cancel",
+      "deviceScreenshot": "reference/deepseek-2.4.5-cancel.png",
+      "recording": "reference/deepseek-2.4.5-cancel-gesture.mp4",
+      "status": "device-observed"
+    }
+  ],
+  "marketingReference": "../../../ds/cn2.png",
+  "note": "Do not use marketing imagery or the HTML design prototype as accepted device baselines.",
+  "voiceInteraction": {
+    "status": "main-flow-device-observed",
+    "observedGesture": "mode-toggle, hold-to-record, release-to-send, drag-up-to-cancel",
+    "commitPolicy": "releaseToSend",
+    "mirroringProbe": "not-running",
+    "checkedAt": "2026-09-13T03:51:46.092354+00:00",
+    "requiredReference": "voice-reference.md",
+    "captureApproach": "argent-usb-controls + QuickTime-usb-screen-recording",
+    "blocker": null,
+    "remaining": [
+      "draft-and-attachments",
+      "cancel-return-drag",
+      "timing-thresholds",
+      "interruptions",
+      "haptics",
+      "ASR-quality"
+    ]
+  },
+  "deviceProbe": {
+    "model": "iPhone 15 Pro",
+    "iosVersion": "27.0",
+    "transport": "wired",
+    "pairingState": "paired",
+    "tunnelState": "connected",
+    "developerModeStatus": "enabled",
+    "source": "fresh xcrun devicectl device info details",
+    "capturedAt": "2026-09-13T03:35:29.434977+00:00",
+    "appObserved": true
+  },
+  "argentProbe": {
+    "version": "0.25.0",
+    "deviceState": "connected",
+    "model": "iPhone 15 Pro",
+    "transportType": "wired",
+    "developerModeEnabled": true,
+    "tunnelState": "disconnected",
+    "runnerInstalledByThisTask": true,
+    "source": "argent run list-devices --json",
+    "developerModeEvidence": "fresh CoreDevice query; Argent initial list was stale",
+    "appCommandsSucceeded": true,
+    "runnerStateAtEnd": "stopped; installed app retained",
+    "tunnelStateNote": "Initial cached probe only; later runner commands succeeded over USB."
+  },
+  "deepseekInstalledBuild": "2",
+  "deviceCaptureStatus": "partial-voice-main-flow-observed",
+  "files": [
+    {
+      "path": "reference/deepseek-2.4.5-cancel-gesture.mp4",
+      "sha256": "657215a3300ff1803e95fba402d8e58079d3962f2879478f15299a98e1effcde"
+    },
+    {
+      "path": "reference/deepseek-2.4.5-cancel.png",
+      "sha256": "a7d0081e20f8fca301f68b3f4218c4e2b4aab1065737861a2320f360dd0cf75b"
+    },
+    {
+      "path": "reference/deepseek-2.4.5-recording.png",
+      "sha256": "19b34807f60ae2d8e7d1ba8b90250a489286dc5f9922937f4aa93ef18ab194fb"
+    },
+    {
+      "path": "reference/deepseek-2.4.5-text-keyboard.png",
+      "sha256": "5433d08995384820c3e5d42772a94eb385e43dc3f5e7ebb37442addae0505186"
+    },
+    {
+      "path": "reference/deepseek-2.4.5-voice-idle.png",
+      "sha256": "c198a2db48169d82efb092bd5581b79a0f6272588cb70e8cc6ad4eb903603ef0"
+    },
+    {
+      "path": "reference/voice-observations.json",
+      "sha256": "503f2bc1089180056093923bad83c2e0e2568f0d24e03136006880a22507cdcf"
+    }
+  ]
+}

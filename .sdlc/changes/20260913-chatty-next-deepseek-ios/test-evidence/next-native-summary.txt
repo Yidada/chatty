@@ -1,0 +1,4 @@
+	 Executed 10 tests, with 0 failures (0 unexpected) in 0.383 (0.387) seconds
+	 Executed 10 tests, with 0 failures (0 unexpected) in 0.383 (0.387) seconds
+	 Executed 10 tests, with 0 failures (0 unexpected) in 0.383 (0.388) seconds
+** TEST SUCCEEDED **

@@ -1,5 +1,11 @@
 # Chatty
 
+## Next 方向（2026-09-13）
+
+`Next` 分支正在重新设计 iPhone 体验：以 iPhone 15 Pro 上的 DeepSeek iOS 为参考，第一阶段对齐语音输入、聊天、实时输出、历史与视觉交互，请求通过 Tailscale 到当前 Mac 的 dsh。见[交互与架构设计](.sdlc/changes/20260913-chatty-next-deepseek-ios/design.html)、[可视化计划](.sdlc/changes/20260913-chatty-next-deepseek-ios/index.html)与[实施及验收清单](.sdlc/changes/20260913-chatty-next-deepseek-ios/plan.md)。已实现独立原生客户端、dsh 真实文字对话及语音采集流程；构建与模拟器回归通过，真机已安装。语音质量与像素一致性仍待验收。构建方法见 [Next 开发说明](ios/NEXT.md)，实测状态见 [实现记录](.sdlc/changes/20260913-chatty-next-deepseek-ios/build.md)。
+
+以下内容描述已有 `main` 产品基线。
+
 Chatty 是 Multica 的原生客户端。用户通过 Mika 对话发起工作，通过动态和项目查看进展；身份、任务、Agent 与 Runtime 状态由 Multica 提供。
 
 ## 当前基线（2026-09-13）

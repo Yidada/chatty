@@ -2,13 +2,28 @@ import SwiftUI
 import ChattyCore
 import UIKit
 
+#if !CHATTY_NEXT
 struct RichContentView: View {
     let source: String
     let context: WorkspaceContext
+    var body: some View {
+        NativeRichContent(source: source, link: { source in
+            guard NativeLink.resolve(source, api: context.api.baseURL, workspace: context.workspace.slug) != .unavailable else { return nil }
+            return URL(string: source, relativeTo: context.api.baseURL)?.absoluteURL
+        }, image: { alt, source in AnyView(InlineImageView(source: source, alt: alt, context: context)) })
+    }
+}
+
+#endif
+
+struct NativeRichContent: View {
+    let source: String
+    var link: (String) -> URL?
+    var image: (String, String) -> AnyView
     @State private var blocks: [RichBlock] = []
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            ForEach(Array(blocks.enumerated()), id: \.offset) { _, block in RichBlockView(block: block, context: context) }
+            ForEach(Array(blocks.enumerated()), id: \.offset) { _, block in RichBlockView(block: block, link: link, image: image) }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .textSelection(.enabled)
@@ -21,7 +36,7 @@ struct RichContentView: View {
 
 private struct InlineText: View {
     let runs: [InlineRun]
-    let context: WorkspaceContext
+    let link: (String) -> URL?
     var body: some View { Text(attributed).fixedSize(horizontal: false, vertical: true) }
     private var attributed: AttributedString {
         var result = AttributedString()
@@ -36,8 +51,7 @@ private struct InlineText: View {
             text.font = font
             if run.strike { text.strikethroughStyle = .single }
             if run.code { text.backgroundColor = Color.secondary.opacity(0.12) }
-            if let link = run.link, let url = URL(string: link, relativeTo: context.api.baseURL)?.absoluteURL,
-               NativeLink.resolve(link, api: context.api.baseURL, workspace: context.workspace.slug) != .unavailable { text.link = url }
+            if let source = run.link, let url = link(source) { text.link = url }
             result.append(text)
         }
         return result
@@ -46,13 +60,14 @@ private struct InlineText: View {
 
 private struct RichBlockView: View {
     let block: RichBlock
-    let context: WorkspaceContext
+    let link: (String) -> URL?
+    let image: (String, String) -> AnyView
     var body: some View {
         switch block {
         case .heading(let level, let runs):
             Text(runs.map(\.text).joined()).font(level == 1 ? .title2.bold() : level == 2 ? .title3.bold() : .headline)
                 .accessibilityAddTraits(.isHeader).fixedSize(horizontal: false, vertical: true)
-        case .paragraph(let runs): InlineText(runs: runs, context: context)
+        case .paragraph(let runs): InlineText(runs: runs, link: link)
         case .code(let language, let content):
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
@@ -67,9 +82,9 @@ private struct RichBlockView: View {
         case .table(let headers, let rows):
             ScrollView(.horizontal) {
                 Grid(alignment: .leading, horizontalSpacing: 28, verticalSpacing: 12) {
-                    GridRow { ForEach(Array(headers.enumerated()), id: \.offset) { _, cell in InlineText(runs: cell, context: context).fontWeight(.semibold) } }
+                    GridRow { ForEach(Array(headers.enumerated()), id: \.offset) { _, cell in InlineText(runs: cell, link: link).fontWeight(.semibold) } }
                     ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
-                        GridRow { ForEach(Array(row.enumerated()), id: \.offset) { _, cell in InlineText(runs: cell, context: context) } }
+                        GridRow { ForEach(Array(row.enumerated()), id: \.offset) { _, cell in InlineText(runs: cell, link: link) } }
                     }
                 }.padding(16).background(ChattyTheme.accent.opacity(0.08), in: RoundedRectangle(cornerRadius: 14))
             }.accessibilityElement(children: .contain).accessibilityIdentifier("markdown.table")
@@ -78,17 +93,17 @@ private struct RichBlockView: View {
                 if let checked { Image(systemName: checked ? "checkmark.square" : "square").accessibilityLabel(checked ? "已完成" : "未完成") }
                 else { Text(number.map { "\($0)." } ?? "•").foregroundStyle(.secondary) }
                 VStack(alignment: .leading, spacing: 8) {
-                    ForEach(Array(children.enumerated()), id: \.offset) { _, child in AnyView(RichBlockView(block: child, context: context)) }
+                    ForEach(Array(children.enumerated()), id: \.offset) { _, child in AnyView(RichBlockView(block: child, link: link, image: image)) }
                 }
             }
         case .quote(let children):
             HStack(alignment: .top, spacing: 12) {
                 Rectangle().fill(ChattyTheme.accent.opacity(0.5)).frame(width: 3)
                 VStack(alignment: .leading, spacing: 8) {
-                    ForEach(Array(children.enumerated()), id: \.offset) { _, child in AnyView(RichBlockView(block: child, context: context)) }
+                    ForEach(Array(children.enumerated()), id: \.offset) { _, child in AnyView(RichBlockView(block: child, link: link, image: image)) }
                 }.foregroundStyle(.secondary)
             }.fixedSize(horizontal: false, vertical: true)
-        case .image(let alt, let source): InlineImageView(source: source, alt: alt, context: context)
+        case .image(let alt, let source): image(alt, source)
         case .math(let source):
             // Display formula: centred and set apart, matching how the DeepSeek app
             // presents `$$…$$` (research.md §2.5).

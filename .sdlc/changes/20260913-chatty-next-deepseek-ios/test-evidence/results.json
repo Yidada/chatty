@@ -1,0 +1,81 @@
+{
+  "recordedAt": "2026-09-13T17:03:50.943942+08:00",
+  "branch": "Next",
+  "parentCommit": "7f4703e",
+  "scope": "precommit iOS and dsh automatic approval verification; self-review",
+  "automatedTests": {
+    "passed": 148,
+    "skipped": 1,
+    "failed": 0,
+    "suites": [
+      {
+        "name": "next-core",
+        "passed": 15,
+        "skipped": 0,
+        "failed": 0,
+        "fullLog": ".tools/chatty-next/precommit-next-core-tests.log",
+        "fullLogSHA256": "a87054319466d65d53129114cda7020980bdd4e184967ba4599ddd5789659215"
+      },
+      {
+        "name": "legacy-core",
+        "passed": 98,
+        "skipped": 0,
+        "failed": 0,
+        "fullLog": ".tools/chatty-next/precommit-legacy-core-tests.log",
+        "fullLogSHA256": "dc567bf0ccb2645310d13b98f4a83ead0b7addf919260dd44bda428acfd92b35"
+      },
+      {
+        "name": "reviewer",
+        "passed": 12,
+        "skipped": 0,
+        "failed": 0,
+        "fullLog": ".tools/chatty-next/precommit-reviewer-tests.log",
+        "fullLogSHA256": "2a8daf2ecd9596fc0e2ef7b004937975824bf5e49bfa40a4983758e024091470"
+      },
+      {
+        "name": "next-native",
+        "passed": 10,
+        "skipped": 0,
+        "failed": 0,
+        "fullLog": ".tools/chatty-next/precommit-next-native-tests.log",
+        "fullLogSHA256": "088d349e65a6dbebef24e473d91cc537553c6c1fe4efeaf25ef85daaad33baa6"
+      },
+      {
+        "name": "legacy-native",
+        "passed": 13,
+        "skipped": 1,
+        "failed": 0,
+        "fullLog": ".tools/chatty-next/precommit-legacy-native-tests.log",
+        "fullLogSHA256": "115fdffddbe826eeba475924b53f38670347ccbe21881be60bc7b0c6dfba2d09"
+      }
+    ]
+  },
+  "realModel": {
+    "passed": 3,
+    "failed": 0,
+    "toolsExecuted": 0,
+    "evidence": "real-model-check.json"
+  },
+  "simulatorFlow": {
+    "passed": true,
+    "fixture": true,
+    "udid": "9C63D23A-19C8-4223-9517-258D1C014F60",
+    "bundleId": "ai.chatty.ios.next.fixture",
+    "evidence": [
+      "fixture-sending-tree.json",
+      "fixture-completed-tree.json",
+      "fixture-completed.png"
+    ]
+  },
+  "sourceIntegrity": {
+    "candidateFilesCheckedBeforeArtifactUpdate": 83,
+    "changed": [],
+    "generatedFilesChecked": 9,
+    "generatedChanges": []
+  },
+  "notes": [
+    "Native host startup logged connection refused while optional fixture service was absent; unit assertions all passed. Started the synthetic fixture separately and verified the UI send flow.",
+    "Existing legacy physical-file-protection case skipped on Simulator.",
+    "Fresh live model check used synthetic inputs and executed no candidate tools."
+  ]
+}

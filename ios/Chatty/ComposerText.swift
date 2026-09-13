@@ -21,6 +21,46 @@ enum ComposerReturnKey {
     }
 }
 
+/// DeepSeek 允许在空的文本输入框里长按直接说话，而不必先切到语音模式。
+///
+/// 只有空草稿才把长按让给语音：一旦框里有文字，长按仍然属于系统文本选择，
+/// 这样编辑、选词和光标定位不会被抢走。快速轻点也不会触发录音，仍然是聚焦输入。
+struct ComposerHoldGesture {
+    var begin: () -> Void
+    var move: (CGFloat, CGFloat) -> Void
+    var release: () -> Void
+    var cancel: () -> Void
+
+    /// 语音长按仅在输入框启用且草稿为空时生效。
+    static func eligible(text: String, enabled: Bool) -> Bool { enabled && text.isEmpty }
+}
+
+/// 长按说话的纯状态机：识别器只把事件喂进来，宿主测试可以脱离 UIKit 驱动
+/// begin / move / release / cancel，覆盖「按下即开始、上滑算取消距离、重复事件不重发」。
+final class ComposerHoldTracker {
+    private var start: CGFloat?
+    private var active: ComposerHoldGesture?
+    var isTracking: Bool { start != nil }
+
+    @discardableResult
+    func began(y: CGFloat, hold: ComposerHoldGesture?) -> Bool {
+        guard start == nil, let hold else { return false }
+        start = y; active = hold; hold.begin(); return true
+    }
+    func changed(y: CGFloat, threshold: CGFloat) {
+        guard let start, let active else { return }
+        active.move(start - y, threshold)
+    }
+    func ended() {
+        guard start != nil else { return }
+        start = nil; active?.release(); active = nil
+    }
+    func cancelled() {
+        guard start != nil else { return }
+        start = nil; active?.cancel(); active = nil
+    }
+}
+
 /// Mika 对话输入框。
 ///
 /// 软键盘回车键就是发送，这一点无法用竖向增长的 `TextField` 表达：`axis: .vertical`
@@ -40,6 +80,9 @@ struct ComposerText: UIViewRepresentable {
     @Binding var focused: Bool
     var enabled: Bool
     var onSubmit: () -> Void
+    var accessibilityLabel: String = "和 Mika 说点什么…"
+    /// 空草稿时把长按交给语音；旧 Mika 输入框不传，行为不变。
+    var hold: ComposerHoldGesture? = nil
 
     func makeCoordinator() -> Coordinator { Coordinator(self) }
 
@@ -68,6 +111,14 @@ struct ComposerText: UIViewRepresentable {
     func makeUIView(context: Context) -> UITextView {
         let view = Self.makeTextView()
         view.delegate = context.coordinator
+        view.accessibilityLabel = accessibilityLabel
+        let recognizer = UILongPressGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.holdChanged(_:)))
+        recognizer.minimumPressDuration = 0.25
+        // 移动要留给自己判断上滑取消，不能被识别器的默认 10pt 容差提前判失败。
+        recognizer.allowableMovement = .greatestFiniteMagnitude
+        recognizer.delegate = context.coordinator
+        view.addGestureRecognizer(recognizer)
+        context.coordinator.holdRecognizer = recognizer
         return view
     }
 
@@ -98,8 +149,10 @@ struct ComposerText: UIViewRepresentable {
         return line * maximumLines + view.textContainerInset.top + view.textContainerInset.bottom
     }
 
-    final class Coordinator: NSObject, UITextViewDelegate {
+    final class Coordinator: NSObject, UITextViewDelegate, UIGestureRecognizerDelegate {
         var parent: ComposerText
+        var holdRecognizer: UILongPressGestureRecognizer?
+        private let holdTracker = ComposerHoldTracker()
         init(_ parent: ComposerText) { self.parent = parent }
 
         func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
@@ -116,6 +169,30 @@ struct ComposerText: UIViewRepresentable {
         func textViewDidBeginEditing(_ textView: UITextView) { if !parent.focused { parent.focused = true } }
 
         func textViewDidEndEditing(_ textView: UITextView) { if parent.focused { parent.focused = false } }
+
+        /// 长按开始即视为按下说话：识别器已经消化了 0.25 秒阈值，之后的移动用于上滑取消。
+        @objc func holdChanged(_ recognizer: UILongPressGestureRecognizer) {
+            let location = recognizer.location(in: recognizer.view?.window)
+            switch recognizer.state {
+            case .began:
+                _ = holdTracker.began(y: location.y, hold: parent.hold)
+            case .changed:
+                let threshold = (recognizer.view?.window?.bounds.height ?? 852) * 0.1
+                holdTracker.changed(y: location.y, threshold: threshold)
+            case .ended:
+                holdTracker.ended()
+            case .cancelled, .failed:
+                holdTracker.cancelled()
+            default:
+                break
+            }
+        }
+
+        func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+            guard gestureRecognizer === holdRecognizer else { return true }
+            guard let view = gestureRecognizer.view as? UITextView else { return false }
+            return parent.hold != nil && ComposerHoldGesture.eligible(text: view.text ?? "", enabled: view.isEditable)
+        }
     }
 }
 

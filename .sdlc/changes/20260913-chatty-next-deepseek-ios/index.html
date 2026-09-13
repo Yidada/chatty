@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Chatty Next · DeepSeek iOS 体验重构计划</title>
+<style>
+:root{--ink:#172139;--muted:#60708b;--blue:#405de8;--line:#dfe5f0;--paper:#f5f7fb;--green:#187253}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.75 -apple-system,BlinkMacSystemFont,"PingFang SC","Segoe UI",sans-serif}a{color:var(--blue);text-underline-offset:4px}a:hover{text-decoration-thickness:2px}header,main,footer{max-width:1140px;margin:auto;padding:36px 32px}header{padding-top:56px;padding-bottom:20px}.eyebrow{color:var(--blue);font-size:12px;font-weight:750;letter-spacing:.16em}h1{font-size:clamp(34px,5vw,58px);line-height:1.18;letter-spacing:-.035em;margin:17px 0 22px}h2{font-size:25px;line-height:1.35;margin:0 0 16px}h3{font-size:18px;margin:0 0 8px}p{margin:10px 0}.lead{font-size:20px;max-width:860px;color:#455574}.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}.badge{font-size:12px;border:1px solid var(--line);border-radius:30px;background:#fff;padding:5px 12px}.badge.done{color:var(--green);border-color:#b9d9cd}.nav{display:flex;gap:20px;flex-wrap:wrap;margin-top:26px;font-size:14px}main{padding-top:12px}.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:30px;margin:20px 0}.hero{background:#eaf0ff;border-color:#cfdafa}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.grid .card{margin:0}.label{color:var(--muted);font-size:12px;font-weight:700;letter-spacing:.08em}.statement{font-size:24px;line-height:1.55;margin:12px 0 20px}.small{font-size:13px;color:var(--muted)}ul,ol{padding-left:22px;margin:12px 0}li{margin:7px 0}.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:22px 0}.node{padding:12px 16px;border-radius:12px;background:#fff;border:1px solid #cad7f5;font-weight:650;font-size:14px}.arrow{color:var(--blue)}.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.step{border-top:3px solid var(--blue);padding:16px 14px;background:var(--paper);border-radius:0 0 12px 12px}.number{font-size:12px;color:var(--blue);font-weight:800}.step p{font-size:13px;color:var(--muted)}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.metric{background:var(--paper);border-radius:14px;padding:18px}.metric strong{display:block;color:var(--blue);font-size:31px;line-height:1.35}.metric span{display:block;font-size:13px;color:var(--muted);margin-top:7px}.scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:14px}th,td{border-bottom:1px solid var(--line);padding:14px 12px;text-align:left;vertical-align:top}th{font-size:12px;color:var(--muted);background:var(--paper)}td:first-child{min-width:115px;font-weight:650}code{font-size:.86em;background:#edf1f8;border-radius:4px;padding:2px 5px;overflow-wrap:anywhere}details{border-top:1px solid var(--line);padding:17px 0}summary{font-weight:650;cursor:pointer}details p{font-size:14px;color:#455574}.reference{display:grid;grid-template-columns:190px 1fr;gap:26px;align-items:start}.reference img{display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line)}.notice{border-left:3px solid var(--blue);padding:4px 0 4px 18px;margin:20px 0;color:#455574}footer{font-size:12px;color:var(--muted);padding-top:0;padding-bottom:44px}section{scroll-margin-top:25px}button{font:inherit}.actions{display:flex;gap:12px;flex-wrap:wrap}.actions a{display:inline-block;padding:10px 16px;background:var(--blue);color:white;text-decoration:none;border-radius:10px;font-size:14px}.actions a.secondary{background:#edf1ff;color:var(--blue)}
+@media(max-width:800px){header,main,footer{padding-left:20px;padding-right:20px}.grid{grid-template-columns:1fr}.steps{grid-template-columns:1fr 1fr}.metrics{grid-template-columns:1fr}.card{padding:23px}.reference{grid-template-columns:125px 1fr}.statement{font-size:21px}}@media(max-width:480px){.steps{grid-template-columns:1fr}.reference{grid-template-columns:1fr}.reference img{max-width:190px}.lead{font-size:18px}.nav{gap:12px}}@media print{body{background:white}.card{break-inside:avoid}.nav{display:none}header,main,footer{max-width:none;padding:20px}.steps{grid-template-columns:repeat(5,1fr)}}
+</style>
+</head>
+<body>
+<header>
+<div class="eyebrow">CHATTY NEXT / PRODUCT PLAN / 2026.09.13</div>
+<h1>先做到每天都想用。<br>从 DeepSeek iOS 的体验开始。</h1>
+<p class="lead">在 iPhone 15 Pro 上，复现快速准确的语音、流畅的聊天与细致的视觉交互；让每次请求通过 Tailscale 到达你当前 Mac 的 dsh。</p>
+<div class="badges"><span class="badge done">已建立 Next 分支</span><span class="badge">基点 7f4703e</span><span class="badge">原生 iOS</span><span class="badge">当前：规划完成，产品尚未实现</span></div>
+<nav class="nav" aria-label="计划导航"><a href="design.html">进入交互与架构设计 →</a><a href="#goal">目标</a><a href="#voice">语音</a><a href="#delivery">实施顺序</a><a href="#checks">验收</a><a href="#evidence">证据与未知</a></nav>
+</header>
+<main>
+<section class="card hero" id="goal">
+<div class="label">最小有用交付</div>
+<p class="statement">对着手机说出需求，迅速得到准确文字，<br>发给自己的 Mac，并实时读到回复。</p>
+<div class="flow" aria-label="请求路径"><div class="node">语音 / 文字输入</div><span class="arrow">→</span><div class="node">原生 Chatty Next</div><span class="arrow">→</span><div class="node">Tailscale</div><span class="arrow">→</span><div class="node">当前 Mac · dsh</div></div>
+<p>先用这一条完整路径验证语音与连接。随后逐屏修正布局、录音、键盘、历史和动画，完成第一阶段对齐，再讨论本地开发工作台的升级。</p>
+</section>
+<div class="grid">
+<section class="card"><h2>这次重新定义产品</h2><ul><li>打开后直接进入聊天，历史通过抽屉访问。</li><li>首次配置机器连接；输入框常驻模型和工作目录选择，记忆上次有效选择。</li><li>语音和真实增量回复属于首期核心能力。</li><li>完整对齐输入、排版、历史切换、手势和动画。</li></ul></section>
+<section class="card"><h2>复用已经做好的部分</h2><ul><li>保留 SwiftUI 原生路线，评估复用输入法、富文本和公式组件。</li><li>沿用按会话草稿与保持阅读位置的经验。</li><li>新建 dsh 会话与事件模型，替换 Next 的 Multica 数据依赖。</li><li>建议独立安装 Chatty Next 测试包，便于真机对照。</li></ul></section>
+</div>
+<section class="card" id="voice">
+<div class="label">用户最看重的体验</div><h2>语音快和准，要单独证明。</h2>
+<p>dsh 负责会话与执行。把声音变成文字，需要单独的识别引擎。先在 iPhone 15 Pro 评测 Apple 设备端转写；未达标时，再比较经 Tailscale 到 Mac 的方案。</p>
+<div class="metrics"><div class="metric"><strong>30 条</strong><span>中文、中英开发术语、较长 / 噪声表达，各 10 条，和 DeepSeek 成对测试。</span></div><div class="metric"><strong>≤ 1 秒</strong><span>暖态语音结束到文字稳定的 p95 初始目标；比 DeepSeek 增加不超过 200 ms。</span></div><div class="metric"><strong>≤ 3%</strong><span>普通中文字符错误率初始目标；混合 / 噪声组 ≤ 5%，术语准确率 ≥ 95%。</span></div></div>
+<p class="small">这些是初始预算，尚无实测成绩。p95 指 95% 的样本不超过这个时间。正式预算在真机基线采集后记录；冷启动、文字修改量和失败率单独报告。</p>
+<p>录音入口、按住或点击、松手、取消、编辑和发送，均以手机上实际安装的 DeepSeek 为准。麦克风拒绝、电话打断或识别失败时保留草稿，并显示具体反馈。</p>
+</section>
+<section class="card" id="delivery">
+<h2>五个可检查的交付点</h2>
+<div class="steps">
+<article class="step"><div class="number">N0 / 参考</div><h3>锁定真机基线</h3><p>记录版本与设置，采集 12 类状态和操作录屏，建立语音基线。</p></article>
+<article class="step"><div class="number">N1 / 连接</div><h3>原生接通 dsh</h3><p>鉴权、发送、增量、停止与重连；手机和 Mac 核对同一会话。</p></article>
+<article class="step"><div class="number">N2 / 语音</div><h3>验证快与准</h3><p>让语音进入真实对话，完成 30 条成对样本与引擎选择。</p></article>
+<article class="step"><div class="number">N3 / 复刻</div><h3>补齐完整交互</h3><p>首页、历史、输入、录音、消息、附件和菜单逐项落地。</p></article>
+<article class="step"><div class="number">N4 / 验收</div><h3>真机收敛差异</h3><p>叠图、动画、网络切换、失败恢复与日常对话共同验收。</p></article>
+</div>
+<div class="notice">首个可安装版本就必须包含真实语音和真实 dsh 回复。语音质量有明显差距时，第一阶段继续保留为未完成。</div>
+</section>
+<section class="card" id="checks">
+<h2>“像素级复刻”如何验收</h2>
+<div class="scroll"><table><thead><tr><th>维度</th><th>检查内容</th><th>通过依据</th></tr></thead><tbody>
+<tr><td>画面</td><td>欢迎、键盘、录音、转写、生成中、完成、历史、菜单、深浅色、失败态。</td><td>同设备、同内容、同设置叠图；关键几何差异初始目标 ≤ 1 pt。品牌替换区域单列。</td></tr>
+<tr><td>动作</td><td>输入、抽屉、键盘联动、录音手势、滚动与自动折叠。</td><td>同机录屏和触感对照；触摸反馈 p95 初始目标 ≤ 100 ms，关键动画时长差异 ≤ 10%。</td></tr>
+<tr><td>真实会话</td><td>增量输出、停止、历史切换、重命名、草稿、附件和必要工具反馈。</td><td>客户端显示与服务端事件一致；未解决的能力差距逐项保留。</td></tr>
+<tr><td>离家使用</td><td>蜂窝网络 + Tailscale；Wi-Fi 切换、后台、401、dsh 重启。</td><td>恢复历史后再接续；没有重复发送、串会话或草稿丢失。</td></tr>
+<tr><td>日常感受</td><td>至少 10 轮文字 / 语音混合对话、3 个历史、1 次停止和断线恢复。</td><td>Benjamin 在自己的 iPhone 15 Pro 认可体验；主观差异对应具体场景记录。</td></tr>
+</tbody></table></div>
+<p class="small">完整的 A1–A12 检查、失败行为与证据要求见 <a href="plan.md">实施计划第 7 节</a>。所有数值均为待校准预算。</p>
+</section>
+<section class="card" id="evidence">
+<h2>已经知道什么，还缺什么</h2>
+<details open><summary>本机连接条件已存在；完整对话待验证</summary><ul><li>本机已有 dsh，3080 端口有服务监听。</li><li>Tailscale 的 HTTPS 8443 已转发到该服务。</li><li>从 Mac 访问本地与 Tailscale 地址都收到 HTTP 401。</li><li>401 说明请求到达鉴权环节；iPhone 登录、发送和回复还未测试。</li></ul></details>
+<details><summary>dsh 支持实时会话；原生协议需要正确适配</summary><p>安装包定义了会话列表、搜索、重命名、发送、停止、历史和实时流。通信使用 HTTP RPC 与 WebSocket；鉴权依赖绑定 host 和 port 的 cookie。启动器报告 0.1.5-rc.1，相关磁盘包为 0.1.5-rc.2，运行时协议仍需核对。</p><p>当前 session namespace 未列出删除方法；模型 / 工作目录选择按设计批注替换原开关，切换语义仍需真机验证。未解决的功能不使用空按钮代替。</p></details>
+<details><summary>已有 DeepSeek 图片只用于初步参考</summary><div class="reference"><img src="../../../ds/cn2.png" alt="仓库已有 DeepSeek 官方营销参考图，包含欢迎区、输入卡片与附件面板" loading="lazy"><div><p>仓库有昨天保留的官方营销素材。这类图片能参考视觉结构，真机排版、录音、键盘、安全区和动画仍需实测。</p><p>本轮打开的 <a href="https://apps.apple.com/sg/app/deepseek-ai-assistant/id6737597349">App Store 页面</a>显示 2.5.1；用户手机的实际安装版本尚未确认。</p><p>第一步需要记录 iPhone 的系统版本、DeepSeek 版本、字号、语言与主题，并采集实际操作。</p></div></div></details>
+<details><summary>本阶段之后再讨论的升级</summary><p>项目看板、Git diff、终端、多机器调度、完整审批中心、多 Agent 工作台和四端同步，留到本阶段验收之后。本机工具所需的最小等待 / 授权反馈纳入本次会话闭环。</p></details>
+</section>
+<section class="card"><h2>实施文档</h2><p>本轮已创建分支并完成规划。语音主流程已完成真机采样并更新设计；产品代码、语音质量评测和产品安装验收尚未执行。</p><div class="actions"><a href="plan.md">实施计划与验收清单</a><a class="secondary" href="intent.md">目标与决策</a><a class="secondary" href="evidence.md">核查记录与来源</a></div></section>
+</main>
+<footer>Chatty Next · 2026-09-13 · 独立 sdlc-plan 规划产物。此页面是计划阅读页，界面实现以 DeepSeek 真机参考和后续验收为准。</footer>
+</body>
+</html>

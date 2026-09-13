@@ -1,0 +1,30 @@
+{
+  "kind": "installed-generated-parameter-schema-check",
+  "serviceInvoked": false,
+  "checks": [
+    {
+      "endpoint": "session/list",
+      "parameterValidation": "passed"
+    },
+    {
+      "endpoint": "session/create",
+      "parameterValidation": "passed"
+    },
+    {
+      "endpoint": "session/prompt",
+      "parameterValidation": "passed"
+    },
+    {
+      "endpoint": "session/cancel",
+      "parameterValidation": "passed"
+    },
+    {
+      "endpoint": "session/follow",
+      "parameterValidation": "passed"
+    },
+    {
+      "endpoint": "session/control",
+      "parameterValidation": "passed"
+    }
+  ]
+}

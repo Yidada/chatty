@@ -1,0 +1,6 @@
+/Users/benjamin/Workspace/chatty/ios/Tests/SimulatorContractTests.swift:98: -[ChattyFixtureTests.SimulatorContractTests testPhysicalFileProtectionAttribute] : Test skipped - Simulator does not expose file protection; physical iPhone validation remains required.
+Test Case '-[ChattyFixtureTests.SimulatorContractTests testPhysicalFileProtectionAttribute]' skipped (0.008 seconds).
+	 Executed 14 tests, with 1 test skipped and 0 failures (0 unexpected) in 0.086 (0.090) seconds
+	 Executed 14 tests, with 1 test skipped and 0 failures (0 unexpected) in 0.086 (0.090) seconds
+	 Executed 14 tests, with 1 test skipped and 0 failures (0 unexpected) in 0.086 (0.091) seconds
+** TEST SUCCEEDED **

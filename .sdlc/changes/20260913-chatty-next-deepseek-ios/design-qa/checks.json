@@ -1,0 +1,29 @@
+{
+  "kind": "design-html-only",
+  "productTested": false,
+  "browser": "ego-browser",
+  "desktopChecks": {
+    "recordToReview": true,
+    "reviewToReply": true,
+    "replyToStoppingDisabled": true,
+    "historyScene": true,
+    "offlineSendDisabled": true,
+    "approvalToSubmittedDisabled": true,
+    "darkToggle": true,
+    "horizontalOverflow": false
+  },
+  "narrowChecks": {
+    "viewportWidth": 390,
+    "scene": "recording",
+    "horizontalOverflow": false,
+    "phoneFits": true,
+    "cancelAndFinishVisible": true
+  },
+  "supersededVoiceChecks": [
+    "recordToReview",
+    "reviewToReply",
+    "narrowChecks.recording"
+  ],
+  "voiceParityAccepted": false,
+  "note": "旧候选的连通性记录仅供追溯；用户已指出语音交互不符，不能作为当前原型或 DeepSeek 对齐证据。"
+}

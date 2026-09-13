@@ -1,0 +1,38 @@
+{
+  "kind": "installed-generated-parameter-schema-check",
+  "serviceInvoked": false,
+  "synthetic": true,
+  "checks": [
+    {
+      "endpoint": "session/modelCatalog",
+      "args": {},
+      "parameterValidation": "passed"
+    },
+    {
+      "endpoint": "session/selectModel",
+      "args": {
+        "request": {
+          "sessionId": "session-demo-1",
+          "provider": "provider-demo",
+          "model": "model-demo"
+        }
+      },
+      "parameterValidation": "passed"
+    },
+    {
+      "endpoint": "session/create",
+      "args": {
+        "request": {
+          "sessionId": "session-demo-1",
+          "workspaceId": "workspace-demo-1"
+        }
+      },
+      "parameterValidation": "passed"
+    },
+    {
+      "endpoint": "workspace/follow",
+      "args": {},
+      "parameterValidation": "passed"
+    }
+  ]
+}

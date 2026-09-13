@@ -1,0 +1,24 @@
+{
+  "kind": "design-html-only",
+  "productTested": false,
+  "serviceInvoked": false,
+  "browser": "ego-browser",
+  "viewportWidth": 390,
+  "checks": {
+    "modelSelection": true,
+    "newDraftWorkspace": true,
+    "escapeRestoresFocus": true,
+    "completedSelectorsEnabled": true,
+    "confirmationBeforeChange": true,
+    "cancelKeepsOldContext": true,
+    "confirmCopiesDraft": true,
+    "oldConversationRetained": true,
+    "runningModelLockedWorkspaceAvailable": true,
+    "offlineSelectorsDisabled": true,
+    "narrowNoOverflow": true,
+    "fullPathVisible": true,
+    "focusTrapped": true,
+    "darkSheetFits": true,
+    "copiedDraftReadyToSend": true
+  }
+}

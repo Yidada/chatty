@@ -6,6 +6,14 @@ instructions are in [the workflow guide](../docs/sdlc-workflow.md).
 
 ## Current records
 
+- [Chatty Next：DeepSeek iOS 体验重构](changes/20260913-chatty-next-deepseek-ios/intent.md)：
+  [可视化计划](changes/20260913-chatty-next-deepseek-ios/index.html)、
+  [交互与架构设计](changes/20260913-chatty-next-deepseek-ios/design.html)、
+  [实施与验收](changes/20260913-chatty-next-deepseek-ios/plan.md)、
+  [核查依据](changes/20260913-chatty-next-deepseek-ios/evidence.md)。
+  `Next` 分支独立规划，iPhone 15 Pro 优先，语音与真实流式回复进入首期，请求经 Tailscale 到本机 dsh。
+  [原生实现记录](changes/20260913-chatty-next-deepseek-ios/build.md)：已有可安装应用与真实 dsh 文字闭环；真机语音和完整对齐仍待验收。历史证据保留原状。
+
 - [iOS V1](changes/20260905-complete-ios-v1-native-client-p1-through-p5/intent.md):
   [execution plan](changes/20260905-complete-ios-v1-native-client-p1-through-p5/plan.md),
   [original design proposal](changes/20260905-complete-ios-v1-native-client-p1-through-p5/design-plan.md),

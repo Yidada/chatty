@@ -1,0 +1,499 @@
+[
+  {
+    "hasMore": false,
+    "assistantStream": {
+      "revision": 0
+    },
+    "header": {
+      "isSeeded": false,
+      "agentPreset": "ptc",
+      "id": "recorded-smoke",
+      "version": 3,
+      "createdAt": 1789273943556,
+      "cwd": "/tmp/chatty-smoke"
+    },
+    "cursor": 3,
+    "projections": {
+      "values": {},
+      "asOfSeq": 3
+    },
+    "records": [
+      {
+        "event": {
+          "type": "permission/preset",
+          "seq": 0,
+          "data": {
+            "preset": "workspace-write"
+          },
+          "time": 1789273943601
+        },
+        "type": "event"
+      },
+      {
+        "event": {
+          "type": "sandbox/mode",
+          "time": 1789273943612,
+          "data": {
+            "mode": "workspace-write"
+          },
+          "seq": 1
+        },
+        "type": "event"
+      },
+      {
+        "event": {
+          "seq": 2,
+          "time": 1789273943615,
+          "data": {
+            "policy": "ask"
+          },
+          "type": "approval/policy"
+        },
+        "type": "event"
+      },
+      {
+        "event": {
+          "time": 1789273943658,
+          "seq": 3,
+          "data": {
+            "model": "deepseek-flash",
+            "provider": "deepseek-official",
+            "reasoningEffort": "high"
+          },
+          "type": "model/selection"
+        },
+        "type": "event"
+      }
+    ],
+    "type": "snapshot"
+  },
+  {
+    "type": "event",
+    "event": {
+      "time": 1789273943723,
+      "seq": 4,
+      "type": "agent/inbox/spliced",
+      "data": {}
+    }
+  },
+  {
+    "type": "event",
+    "event": {
+      "seq": 5,
+      "data": {},
+      "type": "turn/start",
+      "time": 1789273943726
+    }
+  },
+  {
+    "type": "event",
+    "event": {
+      "data": {},
+      "seq": 6,
+      "time": 1789273943728,
+      "type": "agent/inbox/spliced"
+    }
+  },
+  {
+    "type": "event",
+    "event": {
+      "type": "step/start",
+      "time": 1789273943804,
+      "seq": 7,
+      "data": {}
+    }
+  },
+  {
+    "type": "event",
+    "event": {
+      "type": "system/message",
+      "surfaceOp": "append",
+      "data": {},
+      "seq": 8,
+      "time": 1789273943806
+    }
+  },
+  {
+    "type": "event",
+    "event": {
+      "surfaceOp": "append",
+      "seq": 9,
+      "data": {
+        "source": {
+          "clientTimeZone": "Asia/Singapore",
+          "rpcId": "recorded-request",
+          "kind": "user"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "This is a Chatty Next connection smoke test. Do not use tools or read files. Reply with exactly: Chatty Next connected."
+          }
+        ],
+        "role": "user",
+        "id": "175a2943-8abc-46b4-9dfc-3c4c44b10190"
+      },
+      "time": 1789273943807,
+      "type": "user/message"
+    }
+  },
+  {
+    "type": "event",
+    "event": {
+      "surfaceOp": "append",
+      "data": {
+        "source": {
+          "kind": "system"
+        },
+        "content": []
+      },
+      "time": 1789273943808,
+      "type": "user/message",
+      "seq": 10
+    }
+  },
+  {
+    "type": "event",
+    "event": {
+      "seq": 11,
+      "type": "user/message",
+      "time": 1789273943808,
+      "surfaceOp": "append",
+      "data": {
+        "source": {
+          "kind": "system"
+        },
+        "content": []
+      }
+    }
+  },
+  {
+    "type": "event",
+    "event": {
+      "data": {
+        "source": {
+          "kind": "system"
+        },
+        "content": []
+      },
+      "surfaceOp": "append",
+      "type": "user/message",
+      "time": 1789273943809,
+      "seq": 12
+    }
+  },
+  {
+    "event": {
+      "seq": 13,
+      "time": 1789273943809,
+      "data": {},
+      "type": "request/header"
+    },
+    "type": "event"
+  },
+  {
+    "event": {
+      "type": "request/context",
+      "time": 1789273943809,
+      "seq": 14,
+      "data": {}
+    },
+    "type": "event"
+  },
+  {
+    "frame": {
+      "step": 1,
+      "turn": 1,
+      "attemptId": "EFDD24FA-A50B-4B5B-9784-330715E09EF1:1",
+      "type": "start",
+      "startedAfterSeq": 14,
+      "revision": 1
+    },
+    "type": "assistant-stream"
+  },
+  {
+    "event": {
+      "data": {},
+      "seq": 15,
+      "time": 1789273943811,
+      "type": "session/title"
+    },
+    "type": "event"
+  },
+  {
+    "event": {
+      "seq": 16,
+      "time": 1789273943814,
+      "type": "session/title-llm-request",
+      "data": {}
+    },
+    "type": "event"
+  },
+  {
+    "event": {
+      "time": 1789273944272,
+      "data": {},
+      "seq": 17,
+      "type": "session/title"
+    },
+    "type": "event"
+  },
+  {
+    "frame": {
+      "revision": 2,
+      "chunk": {
+        "type": "block-start",
+        "index": 0,
+        "blockType": "text"
+      },
+      "index": 0,
+      "time": 1789273944435,
+      "type": "chunk",
+      "attemptId": "EFDD24FA-A50B-4B5B-9784-330715E09EF1:1"
+    },
+    "type": "assistant-stream"
+  },
+  {
+    "frame": {
+      "chunk": {
+        "type": "text-delta",
+        "index": 0,
+        "text": "Chat"
+      },
+      "revision": 3,
+      "time": 1789273944436,
+      "attemptId": "EFDD24FA-A50B-4B5B-9784-330715E09EF1:1",
+      "type": "chunk",
+      "index": 1
+    },
+    "type": "assistant-stream"
+  },
+  {
+    "frame": {
+      "time": 1789273944448,
+      "index": 2,
+      "chunk": {
+        "text": "ty",
+        "type": "text-delta",
+        "index": 0
+      },
+      "revision": 4,
+      "attemptId": "EFDD24FA-A50B-4B5B-9784-330715E09EF1:1",
+      "type": "chunk"
+    },
+    "type": "assistant-stream"
+  },
+  {
+    "frame": {
+      "attemptId": "EFDD24FA-A50B-4B5B-9784-330715E09EF1:1",
+      "chunk": {
+        "type": "text-delta",
+        "index": 0,
+        "text": " Next"
+      },
+      "index": 3,
+      "time": 1789273944449,
+      "revision": 5,
+      "type": "chunk"
+    },
+    "type": "assistant-stream"
+  },
+  {
+    "frame": {
+      "type": "chunk",
+      "chunk": {
+        "text": " connected",
+        "type": "text-delta",
+        "index": 0
+      },
+      "index": 4,
+      "time": 1789273944449,
+      "attemptId": "EFDD24FA-A50B-4B5B-9784-330715E09EF1:1",
+      "revision": 6
+    },
+    "type": "assistant-stream"
+  },
+  {
+    "frame": {
+      "type": "chunk",
+      "revision": 7,
+      "chunk": {
+        "text": ".",
+        "index": 0,
+        "type": "text-delta"
+      },
+      "attemptId": "EFDD24FA-A50B-4B5B-9784-330715E09EF1:1",
+      "index": 5,
+      "time": 1789273944450
+    },
+    "type": "assistant-stream"
+  },
+  {
+    "frame": {
+      "index": 6,
+      "time": 1789273944463,
+      "revision": 8,
+      "attemptId": "EFDD24FA-A50B-4B5B-9784-330715E09EF1:1",
+      "chunk": {
+        "type": "block-end",
+        "block": {
+          "text": "Chatty Next connected.",
+          "type": "text"
+        },
+        "index": 0
+      },
+      "type": "chunk"
+    },
+    "type": "assistant-stream"
+  },
+  {
+    "frame": {
+      "revision": 9,
+      "index": 7,
+      "type": "chunk",
+      "chunk": {
+        "usage": {
+          "inputTokens": 6014,
+          "totalTokens": 13700,
+          "cacheReadTokens": 7680,
+          "outputTokens": 6,
+          "reasoningTokens": 0
+        },
+        "type": "usage"
+      },
+      "attemptId": "EFDD24FA-A50B-4B5B-9784-330715E09EF1:1",
+      "time": 1789273944463
+    },
+    "type": "assistant-stream"
+  },
+  {
+    "frame": {
+      "type": "chunk",
+      "time": 1789273944464,
+      "chunk": {
+        "reason": {
+          "kind": "stop"
+        },
+        "type": "finish"
+      },
+      "index": 8,
+      "attemptId": "EFDD24FA-A50B-4B5B-9784-330715E09EF1:1",
+      "revision": 10
+    },
+    "type": "assistant-stream"
+  },
+  {
+    "type": "event",
+    "event": {
+      "type": "assistant/message",
+      "data": {
+        "usage": {
+          "totalTokens": 13700,
+          "inputTokens": 6014,
+          "cacheReadTokens": 7680,
+          "outputTokens": 6,
+          "reasoningTokens": 0
+        },
+        "turn": 1,
+        "stream": [
+          {
+            "chunk": {
+              "index": 0,
+              "blockType": "text",
+              "type": "block-start"
+            },
+            "time": 1789273944435,
+            "type": "chunk"
+          },
+          {
+            "time0": 1789273944436,
+            "dt": [
+              12,
+              1,
+              0,
+              1
+            ],
+            "texts": [
+              "Chat",
+              "ty",
+              " Next",
+              " connected",
+              "."
+            ],
+            "type": "text-chunks",
+            "index": 0
+          },
+          {
+            "time": 1789273944463,
+            "chunk": {
+              "block": {
+                "type": "text",
+                "text": "Chatty Next connected."
+              },
+              "index": 0,
+              "type": "block-end"
+            },
+            "type": "chunk"
+          },
+          {
+            "time": 1789273944463,
+            "chunk": {
+              "usage": {
+                "inputTokens": 6014,
+                "outputTokens": 6,
+                "reasoningTokens": 0,
+                "cacheReadTokens": 7680,
+                "totalTokens": 13700
+              },
+              "type": "usage"
+            },
+            "type": "chunk"
+          },
+          {
+            "time": 1789273944464,
+            "type": "chunk",
+            "chunk": {
+              "type": "finish",
+              "reason": {
+                "kind": "stop"
+              }
+            }
+          }
+        ],
+        "message": {
+          "content": [
+            {
+              "text": "Chatty Next connected.",
+              "type": "text"
+            }
+          ],
+          "id": "a211b62c-29d8-441d-b380-4584a8513efc",
+          "role": "assistant",
+          "source": {
+            "kind": "model",
+            "provider": "deepseek-official",
+            "model": "deepseek-flash"
+          }
+        },
+        "step": 1
+      },
+      "surfaceOp": "append",
+      "seq": 18,
+      "time": 1789273944465
+    }
+  },
+  {
+    "type": "assistant-stream",
+    "frame": {
+      "type": "end",
+      "index": 9,
+      "outcome": {
+        "eventType": "assistant/message",
+        "kind": "committed",
+        "seq": 18
+      },
+      "revision": 11,
+      "attemptId": "EFDD24FA-A50B-4B5B-9784-330715E09EF1:1"
+    }
+  }
+]

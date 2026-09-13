@@ -1,0 +1,24 @@
+{
+  "device": "iPhone 15 Pro",
+  "os": "iOS 27.0 (24A435)",
+  "app": "ai.chatty.ios.next",
+  "trigger": "First physical hold-to-talk audio callback",
+  "exception": "EXC_BREAKPOINT",
+  "queue": "RealtimeMessenger.mServiceQueue",
+  "frames": [
+    "_dispatch_assert_queue_fail",
+    "dispatch_assert_queue",
+    "_swift_task_checkIsolatedSwift",
+    "swift_task_isCurrentExecutorWithFlagsImpl(swift::SerialExecutorRef, swift::swift_task_is_current_executor_flag)",
+    "closure #3 in closure #1 in SpeechInputController.begin(scope:revision:)",
+    "thunk for @escaping @callee_guaranteed (@guaranteed AVAudioPCMBuffer, @guaranteed AVAudioTime) -> ()",
+    "AVAudioNodeTap::TapMessage::RealtimeMessenger_Perform()",
+    "CADeprecated::RealtimeMessenger::_PerformPendingMessages()"
+  ],
+  "fix": "Use an explicitly Sendable audio tap; transfer only UI updates to MainActor",
+  "regression": "testAudioTapRunsOffMainActorAndOwnsConvertedSamples; 7 native tests pass",
+  "device_retest": {
+    "eight_second_no_speech": "No crash; 未识别到内容; welcome retained",
+    "slide_up_cancel": "Red 松手取消 observed through QuickTime USB; release returns to voice composer"
+  }
+}

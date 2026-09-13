@@ -1,0 +1,147 @@
+{
+  "synthetic": true,
+  "executed": false,
+  "examples": [
+    {
+      "transport": "HTTP",
+      "path": "/api/session/list",
+      "method": "POST",
+      "body": {
+        "type": "client-request",
+        "rpcId": "rpc-demo-1",
+        "method": "session/list",
+        "payload": {
+          "args": {
+            "_request": {}
+          }
+        }
+      }
+    },
+    {
+      "transport": "HTTP",
+      "path": "/api/session/create",
+      "method": "POST",
+      "body": {
+        "type": "client-request",
+        "rpcId": "rpc-demo-2",
+        "method": "session/create",
+        "payload": {
+          "args": {
+            "request": {
+              "sessionId": "session-demo-1",
+              "cwd": "/tmp/chatty-next-demo"
+            }
+          }
+        }
+      }
+    },
+    {
+      "transport": "HTTP",
+      "path": "/api/session/prompt",
+      "method": "POST",
+      "body": {
+        "type": "client-request",
+        "rpcId": "rpc-demo-3",
+        "method": "session/prompt",
+        "payload": {
+          "args": {
+            "request": {
+              "sessionId": "session-demo-1",
+              "requestId": "send-demo-1",
+              "mode": "queue",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "说明测试目录中的文件。"
+                }
+              ],
+              "clientTimeZone": "Asia/Singapore"
+            }
+          }
+        }
+      }
+    },
+    {
+      "transport": "HTTP",
+      "path": "/api/session/cancel",
+      "method": "POST",
+      "body": {
+        "type": "client-request",
+        "rpcId": "rpc-demo-4",
+        "method": "session/cancel",
+        "payload": {
+          "args": {
+            "request": {
+              "sessionId": "session-demo-1"
+            }
+          }
+        }
+      }
+    },
+    {
+      "transport": "HTTP",
+      "path": "/api/$events/result",
+      "method": "POST",
+      "body": {
+        "type": "client-request",
+        "rpcId": "rpc-demo-5",
+        "method": "$events/result",
+        "payload": {
+          "args": {
+            "clientId": "client-demo",
+            "eventId": "event-demo",
+            "outcome": {
+              "kind": "result",
+              "value": "rejected"
+            }
+          }
+        }
+      }
+    },
+    {
+      "transport": "WSS",
+      "path": "/api/remote.mux",
+      "body": {
+        "type": "open",
+        "streamId": "stream-demo-6",
+        "endpoint": "session/follow",
+        "payload": {
+          "args": {
+            "request": {
+              "address": {
+                "kind": "session",
+                "sessionId": "session-demo-1"
+              },
+              "maxMessages": 50,
+              "assistantStream": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "transport": "WSS",
+      "path": "/api/remote.mux",
+      "body": {
+        "type": "open",
+        "streamId": "stream-demo-7",
+        "endpoint": "session/control",
+        "payload": {
+          "args": {}
+        }
+      }
+    },
+    {
+      "transport": "WSS",
+      "path": "/api/remote.mux",
+      "body": {
+        "type": "open",
+        "streamId": "stream-demo-8",
+        "endpoint": "$events",
+        "payload": {
+          "args": {}
+        }
+      }
+    }
+  ]
+}

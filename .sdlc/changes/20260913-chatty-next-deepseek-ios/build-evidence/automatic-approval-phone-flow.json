@@ -1,0 +1,80 @@
+{
+  "sessionId": "83B3BB79-02E3-4487-A656-2514353042C0",
+  "events": [
+    {
+      "seq": 0,
+      "type": "permission/preset",
+      "data": {
+        "preset": "workspace-write"
+      }
+    },
+    {
+      "seq": 1,
+      "type": "sandbox/mode",
+      "data": {
+        "mode": "workspace-write"
+      }
+    },
+    {
+      "seq": 2,
+      "type": "approval/policy",
+      "data": {
+        "policy": "ask"
+      }
+    },
+    {
+      "seq": 4,
+      "type": "command/run",
+      "data": {
+        "commandId": "cmd-ac6ecb06-5",
+        "name": "chatty-review",
+        "args": "",
+        "source": {
+          "kind": "user"
+        }
+      }
+    },
+    {
+      "seq": 5,
+      "type": "chatty/approval-mode",
+      "data": {
+        "mode": "approve-for-me-v1"
+      }
+    },
+    {
+      "seq": 6,
+      "type": "command/done",
+      "data": {
+        "commandId": "cmd-ac6ecb06-5",
+        "kind": "success",
+        "text": "chatty-next:approve-for-me-v1"
+      }
+    },
+    {
+      "seq": 12,
+      "type": "user/message"
+    },
+    {
+      "seq": 21,
+      "type": "assistant/message",
+      "content": [
+        {
+          "type": "text",
+          "text": "CHATTY_AUTO_REVIEW_READY"
+        }
+      ]
+    },
+    {
+      "seq": 23,
+      "type": "turn/end",
+      "data": {
+        "turn": 1,
+        "reason": {
+          "kind": "completed"
+        }
+      }
+    }
+  ],
+  "toolCalls": 0,
+  "note": "Physical phone text-only probe; no tools were executed. Later user activity excluded."
+}
