@@ -1,7 +1,7 @@
 {
-  "recordedAt": "2026-09-13T17:24:44.573848+08:00",
+  "recordedAt": "2026-09-13T17:29:35.233124+08:00",
   "sourceCommit": "6af51895cd5dcc473a2708e246bb3218bcf3e1e2",
-  "deliveryState": "git-pushed-testflight-awaiting-apple-login",
+  "deliveryState": "git-pushed-and-testflight-testing",
   "archive": {
     "sourceCommit": "6af51895cd5dcc473a2708e246bb3218bcf3e1e2",
     "scheme": "ChattyNext",
@@ -28,7 +28,8 @@
     "executableSHA256": "74dea06c30ae544619556b2c105018e5c7ab5d861ecad9d0fec7e761d420f904",
     "infoPlistSHA256": "600618dfc82dd2a5f40fc84b55af849b2c5babb117df627ba2f77c62653d9b14",
     "localArchiveOnly": true,
-    "uploaded": false
+    "uploaded": false,
+    "note": "Archive remains local; exported IPA was uploaded."
   },
   "artifact": {
     "archiveFiles": 13,
@@ -45,15 +46,34 @@
   "remote": {
     "main": "7f4703eb385bdf5c716e31f7432caef78dbc9911",
     "NextPresent": true,
-    "pushedCommit": "4b844b6249e4ba7e8b42e9bc60385a6d410665cd",
+    "verifiedCodeAndDocsCommitBeforeFinalReceipt": "4cfe15f8193414a1cacc4d8a1f1ad4670c96973b",
+    "implementationCommit": "6af51895cd5dcc473a2708e246bb3218bcf3e1e2",
     "branchURL": "https://github.com/Yidada/chatty/tree/Next"
   },
   "appStoreConnect": {
+    "appId": "6811557635",
+    "name": "Chatty Next",
     "bundleId": "ai.chatty.ios.next",
-    "matchingApps": 0,
+    "primaryLocale": "zh-Hans",
+    "appCreated": true,
     "bundleRegistered": true,
-    "appCreated": false,
-    "uploaded": false
+    "uploaded": true,
+    "buildId": "1f84242b-58cb-4ede-b31c-44b6e26ee330",
+    "version": "0.2.0",
+    "buildNumber": "11",
+    "processingState": "VALID",
+    "internalBuildState": "IN_BETA_TESTING",
+    "buildAudienceType": "INTERNAL_ONLY",
+    "usesNonExemptEncryption": false,
+    "group": {
+      "name": "Benjamin Internal",
+      "type": "internal",
+      "testerCount": 1,
+      "membership": "explicit"
+    },
+    "testNotesLocale": "zh-Hans",
+    "url": "https://appstoreconnect.apple.com/apps/6811557635/testflight/ios",
+    "physicalInstallationVerified": false
   },
   "testEvidence": "test-evidence/results.json",
   "coverageGaps": [
@@ -64,8 +84,12 @@
   ],
   "externalMutationsThisReleaseTurn": [
     "Registered ai.chatty.ios.next Bundle ID",
+    "Created independent Chatty Next iOS app with primary locale zh-Hans",
     "Exported TestFlight Internal Only IPA using Xcode automatic distribution signing",
-    "Pushed Next branch to origin and configured upstream"
+    "Uploaded version 0.2.0 build 11 and waited for VALID processing",
+    "Created an internal group and added the currently signed-in account through App Store Connect UI",
+    "Saved Chinese What to Test notes and assigned build 11 to the internal group",
+    "Pushed Next branch and delivery documentation to GitHub"
   ],
   "authorizedDelivery": {
     "targets": [
@@ -87,6 +111,12 @@
     "ipaSHA256": "14495ecb28ae2714b63860ee15c6180a8e270b7f36b897186d8b7ffaa04d57d2",
     "ipaBytes": 3518108,
     "testFlightInternalTestingOnly": true,
-    "credentialsCleanup": "isolated signing-auth directory removed after export; original keychain unchanged"
-  }
+    "credentialsCleanup": "isolated signing-auth directory removed after export; original keychain unchanged",
+    "uploaded": true
+  },
+  "diagnostics": [
+    "App creation completed in the API although the web page did not navigate; verified the new app before proceeding and did not repeat Create.",
+    "An existing app tester ID could not be linked through the API; selected the current account from the new app group UI and verified one new app tester."
+  ],
+  "remainingDeliveryBlockers": []
 }

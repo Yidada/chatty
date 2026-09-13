@@ -77,6 +77,8 @@ node --test server/chatty-next-approval/review.test.js
 
 ## 发布与交付
 
+已发布独立 TestFlight 内测 `0.2.0 (11)`，Apple 处理通过，内部组显示 Testing：[App Store Connect](https://appstoreconnect.apple.com/apps/6811557635/testflight/ios)。手机通过 TestFlight 安装尚未验证。
+
 当前交付包括以下两项，分别记录完成状态：
 
 1. 将 `Next` 分支的代码和交付记录推送到 GitHub，核对远端提交与本地一致。
