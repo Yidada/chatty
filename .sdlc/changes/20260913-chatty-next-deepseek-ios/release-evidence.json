@@ -1,7 +1,7 @@
 {
-  "recordedAt": "2026-09-13T17:07:43.599602+08:00",
+  "recordedAt": "2026-09-13T17:12:46.660049+08:00",
   "sourceCommit": "6af51895cd5dcc473a2708e246bb3218bcf3e1e2",
-  "deliveryState": "prepared-awaiting-target",
+  "deliveryState": "ipa-ready-awaiting-apple-web-login",
   "archive": {
     "sourceCommit": "6af51895cd5dcc473a2708e246bb3218bcf3e1e2",
     "scheme": "ChattyNext",
@@ -48,7 +48,10 @@
   },
   "appStoreConnect": {
     "bundleId": "ai.chatty.ios.next",
-    "matchingApps": 0
+    "matchingApps": 0,
+    "bundleRegistered": true,
+    "appCreated": false,
+    "uploaded": false
   },
   "testEvidence": "test-evidence/results.json",
   "coverageGaps": [
@@ -57,5 +60,27 @@
     "network changes and full attachment flows",
     "privileged tool execution end to end"
   ],
-  "externalMutationsThisReleaseTurn": []
+  "externalMutationsThisReleaseTurn": [
+    "Registered ai.chatty.ios.next Bundle ID",
+    "Exported TestFlight Internal Only IPA using Xcode automatic distribution signing"
+  ],
+  "authorizedDelivery": {
+    "target": "independent Chatty Next TestFlight internal testing",
+    "source": "explicit user selection"
+  },
+  "ipa": {
+    "verifiedAt": "2026-09-13T17:12:11.676768+08:00",
+    "bundleId": "ai.chatty.ios.next",
+    "version": "0.2.0",
+    "build": "11",
+    "signatureVerified": true,
+    "getTaskAllow": false,
+    "betaReportsActive": true,
+    "deviceRestricted": false,
+    "profileExpiration": "2027-09-06T01:43:52",
+    "ipaSHA256": "14495ecb28ae2714b63860ee15c6180a8e270b7f36b897186d8b7ffaa04d57d2",
+    "ipaBytes": 3518108,
+    "testFlightInternalTestingOnly": true,
+    "credentialsCleanup": "isolated signing-auth directory removed after export; original keychain unchanged"
+  }
 }
