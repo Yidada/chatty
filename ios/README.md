@@ -27,7 +27,7 @@ scripts/ios-dev-loop.sh fixture
 |---|---|
 | 登录 | 邮箱验证码、Keychain ThisDeviceOnly、账号恢复、工作区选择、401 清理、503 保留凭据 |
 | 动态 | 全工作区事项的新进展 / 待处理、包含其他发起人、独立分页、按事项版本保存已读、应用内红点；两个列表支持多选 / 全选当前已加载页 / 退出，可批量已读，待处理页可批量验收完成或退回待办（`POST /api/issues/batch-update`），结果按成功 / 未生效 / 失败如实反馈并可按批重试；每一行还支持左滑 / 右滑逐行操作（新进展：标记已读 / 标为未读，只写本机指纹；待处理：验收完成 / 退回待办），动作定义与批量、VoiceOver 自定义动作及指针右键菜单共用一套，选择态下自动禁用 |
-| 对话 | 项目选择、连续发送、文本/附件/项目快照、本机顺序提交与服务端队列、回执核对、双游标历史 |
+| 对话 | 项目选择、连续发送、软键盘回车（系统 send 键）即发送而组词中的回车只上屏候选词、文本/附件/项目快照、本机顺序提交与服务端队列、回执核对、双游标历史 |
 | 实时与离线 | 前台 WebSocket auth 首帧、退避重连、REST 恢复、后台停止连接、跨工作区隔离、冷启动离线草稿 |
 | 内容 | Markdown 标题/表格/引用/嵌套列表/任务列表/代码/链接、task_id 过程、失败说明、建议填草稿 |
 | 附件 | 系统照片与文件选择、20 MB 限制、绑定回执校验、过期签名 URL 刷新、图片缩放、Quick Look、保存/分享 |
@@ -38,7 +38,8 @@ scripts/ios-dev-loop.sh fixture
 - `ChattyFixture` / `ai.chatty.ios.fixture`：独立 bundle、Keychain service、受保护目录；允许本机测试网络。仅测试包开放 Documents 文件共享，便于通过系统 Files 选择合成样本；Library 内的受保护数据不在此目录。
 - `ChattyCore`：DTO、APIClient、作用域/业务模型、受保护存储、Markdown AST。界面在 `ios/Chatty`。
 - `scripts/generate-ios-project.py`：确定性生成 project、Info.plist 与共享 scheme。新增宿主 Swift 文件后运行；生成器是配置来源。
-- `--p0-preview` 保留历史 P0 测试壳。`tests/device/ios/p0-navigation.ad` 和 `v1-*.ad` 对应旧导航；三页导航与动态批量处理的交互证据见 `v2-activity-batch*.ad`，动态逐行滑动操作见 `v2-activity-row-swipe.ad`，两者都对应 `.sdlc/changes/` 的记录。
+- `--p0-preview` 保留历史 P0 测试壳。`tests/device/ios/p0-navigation.ad` 和 `v1-*.ad` 对应旧导航；三页导航与动态批量处理的交互证据见 `v2-activity-batch*.ad`，动态逐行滑动操作见 `v2-activity-row-swipe.ad`，输入框回车即发送（含空草稿与连按）见 `v2-composer-return.ad`，都对应 `.sdlc/changes/` 的记录。
+- 输入框是 `ios/Chatty/ComposerText.swift` 里的 `UITextView`：竖排 `TextField` 无法表达「回车即发送」（`axis: .vertical` 只插入换行，既不回调 `onSubmit` 也不接受 `.submitLabel(.send)`）。回车规则集中在 `ComposerReturnKey`，宿主 XCTest 用它覆盖组词上屏与六行封顶。
 - 动态页的行滑动依赖系统 `List` 行（`swipeActions` 在 `ScrollView` 行上不生效），因此两个列表用 `List` + `.listRowInsets` 承载原有行样式；空态 / 错误 / 加载提示在 `List` 之外，避免在列表行里塌陷。
 
 Token 只保存在 Keychain。草稿与待发送消息共同保存在一个受保护、排除备份的原子记录中；每条待发送消息保留其文本、附件元数据和项目。动态已读指纹按账号/工作区隔离，退出清理。离线恢复元数据只保存账号/工作区/Agent 标识和凭据哈希，不保存 token。离线页不授予发送权限。服务端历史消息、项目和动态列表只在内存。临时附件 1 小时过期，关闭预览和退出时清理。外域下载不附加 Bearer 或工作区头；HTTP 重定向拒绝。HTML、SVG、Mermaid 等主动内容按文本阅读。任务过程中的常见凭据在呈现前隐藏。
@@ -57,7 +58,7 @@ xcodebuild -project ios/Chatty.xcodeproj -scheme ChattyFixture -configuration De
   -derivedDataPath "$CHATTY_IOS_DERIVED_DATA" CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- test
 ```
 
-XCTest 与 UI 交互串行运行。当前核心回归有 72 项 Swift 测试，另有 iOS 宿主 XCTest 和 agent-device 原生交互证据。需求与实现见 [iOS 动态与 Mika 连续发送](../.sdlc/changes/20260910-ios-activity-mika-flow/evidence.md)，提交前的升级迁移检查见 [交付记录](../.sdlc/changes/20260910-ios-activity-mika-flow/release.md)。动态页批量处理（多选 / 批量已读 / 批量验收与退回）见 [iOS 动态批量处理](../.sdlc/changes/20260910-ios-activity-batch-actions/evidence.md)，逐行左滑 / 右滑动作见 [iOS 动态逐行滑动操作](../.sdlc/changes/20260911-ios-activity-row-swipe/evidence.md)。
+XCTest 与 UI 交互串行运行。当前核心回归有 75 项 Swift 测试（`swift test --package-path ios/Packages/ChattyKit`）与 11 项 iOS 宿主 XCTest（1 项模拟器跳过的文件保护检查），另有 agent-device 原生交互证据。需求与实现见 [iOS 动态与 Mika 连续发送](../.sdlc/changes/20260910-ios-activity-mika-flow/evidence.md)，提交前的升级迁移检查见 [交付记录](../.sdlc/changes/20260910-ios-activity-mika-flow/release.md)。动态页批量处理（多选 / 批量已读 / 批量验收与退回）见 [iOS 动态批量处理](../.sdlc/changes/20260910-ios-activity-batch-actions/evidence.md)，逐行左滑 / 右滑动作见 [iOS 动态逐行滑动操作](../.sdlc/changes/20260911-ios-activity-row-swipe/evidence.md)，输入框回车即发送见 [iOS 输入框回车即发送](../.sdlc/changes/20260913-ios-composer-return-sends/evidence.md)。
 
 以下为历史 V1 导航回放，保留用于追溯；其中设置 Tab、详情和计数选择器基于旧界面，不作为新版的验收命令。回放使用全新的测试服务，状态修改和消息计数有意保留到服务进程结束。
 

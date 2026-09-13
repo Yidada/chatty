@@ -17,7 +17,9 @@ struct ChatScreen: View {
     @State private var initialBottom = true
     @State private var dropTargeted = false
     @State private var showProjectPicker = false
-    @FocusState private var draftFocused: Bool
+    /// 输入框焦点由 `ComposerText` 自己持有（它是 UITextView 的 first responder），
+    /// 这里只记录状态，供 ⌘F 聚焦使用。
+    @State private var draftFocused = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @EnvironmentObject private var commands: AppCommandCenter
@@ -175,9 +177,16 @@ struct ChatScreen: View {
                     Button("选择文件", systemImage: "doc") { pickingFile = true }
                 } label: { Image(systemName: "plus").font(.title3).frame(width: 44, height: 44) }
                 .disabled(model.uploading || model.agent == nil).accessibilityLabel("添加附件").accessibilityIdentifier("chat.attach")
-                TextField("和 Mika 说点什么…", text: Binding(get: { model.draft }, set: { model.setDraft($0) }), axis: .vertical)
-                    .lineLimit(1...6).focused($draftFocused).padding(.vertical, 12).accessibilityIdentifier("chat.draft")
-                    .disabled(model.agent == nil)
+                ZStack(alignment: .topLeading) {
+                    if model.draft.isEmpty {
+                        Text("和 Mika 说点什么…").foregroundStyle(.secondary).padding(.vertical, 12)
+                            .allowsHitTesting(false).accessibilityHidden(true)
+                    }
+                    ComposerText(text: Binding(get: { model.draft }, set: { model.setDraft($0) }), focused: $draftFocused,
+                                 enabled: model.agent != nil,
+                                 onSubmit: { if model.canSend { Task { await model.send() } } })
+                }
+                .frame(maxWidth: .infinity).disabled(model.agent == nil)
                 Button { Task { await model.send() } } label: {
                     Image(systemName: "arrow.up").fontWeight(.medium)
                         .frame(width: 44, height: 44).background(model.canSend ? ChattyTheme.accent : .secondary.opacity(0.1), in: Circle())

@@ -1,0 +1,28 @@
+# CLE-101 输入框回车即发送：软键盘回车键就是 send，按下直接发出草稿。
+# 前置：全新 scripts/ios-fixture.py；钥匙串已清空时本流程自带登录，未清空则登录步骤
+#       会被跳过式失败，因此回放前先 xcrun simctl keychain <udid> reset 并重装应用。
+context platform=ios device="iPhone 17 Pro" kind=simulator theme=unknown
+open "ai.chatty.ios.fixture"
+wait "id=\"auth.email\""
+fill "id=\"auth.email\"" "ios@example.test"
+press "id=\"auth.sendCode\""
+fill "id=\"auth.code\"" 123456
+press "id=\"auth.verify\""
+wait "id=\"workspace.w1\""
+press "id=\"workspace.w1\""
+press "role=\"button\" label=\"Mika\""
+wait "id=\"chat.draft\""
+fill "id=\"chat.draft\"" "CLE101_REPLAY_SEND"
+wait "label=\"send\""
+screenshot ".sdlc/changes/20260913-ios-composer-return-sends/evidence/replay-01-return-key-is-send.png"
+press "label=\"send\""
+wait "label=\"CHATTY_CHAT_OK · CLE101_REPLAY_SEND\""
+screenshot ".sdlc/changes/20260913-ios-composer-return-sends/evidence/replay-02-sent-without-newline.png"
+# 空草稿回车没有副作用；连按两次也只发出下一条草稿一次。
+press "label=\"send\""
+fill "id=\"chat.draft\"" "CLE101_REPLAY_DOUBLE"
+press "label=\"send\""
+press "label=\"send\""
+wait "label=\"CHATTY_CHAT_OK · CLE101_REPLAY_DOUBLE\""
+screenshot ".sdlc/changes/20260913-ios-composer-return-sends/evidence/replay-03-double-return-sends-once.png"
+close

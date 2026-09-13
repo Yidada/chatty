@@ -1,0 +1,52 @@
+[
+  {
+    "name": "base-v1-core",
+    "ok": false,
+    "code": "REPLAY_DIVERGENCE",
+    "step": 13,
+    "reason": "wait_target_absent",
+    "action": "wait",
+    "source_line": null,
+    "message": "Replay failed at step 13 (wait \"id=\\\"attachment.file1\\\"\"): wait timed out for selector: id=\"attachment.file1\". Current surface: flask, 测试工作区 · 合成数据, 个人与设置, 最近动态."
+  },
+  {
+    "name": "base-v1-workspaces",
+    "ok": false,
+    "code": "REPLAY_DIVERGENCE",
+    "step": 9,
+    "reason": "wait_target_absent",
+    "action": "wait",
+    "source_line": null,
+    "message": "Replay failed at step 9 (wait \"id=\\\"chat.attach\\\"\"): wait timed out for selector: id=\"chat.attach\". Current surface: flask, 测试工作区 · 合成数据, 个人与设置, 最近动态."
+  },
+  {
+    "name": "new-v1-core",
+    "ok": false,
+    "code": "REPLAY_DIVERGENCE",
+    "step": 13,
+    "reason": "wait_deadline_exceeded",
+    "action": "wait",
+    "source_line": null,
+    "message": "Replay failed at step 13 (wait \"id=\\\"attachment.file1\\\"\"): wait timed out for selector: id=\"attachment.file1\""
+  },
+  {
+    "name": "new-v1-workspaces",
+    "ok": false,
+    "code": "REPLAY_DIVERGENCE",
+    "step": 9,
+    "reason": "wait_deadline_exceeded",
+    "action": "wait",
+    "source_line": null,
+    "message": "Replay failed at step 9 (wait \"id=\\\"chat.attach\\\"\"): wait timed out for selector: id=\"chat.attach\""
+  },
+  {
+    "name": "new-composer-return",
+    "ok": true,
+    "code": null,
+    "step": null,
+    "reason": null,
+    "action": null,
+    "source_line": null,
+    "message": null
+  }
+]
