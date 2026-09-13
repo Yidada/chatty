@@ -27,7 +27,7 @@ struct ChatScreen: View {
     /// the default", which is expanded while the task runs and folded once it ends
     /// (spec §6.3).
     @State private var processExpanded: [String: Bool] = [:]
-    @FocusState private var draftFocused: Bool
+    @State private var draftFocused = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @EnvironmentObject private var commands: AppCommandCenter
@@ -277,9 +277,16 @@ struct ChatScreen: View {
                     Button("选择文件", systemImage: "doc") { pickingFile = true }
                 } label: { Image(systemName: "plus").font(.title3).frame(width: 44, height: 44) }
                 .disabled(model.uploading || model.agent == nil).accessibilityLabel("添加附件").accessibilityIdentifier("chat.attach")
-                TextField("和 Mika 说点什么…", text: Binding(get: { model.draft }, set: { model.setDraft($0) }), axis: .vertical)
-                    .lineLimit(1...8).focused($draftFocused).padding(.vertical, 10).accessibilityIdentifier("chat.draft")
-                    .disabled(model.agent == nil)
+                ZStack(alignment: .topLeading) {
+                    if model.draft.isEmpty {
+                        Text("和 Mika 说点什么…").foregroundStyle(.secondary).padding(.vertical, 10)
+                            .allowsHitTesting(false).accessibilityHidden(true)
+                    }
+                    ComposerText(text: Binding(get: { model.draft }, set: { model.setDraft($0) }), focused: $draftFocused,
+                                 enabled: model.agent != nil,
+                                 onSubmit: { if model.canSend { Task { await model.send() } } })
+                }
+                .frame(maxWidth: .infinity).disabled(model.agent == nil)
                 sendOrStop
             }.padding(8).background(ChattyTheme.surface, in: RoundedRectangle(cornerRadius: 24)).padding(.horizontal, 12)
         }.padding(.vertical, 8).background(ChattyTheme.background)

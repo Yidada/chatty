@@ -1,6 +1,6 @@
 # Chatty Android
 
-Kotlin / Compose Android 客户端。所有服务端事实来自 Multica，当前里程碑为 M1 工程基线与 M2 登录工作区。
+Kotlin / Compose Android 客户端。所有服务端事实来自 Multica，当前主线已包含登录、动态列表、Mika 连续发送、项目与验收反馈；动态批量操作和左右滑仍待 CLE-99 完成。
 
 ## 构建
 
@@ -14,7 +14,7 @@ scripts/dev-loop.sh android/app/build/outputs/apk/debug/app-debug.apk ai.chatty.
 - JDK 17；Gradle Wrapper 8.7；AGP 8.6.1；Kotlin 1.9.25；Compose compiler 1.5.15。
 - `compileSdk/targetSdk = 35`，`minSdk = 26`；已在 Android 16 的 Pixel 6 Pro 上验证。
 - Debug 包：`ai.chatty.app.debug`，Release 包：`ai.chatty.app`。
-- `0.2.0-dev` 只代表 V2 开发阶段，完整功能尚未交付。
+- 当前源码版本为 `0.2.0`（versionCode 2）；功能缺口见 [开发对齐记录](../docs/development-alignment-2026-09-13.md)。
 - SDK 通过 `ANDROID_HOME` / `android/local.properties` 指定，默认 `.tools/android-sdk`；JDK 使用现有 Homebrew OpenJDK 17。
 - Gradle 依赖缓存位于 `.tools/gradle-home`。本地 SDK、缓存、APK 不提交 Git。
 
@@ -28,14 +28,14 @@ scripts/dev-loop.sh android/app/build/outputs/apk/debug/app-debug.apk ai.chatty.
 | core-model | 按 Multica 源码定义的序列化 DTO |
 | core-network | Retrofit、OkHttp、认证头与 401 处理 |
 | core-auth | Keystore 加密存储、登录与工作区 |
-| feature-chat | 对话功能边界，后续 M3/M4/M8 |
+| feature-chat | Mika 对话、连续发送、队列与 Runtime 绑定刷新；语音待办 |
 | feature-status | 状态与附件功能边界，后续 M5/M6 |
 | feature-approval | 需要回复的近似卡片，后续 M6 |
-| feature-inbox | Inbox 与后台通知，后续 M6/M9 |
+| feature-inbox | 动态列表、待关注、分页与本机已读指纹；批量和滑动待办 |
 | feature-agents | Agent Fleet，后续 M7 |
-| feature-issue-link | Web 深链，后续 M7 |
+| feature-issue-link | 预留模块；当前项目与事项使用原生入口 |
 
-仅 app 依赖所有 feature，feature 不反向依赖 app 或彼此；尚未实现的模块保持空边界，界面明确显示开发中。
+仅 app 依赖所有 feature，feature 不反向依赖 app 或彼此。`feature-workspace` 承担项目、事项、资源与设置；空模块不代表对应功能已交付。
 
 ## 登录边界
 

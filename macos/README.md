@@ -6,7 +6,7 @@
 
 ## 安装与验收
 
-交付：[`dist/Chatty-0.1.0-universal.dmg`](dist/Chatty-0.1.0-universal.dmg)，版本 0.1.0 (1)。将 Chatty.app 拖入 Applications，打开后使用 Multica 邮箱验证码登录、选择工作区。
+0.2.0 交付状态见上方发布记录，源码工程版本为 0.2.0 (2)。历史 0.1.0 安装验收保留在对应 `.sdlc` 记录中。将 Chatty.app 拖入 Applications，打开后使用 Multica 邮箱验证码登录、选择工作区。
 
 - Developer ID：[private signing identity]。应用已通过 Apple 公证并附带离线票据；DMG 已签名。
 - 已验证镜像校验、挂载、复制安装、Gatekeeper 与正式应用启动。
@@ -27,7 +27,7 @@ swift test --package-path ios/Packages/ChattyKit --scratch-path .tools/macos-cha
 bash macos/scripts/build.sh
 ```
 
-归档默认输出 `.tools/macos-chatty/Chatty-0.1.0.xcarchive`。需要本机 Developer ID 证书及私钥；运行签名脚本前需在本地设置 `CHATTY_SIGN_IDENTITY` 和 `CHATTY_DEVELOPMENT_TEAM`，不要将个人证书身份写入仓库。版本号在工程生成器中维护；发布新版时同步归档文件名。
+归档默认输出 `.tools/macos-chatty/Chatty-0.2.0.xcarchive`。需要本机 Developer ID 证书及私钥；运行签名脚本前需在本地设置 `CHATTY_SIGN_IDENTITY` 和 `CHATTY_DEVELOPMENT_TEAM`，不要将个人证书身份写入仓库。版本号在工程生成器中维护；发布新版时同步归档文件名。
 
 在 Xcode Organizer 打开归档，选择 Distribute App → Direct Distribution，等待 Ready to distribute，然后 Export Notarized App。导出到 `.tools/macos-chatty/Chatty.app` 后运行：
 

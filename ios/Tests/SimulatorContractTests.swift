@@ -1,8 +1,8 @@
 import XCTest
 import ChattyCore
-import Security
 import SwiftUI
 import UIKit
+import Security
 @testable import ChattyFixture
 
 final class SimulatorContractTests: XCTestCase {
@@ -179,5 +179,55 @@ final class SimulatorContractTests: XCTestCase {
         let link = NativeLink.issueLink(workspace: "one", identifier: "MUL-7")
         XCTAssertEqual(link, "https://app.multica.ai/one/issues/MUL-7")
         XCTAssertEqual(NativeLink.resolve(link, api: URL(string: "https://api.multica.ai")!, workspace: "one"), .issue("MUL-7"))
+    }
+
+    // MARK: - CLE-101: the composer's return key sends
+
+    func testComposerReturnSendsOnlyOutsideComposition() {
+        XCTAssertEqual(ComposerReturnKey.action(replacement: "\n", isComposing: false, keepsLineBreak: false), .send)
+        // 输入法组词中的回车只上屏候选词。
+        XCTAssertEqual(ComposerReturnKey.action(replacement: "\n", isComposing: true, keepsLineBreak: false), .insert)
+        XCTAssertEqual(ComposerReturnKey.action(replacement: "你好", isComposing: true, keepsLineBreak: false), .insert)
+        // 硬件键盘 ⇧↵ 保留手动换行，其他输入照常。
+        XCTAssertEqual(ComposerReturnKey.action(replacement: "\n", isComposing: false, keepsLineBreak: true), .insert)
+        XCTAssertEqual(ComposerReturnKey.action(replacement: "a", isComposing: false, keepsLineBreak: false), .insert)
+    }
+
+    @MainActor func testComposerFieldSendsOnReturnAndNeverInsertsTheNewline() throws {
+        var draft = "", focused = false, sends = 0
+        let field = ComposerText(text: Binding(get: { draft }, set: { draft = $0 }), focused: Binding(get: { focused }, set: { focused = $0 }),
+                                 enabled: true, onSubmit: { sends += 1 })
+        let view = ComposerText.makeTextView()
+        let coordinator = field.makeCoordinator()
+        view.delegate = coordinator
+        // 组词状态由 UITextView 自己持有，这里直接建立候选词状态。
+        view.setMarkedText("nihao", selectedRange: NSRange(location: 5, length: 0))
+        XCTAssertNotNil(view.markedTextRange, "组词中的回车用例需要 marked text 状态")
+        // 组词中的回车：候选词上屏（放行替换），不发送。
+        XCTAssertTrue(coordinator.textView(view, shouldChangeTextIn: NSRange(location: 0, length: 5), replacementText: "你好"))
+        XCTAssertEqual(sends, 0)
+        view.unmarkText()
+        view.text = "你好"
+        // 不在组词中的回车：发送，并且换行符不进入草稿。
+        XCTAssertFalse(coordinator.textView(view, shouldChangeTextIn: NSRange(location: 2, length: 0), replacementText: "\n"))
+        XCTAssertEqual(sends, 1)
+        XCTAssertEqual(view.text, "你好")
+    }
+
+    @MainActor func testComposerFieldGrowsToEightLinesThenScrolls() {
+        let view = ComposerText.makeTextView()
+        view.text = "one"
+        let one = ComposerText.fittingHeight(of: view, width: 300)
+        view.text = "one\ntwo\nthree"
+        let three = ComposerText.fittingHeight(of: view, width: 300)
+        view.text = Array(repeating: "line", count: 20).joined(separator: "\n")
+        let many = ComposerText.fittingHeight(of: view, width: 300)
+        let line = (view.font ?? .preferredFont(forTextStyle: .body)).lineHeight
+        XCTAssertGreaterThan(three, one)
+        // 八行封顶：再多也只在框内滚动。
+        XCTAssertEqual(many, line * ComposerText.maximumLines + view.textContainerInset.top + view.textContainerInset.bottom, accuracy: 0.5)
+        // 一行也不塌陷。
+        XCTAssertGreaterThan(one, line + view.textContainerInset.top + view.textContainerInset.bottom - 1)
+        XCTAssertLessThan(one, line * 2 + view.textContainerInset.top + view.textContainerInset.bottom)
     }
 }

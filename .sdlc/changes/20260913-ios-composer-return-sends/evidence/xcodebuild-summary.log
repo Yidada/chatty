@@ -1,0 +1,12 @@
+# CLE-101 build/test summary (full logs stay on the build host: .tools/cle101/)
+
+== fixture-build ==
+** BUILD SUCCEEDED **
+
+== app-build ==
+** BUILD SUCCEEDED **
+
+== host-tests ==
+	 Executed 11 tests, with 1 test skipped and 0 failures (0 unexpected) in 0.095 (0.103) seconds
+	 Executed 11 tests, with 1 test skipped and 0 failures (0 unexpected) in 0.095 (0.104) seconds
+** TEST SUCCEEDED **
