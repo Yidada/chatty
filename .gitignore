@@ -16,3 +16,6 @@ __pycache__/
 .playwright-cli/
 output/
 /web/
+
+# Project-local agent skills (personal absolute symlinks to the Codex SDLC plugin)
+.agents/

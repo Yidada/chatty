@@ -1,0 +1,14 @@
+# Dynamic Type check at the largest accessibility size (spec §11): the top bar
+# title, the timeline and the composer must stay usable. Set the size first:
+#   xcrun simctl ui <udid> content_size accessibility-extra-extra-extra-large
+context platform=ios device="iPhone Air" kind=simulator theme=unknown
+open "ai.chatty.ios.fixture"
+wait stable 1000 10000
+press "role=\"button\" label=\"Mika\""
+wait "id=\"chat.draft\""
+screenshot ".sdlc/changes/20260912-ios-deepseek-chat-alignment-impl/evidence/14-dynamic-type-xxxl.png"
+press "id=\"chat.history\""
+wait "id=\"history.list\""
+screenshot ".sdlc/changes/20260912-ios-deepseek-chat-alignment-impl/evidence/15-dynamic-type-history.png"
+press "id=\"history.close\""
+close

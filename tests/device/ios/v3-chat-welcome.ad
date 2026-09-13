@@ -1,0 +1,16 @@
+# The empty-conversation surface, captured after a deterministic reset so it is
+# reachable regardless of what the app restored. Preconditions:
+#   xcrun simctl uninstall <udid> ai.chatty.ios.fixture && xcrun simctl install <udid> <app>
+#   xcrun simctl ui <udid> content_size <size>
+context platform=ios device="iPhone Air" kind=simulator theme=unknown
+open "ai.chatty.ios.fixture"
+wait stable 1000 10000
+wait "id=\"workspace.w1\""
+press "id=\"workspace.w1\""
+wait stable 1000 10000
+press "role=\"button\" label=\"Mika\""
+wait "id=\"chat.draft\""
+press "id=\"chat.newSession\""
+wait "id=\"chat.welcome\""
+screenshot ".tools/shots/welcome-current.png"
+close

@@ -1,0 +1,23 @@
+# Mika chat alignment replay: welcome state, running process block, folded process
+# block, and the conversation-history drawer. Run against a fresh
+# scripts/ios-fixture.py with the ChattyFixture app installed.
+context platform=ios device="iPhone Air" kind=simulator theme=unknown
+open "ai.chatty.ios.fixture"
+wait stable 1000 10000
+press "role=\"button\" label=\"Mika\""
+wait "id=\"chat.draft\""
+screenshot ".sdlc/changes/20260912-ios-deepseek-chat-alignment-impl/evidence/01-conversation.png"
+press "id=\"chat.newSession\""
+wait "id=\"chat.welcome\""
+screenshot ".sdlc/changes/20260912-ios-deepseek-chat-alignment-impl/evidence/02-welcome.png"
+fill "id=\"chat.draft\"" "帮我梳理一下项目进度"
+press "id=\"chat.send\""
+screenshot ".sdlc/changes/20260912-ios-deepseek-chat-alignment-impl/evidence/03-thinking.png"
+wait "label=\"CHATTY_CHAT_OK · 帮我梳理一下项目进度\""
+screenshot ".sdlc/changes/20260912-ios-deepseek-chat-alignment-impl/evidence/04-reply.png"
+press "id=\"chat.history\""
+wait "id=\"history.list\""
+screenshot ".sdlc/changes/20260912-ios-deepseek-chat-alignment-impl/evidence/05-history.png"
+press "id=\"history.close\""
+wait "id=\"chat.draft\""
+close

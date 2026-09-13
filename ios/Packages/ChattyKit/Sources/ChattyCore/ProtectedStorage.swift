@@ -54,9 +54,21 @@ public struct DraftRecord: Codable, Equatable, Sendable {
     public var projectId: String?
     public var projectSelectionSet: Bool?
     public var outbox: [OutgoingMessage]?
-    public init(text: String = "", uncertain: Bool = false, projectId: String? = nil, projectSelectionSet: Bool? = nil, outbox: [OutgoingMessage]? = nil) {
+    /// Attachments staged in the composer. Scoped to the conversation like the
+    /// text and the outbox (spec §7.4), so switching conversations no longer
+    /// carries one conversation's uploads into another.
+    public var attachments: [Attachment]?
+    /// True when the record holds no composer content. A conversation that was
+    /// opened and left without typing still gets a record written (the composer,
+    /// the outbox and the project selection are saved together), so "a record
+    /// exists" must not be mistaken for "the user has something here".
+    public var isEmpty: Bool {
+        text.isEmpty && !uncertain && (outbox?.isEmpty ?? true) && (attachments?.isEmpty ?? true)
+    }
+    public init(text: String = "", uncertain: Bool = false, projectId: String? = nil, projectSelectionSet: Bool? = nil, outbox: [OutgoingMessage]? = nil, attachments: [Attachment]? = nil) {
         self.text = text; self.uncertain = uncertain; self.projectId = projectId; self.projectSelectionSet = projectSelectionSet
         self.outbox = outbox
+        self.attachments = attachments
     }
 }
 
@@ -65,6 +77,10 @@ public struct DraftRecoveryScope: Codable, Sendable {
     public let accountId: String
     public let workspace: Workspace
     public let agentId: String
+    /// Conversation whose composer is being recovered. Absent on records written
+    /// before the composer became conversation-scoped; those fall back to the
+    /// pre-session-scoped record.
+    public let sessionId: String?
 }
 
 @MainActor public final class ProtectedStorage {
@@ -99,13 +115,73 @@ public struct DraftRecoveryScope: Codable, Sendable {
         #endif
         var url = url; var values = URLResourceValues(); values.isExcludedFromBackup = true; try url.setResourceValues(values)
     }
-    public func draft(account: String, workspace: String, agent: String) throws -> DraftRecord {
-        let url = root.appendingPathComponent("draft-" + key("\(account)/\(workspace)/\(agent)") + ".json")
-        guard manager.fileExists(atPath: url.path) else { return DraftRecord() }
+    /// Draft key used before a conversation exists. `⌘N` starts here, and the first
+    /// successful send moves the record onto the server-generated session id.
+    public static let pendingSessionKey = "new"
+
+    private func legacyDraftURL(account: String, workspace: String, agent: String) -> URL {
+        root.appendingPathComponent("draft-" + key("\(account)/\(workspace)/\(agent)") + ".json")
+    }
+    private func draftURL(account: String, workspace: String, agent: String, session: String) -> URL {
+        root.appendingPathComponent("draft-" + key("\(account)/\(workspace)/\(agent)/\(session)") + ".json")
+    }
+    private func readDraft(at url: URL) throws -> DraftRecord? {
+        guard manager.fileExists(atPath: url.path) else { return nil }
         return try JSONDecoder().decode(DraftRecord.self, from: Data(contentsOf: url))
     }
+
+    /// Pre-session-scoped draft (one record per agent). Kept readable so an
+    /// upgrade can adopt it; new writes go to `saveDraft(_:account:workspace:agent:session:)`.
+    public func draft(account: String, workspace: String, agent: String) throws -> DraftRecord {
+        try readDraft(at: legacyDraftURL(account: account, workspace: workspace, agent: agent)) ?? DraftRecord()
+    }
     public func saveDraft(_ value: DraftRecord, account: String, workspace: String, agent: String) throws {
-        try write(JSONEncoder().encode(value), to: root.appendingPathComponent("draft-" + key("\(account)/\(workspace)/\(agent)") + ".json"))
+        try write(JSONEncoder().encode(value), to: legacyDraftURL(account: account, workspace: workspace, agent: agent))
+    }
+
+    /// Session-scoped draft. `nil` means "this conversation has no saved record",
+    /// which is different from "the user cleared it" — the composer, the outbox and
+    /// the project selection all live in one record (spec §7.4).
+    public func draft(account: String, workspace: String, agent: String, session: String) throws -> DraftRecord? {
+        try readDraft(at: draftURL(account: account, workspace: workspace, agent: agent, session: session))
+    }
+    public func saveDraft(_ value: DraftRecord, account: String, workspace: String, agent: String, session: String) throws {
+        try write(JSONEncoder().encode(value), to: draftURL(account: account, workspace: workspace, agent: agent, session: session))
+    }
+    public func removeDraft(account: String, workspace: String, agent: String, session: String) throws {
+        let url = draftURL(account: account, workspace: workspace, agent: agent, session: session)
+        if manager.fileExists(atPath: url.path) { try manager.removeItem(at: url) }
+    }
+    /// Move a record between conversation keys, e.g. `new` → the session id the
+    /// server created for the first send. Never overwrites an existing target and
+    /// never removes the source until the copy is written, so it is safe to retry.
+    @discardableResult
+    public func migrateDraft(account: String, workspace: String, agent: String, from source: String, to target: String) throws -> DraftRecord? {
+        guard source != target else { return try draft(account: account, workspace: workspace, agent: agent, session: target) }
+        let sourceURL = draftURL(account: account, workspace: workspace, agent: agent, session: source)
+        let targetURL = draftURL(account: account, workspace: workspace, agent: agent, session: target)
+        guard let record = try readDraft(at: sourceURL) else { return nil }
+        guard !manager.fileExists(atPath: targetURL.path) else { return nil }
+        try write(JSONEncoder().encode(record), to: targetURL)
+        try manager.removeItem(at: sourceURL)
+        return record
+    }
+    /// One-shot adoption of the pre-session-scoped draft into the conversation the
+    /// user actually restores into. Idempotent: after the first call the legacy
+    /// record is gone, so a second call returns `nil`. A target that still holds
+    /// composer content always wins; an empty target record is replaced, because
+    /// otherwise simply opening and leaving a conversation would strand the
+    /// upgraded draft. The legacy record is dropped either way so it cannot
+    /// surface later in an unrelated conversation.
+    @discardableResult
+    public func adoptLegacyDraft(account: String, workspace: String, agent: String, session: String) throws -> DraftRecord? {
+        let legacyURL = legacyDraftURL(account: account, workspace: workspace, agent: agent)
+        guard let record = try readDraft(at: legacyURL) else { return nil }
+        let targetURL = draftURL(account: account, workspace: workspace, agent: agent, session: session)
+        defer { try? manager.removeItem(at: legacyURL) }
+        if let existing = try readDraft(at: targetURL), !existing.isEmpty { return nil }
+        try write(JSONEncoder().encode(record), to: targetURL)
+        return record
     }
     public func activityReads(account: String, workspace: String) throws -> [String: String] {
         let url = root.appendingPathComponent("activity-read-" + key("\(account)/\(workspace)") + ".json")
@@ -115,8 +191,8 @@ public struct DraftRecoveryScope: Codable, Sendable {
     public func saveActivityReads(_ reads: [String: String], account: String, workspace: String) throws {
         try write(JSONEncoder().encode(reads), to: root.appendingPathComponent("activity-read-" + key("\(account)/\(workspace)") + ".json"))
     }
-    public func rememberRecovery(token: String, account: String, workspace: Workspace, agent: String) throws {
-        let scope = DraftRecoveryScope(credentialHash: key(token), accountId: account, workspace: workspace, agentId: agent)
+    public func rememberRecovery(token: String, account: String, workspace: Workspace, agent: String, session: String?) throws {
+        let scope = DraftRecoveryScope(credentialHash: key(token), accountId: account, workspace: workspace, agentId: agent, sessionId: session)
         try write(JSONEncoder().encode(scope), to: root.appendingPathComponent("draft-recovery.json"))
     }
     public func recovery(token: String) throws -> DraftRecoveryScope? {

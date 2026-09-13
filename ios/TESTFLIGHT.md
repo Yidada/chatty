@@ -5,7 +5,7 @@
 ## 最近确认的状态
 
 - 应用标识：`ai.chatty.ios`；生产 Scheme：`Chatty`，排除 `ChattyFixture`。
-- 版本：`0.2.0 (3)`。
+- 版本：`0.2.0 (11)`（移除 iPad 侧边栏，iPhone / iPad 统一单栏 Tab）。
 - 已上传并完成 Apple 处理，已保存与代码实现一致的加密信息。
 - 已加入原有内部测试组，App Store Connect 显示 **Testing**。
 - 分发方式为 **TestFlight Internal Only**；此构建仅用于内部测试。

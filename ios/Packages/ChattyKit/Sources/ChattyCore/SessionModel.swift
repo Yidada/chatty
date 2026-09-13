@@ -90,20 +90,28 @@ import Observation
             if transient {
                 do {
                     recoveryScope = try files.recovery(token: token)
-                    if let scope = recoveryScope { recoveryDraft = try files.draft(account: scope.accountId, workspace: scope.workspace.id, agent: scope.agentId) }
+                    if let scope = recoveryScope {
+                        let key = scope.sessionId ?? ProtectedStorage.pendingSessionKey
+                        // Fall back to the pre-session-scoped record so an upgrade
+                        // that goes offline before its first online load still
+                        // recovers the composer it was showing.
+                        recoveryDraft = try files.draft(account: scope.accountId, workspace: scope.workspace.id, agent: scope.agentId, session: key)
+                            ?? files.draft(account: scope.accountId, workspace: scope.workspace.id, agent: scope.agentId)
+                    }
                 } catch { self.error = "暂时无法读取本机草稿，请解锁设备后重试。" }
             }
         }
     }
     public func rememberDraftScope(_ workspace: WorkspaceModel) {
         guard current?.id == workspace.id, let agent = workspace.chat.agent, let token = api.token else { return }
-        do { try files.rememberRecovery(token: token, account: workspace.context.user.id, workspace: workspace.context.workspace, agent: agent.id) }
+        do { try files.rememberRecovery(token: token, account: workspace.context.user.id, workspace: workspace.context.workspace, agent: agent.id, session: workspace.chat.conversationKey) }
         catch { self.error = "本机离线恢复信息未能保存，请解锁设备后重试。" }
     }
     public func setRecoveryDraft(_ text: String) {
         guard let scope = recoveryScope, current == nil else { return }
         recoveryDraft.text = String(text.prefix(100_000))
-        do { try files.saveDraft(recoveryDraft, account: scope.accountId, workspace: scope.workspace.id, agent: scope.agentId) }
+        let key = scope.sessionId ?? ProtectedStorage.pendingSessionKey
+        do { try files.saveDraft(recoveryDraft, account: scope.accountId, workspace: scope.workspace.id, agent: scope.agentId, session: key) }
         catch { self.error = "草稿暂时无法保存，请保持应用打开后重试。" }
     }
     public func select(_ workspace: Workspace) {

@@ -81,7 +81,7 @@ struct WorkspaceTabs: View {
             Tab("Mika", systemImage: "sparkles", value: AppTab.chat) {
                 NavigationStack {
                     ChatScreen(model: model.chat, context: model.context)
-                        .toolbar { profileButton; newWindowButton }
+                        .toolbar { profileButton; if horizontalSizeClass == .regular { newWindowButton } }
                 }
             }
             Tab("项目", systemImage: "folder", value: AppTab.projects) {
@@ -91,7 +91,7 @@ struct WorkspaceTabs: View {
                 }
             }
         }
-        .tabViewStyle(.sidebarAdaptable)
+        .tabViewStyle(.tabBarOnly)
         .environment(\.openURL, OpenURLAction { url in
             switch NativeLink.resolve(url.absoluteString, api: model.context.api.baseURL, workspace: model.context.workspace.slug) {
             case .issue(let id): linked = .issue(id); return .handled

@@ -105,6 +105,10 @@ class API(BASE.API):
                 return self.reply(200,{'token':TOKENS[user]})
         if path == '/__control':
             module.OPTIONS.update({key:body[key] for key in ('send_mode','receipt_delay','catalog_status','issue_conflict','deny_mika','batch_skip','batch_status') if key in body})
+            # `slow` lives as a module global in chat-fixture, and this handler
+            # consumes the request body before delegating, so the parent would see
+            # an empty body and never apply it. Set it here instead.
+            if 'slow' in body: module.SLOW = bool(body['slow'])
             if 'deny_mika' in body: module.AGENT['owner_id'] = 'unrelated-user' if body['deny_mika'] else self.owner()
             if body.get('activity_scenario'):
                 for i, row in enumerate(module.ISSUES):
@@ -120,6 +124,14 @@ class API(BASE.API):
                 row['revision'] += 1
                 row['last_activity_at'] = time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime())
                 module.broadcast('issue:updated', {'issue_id':row['id']})
+            if body.get('math_sample'):
+                # Formula rendering check (spec §8): display math between two
+                # paragraphs, plus inline math inside a sentence.
+                module.MESSAGES.append({
+                    'id': 'math-sample', 'chat_session_id': 's1', 'role': 'assistant',
+                    'content': '两条直角边为 $a$ 与 $b$ 时，斜边满足：\n\n$$c^2 = a^2 + b^2$$\n\n其中 $\\alpha \\leq \\beta$，且 $x_{1} \\neq x_{2}$。\n\n\\[\\frac{a+b}{2} \\geq \\sqrt{ab}\\]',
+                    'created_at': '2026-09-10T08:04:00Z'})
+                module.broadcast('chat:message', {'chat_session_id': 's1'})
             if body.get('promote_session'):
                 # Scene restoration check: make another session the most recently
                 # updated one, so "restore where I was" and "pick the newest"

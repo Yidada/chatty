@@ -1,0 +1,15 @@
+# Formula rendering check (spec §8): opens the seeded conversation that contains
+# display and inline math, then captures the rendered answer.
+context platform=ios device="iPhone Air" kind=simulator theme=unknown
+open "ai.chatty.ios.fixture"
+wait stable 1000 10000
+press "role=\"button\" label=\"Mika\""
+wait "id=\"chat.draft\""
+press "id=\"chat.history\""
+wait "id=\"history.list\""
+press "id=\"history.row.s1\""
+wait "id=\"chat.draft\""
+scroll "bottom"
+scroll "bottom"
+screenshot ".sdlc/changes/20260912-ios-deepseek-chat-alignment-impl/evidence/06-math.png"
+close

@@ -26,8 +26,12 @@ private struct InlineText: View {
     private var attributed: AttributedString {
         var result = AttributedString()
         for run in runs {
-            var text = AttributedString(run.text)
-            var font: Font = run.code ? .system(.body, design: .monospaced) : .body
+            // Inline math is LaTeX in the source; show the converted formula with a
+            // serif face so it reads as maths rather than prose (spec §8).
+            var text = AttributedString(run.math ? MathText.render(run.text) : run.text)
+            var font: Font = run.code ? .system(.body, design: .monospaced)
+                : run.math ? .system(.body, design: .serif).italic()
+                : .body
             if run.bold { font = font.bold() }; if run.italic { font = font.italic() }
             text.font = font
             if run.strike { text.strikethroughStyle = .single }
@@ -85,6 +89,14 @@ private struct RichBlockView: View {
                 }.foregroundStyle(.secondary)
             }.fixedSize(horizontal: false, vertical: true)
         case .image(let alt, let source): InlineImageView(source: source, alt: alt, context: context)
+        case .math(let source):
+            // Display formula: centred and set apart, matching how the DeepSeek app
+            // presents `$$…$$` (research.md §2.5).
+            Text(verbatim: MathText.render(source))
+                .font(.system(.title3, design: .serif))
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.vertical, 6)
+                .accessibilityIdentifier("markdown.math")
         case .literal(let source): Text(verbatim: source).font(.system(.callout, design: .monospaced)).fixedSize(horizontal: false, vertical: true)
         case .rule: Divider()
         }

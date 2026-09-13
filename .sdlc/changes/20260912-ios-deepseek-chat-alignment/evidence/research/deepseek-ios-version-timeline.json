@@ -1,0 +1,506 @@
+[
+ {
+  "version": "1.0.2",
+  "date": "2025-01-16",
+  "raw_date": "Jan 16, 2025",
+  "notes": "- Added language support for multiple countries\n- Fixed display issues with some formulas"
+ },
+ {
+  "version": "1.0.7",
+  "date": "2025-01-31",
+  "raw_date": "Jan 31, 2025",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.1.0",
+  "date": "2025-02-28",
+  "raw_date": "Feb 28, 2025",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.1.3",
+  "date": "2025-03-26",
+  "raw_date": "Mar 26, 2025",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.1.5",
+  "date": "2025-04-09",
+  "raw_date": "Wed Apr 09 2025 13:04:55 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.1.6",
+  "date": "2025-04-11",
+  "raw_date": "Fri Apr 11 2025 03:44:46 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.1.7",
+  "date": "2025-04-17",
+  "raw_date": "Thu Apr 17 2025 05:26:04 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.1.8",
+  "date": "2025-04-26",
+  "raw_date": "Sat Apr 26 2025 02:38:31 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.1.9",
+  "date": "2025-04-29",
+  "raw_date": "Tue Apr 29 2025 07:48:29 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.2.0",
+  "date": "2025-05-16",
+  "raw_date": "Fri May 16 2025 02:39:02 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Optimized chat experience\n- Fixed some known issues"
+ },
+ {
+  "version": "1.2.1",
+  "date": "2025-05-19",
+  "raw_date": "Mon May 19 2025 03:01:56 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.2.2",
+  "date": "2025-05-28",
+  "raw_date": "Wed May 28 2025 06:55:57 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.2.3",
+  "date": "2025-06-01",
+  "raw_date": "Sun Jun 01 2025 04:40:51 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.2.4",
+  "date": "2025-06-12",
+  "raw_date": "Thu Jun 12 2025 08:05:49 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Optimized the login and sign-up experience"
+ },
+ {
+  "version": "1.2.5",
+  "date": "2025-07-02",
+  "raw_date": "Wed Jul 02 2025 05:53:45 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Add support for Mermaid diagram rendering\n- Optimized the login and sign-up experience"
+ },
+ {
+  "version": "1.2.6",
+  "date": "2025-07-05",
+  "raw_date": "Sat Jul 05 2025 02:47:01 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Add support for Mermaid diagram rendering\n- Optimized the login and sign-up experience"
+ },
+ {
+  "version": "1.2.7",
+  "date": "2025-07-21",
+  "raw_date": "Mon Jul 21 2025 03:23:24 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Support real-time preview for Mermaid diagram\n- Support logging out of all devices\n- Fixed some known issues"
+ },
+ {
+  "version": "1.2.8",
+  "date": "2025-07-22",
+  "raw_date": "Tue Jul 22 2025 09:08:41 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Support real-time preview for Mermaid diagram\n- Support logging out of all devices\n- Fixed some known issues"
+ },
+ {
+  "version": "1.3.0",
+  "date": "2025-08-13",
+  "raw_date": "Wed Aug 13 2025 12:28:58 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Support creating images from conversations\n- Improved text selection and copying experience\n- Fixed some known issues"
+ },
+ {
+  "version": "1.3.1",
+  "date": "2025-08-18",
+  "raw_date": "Mon Aug 18 2025 11:56:44 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Support sharing conversations as images\n- Improved text selection and copying experience\n- Fixed some known issues"
+ },
+ {
+  "version": "1.3.2",
+  "date": "2025-08-21",
+  "raw_date": "Thu Aug 21 2025 04:25:18 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.3.3",
+  "date": "2025-09-02",
+  "raw_date": "Tue Sep 02 2025 13:22:08 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.4.0",
+  "date": "2025-09-11",
+  "raw_date": "Thu Sep 11 2025 03:47:12 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.4.1",
+  "date": "2025-09-13",
+  "raw_date": "Sat Sep 13 2025 07:20:44 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.4.2",
+  "date": "2025-09-16",
+  "raw_date": "Tue Sep 16 2025 01:59:13 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.4.3",
+  "date": "2025-10-13",
+  "raw_date": "Mon Oct 13 2025 09:25:29 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Support pinning chats\n- Improve account management\n- Fixed some known issues"
+ },
+ {
+  "version": "1.4.4",
+  "date": "2025-10-15",
+  "raw_date": "Wed Oct 15 2025 08:25:50 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Support pinning chats\n- Improve account management\n- Fixed some known issues"
+ },
+ {
+  "version": "1.5.0",
+  "date": "2025-10-30",
+  "raw_date": "Thu Oct 30 2025 14:09:10 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.5.1",
+  "date": "2025-11-10",
+  "raw_date": "Mon Nov 10 2025 11:19:24 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.5.3",
+  "date": "2025-11-25",
+  "raw_date": "Tue Nov 25 2025 02:41:08 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Support for sharing conversation links\n- Fixed some known issues"
+ },
+ {
+  "version": "1.5.4",
+  "date": "2025-12-03",
+  "raw_date": "Wed Dec 03 2025 05:30:45 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.6.0",
+  "date": "2025-12-27",
+  "raw_date": "Sat Dec 27 2025 02:45:25 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Support for reading links\n- Improved the message editing experience\n- Fixed some known issues"
+ },
+ {
+  "version": "1.6.1",
+  "date": "2025-12-29",
+  "raw_date": "Mon Dec 29 2025 14:26:35 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Support for reading links\n- Improved the message editing experience\n- Fixed some known issues"
+ },
+ {
+  "version": "1.6.3",
+  "date": "2026-01-06",
+  "raw_date": "Tue Jan 06 2026 09:24:44 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Support for voice input\n- Fixed UI display issues in certain accessibility modes\n- Fixed some known issues"
+ },
+ {
+  "version": "1.6.4",
+  "date": "2026-01-07",
+  "raw_date": "Wed Jan 07 2026 14:28:00 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.6.5",
+  "date": "2026-01-12",
+  "raw_date": "Mon Jan 12 2026 11:06:38 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.6.6",
+  "date": "2026-01-15",
+  "raw_date": "Thu Jan 15 2026 14:40:12 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Added photo cropping after camera capture\n- Fixed some known issues"
+ },
+ {
+  "version": "1.6.7",
+  "date": "2026-01-16",
+  "raw_date": "Fri Jan 16 2026 15:31:07 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Added photo cropping after camera capture\n- Fixed some known issues"
+ },
+ {
+  "version": "1.6.8",
+  "date": "2026-01-23",
+  "raw_date": "Fri Jan 23 2026 06:18:34 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Added photo cropping after camera capture\n- Fixed some known issues"
+ },
+ {
+  "version": "1.6.9",
+  "date": "2026-01-24",
+  "raw_date": "Sat Jan 24 2026 13:47:07 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Added photo cropping after camera capture\n- Fixed some known issues"
+ },
+ {
+  "version": "1.6.10",
+  "date": "2026-01-29",
+  "raw_date": "Thu Jan 29 2026 13:58:33 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Added photo cropping after camera capture\n- Fixed some known issues"
+ },
+ {
+  "version": "1.7.0",
+  "date": "2026-02-04",
+  "raw_date": "Wed Feb 04 2026 14:32:39 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.7.1",
+  "date": "2026-02-05",
+  "raw_date": "Thu Feb 05 2026 15:34:36 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.7.2",
+  "date": "2026-02-06",
+  "raw_date": "Fri Feb 06 2026 17:16:33 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.7.3",
+  "date": "2026-02-09",
+  "raw_date": "Mon Feb 09 2026 15:09:27 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.7.4",
+  "date": "2026-02-10",
+  "raw_date": "Tue Feb 10 2026 07:52:20 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.7.5",
+  "date": "2026-02-13",
+  "raw_date": "Fri Feb 13 2026 09:01:23 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.7.6",
+  "date": "2026-02-18",
+  "raw_date": "Wed Feb 18 2026 16:33:59 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.7.7",
+  "date": "2026-02-24",
+  "raw_date": "Tue Feb 24 2026 13:39:08 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.7.8",
+  "date": "2026-02-27",
+  "raw_date": "Fri Feb 27 2026 12:15:28 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.7.9",
+  "date": "2026-03-02",
+  "raw_date": "Mon Mar 02 2026 13:03:08 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.7.10",
+  "date": "2026-03-13",
+  "raw_date": "Fri Mar 13 2026 11:11:02 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.8.0",
+  "date": "2026-03-27",
+  "raw_date": "Fri Mar 27 2026 15:26:19 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.8.1",
+  "date": "2026-03-31",
+  "raw_date": "Tue Mar 31 2026 03:10:20 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.8.2",
+  "date": "2026-04-04",
+  "raw_date": "Sat Apr 04 2026 04:58:07 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.8.3",
+  "date": "2026-04-10",
+  "raw_date": "Fri Apr 10 2026 11:22:06 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.8.5",
+  "date": "2026-04-15",
+  "raw_date": "Wed Apr 15 2026 09:56:17 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "1.8.6",
+  "date": "2026-04-20",
+  "raw_date": "Mon Apr 20 2026 10:57:35 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "2.0.0",
+  "date": "2026-04-22",
+  "raw_date": "Wed Apr 22 2026 14:47:06 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "2.0.2",
+  "date": "2026-04-24",
+  "raw_date": "Fri Apr 24 2026 15:34:22 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "2.0.3",
+  "date": "2026-04-29",
+  "raw_date": "Wed Apr 29 2026 09:43:37 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "2.0.4",
+  "date": "2026-04-30",
+  "raw_date": "Thu Apr 30 2026 06:17:53 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "2.1.0",
+  "date": "2026-05-11",
+  "raw_date": "Mon May 11 2026 01:41:02 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Search your chat history\n- Fixed some known issues"
+ },
+ {
+  "version": "2.1.1",
+  "date": "2026-05-21",
+  "raw_date": "Thu May 21 2026 02:25:45 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Supports table copy, download, and fullscreen preview\n- Fixed some known issues"
+ },
+ {
+  "version": "2.1.2",
+  "date": "2026-06-02",
+  "raw_date": "Tue Jun 02 2026 02:37:01 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "2.1.4",
+  "date": "2026-06-03",
+  "raw_date": "Wed Jun 03 2026 13:44:25 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Support custom font sizes\n- Fix some known issues"
+ },
+ {
+  "version": "2.1.3",
+  "date": "2026-06-03",
+  "raw_date": "Wed Jun 03 2026 10:12:12 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Support custom font sizes\n- Fix some known issues"
+ },
+ {
+  "version": "2.1.7",
+  "date": "2026-06-16",
+  "raw_date": "Tue Jun 16 2026 13:49:18 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Support custom font sizes\n- Fix some known issues"
+ },
+ {
+  "version": "2.1.8",
+  "date": "2026-06-18",
+  "raw_date": "Thu Jun 18 2026 10:40:29 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "2.2.0",
+  "date": "2026-06-29",
+  "raw_date": "Mon Jun 29 2026 04:00:03 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Supports vision mode\n- Fixed some known issues"
+ },
+ {
+  "version": "2.2.1",
+  "date": "2026-07-07",
+  "raw_date": "Tue Jul 07 2026 08:24:43 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "2.2.2",
+  "date": "2026-07-11",
+  "raw_date": "Sat Jul 11 2026 05:44:29 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Supports vision mode\n- Fixed some known issues"
+ },
+ {
+  "version": "2.3.0",
+  "date": "2026-07-28",
+  "raw_date": "Tue Jul 28 2026 09:54:30 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Improved photo and file uploads\n- Fixed some known issues"
+ },
+ {
+  "version": "2.3.1",
+  "date": "2026-07-30",
+  "raw_date": "Thu Jul 30 2026 05:12:46 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Improved photo and file uploads\n- Fixed some known issues"
+ },
+ {
+  "version": "2.3.2",
+  "date": "2026-08-07",
+  "raw_date": "Fri Aug 07 2026 09:31:39 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "2.3.3",
+  "date": "2026-08-12",
+  "raw_date": "Wed Aug 12 2026 05:32:05 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "2.3.6",
+  "date": "2026-08-17",
+  "raw_date": "Mon Aug 17 2026 06:48:17 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "2.4.0",
+  "date": "2026-08-21",
+  "raw_date": "Fri Aug 21 2026 10:00:38 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "2.4.1",
+  "date": "2026-08-22",
+  "raw_date": "Sat Aug 22 2026 15:46:32 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "2.4.2",
+  "date": "2026-08-28",
+  "raw_date": "Fri Aug 28 2026 07:14:27 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "2.4.4",
+  "date": "2026-09-03",
+  "raw_date": "Thu Sep 03 2026 10:52:43 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "2.4.5",
+  "date": "2026-09-06",
+  "raw_date": "Sun Sep 06 2026 14:51:10 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- Fixed some known issues"
+ },
+ {
+  "version": "2.5.0",
+  "date": "2026-09-11",
+  "raw_date": "Fri Sep 11 2026 02:20:46 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- New model update: Instant, Expert, and Vision modes are now unified\n- Thinking process now collapses automatically\n- Fixed some known issues"
+ },
+ {
+  "version": "2.5.1",
+  "date": "2026-09-12",
+  "raw_date": "Sat Sep 12 2026 08:22:12 GMT+0000 (Coordinated Universal Time)",
+  "notes": "- New model update: Instant, Expert, and Vision modes are now unified\n- Thinking process now collapses automatically\n- Fixed some known issues"
+ }
+]

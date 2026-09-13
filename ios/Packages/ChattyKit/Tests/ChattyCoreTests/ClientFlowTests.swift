@@ -44,6 +44,14 @@ private final class FlowServer: @unchecked Sendable {
         var patchStatus = 200
         var queueSupported = false
         var activeTask = false
+        /// Content of the running task, so a cancel can hand it back like the real
+        /// fixture does from its task table.
+        var activeContent = ""
+        /// Queued followers the server reports through `pending-task`.
+        var queuedTasks: [[String: Any]] = []
+        /// Every `/api/tasks/{id}/cancel` the client sent, with its query.
+        var cancels: [(taskId: String, query: [String: String])] = []
+        var prioritized: [String] = []
         var holdSend: DispatchSemaphore?
         var actionIssueID: String?
         var batchStatus = 200
@@ -112,7 +120,40 @@ private final class FlowServer: @unchecked Sendable {
             if path.hasSuffix("/pending-task") {
                 var result: [String: Any] = ["supports_queue":state.queueSupported]
                 if state.activeTask { result["task_id"] = "active"; result["status"] = "running" }
+                if !state.queuedTasks.isEmpty { result["queued_tasks"] = state.queuedTasks }
                 return try reply(result)
+            }
+            // Cancel mirrors the real fixture: it echoes the cancelled text and
+            // says whether the composer should get it back.
+            if method == "POST", path.hasPrefix("/api/tasks/"), path.hasSuffix("/cancel") {
+                let parts = path.split(separator: "/")
+                let taskId = parts.count > 2 ? String(parts[2]) : ""
+                let query = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)?.queryItems ?? []
+                let items = Dictionary(uniqueKeysWithValues: query.map { ($0.name, $0.value ?? "") })
+                state.cancels.append((taskId, items))
+                if items["expected_status"] == "queued", !state.queuedTasks.contains(where: { $0["task_id"] as? String == taskId }) {
+                    return try reply(["error":"task is no longer queued"], 409)
+                }
+                let queued = state.queuedTasks.first { $0["task_id"] as? String == taskId }
+                state.queuedTasks.removeAll { $0["task_id"] as? String == taskId }
+                let content: String
+                if let queued { content = queued["content"] as? String ?? "" }
+                else if taskId == "active" { content = state.activeContent }
+                else { content = "" }
+                if items["expected_status"] == nil { state.activeTask = false }
+                return try reply(["cancelled_chat_message":[
+                    "chat_session_id":"s1",
+                    "message_id": queued?["message_id"] as? String ?? "sent-cancelled",
+                    "content": content,
+                    "restore_to_input": items["queue_action"] != "remove",
+                ]])
+            }
+            if method == "POST", path.hasSuffix("/prioritize") {
+                let parts = path.split(separator: "/")
+                let taskId = parts.count > 1 ? String(parts[parts.count - 2]) : ""
+                state.prioritized.append(taskId)
+                state.queuedTasks.removeAll { $0["task_id"] as? String == taskId }
+                return try reply(["task_id":taskId, "active_task_id":"active"])
             }
             if method == "POST", path.hasSuffix("/messages") {
                 let message: [String: Any] = ["id":"sent-\(state.sent.count)", "chat_session_id":"s1", "role":"user", "content":body["content"] ?? "", "created_at":"2026-09-06T00:00:00Z", "_project_id":state.sessionProject ?? "none", "_attachments":body["attachment_ids"] ?? []]
@@ -294,8 +335,72 @@ private final class FlowServer: @unchecked Sendable {
         gate.signal(); await first.value
         XCTAssertEqual(chat.outbox.first?.content, "Follower"); XCTAssertEqual(chat.outbox.first?.status, .held)
         XCTAssertEqual(rig.server.read { $0.sent.count }, 1)
-        let saved = try rig.files.draft(account: "u1", workspace: "w1", agent: "mika")
+        let saved = try XCTUnwrap(rig.files.draft(account: "u1", workspace: "w1", agent: "mika", session: "s1"))
         XCTAssertEqual(saved.outbox?.map(\.content), ["Follower"])
+        // The held follower belongs to this conversation only; the pre-session-scoped
+        // record must not pick it up (spec §7.4).
+        XCTAssertNil(try rig.files.draft(account: "u1", workspace: "w1", agent: "mika").outbox)
+    }
+
+    /// Spec §7.3 / the Android reference: editing a queued message cancels it with
+    /// the queue action the server expects, and its text goes back to the composer
+    /// **without discarding what the user already typed**.
+    func testEditingAQueuedMessageRestoresItsTextAlongsideTheDraft() async throws {
+        let rig = try FlowRig(); defer { rig.cleanup() }; await rig.login()
+        let chat = try XCTUnwrap(rig.model.current?.chat)
+        rig.server.mutate {
+            $0.queueSupported = true; $0.activeTask = true
+            $0.queuedTasks = [["task_id":"t2", "status":"queued", "created_at":"2026-09-06T00:00:00Z", "message_id":"sent-queued", "content":"排队中的内容"]]
+        }
+        await chat.refresh()
+        XCTAssertEqual(chat.queuedTasks.map(\.taskId), ["t2"])
+
+        chat.setDraft("我已经输入的内容")
+        await chat.editQueued("t2")
+
+        let cancel = try XCTUnwrap(rig.server.read { $0.cancels.first })
+        XCTAssertEqual(cancel.taskId, "t2")
+        XCTAssertEqual(cancel.query["expected_status"], "queued")
+        XCTAssertEqual(cancel.query["queue_action"], "edit")
+        XCTAssertEqual(cancel.query["chat_session_id"], "s1")
+        XCTAssertTrue(chat.draft.contains("排队中的内容"), chat.draft)
+        XCTAssertTrue(chat.draft.contains("我已经输入的内容"), chat.draft)
+        XCTAssertTrue(chat.queuedTasks.isEmpty)
+    }
+
+    func testRemovingAQueuedMessageDropsItsTextInsteadOfRestoringIt() async throws {
+        let rig = try FlowRig(); defer { rig.cleanup() }; await rig.login()
+        let chat = try XCTUnwrap(rig.model.current?.chat)
+        rig.server.mutate {
+            $0.queueSupported = true; $0.activeTask = true
+            $0.queuedTasks = [["task_id":"t2", "status":"queued", "created_at":"2026-09-06T00:00:00Z", "message_id":"sent-queued", "content":"排队中的内容"]]
+        }
+        await chat.refresh()
+        chat.setDraft("保留的草稿")
+        await chat.removeQueued("t2")
+
+        XCTAssertEqual(rig.server.read { $0.cancels.first?.query["queue_action"] }, "remove")
+        XCTAssertEqual(chat.draft, "保留的草稿", "移除不应把消息文本倒回输入框")
+        XCTAssertTrue(chat.queuedTasks.isEmpty)
+    }
+
+    /// Promoting a queued message cancels whatever is running, and the displaced
+    /// task's text is returned to the composer rather than lost.
+    func testPrioritizingAQueuedMessageCancelsTheActiveTaskAndReturnsItsText() async throws {
+        let rig = try FlowRig(); defer { rig.cleanup() }; await rig.login()
+        let chat = try XCTUnwrap(rig.model.current?.chat)
+        rig.server.mutate {
+            $0.queueSupported = true; $0.activeTask = true; $0.activeContent = "正在处理的内容"
+            $0.queuedTasks = [["task_id":"t2", "status":"queued", "created_at":"2026-09-06T00:00:00Z", "message_id":"sent-queued", "content":"排队中的内容"]]
+        }
+        await chat.refresh()
+        await chat.sendQueuedNow("t2")
+
+        XCTAssertEqual(rig.server.read { $0.prioritized }, ["t2"])
+        // The displaced active task is cancelled through the same endpoint.
+        XCTAssertEqual(rig.server.read { $0.cancels.map(\.taskId) }, ["active"])
+        XCTAssertTrue(chat.draft.contains("正在处理的内容"), chat.draft)
+        XCTAssertFalse(chat.draft.contains("排队中的内容"), "被提升的消息应当继续执行，而不是回到输入框")
     }
     func testActivityIncludesOtherCreatorsAndOlderActionsWithSeparateReadState() async throws {
         let rig = try FlowRig(); defer { rig.cleanup() }; await rig.login()
@@ -580,8 +685,9 @@ private final class FlowServer: @unchecked Sendable {
         let chat = try XCTUnwrap(rig.model.current?.chat)
         XCTAssertEqual(chat.draft, ""); XCTAssertTrue(chat.uncertain)
         XCTAssertEqual(chat.outbox.first?.content, "V1 uncertain send"); XCTAssertEqual(chat.outbox.first?.status, .uncertain)
-        let migrated = try rig.files.draft(account: "u1", workspace: "w1", agent: "mika")
+        let migrated = try XCTUnwrap(rig.files.draft(account: "u1", workspace: "w1", agent: "mika", session: "s1"))
         XCTAssertEqual(migrated.text, ""); XCTAssertEqual(migrated.outbox?.count, 1)
+        XCTAssertEqual(try rig.files.draft(account: "u1", workspace: "w1", agent: "mika").text, "", "旧键已清空")
         chat.setDraft("New request after upgrade"); await chat.send(); await chat.refresh()
         XCTAssertEqual(rig.server.read { $0.sent.count }, 0)
         chat.acknowledgeUncertain()

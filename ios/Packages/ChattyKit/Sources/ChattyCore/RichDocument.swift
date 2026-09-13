@@ -7,6 +7,8 @@ public struct InlineRun: Equatable, Sendable {
     public var italic = false
     public var strike = false
     public var code = false
+    /// The text is LaTeX, not prose: render it as a formula (spec §8).
+    public var math = false
     public var link: String?
 }
 public indirect enum RichBlock: Equatable, Sendable {
@@ -14,14 +16,25 @@ public indirect enum RichBlock: Equatable, Sendable {
     case table([[InlineRun]], [[[InlineRun]]])
     case listItem(Int, Int?, Bool?, [RichBlock]), quote([RichBlock])
     case image(String, String), literal(String), rule
+    /// A whole display formula (`$$…$$` or `\[…\]`), rendered centred.
+    case math(String)
 }
 public enum RichDocument {
     public static func parse(_ source: String) -> [RichBlock] {
-        Document(parsing: DisplayText.message(source)).children.flatMap { blocks($0, depth: 0) }
+        Document(parsing: MathText.normalizeDelimiters(DisplayText.message(source))).children.flatMap { blocks($0, depth: 0) }
     }
     private static func inline(_ node: any Markup, style: InlineRun = .init(text: "")) -> [InlineRun] {
         var style = style
-        if let value = node as? Markdown.Text { style.text = value.string; return [style] }
+        // A text node can carry inline math (`$…$`, `\(…\)`); split it so the view
+        // can pick a math font for those runs and leave the rest as prose.
+        if let value = node as? Markdown.Text {
+            return MathText.segments(value.string).map { segment in
+                var run = style
+                run.text = segment.text
+                run.math = segment.isMath
+                return run
+            }
+        }
         if let value = node as? InlineCode { style.text = value.code; style.code = true; return [style] }
         if let value = node as? InlineHTML { style.text = value.rawHTML; style.code = true; return [style] }
         if node is SoftBreak { style.text = " "; return [style] }
@@ -36,6 +49,8 @@ public enum RichDocument {
         switch node {
         case let heading as Heading: return [.heading(heading.level, inline(heading))]
         case let paragraph as Paragraph:
+            // A paragraph that is nothing but `$$…$$` is display math, not prose.
+            if let math = MathText.displaySource(paragraph.plainText) { return [.math(math)] }
             var result: [RichBlock] = []; var runs: [InlineRun] = []
             for child in paragraph.children {
                 if let image = child as? Markdown.Image, let source = image.source {

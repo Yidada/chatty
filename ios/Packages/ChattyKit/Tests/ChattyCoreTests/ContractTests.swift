@@ -107,4 +107,61 @@ final class ContractTests: XCTestCase {
         let blocks = MarkdownContent.blocks("<script>alert('example')</script>\n")
         XCTAssertTrue(blocks.contains { if case .literal(let value) = $0 { value.contains("<script>") } else { false } })
     }
+
+    func testHistorySessionFieldsDecodeAndOlderBackendsStayCompatible() throws {
+        let sessions = try Contracts.decode([ChatSession].self, from: data("""
+        [{"id":"s1","agent_id":"mika","title":"上周复盘","created_at":"2026-09-09T01:00:00Z","updated_at":"2026-09-10T02:00:00Z",
+          "pinned":true,"has_unread":true,"unread_count":2,
+          "last_message":{"content":"已完成","role":"assistant","created_at":"2026-09-10T02:00:00Z","future":1}},
+         {"id":"s2","agent_id":"mika"}]
+        """))
+        XCTAssertEqual(sessions[0].pinned, true)
+        XCTAssertEqual(sessions[0].hasUnread, true)
+        XCTAssertEqual(sessions[0].unreadCount, 2)
+        XCTAssertEqual(sessions[0].lastMessage?.content, "已完成")
+        XCTAssertEqual(sessions[0].lastMessage?.role, "assistant")
+        XCTAssertEqual(sessions[0].createdAt, "2026-09-09T01:00:00Z")
+        XCTAssertNil(sessions[1].pinned)
+        XCTAssertNil(sessions[1].title)
+        XCTAssertNil(sessions[1].lastMessage)
+    }
+
+    func testHistoryOrderPutsPinnedFirstThenNewestAndKeepsServerOrderOnTies() throws {
+        let sessions = try Contracts.decode([ChatSession].self, from: data("""
+        [{"id":"a","agent_id":"mika","updated_at":"2026-09-01"},
+         {"id":"b","agent_id":"mika","updated_at":"2026-09-05"},
+         {"id":"c","agent_id":"mika","updated_at":"2026-09-03","pinned":true},
+         {"id":"d","agent_id":"mika","updated_at":"2026-09-05"},
+         {"id":"e","agent_id":"mika","status":"archived","updated_at":"2026-09-09"},
+         {"id":"f","agent_id":"other","updated_at":"2026-09-09"}]
+        """))
+        XCTAssertEqual(ChatSessions.ordered(for: "mika", in: sessions).map(\.id), ["c", "b", "d", "a"])
+        XCTAssertTrue(ChatSessions.ordered(for: "missing", in: sessions).isEmpty)
+    }
+
+    func testHistoryTitlePrefersServerTitleThenFirstMessageThenPlaceholder() {
+        XCTAssertEqual(ChatSessions.displayTitle("高考出题趋势", firstUserMessage: "2025年以来高考出题的趋势和特点"), "高考出题趋势")
+        XCTAssertEqual(ChatSessions.displayTitle("   ", firstUserMessage: "  帮我梳理一下项目进度。  "), "帮我梳理一下项目进度。")
+        XCTAssertEqual(ChatSessions.displayTitle(nil, firstUserMessage: String(repeating: "长", count: 30)), String(repeating: "长", count: 20))
+        XCTAssertEqual(ChatSessions.displayTitle(nil, firstUserMessage: "   "), ChatSessions.newConversationTitle)
+        XCTAssertEqual(ChatSessions.displayTitle(nil, firstUserMessage: nil), "新的对话")
+    }
+
+    func testCancelAndPrioritizeResponsesDecodeServerPayloads() throws {
+        let cancelled = try Contracts.decode(CancelTaskResponse.self, from: data("""
+        {"cancelled_chat_message":{"chat_session_id":"s1","message_id":"m9","content":"帮我梳理","restore_to_input":true,
+          "attachments":[{"id":"file1","filename":"note.txt"}]}}
+        """))
+        XCTAssertEqual(cancelled.cancelledChatMessage?.messageId, "m9")
+        XCTAssertEqual(cancelled.cancelledChatMessage?.content, "帮我梳理")
+        XCTAssertEqual(cancelled.cancelledChatMessage?.restoreToInput, true)
+        XCTAssertEqual(cancelled.cancelledChatMessage?.attachments?.first?.filename, "note.txt")
+        XCTAssertNil(try Contracts.decode(CancelTaskResponse.self, from: data("{}")).cancelledChatMessage)
+
+        let prioritized = try Contracts.decode(PrioritizeQueuedResponse.self, from: data("""
+        {"task_id":"t2","active_task_id":"t1"}
+        """))
+        XCTAssertEqual(prioritized.taskId, "t2")
+        XCTAssertEqual(prioritized.activeTaskId, "t1")
+    }
 }

@@ -40,11 +40,26 @@ public struct ChatAgent: Decodable, Identifiable, Sendable {
     public let invocationTargets: [InvocationTarget]?
 }
 
+/// Last-message preview carried by `GET /api/chat/sessions`, used by the history
+/// list. Every field is optional: the endpoint is also served by older backends
+/// that omit `last_message` entirely.
+public struct ChatPreview: Decodable, Equatable, Sendable {
+    public let content: String?
+    public let role: String?
+    public let createdAt: String?
+    public let failureReason: String?
+}
+
 public struct ChatSession: Decodable, Identifiable, Sendable {
     public let id: String
     public let agentId: String
     public let title: String?
     public let status: String?
+    public let pinned: Bool?
+    public let hasUnread: Bool?
+    public let unreadCount: Int?
+    public let lastMessage: ChatPreview?
+    public let createdAt: String?
     public let updatedAt: String?
     public var projectId: String? = nil
 }
@@ -69,6 +84,36 @@ public enum ChatSessions {
               let remembered = sessions.first(where: { $0.id == rememberedId && $0.agentId == agentId && $0.status != "archived" })
         else { return latest(for: agentId, in: sessions) }
         return remembered
+    }
+
+    /// History-list order: pinned conversations first, then newest `updated_at`.
+    /// `sorted(by:)` is not stable, so the original index is the final tiebreak —
+    /// the fixture and the Android client both keep server order on ties.
+    public static func ordered(for agentId: String, in sessions: [ChatSession]) -> [ChatSession] {
+        sessions.enumerated()
+            .filter { $0.element.agentId == agentId && $0.element.status != "archived" }
+            .sorted { lhs, rhs in
+                let leftPinned = lhs.element.pinned == true
+                let rightPinned = rhs.element.pinned == true
+                if leftPinned != rightPinned { return leftPinned }
+                let leftUpdated = lhs.element.updatedAt ?? ""
+                let rightUpdated = rhs.element.updatedAt ?? ""
+                if leftUpdated != rightUpdated { return leftUpdated > rightUpdated }
+                return lhs.offset < rhs.offset
+            }
+            .map(\.element)
+    }
+
+    /// Title shown in the navigation bar and the history row. The server generates
+    /// titles; when it has not (a brand-new session), fall back to the first user
+    /// message, and only then to the "new conversation" placeholder.
+    public static let newConversationTitle = "新的对话"
+    public static func displayTitle(_ title: String?, firstUserMessage: String?, limit: Int = 20) -> String {
+        if let title = title?.trimmingCharacters(in: .whitespacesAndNewlines), !title.isEmpty { return title }
+        if let message = firstUserMessage?.trimmingCharacters(in: .whitespacesAndNewlines), !message.isEmpty {
+            return String(message.prefix(limit))
+        }
+        return newConversationTitle
     }
 }
 
@@ -137,6 +182,33 @@ public struct QueuedChatTask: Decodable, Identifiable, Sendable {
     public let messageId: String?
     public let content: String?
     public var id: String { taskId }
+}
+
+/// `POST /api/chat/sessions/{id}/queued-tasks/{taskId}/prioritize`
+public struct PrioritizeQueuedResponse: Decodable, Sendable {
+    public let taskId: String
+    public let activeTaskId: String?
+}
+
+/// Payload of `POST /api/tasks/{taskId}/cancel`. `restoreToInput` decides whether
+/// the cancelled message's text goes back to the composer; the caller never
+/// guesses, because a partial send must not be silently dropped or duplicated.
+public struct CancelledChatMessage: Decodable, Sendable {
+    public let chatSessionId: String?
+    public let messageId: String?
+    public let content: String?
+    public let restoreToInput: Bool?
+    public let attachments: [Attachment]?
+}
+
+public struct CancelTaskResponse: Decodable, Sendable {
+    public let cancelledChatMessage: CancelledChatMessage?
+}
+
+/// Which queued task a cancel/remove applies to. `remove` deletes it, `edit`
+/// returns its text to the composer. Stop-the-active-task sends no action.
+public enum QueueCancelAction: String, Sendable {
+    case edit, remove
 }
 
 public struct Project: Decodable, Identifiable, Sendable {

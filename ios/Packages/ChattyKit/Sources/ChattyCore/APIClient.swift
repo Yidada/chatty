@@ -75,8 +75,8 @@ public final class APIClient: @unchecked Sendable {
     public func get<T: Decodable & Sendable>(_ path: String, query: [URLQueryItem] = []) async throws -> T {
         try Contracts.decode(T.self, from: await data(path, query: query))
     }
-    public func write<T: Decodable & Sendable>(_ path: String, method: String = "POST", body: [String: JSONValue]) async throws -> T {
-        try Contracts.decode(T.self, from: await data(path, method: method, body: body))
+    public func write<T: Decodable & Sendable>(_ path: String, method: String = "POST", body: [String: JSONValue], query: [URLQueryItem] = []) async throws -> T {
+        try Contracts.decode(T.self, from: await data(path, method: method, body: body, query: query))
     }
     static func check(_ response: URLResponse) throws {
         guard let response = response as? HTTPURLResponse, (200..<300).contains(response.statusCode) else { throw APIError.http((response as? HTTPURLResponse)?.statusCode ?? 0) }

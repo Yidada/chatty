@@ -1,0 +1,24 @@
+# Conversation history: switching and search (spec §4, criterion A2).
+# Precondition: ChattyFixture installed with a workspace already selected, so the app
+# opens on the tab shell. The fixture seeds s1 「格式与资源验证」 (rich message),
+# s2 「第二个会话」 and s3 (archived, must not appear).
+context platform=ios device="iPhone Air" kind=simulator theme=unknown
+open "ai.chatty.ios.fixture"
+wait stable 1000 10000
+press "role=\"button\" label=\"Mika\""
+wait "id=\"chat.draft\""
+press "id=\"chat.history\""
+wait "id=\"history.list\""
+screenshot ".sdlc/changes/20260912-ios-deepseek-chat-alignment-impl/evidence/27-history-all.png"
+press "id=\"history.row.s1\""
+wait "id=\"chat.draft\""
+wait "text=\"粗体与链接\""
+screenshot ".sdlc/changes/20260912-ios-deepseek-chat-alignment-impl/evidence/28-history-switched.png"
+press "id=\"chat.history\""
+wait "id=\"history.list\""
+fill "text=\"搜索聊天内容\"" "第二个"
+wait stable 1000 10000
+screenshot ".sdlc/changes/20260912-ios-deepseek-chat-alignment-impl/evidence/29-history-search.png"
+# No close step: while the search field is active the navigation bar's close button
+# is replaced by the search UI, so it is not reachable here. `close` ends the session.
+close

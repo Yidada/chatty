@@ -1,0 +1,56 @@
+# Stop generation and queue management (spec §7.2/§7.3, criteria A4/A6).
+# Preconditions: a fresh scripts/ios-fixture.py, slow mode so a task stays running
+# long enough to stop, and ChattyFixture freshly installed so it starts on the
+# workspace picker with no draft state:
+#   curl -X POST http://127.0.0.1:8765/__control -H 'Authorization: Bearer synthetic-device-fixture-token' \
+#        -H 'Content-Type: application/json' -d '{"slow":true}'
+#   xcrun simctl uninstall <udid> ai.chatty.ios.fixture && xcrun simctl install <udid> <app>
+context platform=ios device="iPhone Air" kind=simulator theme=unknown
+open "ai.chatty.ios.fixture"
+wait stable 1000 10000
+wait "id=\"workspace.w1\""
+press "id=\"workspace.w1\""
+wait stable 1000 10000
+press "role=\"button\" label=\"Mika\""
+wait "id=\"chat.draft\""
+press "id=\"chat.newSession\""
+wait "id=\"chat.welcome\""
+fill "id=\"chat.draft\"" "停止生成验证"
+press "id=\"chat.send\""
+wait "id=\"chat.stop\""
+screenshot ".sdlc/changes/20260912-ios-deepseek-chat-alignment-impl/evidence/07-stop-available.png"
+press "id=\"chat.stop\""
+wait "id=\"chat.send\""
+screenshot ".sdlc/changes/20260912-ios-deepseek-chat-alignment-impl/evidence/08-stopped.png"
+fill "id=\"chat.draft\"" "队列第一条"
+press "id=\"chat.send\""
+wait "id=\"chat.stop\""
+fill "id=\"chat.draft\"" "队列第二条"
+press "id=\"chat.send\""
+wait "id=\"chat.queue.clear\""
+screenshot ".sdlc/changes/20260912-ios-deepseek-chat-alignment-impl/evidence/09-queue.png"
+press "id=\"chat.queue.clear\""
+wait "id=\"chat.stop\""
+screenshot ".sdlc/changes/20260912-ios-deepseek-chat-alignment-impl/evidence/10-queue-cleared.png"
+# Per-row actions. The row buttons carry the task id in their identifier, which is
+# generated per run, so these use the visible label; with one queued item the three
+# labels are unique.
+fill "id=\"chat.draft\"" "队列第三条"
+press "id=\"chat.send\""
+wait "id=\"chat.queue.clear\""
+press "label=\"编辑\""
+wait stable 1000 10000
+screenshot ".sdlc/changes/20260912-ios-deepseek-chat-alignment-impl/evidence/11-queue-edit.png"
+fill "id=\"chat.draft\"" "队列第四条"
+press "id=\"chat.send\""
+wait "id=\"chat.queue.clear\""
+press "label=\"移除\""
+wait stable 1000 10000
+screenshot ".sdlc/changes/20260912-ios-deepseek-chat-alignment-impl/evidence/12-queue-remove.png"
+fill "id=\"chat.draft\"" "队列第五条"
+press "id=\"chat.send\""
+wait "id=\"chat.queue.clear\""
+press "label=\"优先\""
+wait stable 1000 10000
+screenshot ".sdlc/changes/20260912-ios-deepseek-chat-alignment-impl/evidence/13-queue-prioritize.png"
+close

@@ -1,0 +1,28 @@
+# Dark appearance end-to-end (spec §2.3). This is the coverage that was missing when
+# `ChattyTheme.background` turned out to have no dark fallback — a white page with
+# white text that every light-mode screenshot, replay and unit test missed
+# (evidence.md §18).
+# Preconditions: `xcrun simctl ui <udid> appearance dark`, a fresh fixture and a
+# freshly installed ChattyFixture so it starts on the workspace picker.
+context platform=ios device="iPhone Air" kind=simulator theme=dark
+open "ai.chatty.ios.fixture"
+wait stable 1000 10000
+wait "id=\"workspace.w1\""
+press "id=\"workspace.w1\""
+wait stable 1000 10000
+press "role=\"button\" label=\"Mika\""
+wait "id=\"chat.draft\""
+scroll "bottom"
+screenshot ".sdlc/changes/20260912-ios-deepseek-chat-alignment-impl/evidence/23-dark-conversation.png"
+press "id=\"chat.newSession\""
+wait "id=\"chat.welcome\""
+screenshot ".sdlc/changes/20260912-ios-deepseek-chat-alignment-impl/evidence/24-dark-welcome.png"
+fill "id=\"chat.draft\"" "深色模式验证"
+press "id=\"chat.send\""
+wait "label=\"CHATTY_CHAT_OK · 深色模式验证\""
+screenshot ".sdlc/changes/20260912-ios-deepseek-chat-alignment-impl/evidence/25-dark-reply.png"
+press "id=\"chat.history\""
+wait "id=\"history.list\""
+screenshot ".sdlc/changes/20260912-ios-deepseek-chat-alignment-impl/evidence/26-dark-history.png"
+press "id=\"history.close\""
+close

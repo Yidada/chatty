@@ -19,11 +19,18 @@ public struct OutgoingMessage: Codable, Identifiable, Equatable, Sendable {
     public let attachments: [Attachment]
     public let projectId: String?
     public let createdAt: Date
+    /// The conversation this message belongs to. Once the outbox is per session
+    /// (spec §7.4) a send loop must never deliver another conversation's message,
+    /// so each record carries the session it was composed in. `nil` means the
+    /// message predates session scoping and belongs to whatever session the
+    /// user was in when the record was migrated.
+    public var sessionId: String?
     public var status: OutgoingStatus
     public var failure: String?
 
-    public init(content: String, attachments: [Attachment], projectId: String?) {
+    public init(content: String, attachments: [Attachment], projectId: String?, sessionId: String? = nil) {
         id = UUID(); self.content = content; self.attachments = attachments
-        self.projectId = projectId; createdAt = Date(); status = .queued
+        self.projectId = projectId; self.sessionId = sessionId
+        createdAt = Date(); status = .queued
     }
 }

@@ -36,6 +36,15 @@ instructions are in [the workflow guide](../docs/sdlc-workflow.md).
   [implementation split](changes/20260910-ios-ipad-adaptive/plan.md),
   [verification](changes/20260910-ios-ipad-adaptive/evidence.md). Design stage
   only; no product code change is included.
+- [iOS Mika 聊天体验对齐 DeepSeek iOS](changes/20260912-ios-deepseek-chat-alignment/intent.md):
+  [DeepSeek 调研](changes/20260912-ios-deepseek-chat-alignment/research.md)、
+  [对齐规范](changes/20260912-ios-deepseek-chat-alignment/spec.md)、
+  [实施计划](changes/20260912-ios-deepseek-chat-alignment/plan.md)、
+  [决策](changes/20260912-ios-deepseek-chat-alignment/decisions.md)。Plan stage only;
+  本轮不含产品代码，实施拆分见其 `plan.md` 的 8 个阶段。
+- [iOS 聊天对齐 DeepSeek —— 实施](changes/20260912-ios-deepseek-chat-alignment-impl/intent.md):
+  [阶段 1 验证记录](changes/20260912-ios-deepseek-chat-alignment-impl/evidence.md)。
+  按上游计划推进；阶段 1（契约与按会话草稿）已完成，85 项包测试全绿、宿主 iOS 编译通过。
 
 ## Historical records
 
