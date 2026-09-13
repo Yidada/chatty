@@ -1,0 +1,61 @@
+{
+  "recordedAt": "2026-09-13T17:07:43.599602+08:00",
+  "sourceCommit": "6af51895cd5dcc473a2708e246bb3218bcf3e1e2",
+  "deliveryState": "prepared-awaiting-target",
+  "archive": {
+    "sourceCommit": "6af51895cd5dcc473a2708e246bb3218bcf3e1e2",
+    "scheme": "ChattyNext",
+    "configuration": "Release",
+    "archivePath": ".tools/chatty-next/releases/0.2.0-11-6af5189-20260913-170531/ChattyNext-0.2.0-11.xcarchive",
+    "bundleId": "ai.chatty.ios.next",
+    "displayName": "Chatty Next",
+    "version": "0.2.0",
+    "build": "11",
+    "minimumOS": "26.0",
+    "deviceFamilies": [
+      1,
+      2
+    ],
+    "architectures": "arm64",
+    "signatureVerified": true,
+    "archiveSigningPurpose": "development",
+    "encryptionExemptDeclaration": true,
+    "microphoneUsageDescriptionPresent": true,
+    "speechUsageDescriptionPresent": true,
+    "arbitraryNetworkLoads": false,
+    "debugPairingEnvironmentStringPresent": false,
+    "fixtureCookieStringPresent": false,
+    "executableSHA256": "74dea06c30ae544619556b2c105018e5c7ab5d861ecad9d0fec7e761d420f904",
+    "infoPlistSHA256": "600618dfc82dd2a5f40fc84b55af849b2c5babb117df627ba2f77c62653d9b14",
+    "localArchiveOnly": true,
+    "uploaded": false
+  },
+  "artifact": {
+    "archiveFiles": 13,
+    "manifestSHA256": "a7f2d198e87a1805511f5bf9664568fbe7663d1b04b24c4cbf112983f21595d5",
+    "archiveTotalBytes": 19452735
+  },
+  "backend": {
+    "componentVersion": "1f8bf92bc9d9c128",
+    "sourceMatchesInstalled": true,
+    "managedPatchReferencesVersion": true,
+    "backupCount": 2,
+    "liveReloadDeclared": true
+  },
+  "remote": {
+    "main": "7f4703eb385bdf5c716e31f7432caef78dbc9911",
+    "NextPresent": false
+  },
+  "appStoreConnect": {
+    "bundleId": "ai.chatty.ios.next",
+    "matchingApps": 0
+  },
+  "testEvidence": "test-evidence/results.json",
+  "coverageGaps": [
+    "ASR quality and latency",
+    "pixel and animation parity",
+    "network changes and full attachment flows",
+    "privileged tool execution end to end"
+  ],
+  "externalMutationsThisReleaseTurn": []
+}
