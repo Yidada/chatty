@@ -1,0 +1,100 @@
+{
+  "version": 1,
+  "verifiedAt": "2026-09-25",
+  "harnesses": [
+    {
+      "id": "claude-code",
+      "displayName": "Claude Code",
+      "protocol": "acp",
+      "enabled": true,
+      "phase": 1,
+      "launch": {
+        "type": "npm",
+        "package": "@agentclientprotocol/claude-agent-acp",
+        "version": "0.81.2",
+        "bin": "claude-agent-acp",
+        "args": []
+      },
+      "configOptionIds": {
+        "model": "model",
+        "mode": "mode"
+      },
+      "defaultMode": "default",
+      "discover": false,
+      "defaultModel": "sonnet",
+      "models": [
+        { "nativeId": "sonnet", "label": "Sonnet 5", "modelRef": "anthropic/claude-sonnet-5" },
+        { "nativeId": "opus", "label": "Opus 5.5", "modelRef": "anthropic/claude-opus-5.5" },
+        { "nativeId": "claude-fable-5-1", "label": "Fable 5.1", "modelRef": "anthropic/claude-fable-5.1" },
+        { "nativeId": "haiku", "label": "Haiku 4.5", "modelRef": "anthropic/claude-haiku-4.5" }
+      ]
+    },
+    {
+      "id": "opencode",
+      "displayName": "OpenCode",
+      "protocol": "acp",
+      "enabled": true,
+      "phase": 1,
+      "launch": {
+        "type": "path",
+        "command": "opencode",
+        "args": ["acp", "--cwd", "${cwd}"],
+        "minVersion": "1.18.32"
+      },
+      "configOptionIds": {
+        "model": "model",
+        "mode": "mode"
+      },
+      "defaultMode": "build",
+      "discover": true,
+      "defaultModel": "opencode/big-pickle",
+      "models": [
+        { "nativeId": "opencode/big-pickle", "label": "Big Pickle (OpenCode Zen)" },
+        { "nativeId": "github-copilot/claude-sonnet-5", "label": "Claude Sonnet 5 (Copilot)", "modelRef": "anthropic/claude-sonnet-5" },
+        { "nativeId": "github-copilot/claude-opus-5", "label": "Claude Opus 5 (Copilot)", "modelRef": "anthropic/claude-opus-5" },
+        { "nativeId": "github-copilot/gpt-5.5", "label": "GPT-5.5 (Copilot)", "modelRef": "openai/gpt-5.5" },
+        { "nativeId": "amazon-bedrock/anthropic.claude-fable-5-1", "label": "Claude Fable 5.1 (Bedrock)", "modelRef": "anthropic/claude-fable-5.1" }
+      ]
+    },
+    {
+      "id": "codex",
+      "displayName": "Codex",
+      "protocol": "acp",
+      "enabled": false,
+      "phase": 2,
+      "launch": {
+        "type": "npm",
+        "package": "@agentclientprotocol/codex-acp",
+        "version": "1.13.1",
+        "bin": "codex-acp",
+        "args": [],
+        "env": { "NO_BROWSER": "1" }
+      },
+      "configOptionIds": {
+        "model": "model",
+        "mode": "mode"
+      },
+      "discover": true,
+      "models": []
+    },
+    {
+      "id": "dsh",
+      "displayName": "DSH",
+      "protocol": "acp",
+      "enabled": false,
+      "phase": 2,
+      "launch": {
+        "type": "npm",
+        "package": "@deepseek-ai/dsh-acp",
+        "version": "0.0.1-rc.1",
+        "bin": "unverified",
+        "args": []
+      },
+      "configOptionIds": {
+        "model": "model"
+      },
+      "discover": true,
+      "models": []
+    }
+  ]
+}

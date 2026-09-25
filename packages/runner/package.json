@@ -1,0 +1,10 @@
+{
+  "name": "@chatty/runner",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Runner：常驻进程，负责启动和管理 Harness（ACP）并向 iOS 提供 WebSocket 服务",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  }
+}

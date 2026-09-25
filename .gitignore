@@ -1,0 +1,22 @@
+# Node
+node_modules/
+dist/
+coverage/
+*.log
+
+# Runner 本地数据（SQLite、worktree、日志）
+.chatty/
+*.sqlite
+*.sqlite-journal
+
+# Xcode / Swift
+**/xcuserdata/
+*.xcuserstate
+**/.build/
+**/.swiftpm/
+DerivedData/
+
+# 系统与编辑器
+.DS_Store
+.idea/
+.vscode/

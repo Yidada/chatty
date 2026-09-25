@@ -1,0 +1,7 @@
+{
+  "name": "@chatty/protocol",
+  "version": "0.0.0",
+  "private": true,
+  "description": "iOS ↔ Runner 消息协议：JSON Schema 定义与 Swift / TypeScript 代码生成",
+  "type": "module"
+}

@@ -1,0 +1,15 @@
+{
+  "name": "chatty",
+  "private": true,
+  "description": "iOS 上的多 Harness Coding Agent 客户端（Monorepo 根）",
+  "workspaces": [
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "npm run test --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present"
+  }
+}
