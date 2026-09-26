@@ -58,8 +58,12 @@ npm run gen -w @chatty/protocol
 npm run test -w @chatty/runner
 npm run dev  -w @chatty/runner
 
-# iOS（在 apps/ios 下）
-xcodebuild test -scheme Chatty -destination 'platform=iOS Simulator,name=iPhone 16'
+# iOS（在 apps/ios 下；工程由 XcodeGen 从 project.yml 生成，不提交 .xcodeproj）
+xcodegen generate
+xcodebuild test -project Chatty.xcodeproj -scheme Chatty -destination 'platform=iOS Simulator,name=<任一 iPhone 模拟器>'
+
+# 发布 TestFlight：推送 ios-* 标签，见 apps/ios/README.md
+git tag ios-0.3.0-1 && git push origin ios-0.3.0-1
 ```
 
 ## 6. 代码风格

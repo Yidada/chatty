@@ -20,3 +20,7 @@ DerivedData/
 .DS_Store
 .idea/
 .vscode/
+
+# iOS：由 apps/ios/project.yml 生成
+apps/ios/Chatty.xcodeproj/
+apps/ios/Chatty/Info.plist

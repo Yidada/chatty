@@ -23,4 +23,51 @@
 
 模块规划见 [`docs/architecture.md`](../../docs/architecture.md) 第 3.2 节。
 
-状态：M2 开始创建 Xcode 工程。
+## 当前状态：UI 原型
+
+- 界面和交互按 v2 草图实现，所有数据都是演示数据，尚未连接 Runner。
+- 发一条消息会播放一段模拟执行：工具调用 → 流式回复 → 请求审批 → 同意或拒绝 → 改动卡片。
+- 核心状态在 `Chatty/Stores/AppStore.swift`，单元测试在 `ChattyTests/`。
+
+## 本地运行
+
+需要 Xcode 26 和 XcodeGen：
+
+```bash
+brew install xcodegen
+cd apps/ios
+xcodegen generate        # 生成 Chatty.xcodeproj（不提交到仓库）
+open Chatty.xcodeproj
+```
+
+## 发布到 TestFlight（GitHub Actions）
+
+流水线：`.github/workflows/ios.yml`，运行在 GitHub 托管的 `macos-26` 机器上。
+
+| 触发方式 | 执行内容 |
+| --- | --- |
+| 推送到 `v3` 或向 `v3` 发 PR（改动了 `apps/ios`） | 生成工程、运行单元测试 |
+| 推送 `ios-*` 标签，例如 `ios-0.3.0-1` | 单元测试 → 归档 → 上传 TestFlight |
+
+一次性准备：
+
+1. App Store Connect → 用户和访问 → 集成 → App Store Connect API，生成密钥，角色选 **Admin**（云端自动签名需要）。
+2. 下载 `.p8` 文件，记下 Key ID 和 Issuer ID。
+3. GitHub 仓库 → Settings → Secrets and variables → Actions，添加：
+   - `ASC_KEY_ID`
+   - `ASC_ISSUER_ID`
+   - `ASC_KEY_P8`：`.p8` 文件的完整文本
+
+发布一个版本：
+
+```bash
+git tag ios-0.3.0-1
+git push origin ios-0.3.0-1
+```
+
+说明：
+
+- App 记录沿用 `ai.chatty.ios`（Team `9247PC9936`），营销版本 `0.3.0`。
+- 构建号取 UTC 时间 `yyMMddHHmm`，保证递增。
+- Info.plist 已声明 `ITSAppUsesNonExemptEncryption = NO`，上传后不需要回答出口合规问卷。
+- 上传后 App Store Connect 需要 5–30 分钟处理。内部测试组如果没有开启自动分发，需要在 TestFlight 页面手动把新构建加入测试组。

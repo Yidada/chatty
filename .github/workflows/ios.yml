@@ -1,0 +1,170 @@
+# iOS 构建与 TestFlight 发布
+#
+# - 推送到 v3 或向 v3 发起 PR（且改动了 apps/ios）：生成工程并跑单元测试。
+# - 推送 ios-* 标签（例如 ios-0.3.0-1），或在 Actions 页面手动触发：测试通过后归档并上传到 TestFlight。
+#
+# 上传需要以下仓库 Secrets（App Store Connect API Key，角色 Admin）：
+#   ASC_KEY_ID      密钥 ID
+#   ASC_ISSUER_ID   Issuer ID
+#   ASC_KEY_P8      .p8 文件的完整文本
+name: iOS
+
+on:
+  push:
+    branches: [v3]
+    tags: ["ios-*"]
+    paths:
+      - "apps/ios/**"
+      - ".github/workflows/ios.yml"
+  pull_request:
+    branches: [v3]
+    paths:
+      - "apps/ios/**"
+      - ".github/workflows/ios.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: apps/ios
+
+jobs:
+  test:
+    name: 生成工程并运行单元测试
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 环境信息
+        run: |
+          sw_vers
+          xcodebuild -version
+
+      - name: 安装 XcodeGen
+        run: brew install xcodegen
+
+      - name: 生成 Xcode 工程
+        run: xcodegen generate
+
+      - name: 选择 iPhone 模拟器
+        id: sim
+        run: |
+          UDID=$(xcrun simctl list devices available -j \
+            | jq -r '[.devices | to_entries[] | select(.key | contains("iOS")) | .value[] | select(.name | startswith("iPhone"))] | last | .udid')
+          echo "使用模拟器 $UDID"
+          echo "udid=$UDID" >> "$GITHUB_OUTPUT"
+
+      - name: 单元测试
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project Chatty.xcodeproj \
+            -scheme Chatty \
+            -destination "id=${{ steps.sim.outputs.udid }}" \
+            CODE_SIGNING_ALLOWED=NO \
+            2>&1 | tee "$RUNNER_TEMP/test.log" | grep -E "error:|warning: |Test (Suite|Case|run)|✔|✘|\*\*" || true
+          grep -q "\*\* TEST SUCCEEDED \*\*" "$RUNNER_TEMP/test.log"
+
+      - name: 失败时输出错误
+        if: failure()
+        run: grep -n -E "error:|✘|failed" "$RUNNER_TEMP/test.log" | head -100 || true
+
+      - name: 上传测试日志
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-test-log
+          path: ${{ runner.temp }}/test.log
+          if-no-files-found: ignore
+
+  testflight:
+    name: 归档并上传 TestFlight
+    needs: test
+    if: startsWith(github.ref, 'refs/tags/ios-') || github.event_name == 'workflow_dispatch'
+    runs-on: macos-26
+    timeout-minutes: 45
+    env:
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 检查 Secrets
+        run: |
+          missing=""
+          [ -z "$ASC_KEY_ID" ] && missing="$missing ASC_KEY_ID"
+          [ -z "$ASC_ISSUER_ID" ] && missing="$missing ASC_ISSUER_ID"
+          [ -z "$ASC_KEY_P8" ] && missing="$missing ASC_KEY_P8"
+          if [ -n "$missing" ]; then
+            echo "::error::缺少仓库 Secrets:$missing。请在 Settings → Secrets and variables → Actions 中添加。"
+            exit 1
+          fi
+
+      - name: 写入 API Key
+        run: |
+          KEY_PATH="$RUNNER_TEMP/AuthKey_${ASC_KEY_ID}.p8"
+          printf '%s\n' "$ASC_KEY_P8" > "$KEY_PATH"
+          echo "ASC_KEY_PATH=$KEY_PATH" >> "$GITHUB_ENV"
+
+      - name: 安装 XcodeGen 并生成工程
+        run: |
+          brew install xcodegen
+          xcodegen generate
+
+      - name: 计算构建号
+        run: |
+          BUILD_NUMBER=$(date -u +%y%m%d%H%M)
+          echo "BUILD_NUMBER=$BUILD_NUMBER" >> "$GITHUB_ENV"
+          echo "构建号 $BUILD_NUMBER"
+
+      - name: 归档
+        run: |
+          set -o pipefail
+          xcodebuild archive \
+            -project Chatty.xcodeproj \
+            -scheme Chatty \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath "$RUNNER_TEMP/Chatty.xcarchive" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$ASC_KEY_PATH" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
+            CURRENT_PROJECT_VERSION="$BUILD_NUMBER" \
+            2>&1 | tee "$RUNNER_TEMP/archive.log" | grep -E "error:|warning: |\*\*" || true
+          grep -q "\*\* ARCHIVE SUCCEEDED \*\*" "$RUNNER_TEMP/archive.log"
+
+      - name: 导出并上传到 App Store Connect
+        run: |
+          set -o pipefail
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/Chatty.xcarchive" \
+            -exportPath "$RUNNER_TEMP/export" \
+            -exportOptionsPlist ExportOptions.plist \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$ASC_KEY_PATH" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
+            2>&1 | tee "$RUNNER_TEMP/export.log"
+          grep -q -E "EXPORT SUCCEEDED|Upload succeeded|Uploaded" "$RUNNER_TEMP/export.log"
+
+      - name: 结果
+        run: |
+          echo "### 已上传 Chatty 0.3.0 ($BUILD_NUMBER)" >> "$GITHUB_STEP_SUMMARY"
+          echo "App Store Connect 处理完成后（通常 5–30 分钟），在 TestFlight 中可见。" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: 失败时输出错误
+        if: failure()
+        run: |
+          for f in archive export; do
+            [ -f "$RUNNER_TEMP/$f.log" ] && grep -n -E "error|Error|failed" "$RUNNER_TEMP/$f.log" | head -60
+          done || true
+
+      - name: 清理 API Key
+        if: always()
+        run: rm -f "$RUNNER_TEMP"/AuthKey_*.p8
